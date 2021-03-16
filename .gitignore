@@ -1,0 +1,13 @@
+.fake
+.ionide
+.vscode
+
+*.pyc
+__pycache__
+
+/var/media
+/var/static
+/node_modules
+/frontend/scripts/**/*.map
+/podnebnik/static/frontend/__init__.py
+/podnebnik/settings/__init__.py

@@ -1,0 +1,36 @@
+{
+	"name": "website",
+
+	"dockerComposeFile": [
+		"docker-compose.yml"
+	],
+	"service": "app",
+	"workspaceFolder": "/website",
+
+	// Set *default* container specific settings.json values on container create.
+	"settings": {
+		"terminal.integrated.shell.linux": "/usr/bin/zsh",
+		"python.pythonPath": "/usr/local/bin/python",
+		"python.linting.enabled": true,
+		"python.linting.flake8Enabled": true,
+		"python.linting.flake8Path": "/home/vscode/.local/bin/flake8",
+		"python.linting.pylintEnabled": false,
+		"python.formatting.autopep8Path": "/home/vscode/.local/bin/autopep8"
+	},
+
+	// Add the IDs of extensions you want installed when the container is created.
+	"extensions": [
+		"ms-python.python",
+		"batisteo.vscode-django",
+		"ms-python.vscode-pylance"
+	],
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	"postCreateCommand": "pipenv lock -r > /tmp/requirements.txt && pip install -r /tmp/requirements.txt && rm /tmp/requirements.txt",
+
+	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+	"remoteUser": "vscode"
+}

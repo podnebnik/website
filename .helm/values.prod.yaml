@@ -1,0 +1,12 @@
+---
+ingressroute:
+  enabled: true
+  rule: Host(`podnebnik.org`)
+  certResolver: letsencrypt
+
+persistence:
+  existingClaim: website
+
+existingSecret: website
+
+fullnameOverride: website
