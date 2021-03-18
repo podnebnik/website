@@ -1,5 +1,7 @@
 import "../styles/main.sass"
 
-import * as Components from "./components/src/Components.fs.js"
+import { emissionsChart } from "./components/src/Components/EmissionsChart.fs"
 
-window.Components = Components
+window.Components = {
+    emissionsChart: emissionsChart
+}
