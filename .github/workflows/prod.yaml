@@ -1,8 +1,10 @@
 name: Build and deploy (production)
 
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
 env:
   RELEASE_NAME: website
