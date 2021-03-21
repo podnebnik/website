@@ -10,7 +10,7 @@ env:
   RELEASE_NAME: website
   CHART_VALUES_FILE: .helm/values.prod.yaml
   DEPLOY_NAMESPACE: podnebnik-prod
-  IMAGE_TAG: ${{ github.event.release.tag_name }}
+  IMAGE_TAG: ${{ github.sha }}
   DEPLOY_ENV: production
   DEPLOY_URL: https://podnebnik.org
 
