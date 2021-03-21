@@ -23,8 +23,7 @@ RUN yarn run build
 
 # -----------------------------------------------------------------------------
 
-ARG BASE_VERSION=v1
-FROM ghcr.io/podnebnik/website:${BASE_VERSION}
+FROM ghcr.io/podnebnik/website-base:v1
 
 ENV PYTHONUNBUFFERED 1
 
@@ -32,16 +31,13 @@ WORKDIR /app
 ADD . /app/
 RUN mkdir -p /app/logs
 
-RUN /app/docker/setup.sh --install && /app/docker/setup.sh --cleanup
-
-RUN /app/docker/setup.sh --install && pipenv lock -r > /tmp/requirements.txt && pipenv --rm && \
+RUN DEBIAN_FRONTEND=noninteractive pipenv lock -r > /tmp/requirements.txt && pipenv --rm && \
     pip3 --disable-pip-version-check --no-cache-dir install -r /tmp/requirements.txt && \
-    rm /tmp/requirements.txt && \
-    /app/docker/setup.sh --cleanup
+    pip3 uninstall -y pipenv && \
+    rm /tmp/requirements.txt
 
-RUN ln -s /app/podnebnik/settings/kubernetes.py /app/podnebnik/settings/__init__.py
-RUN chown -R www-data:www-data .
-
-RUN SECRET_KEY=nosecret python3 manage.py collectstatic --no-input
+RUN ln -s /app/podnebnik/settings/kubernetes.py /app/podnebnik/settings/__init__.py && \
+    SECRET_KEY=nosecret python3 manage.py collectstatic --no-input && \
+    chown -R www-data:www-data .
 
 ENTRYPOINT ["circusd", "circus.ini"]
