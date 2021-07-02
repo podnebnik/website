@@ -11,6 +11,7 @@ django = "*"
 psycopg2-binary = "*"
 pillow = "*"
 pandas = "*"
+wagtail = "*"
 
 [requires]
 python_version = "3.9"

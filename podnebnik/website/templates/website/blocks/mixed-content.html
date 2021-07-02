@@ -1,0 +1,19 @@
+{% load wagtailimages_tags wagtailcore_tags %}
+
+{% for item in value %}
+{% if item.block_type == 'video' %}
+<figure class="image is-16by9">
+    {% include_block item %}
+</figure>
+{% elif item.block_type == 'table' %}
+<div class="table-container">
+    {% include_block item %}
+</div>
+{% elif item.block_type == 'references' %}
+<div class="references">
+    {% include_block item %}
+</div>
+{% else %}
+{% include_block item %}
+{% endif %}
+{% endfor %}

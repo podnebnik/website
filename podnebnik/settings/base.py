@@ -25,6 +25,22 @@ INSTALLED_APPS = [
     'podnebnik',
     'podnebnik.website',
 
+    'wagtail.contrib.forms',
+    'wagtail.contrib.redirects',
+    'wagtail.embeds',
+    'wagtail.sites',
+    'wagtail.users',
+    'wagtail.snippets',
+    'wagtail.documents',
+    'wagtail.images',
+    'wagtail.search',
+    'wagtail.admin',
+    'wagtail.core',
+    'wagtail.contrib.table_block',
+
+    'modelcluster',
+    'taggit',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,6 +57,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'wagtail.contrib.redirects.middleware.RedirectMiddleware',
 ]
 
 ROOT_URLCONF = 'podnebnik.urls'
@@ -137,3 +155,11 @@ LOGGING = {
         },
     }
 }
+
+# Wagtail
+
+WAGTAIL_SITE_NAME = 'Podnebnik'
+
+WAGTAIL_ROOT_PATH = '/podnebnik'
+
+WAGTAIL_ALLOW_UNICODE_SLUGS = False
