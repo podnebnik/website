@@ -1,1 +1,15 @@
 @import 'bulma'
+
+@import 'components/typography'
+@import 'components/images'
+@import 'components/lists'
+@import 'components/text-content'
+@import 'components/navbar'
+
+@import 'templates/article'
+
+
+main .container
+    @include until($desktop)
+        margin-left: $gap/2
+        margin-right: $gap/2

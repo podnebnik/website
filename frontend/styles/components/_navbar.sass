@@ -1,0 +1,21 @@
+.navbar
+    @include until($desktop)
+        border-bottom: solid 7px $primary
+
+.navbar-item
+    padding-left: 2rem
+    padding-right: 2rem
+
+    img
+        max-height: $navbar-height
+
+.navbar-brand
+    @include from($desktop)
+        width: 25%
+
+.navbar-menu
+    @include from($desktop)
+        border-bottom: solid 7px $primary
+
+.navbar-end
+    align-items: flex-end

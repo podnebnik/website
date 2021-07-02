@@ -1,0 +1,81 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+h6
+  margin: $gap/2 0
+  line-height: 0.95
+  font-weight: 700
+
+h1, .h1
+    font-size: $size-1
+
+    @include until($widescreen)
+        font-size: $size-1*0.9
+
+    @include until($desktop)
+        font-size: $size-1*0.7
+
+h2, .h2
+    font-size: $size-2
+
+    @include until($widescreen)
+        font-size: $size-2*0.9
+
+    @include until($desktop)
+        font-size: $size-2*0.8
+
+h3, .h3
+    font-size: $size-3
+
+    @include until($widescreen)
+        font-size: $size-3*0.9
+
+    @include until($desktop)
+        font-size: $size-3*0.8
+
+h4, .h4
+    font-size: $size-4
+
+    @include until($widescreen)
+        font-size: $size-4*0.9
+
+    @include until($desktop)
+        font-size: $size-4*0.8
+
+.lead
+    font-size: $size-4
+    line-height: 1.4
+    font-style: italic
+
+    @include until($desktop)
+        font-size: $size-large*0.8
+
+.caption
+    color: $text-light
+    font-style: italic
+
+.references
+    font-size: $size-7
+    border-top: solid 1px $border
+    padding-top: $gap/2
+    margin-top: $gap
+
+    ol
+        margin-left: $gap/2
+
+p
+    margin-bottom: $paragraph-margin
+
+hr
+    background-color: $border
+    height: 1px
+
+blockquote
+    border-left: solid 4px $border
+    padding-left: $gap/2
+    margin-bottom: $paragraph-margin
+    margin-left: $paragraph-margin
+    color: $text-light
+    font-style: italic

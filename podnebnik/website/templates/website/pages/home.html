@@ -5,14 +5,23 @@
 {% block title %}{{ page.title }}{% endblock %}
 
 {% block content %}
-<h1>{{ page.title }}</h1>
-<div class="lead">{{ page.lead|richtext }}</div>
+<div class="container article">
+    <div class="columns is-multiline">
+        <div class="column is-7-desktop is-offset-3-desktop">
+            <h1>{{ page.title }}</h1>
+            <div class="lead">{{ page.lead|richtext }}</div>
 
-{% if articles %}
-<ul>
-    {% for article in articles %}
-    <li><a href="{{ article.url }}">{{ article.title }}</a></li>
-    {% endfor %}
-</ul>
-{% endif %}
+            {% if articles %}
+            <ul>
+                {% for article in articles %}
+                <li>
+                    <a href="{{ article.url }}"><h4>{{ article.title }}</h4></a>
+                    <div>{{ article.blurb|richtext }}</div>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+    </div>
+</div>
 {% endblock %}
