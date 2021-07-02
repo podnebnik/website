@@ -10,7 +10,7 @@ flake8 = "*"
 django = "*"
 psycopg2-binary = "*"
 pillow = "*"
-pandas = "*"
+frictionless = "*"
 
 [requires]
-python_version = "3.9"
+python_version = "3"

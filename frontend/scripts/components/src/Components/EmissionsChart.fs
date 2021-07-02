@@ -8,6 +8,7 @@ open Utils
 
 type DataPoint = {
     Year : int
+    Total : float
     Transportation : float
     Energy : float
     Industrial : float
@@ -39,9 +40,10 @@ let emissionsChart elementId height emissionsDataId =
 
     let data =
         getDataFromScriptElement emissionsDataId
-        |> Json.parseNativeAs<(int * float * float * float * float * float * float * float * float) array>
-        |> Array.map (fun (year, transportation, energy, industrial, industrial_fuels, household_fuels, agriculture, waste, other) ->
+        |> Json.parseNativeAs<(int * float * float * float * float * float * float * float * float * float) array>
+        |> Array.map (fun (year, total, transportation, energy, industrial, industrial_fuels, household_fuels, agriculture, waste, other) ->
             { Year = year
+              Total = total
               Transportation = transportation
               Energy = energy
               Industrial = industrial
