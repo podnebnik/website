@@ -1,3 +1,5 @@
+import itertools
+
 from django.db import models
 
 from wagtail.core import blocks
@@ -34,7 +36,11 @@ class ImageBlock(blocks.StructBlock):
 
 class VisualisationBlock(blocks.StructBlock):
 
-    visualisation = blocks.ChoiceBlock(choices=podnebnik.visualisations.VISUALISATIONS)
+    def get_visualization_choices():
+        return [(id, name) for (id, name, _) in podnebnik.visualisations.VISUALISATIONS]
+
+    visualisation = blocks.ChoiceBlock(choices=get_visualization_choices)
+    caption = blocks.RichTextBlock(required=False, features=['bold', 'italic', 'link', 'document-link'])
 
     class Meta:
         icon = "image"
@@ -104,8 +110,20 @@ class ArticlePage(Page):
     def get_context(self, request):
         context = super().get_context(request)
 
-        context["visualisations_data"] = podnebnik.visualisations.get_visualisations_data(set([el.value["visualisation"] for el in self.body if el.block_type == "visualisation"]))
-        context["visualisations"] = [{'id': i, 'name': el.value["visualisation"]} for (i, el) in enumerate(self.body) if el.block_type == "visualisation"]
+        context["visualisations"] = [
+            {'id': '{}-visualisation-{}'.format(el.value["visualisation"], i), 'template': 'visualisations/{}.html'.format(el.value["visualisation"])}
+            for (i, el)
+            in enumerate(self.body) if el.block_type == "visualisation"
+        ]
+
+        visualisations_data_functions_dict = {id: data_function for (id, _, data_function) in podnebnik.visualisations.VISUALISATIONS if data_function is not None}
+        visualisations_data_functions = set(itertools.chain.from_iterable([
+            visualisations_data_functions_dict.get(visualisation, [])
+            for visualisation
+            in set([el.value["visualisation"] for el in self.body if el.block_type == "visualisation"])
+        ]))
+
+        context["visualisations_data"] = [f() for f in visualisations_data_functions]
 
         return context
 
