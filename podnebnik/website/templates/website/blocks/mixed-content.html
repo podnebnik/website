@@ -5,6 +5,8 @@
 <figure class="image is-16by9">
     {% include_block item %}
 </figure>
+{% elif item.block_type == 'visualisation' %}
+<div id="{{ item.value.visualisation }}-visualisation-{{ forloop.counter0 }}"></div>
 {% elif item.block_type == 'table' %}
 <div class="table-container">
     {% include_block item %}

@@ -17,3 +17,17 @@
     </div>
 </div>
 {% endblock %}
+
+{% block extra-scripts %}
+
+{% for data in visualisations_data %}
+{{ data.data|json_script:data.id }}
+{% endfor %}
+
+{% for visualisation in visualisations %}
+{% if visualisation.name == 'emissions' %}
+<script>Components.emissionsChart("{{ visualisation.name }}-visualisation-{{ visualisation.id }}", "500", "emissions-data")</script>
+{% endif %}
+{% endfor %}
+
+{% endblock %}
