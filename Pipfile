@@ -10,8 +10,8 @@ flake8 = "*"
 django = "*"
 psycopg2-binary = "*"
 pillow = "*"
-pandas = "*"
 wagtail = "*"
+frictionless = "*"
 
 [requires]
-python_version = "3.9"
+python_version = "3"
