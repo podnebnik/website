@@ -12,8 +12,9 @@
 
 main .container,
 footer .container
-    max-width: none !important
+    max-width: calc(100% - 0.75rem*2) !important
 
     @include until($desktop)
-        margin-left: $gap/2
-        margin-right: $gap/2
+        max-width: 100%
+        margin-left: 0.75rem
+        margin-right: 0.75rem
