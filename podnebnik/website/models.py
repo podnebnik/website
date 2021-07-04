@@ -78,20 +78,20 @@ class HomePage(Page):
 
         # context["articles"] = ArticlePage.objects.live()
         context["articles"] = [
-            ("CO₂ and Greenhouse Gas Emissions", ["Greenhouse Gas Emissions"], "17. marec 2021"),
-            ("Outdoor Air Pollution", ["Greenhouse Gas Emissions", "Pollution"], "17. marec 2021"),
-            ("Age Structure", ["Population"], "17. marec 2021"),
-            ("Access to Energy", ["Energy"], "17. marec 2021"),
-            ("Ozone Layer", ["Greenhouse Gas Emissions"], "17. marec 2021"),
-            ("Water Use and Stress", ["Environment", "Water"], "17. marec 2021"),
-            ("Environmental impacts of food production", ["Environment"], "17. marec 2021"),
-            ("Forests and Deforestation", ["Environment"], "17. marec 2021"),
-            ("Indoor Air Pollution", ["Greenhouse Gas Emissions", "Pollution"], "17. marec 2021"),
+            ("CO₂ and Greenhouse Gas Emissions", ["Greenhouse Gas Emissions"], "4. julij 2021"),
+            ("Outdoor Air Pollution", ["Greenhouse Gas Emissions", "Pollution"], "1. julij 2021"),
+            ("Age Structure", ["Population"], "23. junij 2021"),
+            ("Access to Energy", ["Energy"], "12. junij 2021"),
+            ("Ozone Layer", ["Greenhouse Gas Emissions"], "4. junij 2021"),
+            ("Water Use and Stress", ["Environment", "Water"], "29. maj 2021"),
+            ("Environmental impacts of food production", ["Environment"], "4. maj 2021"),
+            ("Forests and Deforestation", ["Environment"], "19. april 2021"),
+            ("Indoor Air Pollution", ["Greenhouse Gas Emissions", "Pollution"], "1. april 2021"),
             ("Renewable Energy", ["Energy"], "17. marec 2021"),
-            ("Fossil Fuels", ["Energy"], "17. marec 2021"),
-            ("Air Pollution", ["Greenhouse Gas Emissions", "Pollution"], "17. marec 2021"),
-            ("Plastic Pollution", ["Energy", "Pollution"], "17. marec 2021"),
-            ("World Population Growth", ["Population"], "17. marec 2021"),
+            ("Fossil Fuels", ["Energy"], "16. marec 2021"),
+            ("Air Pollution", ["Greenhouse Gas Emissions", "Pollution"], "15. marec 2021"),
+            ("Plastic Pollution", ["Energy", "Pollution"], "2. februar 2021"),
+            ("World Population Growth", ["Population"], "22. januar 2021"),
         ]
 
         return context
