@@ -18,5 +18,6 @@ def get_emissions_data() -> VisualisationData:
 
 
 VISUALISATIONS = [
-    ("emissions", "Emissions", [get_emissions_data]),
+    ("emissions-area", "Area emissions", [get_emissions_data]),
+    ("emissions-columns", "Columns emissions", [get_emissions_data]),
 ]

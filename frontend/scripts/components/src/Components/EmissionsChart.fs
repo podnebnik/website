@@ -36,7 +36,7 @@ let metrics = [|
     { Name = "Energy" ; Color = "" ; Selector = fun dp -> dp.Energy }
 |]
 
-let emissionsChart elementId height emissionsDataId =
+let emissionsChart elementId chartKind height emissionsDataId =
 
     let data =
         getDataFromScriptElement emissionsDataId
@@ -115,9 +115,9 @@ let emissionsChart elementId height emissionsDataId =
         |}
 
     let content =
-        React.fragment [
-            Highcharts.chart columnChartOptions
-            Highcharts.chart areaChartOptions
-        ]
+        match chartKind with
+        | "area" -> Highcharts.chart areaChartOptions
+        | "columns" -> Highcharts.chart columnChartOptions
+        | _ -> failwith (sprintf "Unknown chart kind: %s" chartKind)
 
     ReactDOM.render(content, document.getElementById elementId)
