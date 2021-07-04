@@ -5,10 +5,14 @@
         color: $text
 
     .column
+        position: relative
         padding-top: $gap / 2
         border-top: solid 4px $primary
         display: flex
         font-size: $size-7
+
+        @include until($mobile)
+            flex-direction: column
 
     .copyright
         flex-grow: 1
@@ -19,6 +23,15 @@
     .social
         a
             margin-right: $gap/4
+
         img
             height: 20px
             opacity: 0.3
+
+        @include until($mobile)
+            position: absolute
+            top: $gap/2
+            right: 0
+
+            img
+                height: 30px

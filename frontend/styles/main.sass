@@ -10,7 +10,10 @@
 @import 'templates/home'
 @import 'templates/article'
 
-main .container
+main .container,
+footer .container
+    max-width: none !important
+
     @include until($desktop)
         margin-left: $gap/2
         margin-right: $gap/2
