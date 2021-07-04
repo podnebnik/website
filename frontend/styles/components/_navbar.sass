@@ -1,6 +1,8 @@
 .navbar
     @include until($desktop)
-        border-bottom: solid 7px $primary
+        border-bottom: solid 4px $primary
+
+    margin-bottom: $gap
 
 .navbar-item
     padding-left: 2rem
@@ -15,7 +17,7 @@
 
 .navbar-menu
     @include from($desktop)
-        border-bottom: solid 7px $primary
+        border-bottom: solid 4px $primary
 
 .navbar-end
     align-items: flex-end

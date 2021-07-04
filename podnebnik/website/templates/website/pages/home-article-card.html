@@ -1,0 +1,16 @@
+<div class="card">
+    <a href="./prvi-clanek/">
+        <div class="card-content">
+            <p class="title">{{ title }}</p>
+            <p class="subtitle">{% lorem 20 w random %}</p>
+        </div>
+        <footer class="card-footer">
+            <div class="card-footer__categories">
+            {% for category in categories %}
+            <span class="tag">{{ category }}</span>
+            {% endfor %}
+            </div>
+            <div class="card-footer__date">{{ date }}</div>
+        </footer>
+    </a>
+</div>

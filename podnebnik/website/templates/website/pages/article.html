@@ -12,7 +12,7 @@
                 <h1>{{ page.title }}</h1>
                 {% if page.lead %}<div class="lead">{{ page.lead|richtext }}</div>{% endif %}
             </div>
-            {% include_block page.body %}
+            <div class="text-content">{% include_block page.body %}</div>
         </div>
     </div>
 </div>

@@ -30,7 +30,7 @@
             <div id="mainMenu" class="navbar-menu">
                 <div class="navbar-end">
                     <a class="navbar-item" href="/">
-                        Domov
+                        O projektu
                     </a>
                     <a class="navbar-item" href="/faq/">
                         FAQ
@@ -42,10 +42,27 @@
             </div>
         </nav>
     </header>
+
     <main>
     {% block content %}
     {% endblock content %}
     </main>
+
+    <footer class="footer">
+        <div class="columns is-multiline">
+            <div class="column is-9-desktop is-offset-3-desktop">
+                <div class="copyright"><span>© 2021 Podnebnik.org</span></div>
+                <div class="email"><a href="mailto:info@podnebnik.org"><span>info@podnebnik.org</span></a></div>
+                <div class="social">
+                    <a href="https://fb.me/COVID19Sledilnik" target="_blank" rel="noreferrer"><img loading="lazy" src="https://sledilnik.org/img/fb-icon.6256917d.svg" alt="Facebook"></a>
+                    <a href="https://twitter.com/sledilnik" target="_blank" rel="noreferrer"><img loading="lazy" src="https://sledilnik.org/img/tw-icon.28a330d7.svg" alt="Twitter"></a>
+                    <a href="https://medium.com/sledilnik" target="_blank" rel="noreferrer"><img loading="lazy" src="https://sledilnik.org/img/medium-icon.94333022.svg" alt="Medium"></a>
+                    <a href="https://www.youtube.com/channel/UCM_Sk2GZ8vTMiyBQ0SMHgJw/videos" target="_blank" rel="noreferrer"><img loading="lazy" src="https://sledilnik.org/img/youtube.e571414b.svg" alt="YouTube"></a>
+                    <a href="https://github.com/sledilnik" target="_blank" rel="noreferrer"><img loading="lazy" src="https://sledilnik.org/img/gh-icon.040dd043.svg" alt="GitHub"></a>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <script src="{% static 'frontend/main.js' %}"></script>
     {% block extra-scripts %}{% endblock %}
