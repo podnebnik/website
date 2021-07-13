@@ -36,6 +36,8 @@ RUN DEBIAN_FRONTEND=noninteractive pipenv lock -r > /tmp/requirements.txt && pip
     pip3 uninstall -y pipenv && \
     rm /tmp/requirements.txt
 
+COPY --from=frontend-builder --chown=www-data:www-data /build/podnebnik/static/frontend /app/podnebnik/static/frontend
+
 RUN ln -s /app/podnebnik/settings/kubernetes.py /app/podnebnik/settings/__init__.py && \
     SECRET_KEY=nosecret python3 manage.py collectstatic --no-input && \
     chown -R www-data:www-data .
