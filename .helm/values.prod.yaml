@@ -1,4 +1,7 @@
 ---
+image:
+  repository: ghcr.io/podnebnik/website
+
 ingressroute:
   enabled: true
   rule: Host(`podnebnik.org`)

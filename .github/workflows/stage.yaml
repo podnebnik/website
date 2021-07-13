@@ -39,17 +39,17 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository_owner }}/website:latest
 
-  # deploy:
-  #   runs-on: ubuntu-20.04
-  #   if: "!contains(github.event.head_commit.message, 'NODEPLOY')"
-  #   needs: build
-  #   steps:
-  #     - name: Checkout repo
-  #       uses: actions/checkout@v2
+  deploy:
+    runs-on: ubuntu-20.04
+    if: "!contains(github.event.head_commit.message, 'NODEPLOY')"
+    needs: build
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
 
-  #     - name: Deploy
-  #       uses: podnebnik/action-helm-deploy@master
-  #       with:
-  #         chartName: podnebnik/django
-  #         chartVersion: '1.0.1'
-  #         kubeconfig: '${{ secrets.KUBECONFIG }}'
+      - name: Deploy
+        uses: sledilnik/action-helm-deploy@master
+        with:
+          chartName: sledilnik/django
+          chartVersion: '1.0.1'
+          kubeconfig: '${{ secrets.KUBECONFIG }}'
