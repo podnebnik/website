@@ -40,6 +40,6 @@ RUN ln -s /app/podnebnik/settings/kubernetes.py /app/podnebnik/settings/__init__
     SECRET_KEY=nosecret python3 manage.py collectstatic --no-input && \
     chown -R www-data:www-data .
 
-COPY --from=frontend-builder --chown=www-data:www-data /build/podnebnik/static/frontend /app/podnebnik/static/frontend
+COPY --from=frontend-builder --chown=www-data:www-data /build/podnebnik/static/frontend /app/static/frontend
 
 ENTRYPOINT ["circusd", "circus.ini"]
