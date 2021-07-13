@@ -36,7 +36,9 @@ INSTALLED_APPS = [
     'wagtail.search',
     'wagtail.admin',
     'wagtail.core',
+    'wagtail.locales',
     'wagtail.contrib.table_block',
+    'wagtail.contrib.simple_translation',
 
     'modelcluster',
     'taggit',
@@ -52,6 +54,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -73,6 +76,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.i18n',
                 'django.contrib.messages.context_processors.messages',
             ],
         },
@@ -156,10 +160,18 @@ LOGGING = {
     }
 }
 
+# Default auto field
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+
 # Wagtail
 
 WAGTAIL_SITE_NAME = 'Podnebnik'
 
-WAGTAIL_ROOT_PATH = '/podnebnik'
-
 WAGTAIL_ALLOW_UNICODE_SLUGS = False
+
+WAGTAIL_CONTENT_LANGUAGES = [
+    ('sl', "Slovenian"),
+    ('en', "English"),
+]
