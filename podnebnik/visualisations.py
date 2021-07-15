@@ -12,7 +12,7 @@ class VisualisationData:
 
 
 def get_emissions_data() -> VisualisationData:
-    package: Package = Package('https://github.com/podnebnik/data/raw/master/emissions.zip', innerpath='datapackage.yaml')
+    package: Package = Package('https://github.com/podnebnik/data/raw/master/packages/emissions.zip', innerpath='datapackage.yaml')
     resource: Resource = package.get_resource('historical_emissions')
     return VisualisationData(id='emissions-data', data=read_frictionless_resource_data(resource))
 
