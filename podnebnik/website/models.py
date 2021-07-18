@@ -3,7 +3,7 @@ import itertools
 from django.db import models
 
 from wagtail.core import blocks
-from wagtail.core.models import Page
+from wagtail.core.models import Page, Locale
 from wagtail.core.fields import RichTextField, StreamField
 from wagtail.admin.edit_handlers import StreamFieldPanel, FieldPanel, MultiFieldPanel
 from wagtail.images.edit_handlers import ImageChooserPanel
@@ -76,23 +76,7 @@ class HomePage(Page):
     def get_context(self, request):
         context = super().get_context(request)
 
-        # context["articles"] = ArticlePage.objects.live()
-        context["articles"] = [
-            ("CO₂ and Greenhouse Gas Emissions", ["Greenhouse Gas Emissions"], "4. julij 2021"),
-            ("Outdoor Air Pollution", ["Greenhouse Gas Emissions", "Pollution"], "1. julij 2021"),
-            ("Age Structure", ["Population"], "23. junij 2021"),
-            ("Access to Energy", ["Energy"], "12. junij 2021"),
-            ("Ozone Layer", ["Greenhouse Gas Emissions"], "4. junij 2021"),
-            ("Water Use and Stress", ["Environment", "Water"], "29. maj 2021"),
-            ("Environmental impacts of food production", ["Environment"], "4. maj 2021"),
-            ("Forests and Deforestation", ["Environment"], "19. april 2021"),
-            ("Indoor Air Pollution", ["Greenhouse Gas Emissions", "Pollution"], "1. april 2021"),
-            ("Renewable Energy", ["Energy"], "17. marec 2021"),
-            ("Fossil Fuels", ["Energy"], "16. marec 2021"),
-            ("Air Pollution", ["Greenhouse Gas Emissions", "Pollution"], "15. marec 2021"),
-            ("Plastic Pollution", ["Energy", "Pollution"], "2. februar 2021"),
-            ("World Population Growth", ["Population"], "22. januar 2021"),
-        ]
+        context["articles"] = ArticlePage.objects.filter(locale=Locale.get_active()).live()
 
         return context
 

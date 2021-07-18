@@ -9,8 +9,8 @@
     <div class="columns is-multiline">
         <div class="column is-7-desktop is-offset-3-desktop">
             <div class="lead">{{ page.lead|richtext }}</div>
-            {% for title, categories, date in articles %}
-            {% include 'website/pages/home-article-card.html' with title=title categories=categories date=date %}
+            {% for article in articles %}
+            {% include 'website/pages/home-article-card.html' %}
             {% endfor %}
         </div>
     </div>
