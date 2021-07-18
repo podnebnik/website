@@ -1,4 +1,7 @@
-from .base import *
+from pathlib import Path
+from .base import * # noqa
+from .base import BASE_DIR
+
 
 DEBUG = True
 
@@ -11,6 +14,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': Path(BASE_DIR, 'db.sqlite3'),
     }
 }
