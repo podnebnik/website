@@ -1,0 +1,18 @@
+{% extends 'website/pages/base.html' %}
+
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block title %}{{ page.title }}{% endblock %}
+
+{% block content %}
+<div class="container home">
+    <div class="columns is-multiline">
+        <div class="column is-7-desktop is-offset-3-desktop">
+            {% if page.intro %}<div class="lead">{{ page.intro|richtext }}</div>{% endif %}
+            {% for article in articles %}
+            {% include 'website/pages/home-article-card.html' %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
