@@ -18,7 +18,7 @@
     <header>
         <nav class="navbar" role="navigation" aria-label="main navigation">
             <div class="navbar-brand">
-                <a class="navbar-item" href="/">
+                <a class="navbar-item" href="/{{ LANGUAGE_CODE }}/">
                     <img src="{% static 'images/logo.png' %}" alt="Podnebnik">
                 </a>
                 <a id="menuToggle" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="mainMenu">
@@ -30,7 +30,7 @@
 
             <div id="mainMenu" class="navbar-menu">
                 <div class="navbar-end">
-                    {% with root=current_site.root_page %}
+                    {% with root=current_site.root_page.localized %}
                     {% for item in root.get_children.live %}
                     {% if item.show_in_menus %}
                     <a class="navbar-item {% if item.slug in request.path %} is-active {% endif %}" href="{% pageurl item.localized %}">{{ item.title }}</a>
