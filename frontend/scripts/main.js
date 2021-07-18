@@ -26,6 +26,6 @@ feather.replace()
 
 import { emissionsChart } from "./fsharp/src/Visualizations/EmissionsChart.fs"
 
-window.Components = {
+window.Visualisations = {
     emissionsChart: emissionsChart
 }

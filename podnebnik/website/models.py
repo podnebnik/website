@@ -37,7 +37,7 @@ class ImageBlock(blocks.StructBlock):
 class VisualisationBlock(blocks.StructBlock):
 
     def get_visualization_choices():
-        return [(id, name) for (id, name, _) in podnebnik.visualisations.VISUALISATIONS]
+        return [(visualisation.id, visualisation.name) for visualisation in podnebnik.visualisations.VISUALISATIONS]
 
     visualisation = blocks.ChoiceBlock(choices=get_visualization_choices)
     caption = blocks.RichTextBlock(required=False, features=['bold', 'italic', 'link', 'document-link'])
@@ -111,19 +111,33 @@ class ArticlePage(Page):
     def get_context(self, request):
         context = super().get_context(request)
 
-        context["visualisations"] = [
-            {'id': '{}-visualisation-{}'.format(el.value["visualisation"], i), 'template': 'visualisations/{}.html'.format(el.value["visualisation"])}
+        visualisations_dict = {
+            visualisation.id: visualisation
+            for visualisation
+            in podnebnik.visualisations.VISUALISATIONS
+        }
+
+        visualisations = [
+            {'id': '{}-visualisation-{}'.format(el.value["visualisation"], i),
+             'function': visualisations_dict[el.value["visualisation"]].function,
+             'args': visualisations_dict[el.value["visualisation"]].args}
             for (i, el)
             in enumerate(self.body) if el.block_type == "visualisation"
         ]
 
-        visualisations_data_functions_dict = {id: data_function for (id, _, data_function) in podnebnik.visualisations.VISUALISATIONS if data_function is not None}
+        visualisations_data_functions_dict = {
+            visualisation.id: visualisation.data
+            for visualisation
+            in podnebnik.visualisations.VISUALISATIONS
+            if visualisation.data is not None}
+
         visualisations_data_functions = set(itertools.chain.from_iterable([
             visualisations_data_functions_dict.get(visualisation, [])
             for visualisation
             in set([el.value["visualisation"] for el in self.body if el.block_type == "visualisation"])
         ]))
 
+        context["visualisations"] = visualisations
         context["visualisations_data"] = [f() for f in visualisations_data_functions]
 
         return context

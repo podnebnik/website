@@ -25,7 +25,7 @@
 {% endfor %}
 
 {% for visualisation in visualisations %}
-{% include visualisation.template with id=visualisation.id %}
+<script>Visualisations.{{ visualisation.function }}("{{ visualisation.id }}", {% for arg in visualisation.args %}"{{ arg }}"{% if not forloop.last %}, {% endif %}{% endfor %})</script>
 {% endfor %}
 
 {% endblock %}

@@ -6,10 +6,10 @@
         {% include_block item %}
     </figure>
 {% elif item.block_type == 'visualisation' %}
-    <div id="{{ item.value.visualisation }}-visualisation-{{ forloop.counter0 }}"></div>
-    {% if item.value.caption %}
-    <div class="caption">{{ item.value.caption }}</div>
-    {% endif %}
+    <div class="visualisation">
+        <div id="{{ item.value.visualisation }}-visualisation-{{ forloop.counter0 }}"></div>
+        {% if item.value.caption %}<div class="caption">{{ item.value.caption }}</div>{% endif %}
+    </div>
 {% elif item.block_type == 'table' %}
     <div class="table-container">
         {% include_block item %}
