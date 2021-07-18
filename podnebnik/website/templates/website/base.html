@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="sl">
 {% load static i18n wagtailcore_tags %}
+{% wagtail_site as current_site %}
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -29,15 +30,14 @@
 
             <div id="mainMenu" class="navbar-menu">
                 <div class="navbar-end">
-                    <a class="navbar-item" href="/">
-                        O projektu
-                    </a>
-                    <a class="navbar-item" href="/faq/">
-                        FAQ
-                    </a>
-                    <a class="navbar-item" href="/podpri/">
-                        Podpri
-                    </a>
+                    {% with root=current_site.root_page %}
+                    {% for item in root.get_children.live %}
+                    {% if item.show_in_menus %}
+                    <a class="navbar-item {% if item.slug in request.path %} is-active {% endif %}" href="{% pageurl item.localized %}">{{ item.title }}</a>
+                    {% endif %}
+                    {% endfor %}
+                    {% endwith %}
+
                     {% if page %}
                         <div class="dropdown is-right" id="language-selector">
                             <div class="dropdown-trigger">
