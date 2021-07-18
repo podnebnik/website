@@ -2,8 +2,8 @@
     "private": true,
     "scripts": {
         "postinstall": "dotnet tool restore",
-        "start": "dotnet fable watch frontend/scripts/components/src --sourceMaps --run webpack serve",
-        "build": "dotnet fable frontend/scripts/components/src --run webpack --mode production"
+        "start": "dotnet fable watch frontend/scripts/fsharp/src --sourceMaps --run webpack serve",
+        "build": "dotnet fable frontend/scripts/fsharp/src --run webpack --mode production"
     },
     "browserslist": [
         "defaults"
