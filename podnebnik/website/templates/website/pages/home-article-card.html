@@ -1,16 +1,16 @@
+{% load wagtailcore_tags %}
+
 <div class="card">
-    <a href="./prvi-clanek/">
+    <a href="{% pageurl article.localized %}">
         <div class="card-content">
-            <p class="title">{{ title }}</p>
-            <p class="subtitle">{% lorem 20 w random %}</p>
+            <p class="title">{{ article.title }}</p>
+            <div class="subtitle">{{ article.blurb|richtext }}</div>
         </div>
         <footer class="card-footer">
             <div class="card-footer__categories">
-            {% for category in categories %}
-            <span class="tag">{{ category }}</span>
-            {% endfor %}
+            <span class="tag">Category</span>
             </div>
-            <div class="card-footer__date">{{ date }}</div>
+            <div class="card-footer__date">{{ article.first_published_at|date:"j. F Y" }}</div>
         </footer>
     </a>
 </div>

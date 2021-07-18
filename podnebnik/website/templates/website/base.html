@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="sl">
-{% load static %}
+{% load static i18n wagtailcore_tags %}
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -38,6 +38,38 @@
                     <a class="navbar-item" href="/podpri/">
                         Podpri
                     </a>
+                    {% if page %}
+                        <div class="dropdown is-right" id="language-selector">
+                            <div class="dropdown-trigger">
+                                <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                                    {% get_language_info for LANGUAGE_CODE as current_lang %}
+                                    <span class="icon"><i data-feather="globe"></i></span>
+                                    <span>{{ current_lang.name_local }}</span>
+                                    <span class="icon"><i data-feather="chevron-down"></i></span>
+                                </button>
+                            </div>
+                            <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                                <div class="dropdown-content">
+                                    {% for language_code, language_name in LANGUAGES %}
+                                        {% if language_code != LANGUAGE_CODE %}
+                                        {% get_language_info for language_code as lang %}
+                                        {% language language_code %}
+                                        {% if page.localized == page %}
+                                        <a class="dropdown-item" href="/{{ language_code }}/" rel="alternate" hreflang="{{ language_code }}">
+                                            {{ lang.name_local }}
+                                        </a>
+                                        {% else %}
+                                        <a class="dropdown-item" href="{% pageurl page.localized %}" rel="alternate" hreflang="{{ language_code }}">
+                                            {{ lang.name_local }}
+                                        </a>
+                                        {% endif %}
+                                        {% endlanguage %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </nav>
