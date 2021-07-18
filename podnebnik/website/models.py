@@ -129,6 +129,24 @@ class ArticlePage(Page):
         return context
 
 
+class ArticleListingPage(Page):
+
+    intro = RichTextField(null=True, blank=True)
+
+    template = "website/pages/article-listing.html"
+
+    content_panels = Page.content_panels + [
+        FieldPanel("intro"),
+    ]
+
+    def get_context(self, request):
+        context = super().get_context(request)
+
+        context["articles"] = ArticlePage.objects.filter(locale=Locale.get_active()).live()
+
+        return context
+
+
 class GeneralPage(Page):
 
     body = StreamField(MixedContentBlock())
