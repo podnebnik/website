@@ -171,6 +171,8 @@ WAGTAIL_SITE_NAME = 'Podnebnik'
 
 WAGTAIL_ALLOW_UNICODE_SLUGS = False
 
+WAGTAIL_I18N_ENABLED = True
+
 WAGTAIL_CONTENT_LANGUAGES = [
     ('sl', "Slovenian"),
     ('en', "English"),
