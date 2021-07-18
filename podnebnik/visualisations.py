@@ -5,6 +5,9 @@ from frictionless import Package, Resource
 from podnebnik.utils import read_frictionless_resource_data
 
 
+# -----------------------------------------------------------------------------
+# Visualisations data
+
 @dataclass
 class VisualisationData:
     id: str
@@ -17,7 +20,34 @@ def get_emissions_data() -> VisualisationData:
     return VisualisationData(id='emissions-data', data=read_frictionless_resource_data(resource))
 
 
+# -----------------------------------------------------------------------------
+# Visualisations
+
+@dataclass
+class Visualisation:
+    # Unique ID across all the visualisations
+    id: str
+    # User friendly visualisation name
+    name: str
+    # JavaScript function available on the window (e.g. emissionsChart for window.Visualistaions.emissionsChart)
+    function: str
+    # A list of arguments for the JavaScript function
+    args: list[str]
+    # A list of functions returning the VisualisationData objects to be embeded on the page
+    data: list[VisualisationData]
+
+
 VISUALISATIONS = [
-    ("emissions-area", "Area emissions", [get_emissions_data]),
-    ("emissions-columns", "Columns emissions", [get_emissions_data]),
+    Visualisation(
+        id="emissions-area",
+        name="Area emissions",
+        function="emissionsChart",
+        args=["area", "500", "emissions-data"],
+        data=[get_emissions_data]),
+    Visualisation(
+        id="emissions-columns",
+        name="Columns emissions",
+        function="emissionsChart",
+        args=["columns", "400", "emissions-data"],
+        data=[get_emissions_data]),
 ]
