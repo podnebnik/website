@@ -24,7 +24,7 @@ feather.replace()
 
 // Visualisations
 
-import { emissionsChart } from "./components/src/Components/EmissionsChart.fs"
+import { emissionsChart } from "./fsharp/src/Visualizations/EmissionsChart.fs"
 
 window.Components = {
     emissionsChart: emissionsChart
