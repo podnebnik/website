@@ -5,6 +5,7 @@
   <ItemGroup>
     <Compile Include="Utils.fs" />
     <Compile Include="Highcharts.fs" />
+    <Compile Include="Visualisations/ElectricityChart.fs" />
     <Compile Include="Visualisations/EmissionsChart.fs" />
   </ItemGroup>
   <ItemGroup>
