@@ -56,7 +56,20 @@ let electricityChart elementId chartKind height dataId =
         |> Array.map (fun (year, total, energetika_ljubljana, energetika_maribor, teb, test, tetol, tet, energetika_celje, enos, m_energetika, petrol_energetika, other, total_individual, residual, target_2030) ->
             { Year = year
               Total = total
+              EnergetikaLjubljana = energetika_ljubljana
+              EnergetikaMaribor = energetika_maribor
+              Teb = teb
+              Test = test
+              Tetol = tetol
+              Tet = tet
+              EnergetikaCelje = energetika_celje
+              Enos = enos
+              MEnergetika = m_energetika
+              PetrolEnergetika = petrol_energetika
               Other = other
+              TotalIndividual = total_individual
+              Residual = residual
+              Target2030 = target_2030
             } )
 
     let series =
