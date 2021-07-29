@@ -8,7 +8,6 @@ open Utils
 
 type DataPoint = {
     Year : int
-    Total : float
     EnergetikaLjubljana : float option
     EnergetikaMaribor : float option
     Teb : float option
@@ -22,37 +21,39 @@ type DataPoint = {
     Other : float option
     TotalIndividual : float option
     Residual : float option
+    Total : float option
     Target2030 : float option
 }
 
 type Metric = {
     Name : string
     Color : string
-    Selector : DataPoint -> float option
+    DataSelector : DataPoint -> float option
 }
 
 let metrics = [|
-    { Name = "Energetika Ljubljana" ; Color = "" ; Selector = fun dp -> dp.EnergetikaLjubljana }
-    { Name = "Energetika Maribor" ; Color = "" ; Selector = fun dp -> dp.EnergetikaMaribor }
-    { Name = "Teb" ; Color = "" ; Selector = fun dp -> dp.Teb }
-    { Name = "Test" ; Color = "" ; Selector = fun dp -> dp.Test }
-    { Name = "Tetol" ; Color = "" ; Selector = fun dp -> dp.Tetol }
-    { Name = "Tet" ; Color = "" ; Selector = fun dp -> dp.Tet }
-    { Name = "Energetika Celje" ; Color = "" ; Selector = fun dp -> dp.EnergetikaCelje }
-    { Name = "Enos" ; Color = "" ; Selector = fun dp -> dp.Enos }
-    { Name = "M-Energetika" ; Color = "" ; Selector = fun dp -> dp.MEnergetika }
-    { Name = "Petrol Energetika" ; Color = "" ; Selector = fun dp -> dp.PetrolEnergetika }
-    { Name = "Other" ; Color = "" ; Selector = fun dp -> dp.Other }
-    { Name = "Total Individual" ; Color = "" ; Selector = fun dp -> dp.TotalIndividual }
-    { Name = "Residual" ; Color = "" ; Selector = fun dp -> dp.Residual }
-    { Name = "Target 2030" ; Color = "" ; Selector = fun dp -> dp.Target2030 }
+    { Name = "Energetika Ljubljana" ; Color = "" ; DataSelector = fun dp -> dp.EnergetikaLjubljana }
+    { Name = "Energetika Maribor" ; Color = "" ; DataSelector = fun dp -> dp.EnergetikaMaribor }
+    { Name = "Teb" ; Color = "" ; DataSelector = fun dp -> dp.Teb }
+    { Name = "Test" ; Color = "" ; DataSelector = fun dp -> dp.Test }
+    { Name = "Tetol" ; Color = "" ; DataSelector = fun dp -> dp.Tetol }
+    { Name = "Tet" ; Color = "" ; DataSelector = fun dp -> dp.Tet }
+    { Name = "Energetika Celje" ; Color = "" ; DataSelector = fun dp -> dp.EnergetikaCelje }
+    { Name = "Enos" ; Color = "" ; DataSelector = fun dp -> dp.Enos }
+    { Name = "M-Energetika" ; Color = "" ; DataSelector = fun dp -> dp.MEnergetika }
+    { Name = "Petrol Energetika" ; Color = "" ; DataSelector = fun dp -> dp.PetrolEnergetika }
+    { Name = "Other" ; Color = "" ; DataSelector = fun dp -> dp.Other }
+    { Name = "Total Individual" ; Color = "" ; DataSelector = fun dp -> dp.TotalIndividual }
+    { Name = "Residual" ; Color = "" ; DataSelector = fun dp -> dp.Residual }
+    { Name = "Total" ; Color = "" ; DataSelector = fun dp -> dp.Total }
+    { Name = "Target 2030" ; Color = "" ; DataSelector = fun dp -> dp.Target2030 }
 |]
 
 let electricityChart elementId chartKind height dataId =
 
     let data =
         getDataFromScriptElement dataId
-        |> Json.parseNativeAs<(int * float * float option * float option * float option * float option * float option * float option * float option * float option * float option * float option * float option * float option * float option * float option ) array>
+        |> Json.parseNativeAs<(int * float option * float option * float option * float option * float option * float option * float option * float option * float option * float option * float option * float option * float option * float option * float option ) array>
         |> Array.map (fun (year, total, energetika_ljubljana, energetika_maribor, teb, test, tetol, tet, energetika_celje, enos, m_energetika, petrol_energetika, other, total_individual, residual, target_2030) ->
             { Year = year
               Total = total
@@ -75,14 +76,8 @@ let electricityChart elementId chartKind height dataId =
     let series =
         metrics
         |> Array.map (fun metric ->
-            pojo
                 {| name = metric.Name
-                   data = data |> Array.map (
-                            fun dp ->
-                                match metric.Selector dp with
-                                    | Some(dp) -> dp
-                                    | None -> 0.0
-                   )
+                   data = data |> Array.map (fun dp -> metric.DataSelector dp |> valueOrNull)
                 |})
 
     let chartOptions =
