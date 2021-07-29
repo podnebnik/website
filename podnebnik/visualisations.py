@@ -16,7 +16,7 @@ class VisualisationData:
 def get_electricity_data() -> VisualisationData:
     package: Package = Package('https://github.com/podnebnik/data/raw/master/packages/electricity.zip', innerpath='datapackage.yaml')
     resource: Resource = package.get_resource('electricity.emissions')
-    return VisualisationData(id='emissions-data', data=read_frictionless_resource_data(resource))
+    return VisualisationData(id='electricity-data', data=read_frictionless_resource_data(resource))
 
 def get_emissions_data() -> VisualisationData:
     package: Package = Package('https://github.com/podnebnik/data/raw/master/packages/emissions.zip', innerpath='datapackage.yaml')
