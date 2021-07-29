@@ -32,7 +32,20 @@ type Metric = {
 }
 
 let metrics = [|
+    { Name = "Energetika Ljubljana" ; Color = "" ; Selector = fun dp -> dp.EnergetikaLjubljana }
+    { Name = "Energetika Maribor" ; Color = "" ; Selector = fun dp -> dp.EnergetikaMaribor }
+    { Name = "Teb" ; Color = "" ; Selector = fun dp -> dp.Teb }
+    { Name = "Test" ; Color = "" ; Selector = fun dp -> dp.Test }
+    { Name = "Tetol" ; Color = "" ; Selector = fun dp -> dp.Tetol }
+    { Name = "Tet" ; Color = "" ; Selector = fun dp -> dp.Tet }
+    { Name = "Energetika Celje" ; Color = "" ; Selector = fun dp -> dp.EnergetikaCelje }
+    { Name = "Enos" ; Color = "" ; Selector = fun dp -> dp.Enos }
+    { Name = "M-Energetika" ; Color = "" ; Selector = fun dp -> dp.MEnergetika }
+    { Name = "Petrol Energetika" ; Color = "" ; Selector = fun dp -> dp.PetrolEnergetika }
     { Name = "Other" ; Color = "" ; Selector = fun dp -> dp.Other }
+    { Name = "Total Individual" ; Color = "" ; Selector = fun dp -> dp.TotalIndividual }
+    { Name = "Residual" ; Color = "" ; Selector = fun dp -> dp.Residual }
+    { Name = "Target 2030" ; Color = "" ; Selector = fun dp -> dp.Target2030 }
 |]
 
 let electricityChart elementId chartKind height dataId =
