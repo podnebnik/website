@@ -46,7 +46,7 @@ VISUALISATIONS = [
         id="electricity-emissions",
         name="Electricity emissions",
         function="electricityChart",
-        args=["column", "500", "electricity-data"],
+        args=["columns", "500", "electricity-data"],
         data=[get_electricity_data]),
     Visualisation(
         id="emissions-area",
