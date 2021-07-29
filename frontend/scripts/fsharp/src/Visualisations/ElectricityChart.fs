@@ -52,7 +52,7 @@ let electricityChart elementId chartKind height dataId =
 
     let data =
         getDataFromScriptElement dataId
-        |> Json.parseNativeAs<(int * float * float * float * float * float * float * float * float * float * float * float * float * float * float * float) array>
+        |> Json.parseNativeAs<(int * float * float option * float option * float option * float option * float option * float option * float option * float option * float option * float option * float option * float option * float option * float option ) array>
         |> Array.map (fun (year, total, energetika_ljubljana, energetika_maribor, teb, test, tetol, tet, energetika_celje, enos, m_energetika, petrol_energetika, other, total_individual, residual, target_2030) ->
             { Year = year
               Total = total
