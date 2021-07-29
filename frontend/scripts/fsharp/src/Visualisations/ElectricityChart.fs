@@ -77,7 +77,12 @@ let electricityChart elementId chartKind height dataId =
         |> Array.map (fun metric ->
             pojo
                 {| name = metric.Name
-                   data = data |> Array.map (fun dp -> metric.Selector dp)
+                   data = data |> Array.map (
+                            fun dp ->
+                                match metric.Selector dp with
+                                    | Some(dp) -> dp
+                                    | None -> 0.0
+                   )
                 |})
 
     let chartOptions =
