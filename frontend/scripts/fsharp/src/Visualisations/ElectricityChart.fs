@@ -9,7 +9,20 @@ open Utils
 type DataPoint = {
     Year : int
     Total : float
-    Other : float
+    EnergetikaLjubljana : float option
+    EnergetikaMaribor : float option
+    Teb : float option
+    Test : float option
+    Tetol : float option
+    Tet : float option
+    EnergetikaCelje : float option
+    Enos : float option
+    MEnergetika : float option
+    PetrolEnergetika : float option
+    Other : float option
+    TotalIndividual : float option
+    Residual : float option
+    Target2030 : float option
 }
 
 type Metric = {
