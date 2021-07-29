@@ -15,3 +15,8 @@ type JsTimestamp = int64
 
 [<Emit("$0.getTime()")>]
 let jsTime (x: System.DateTime) : JsTimestamp = jsNative
+
+let valueOrNull value =
+    match value with
+    | Some value -> value :> obj  // cast to object to satisfy the typechecking of null below
+    | None -> null

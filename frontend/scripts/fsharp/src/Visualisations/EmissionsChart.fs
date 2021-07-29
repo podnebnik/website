@@ -22,18 +22,18 @@ type DataPoint = {
 type Metric = {
     Name : string
     Color : string
-    Selector : DataPoint -> float
+    DataSelector : DataPoint -> float
 }
 
 let metrics = [|
-    { Name = "Other" ; Color = "" ; Selector = fun dp -> dp.Other }
-    { Name = "Waste" ; Color = "" ; Selector = fun dp -> dp.Waste }
-    { Name = "Industrial" ; Color = "" ; Selector = fun dp -> dp.Industrial }
-    { Name = "Agriculture" ; Color = "" ; Selector = fun dp -> dp.Agriculture }
-    { Name = "Household fuels" ; Color = "" ; Selector = fun dp -> dp.HouseholdFuels }
-    { Name = "Industrial fuels" ; Color = "" ; Selector = fun dp -> dp.IndustrialFuels }
-    { Name = "Transportation" ; Color = "" ; Selector = fun dp -> dp.Transportation }
-    { Name = "Energy" ; Color = "" ; Selector = fun dp -> dp.Energy }
+    { Name = "Other" ; Color = "" ; DataSelector = fun dp -> dp.Other }
+    { Name = "Waste" ; Color = "" ; DataSelector = fun dp -> dp.Waste }
+    { Name = "Industrial" ; Color = "" ; DataSelector = fun dp -> dp.Industrial }
+    { Name = "Agriculture" ; Color = "" ; DataSelector = fun dp -> dp.Agriculture }
+    { Name = "Household fuels" ; Color = "" ; DataSelector = fun dp -> dp.HouseholdFuels }
+    { Name = "Industrial fuels" ; Color = "" ; DataSelector = fun dp -> dp.IndustrialFuels }
+    { Name = "Transportation" ; Color = "" ; DataSelector = fun dp -> dp.Transportation }
+    { Name = "Energy" ; Color = "" ; DataSelector = fun dp -> dp.Energy }
 |]
 
 let emissionsChart elementId chartKind height emissionsDataId =
@@ -59,7 +59,7 @@ let emissionsChart elementId chartKind height emissionsDataId =
         |> Array.map (fun metric ->
             pojo
                 {| name = metric.Name
-                   data = data |> Array.map (fun dp -> metric.Selector dp)
+                   data = data |> Array.map (fun dp -> metric.DataSelector dp)
                 |})
 
     let columnChartOptions =
