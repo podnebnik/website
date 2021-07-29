@@ -28,7 +28,7 @@ type DataPoint = {
 type Metric = {
     Name : string
     Color : string
-    Selector : DataPoint -> float
+    Selector : DataPoint -> float option
 }
 
 let metrics = [|
