@@ -1,7 +1,11 @@
 .text-content
+    font-size: $text-size
+    font-family: $family-text
+    line-height: 1.666
+
     table
         @extend .table
-        margin: $paragraph-margin*2 0
+        margin: $paragraph-margin 0
 
         caption
             @extend .caption
@@ -10,8 +14,16 @@
         @extend .list-bulleted
 
     h2, h3, h4
+        font-family: $family-primary
         margin-top: 0
         padding-top: math.div($gap,2)
 
     p
         margin-bottom: $paragraph-margin
+
+    iframe
+        margin-bottom: $paragraph-margin
+
+    .visualisation
+        background-color: #fff
+        padding: $gap

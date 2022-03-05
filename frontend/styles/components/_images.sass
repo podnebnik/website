@@ -3,20 +3,78 @@ img
     height: auto
 
 .image
-    margin: 0 0 $paragraph-margin 0
+    margin: 0 auto $paragraph-margin auto
+    text-align: center
+
+    img
+        border-radius: $radius
 
     .caption--image
         margin-top: math.div($gap,8)
+        text-align: right
+        font-style: italic
+
+        @include until($desktop)
+            text-align: left
+
+.image--left,
+.image--right
+    display: flex
+
+    img
+        width: 66%
+
+    .caption--image
+        width: 33%
+        margin-top: 0
+        border: solid 1px $border
+        display: flex
+        align-items: center
+        color: $text
+        font-style: italic
+        font-weight: bold
+        font-size: $size-5
+        padding: $gap
+
+    @include until($desktop)
+        flex-direction: column
+
+        img
+            width: 100%
+
+        .caption--image
+            width: 100%
 
 .image--left
-    display: inline-block
-    float: left
-    margin: math.div($gap,4) math.div($gap,4) math.div($gap,4) 0
+    .caption--image
+        border-radius: 0 $radius $radius 0
+        border-left: none
+        margin-left: $gap
 
 .image--right
-    display: inline-block
-    float: right
-    margin: math.div($gap,4) 0 math.div($gap,4) math.div($gap,4)
+    flex-direction: row-reverse
+
+    @include until($desktop)
+        flex-direction: column
+
+    .caption--image
+        border-radius: $radius 0 0 $radius
+        border-right: none
+        margin-right: $gap
+        text-align: left
+
+.image--left,
+.image--right
+    .caption--image
+        @include until($desktop)
+            border: none
+            text-align: right
+            font-style: italic
+            font-weight: normal
+            font-size: $size-7
+            color: $text-light
+            padding: 0
+            margin: math.div($gap, 4) 0 0 0
 
 .image--center
     display: block
