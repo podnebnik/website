@@ -6,7 +6,7 @@
 
     .column
         position: relative
-        padding-top: $gap / 2
+        padding-top: math.div($gap,2)
         border-top: solid 4px $primary
         display: flex
         font-size: $size-7
@@ -22,7 +22,7 @@
 
     .social
         a
-            margin-right: $gap/4
+            margin-right: math.div($gap,4)
 
         img
             height: 20px
@@ -30,7 +30,7 @@
 
         @include until($mobile)
             position: absolute
-            top: $gap/2
+            top: math.div($gap,2)
             right: 0
 
             img

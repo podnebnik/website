@@ -13,6 +13,7 @@ psycopg2-binary = "*"
 pillow = "*"
 frictionless = "*"
 wagtail = "*"
+simpleeval = "*"
 
 [requires]
 python_version = "3"
