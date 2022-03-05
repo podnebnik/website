@@ -1,14 +1,6 @@
 import feather from "feather-icons"
 import "../styles/main.sass"
 
-// Language selector
-
-let languageSelector = document.getElementById("language-selector")
-
-languageSelector.addEventListener('click', function () {
-    languageSelector.classList.toggle("is-active")
-})
-
 // Slide menu
 
 let menuToggle = document.getElementById("menuToggle")
