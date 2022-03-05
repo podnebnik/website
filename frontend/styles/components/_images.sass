@@ -6,17 +6,17 @@ img
     margin: 0 0 $paragraph-margin 0
 
     .caption--image
-        margin-top: $gap/8
+        margin-top: math.div($gap,8)
 
 .image--left
     display: inline-block
     float: left
-    margin: $gap/4 $gap/4 $gap/4 0
+    margin: math.div($gap,4) math.div($gap,4) math.div($gap,4) 0
 
 .image--right
     display: inline-block
     float: right
-    margin: $gap/4 0 $gap/4 $gap/4
+    margin: math.div($gap,4) 0 math.div($gap,4) math.div($gap,4)
 
 .image--center
     display: block
