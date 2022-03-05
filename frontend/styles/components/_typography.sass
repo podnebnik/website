@@ -18,15 +18,6 @@ h1, .h1
         font-size: $size-1*0.7
 
 h2, .h2
-    font-size: $size-2
-
-    @include until($widescreen)
-        font-size: $size-2*0.9
-
-    @include until($desktop)
-        font-size: $size-2*0.8
-
-h3, .h3
     font-size: $size-3
 
     @include until($widescreen)
@@ -35,7 +26,7 @@ h3, .h3
     @include until($desktop)
         font-size: $size-3*0.8
 
-h4, .h4
+h3, .h3
     font-size: $size-4
 
     @include until($widescreen)
@@ -44,13 +35,26 @@ h4, .h4
     @include until($desktop)
         font-size: $size-4*0.8
 
-.lead
-    font-size: $size-4
-    line-height: 1.4
-    font-style: italic
+h4, .h4
+    font-size: $size-5
+
+    @include until($widescreen)
+        font-size: $size-5*0.9
 
     @include until($desktop)
-        font-size: $size-large*0.8
+        font-size: $size-5*0.8
+
+.lead
+    font-family: $family-text
+    font-weight: bold
+    font-size: $size-large*0.8
+    line-height: 1.6
+    padding: $paragraph-margin 0
+    border-top: solid 1px $border
+    border-bottom: solid 1px $border
+
+    @include from($tablet)
+        font-size: $size-5
 
 .caption
     color: $text-light
@@ -70,9 +74,14 @@ hr
     height: 1px
 
 blockquote
-    border-left: solid 4px $border
-    padding-left: math.div($gap,2)
-    margin-bottom: $paragraph-margin
-    margin-left: $paragraph-margin
-    color: $text-light
     font-style: italic
+    font-weight: bold
+    font-size: $size-large*0.8
+    line-height: 1.6
+    border-left: 2px solid $primary
+    padding-left: $gap
+    margin-bottom: $paragraph-margin
+
+    @include from($tablet)
+        margin-left: -34px
+        font-size: $size-5

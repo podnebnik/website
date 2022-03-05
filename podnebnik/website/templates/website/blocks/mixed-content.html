@@ -1,24 +1,34 @@
 {% load wagtailimages_tags wagtailcore_tags %}
 
 {% for item in value %}
-{% if item.block_type == 'video' %}
-    <figure class="image is-16by9">
-        {% include_block item %}
-    </figure>
-{% elif item.block_type == 'visualisation' %}
+{% if item.block_type == 'visualisation' %}
+<div class="column is-10-desktop is-offset-1-desktop is-10-widescreen is-offset-1-widescreen is-8-fullhd is-offset-2-fullhd">
     <div class="visualisation">
         <div id="{{ item.value.visualisation }}-visualisation-{{ forloop.counter0 }}"></div>
         {% if item.value.caption %}<div class="caption">{{ item.value.caption }}</div>{% endif %}
     </div>
-{% elif item.block_type == 'table' %}
-    <div class="table-container">
-        {% include_block item %}
-    </div>
-{% elif item.block_type == 'references' %}
-    <div class="references">
-        {% include_block item %}
-    </div>
+</div>
+{% elif item.block_type == 'image' or item.block_type == 'raw_html' %}
+<div class="column is-10-desktop is-offset-1-desktop is-10-widescreen is-offset-1-widescreen is-8-fullhd is-offset-2-fullhd">
+    {% include_block item %}
+</div>
 {% else %}
-{% include_block item %}
+<div class="column is-10-tablet is-offset-1-tablet is-8-desktop is-offset-2-desktop is-8-widescreen is-offset-2-widescreen is-6-fullhd is-offset-3-fullhd">
+    {% if item.block_type == 'video' %}
+        <figure class="image is-16by9">
+            {% include_block item %}
+        </figure>
+    {% elif item.block_type == 'table' %}
+        <div class="table-container">
+            {% include_block item %}
+        </div>
+    {% elif item.block_type == 'references' %}
+        <div class="references">
+            {% include_block item %}
+        </div>
+    {% else %}
+    {% include_block item %}
+    {% endif %}
+</div>
 {% endif %}
 {% endfor %}

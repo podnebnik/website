@@ -1,24 +1,32 @@
-.navbar
-    @include until($desktop)
-        border-bottom: solid 4px $primary
+.navbar.is-primary
+    $border-height: 9px
 
     margin-bottom: $gap
-
-.navbar-item
-    padding-left: 2rem
-    padding-right: 2rem
 
     img
         max-height: $navbar-height
 
-.navbar-brand
-    @include from($desktop)
-        width: 25%
+    .navbar-end
+        align-items: center
+        padding-right: math.div($gap,2)
 
-.navbar-menu
-    @include from($desktop)
-        border-bottom: solid 4px $primary
+        > a.navbar-item
+            margin: 0 1rem
+            padding: 0
+            line-height: 1
+            color: rgba(255,255,255,0.56)
 
-.navbar-end
-    align-items: flex-end
-    padding-right: math.div($gap,2)
+            &.is-active,
+            &:hover
+                background-color: transparent
+                border-bottom: solid $border-height $secondary
+                margin-top: $border-height
+
+            @include until($desktop)
+                display: inline-block
+                margin-bottom: 1rem
+
+    .navbar-menu
+        background-color: $primary
+
+
