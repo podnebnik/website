@@ -112,7 +112,7 @@ LANGUAGE_CODE = 'sl'
 
 LANGUAGES = [
     ('sl', _('Slovenian')),
-    ('en', _('English')),
+#    ('en', _('English')),
 ]
 
 TIME_ZONE = 'Europe/Ljubljana'
@@ -175,5 +175,5 @@ WAGTAIL_I18N_ENABLED = True
 
 WAGTAIL_CONTENT_LANGUAGES = [
     ('sl', "Slovenian"),
-    ('en', "English"),
+#    ('en', "English"),
 ]
