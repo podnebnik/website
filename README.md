@@ -17,11 +17,15 @@ Pick one of the project configurations: develop.py, devcontainer.py, ...
 
     ln -s develop.py ./podnebnik/settings/__init__.py
 
+Create a super user for the website:
+
+    ./manage.py createsuperuser
+
 Run the django project:
 
     ./manage.py runserver
 
-Run the webpack development server:
+Open a new terminal window and run the webpack development server:
 
     yarn install
     yarn run start
@@ -36,11 +40,7 @@ To use the CMS or Admin go to:
     http://127.0.0.1:8080/cms/
     http://127.0.0.1:8080/admin/
 
-The admin credentials for the included development SQLite database are:
-
-    Username: admin
-    Password: foobar123
-
+To log in, use the credentials created with the `./manage.py createsuperuser` command.
 
 ## Developing a new visualisation
 
