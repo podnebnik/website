@@ -28,13 +28,13 @@ Run the webpack development server:
 
 Point your browser to:
 
-    http://localhost:8080/
+    http://127.0.0.1:8080/
 
 
 To use the CMS or Admin go to:
 
-    http://localhost:8080/cms/
-    http://localhost:8080/admin/
+    http://127.0.0.1:8080/cms/
+    http://127.0.0.1:8080/admin/
 
 The admin credentials for the included development SQLite database are:
 
