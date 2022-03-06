@@ -32,13 +32,13 @@ Open new terminal window and run the webpack development server:
 
 Point your browser to:
 
-    http://127.0.0.1:8000/
+    http://127.0.0.1:8080/
 
 
 To use the CMS or Admin go to:
 
-    http://127.0.0.1:8000/cms/
-    http://127.0.0.1:8000/admin/
+    http://127.0.0.1:8080/cms/
+    http://127.0.0.1:8080/admin/
     
 Use credentials created via `./manage.py createsuperuser`.
 
