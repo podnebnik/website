@@ -27,53 +27,62 @@ type DataPoint =
 type Metric =
     { Name: string
       Color: string
+      Type: string
       DataSelector: DataPoint -> float option }
 
 let metrics =
-    [| { Name = "Energetika Ljubljana"
-         Color = ""
+    [|
+       { Name = "TE Šoštanj"
+         Color = "#662506"
+         Type = "column"
+         DataSelector = fun dp -> dp.Test }
+       { Name = "TE Trbovlje"
+         Color = "#cc4c02"
+         Type = "column"
+         DataSelector = fun dp -> dp.Tet }
+       { Name = "TE Brestanica"
+         Color = "#993404"
+         Type = "column"
+         DataSelector = fun dp -> dp.Teb }
+       { Name = "TE Toplarna Ljubljana"
+         Color = "#ec7014"
+         Type = "column"
+         DataSelector = fun dp -> dp.Tetol }
+       { Name = "Energetika Ljubljana"
+         Color = "#3f007d"
+         Type = "column"
          DataSelector = fun dp -> dp.EnergetikaLjubljana }
        { Name = "Energetika Maribor"
-         Color = ""
+         Color = "#54278f"
+         Type = "column"
          DataSelector = fun dp -> dp.EnergetikaMaribor }
-       { Name = "Teb"
-         Color = ""
-         DataSelector = fun dp -> dp.Teb }
-       { Name = "Test"
-         Color = ""
-         DataSelector = fun dp -> dp.Test }
-       { Name = "Tetol"
-         Color = ""
-         DataSelector = fun dp -> dp.Tetol }
-       { Name = "Tet"
-         Color = ""
-         DataSelector = fun dp -> dp.Tet }
        { Name = "Energetika Celje"
-         Color = ""
+         Color = "#6a51a3"
+         Type = "column"
          DataSelector = fun dp -> dp.EnergetikaCelje }
-       { Name = "Enos"
-         Color = ""
-         DataSelector = fun dp -> dp.Enos }
-       { Name = "M-Energetika"
-         Color = ""
-         DataSelector = fun dp -> dp.MEnergetika }
        { Name = "Petrol Energetika"
-         Color = ""
+         Color = "#807dba"
+         Type = "column"
          DataSelector = fun dp -> dp.PetrolEnergetika }
-       { Name = "Other"
-         Color = ""
-         DataSelector = fun dp -> dp.Other }
-       { Name = "Total Individual"
-         Color = ""
-         DataSelector = fun dp -> dp.TotalIndividual }
-       { Name = "Residual"
-         Color = ""
-         DataSelector = fun dp -> dp.Residual }
-       { Name = "Total"
-         Color = ""
+       { Name = "M-energetika"
+         Color = "#9e9ac8"
+         Type = "column"
+         DataSelector = fun dp -> dp.MEnergetika }
+       { Name = "ENOS"
+         Color = "#bcbddc"
+         Type = "column"
+         DataSelector = fun dp -> dp.Enos }
+       { Name = "Ostalo"
+         Color = "#dadaeb"
+         Type = "column"
+         DataSelector = fun dp -> dp.Residual }  // TODO: temporary until renamed
+       { Name = "Skupaj"
+         Color = "#00441b"
+         Type = "line"
          DataSelector = fun dp -> dp.Total }
-       { Name = "Target 2030"
-         Color = ""
+       { Name = "Cilj 2030"
+         Color = "#66c2a4"
+         Type = "line"
          DataSelector = fun dp -> dp.Target2030 } |]
 
 let electricityChart elementId chartKind height dataId =
@@ -119,7 +128,9 @@ let electricityChart elementId chartKind height dataId =
         metrics
         |> Array.map
             (fun metric ->
-                {| name = metric.Name
+                {| ``type`` = metric.Type
+                   name = metric.Name
+                   color = metric.Color
                    data =
                        data
                        |> Array.map (fun dp -> metric.DataSelector dp |> valueOrNull) |})
@@ -144,12 +155,17 @@ let electricityChart elementId chartKind height dataId =
                        {| title =
                               pojo
                                   {| text = "Emisije [kt CO<sub>2</sub>]"
-                                     useHTML = true |} |}
+                                     useHTML = true |}
+                          reversedStacks = false |}
+               tooltip = pojo {| shared = true
+                                 split = false
+                                 valueDecimals = 1 |}
                series = series |}
 
     let content =
         match chartKind with
         | "columns" -> Highcharts.chart chartOptions
+        | "totals" -> Highcharts.chart chartOptions
         | _ -> failwith (sprintf "Unknown chart kind: %s" chartKind)
 
     ReactDOM.render (content, document.getElementById elementId)
