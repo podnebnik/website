@@ -35,13 +35,13 @@ INSTALLED_APPS = [
     'wagtail.images',
     'wagtail.search',
     'wagtail.admin',
-    'wagtail.core',
-    'wagtail.locales',
+    'wagtail',
     'wagtail.contrib.table_block',
-    'wagtail.contrib.simple_translation',
+    'wagtail.contrib.typed_table_block',
+    'wagtail.contrib.routable_page',
 
-    'modelcluster',
     'taggit',
+    'modelcluster',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -60,7 +60,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
     'wagtail.contrib.redirects.middleware.RedirectMiddleware',
 ]
 
@@ -112,7 +111,7 @@ LANGUAGE_CODE = 'sl'
 
 LANGUAGES = [
     ('sl', _('Slovenian')),
-#    ('en', _('English')),
+    # ('en', _('English')),
 ]
 
 TIME_ZONE = 'Europe/Ljubljana'
@@ -168,12 +167,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 # Wagtail
 
 WAGTAIL_SITE_NAME = 'Podnebnik'
+WAGTAILADMIN_BASE_URL = 'https://podnebnik.org'
 
+WAGTAIL_MODERATION_ENABLED = True
+WAGTAILADMIN_COMMENTS_ENABLED = True
 WAGTAIL_ALLOW_UNICODE_SLUGS = False
 
 WAGTAIL_I18N_ENABLED = True
-
 WAGTAIL_CONTENT_LANGUAGES = [
     ('sl', "Slovenian"),
-#    ('en', "English"),
+    # ('en', "English"),
 ]

@@ -4,10 +4,12 @@
 
 This project uses the following requirements:
 
-- `node`
-- `.NET 6.0`
-- `Python 3.9`
-- `pipenv`
+- `node` https://nodejs.org/en/
+- `.NET 6.0` https://dotnet.microsoft.com/en-us/download
+- `python 3.11` https://www.python.org/
+- `pipenv` https://pipenv.pypa.io/
+
+You can use [pyenv](https://github.com/pyenv/pyenv) to install and manage the python version(s) on your system. Once installed, the pipenv will automatically use it to install the correct python version.
 
 To start developing, first create a python virtual environment, install dependencies and run the server:
 
@@ -41,6 +43,8 @@ To use the CMS or Admin go to:
     http://127.0.0.1:8080/admin/
 
 To log in, use the credentials created with the `./manage.py createsuperuser` command.
+
+> NOTE: The projects requirements may change over time. To keep your development environment up to date, run `pipenv install --dev` and `yarn install` from time to time. If the python version is upgraded as well, please run `pipenv --rm` first to remove the old virtual environment.
 
 ## Developing a new visualisation
 

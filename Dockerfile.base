@@ -1,4 +1,4 @@
-FROM python:3.9-slim
+FROM python:3.11-slim
 
 ENV PYTHONUNBUFFERED 1
 
@@ -7,7 +7,7 @@ ADD . /app/
 RUN mkdir -p /app/logs
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update -y && apt-get install -y nginx libpq5 build-essential python3-dev libpq-dev && \
-    pip3 --disable-pip-version-check --no-cache-dir install install circus==0.17.1 uwsgi==2.0.19.1 pipenv==2020.11.15 && \
+    pip3 --disable-pip-version-check --no-cache-dir install install circus==0.17.1 uwsgi==2.0.21 pipenv==2022.12.19 && \
     apt-get purge -y build-essential python3-dev libpq-dev && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*

@@ -5,8 +5,7 @@ from django.db import models
 from wagtail.core import blocks
 from wagtail.core.models import Page, Locale
 from wagtail.core.fields import RichTextField, StreamField
-from wagtail.admin.edit_handlers import StreamFieldPanel, FieldPanel, MultiFieldPanel
-from wagtail.images.edit_handlers import ImageChooserPanel
+from wagtail.admin.edit_handlers import FieldPanel, MultiFieldPanel
 from wagtail.embeds.blocks import EmbedBlock
 from wagtail.contrib.table_block.blocks import TableBlock
 from wagtail.images.blocks import ImageChooserBlock
@@ -85,7 +84,7 @@ class ArticlePage(Page):
 
     lead = RichTextField(null=True, blank=True)
 
-    body = StreamField(MixedContentBlock(null=True, blank=True))
+    body = StreamField(MixedContentBlock(null=True, blank=True), use_json_field=True)
 
     main_image = models.ForeignKey(
         "wagtailimages.Image",
@@ -101,10 +100,10 @@ class ArticlePage(Page):
 
     content_panels = Page.content_panels + [
         FieldPanel("lead"),
-        StreamFieldPanel("body"),
+        FieldPanel("body"),
         MultiFieldPanel([
             FieldPanel("blurb"),
-            ImageChooserPanel("main_image"),
+            FieldPanel("main_image"),
         ], heading="Promote on homepages"),
     ]
 
@@ -163,10 +162,10 @@ class ArticleListingPage(Page):
 
 class GeneralPage(Page):
 
-    body = StreamField(MixedContentBlock())
+    body = StreamField(MixedContentBlock(), use_json_field=True)
 
     template = "website/pages/general.html"
 
     content_panels = Page.content_panels + [
-        StreamFieldPanel("body"),
+        FieldPanel("body"),
     ]
