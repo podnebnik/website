@@ -135,4 +135,4 @@ let emissionsChart elementId chartKind height emissionsDataId =
         | "columns" -> Highcharts.chart columnChartOptions
         | _ -> failwith (sprintf "Unknown chart kind: %s" chartKind)
 
-    ReactDOM.render (content, document.getElementById elementId)
+    (ReactDOM.createRoot(document.getElementById elementId)).render(content)

@@ -1,5 +1,4 @@
 const path = require("path")
-const webpack = require("webpack")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const { CleanWebpackPlugin } = require("clean-webpack-plugin")
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
@@ -38,19 +37,12 @@ module.exports = (env, argv) => {
                 new MiniCssExtractPlugin(),
                 // new BundleAnalyzerPlugin(),
             ])
-            : plugins.concat([
-                new webpack.HotModuleReplacementPlugin(),
-            ]),
+            : plugins.concat([]),
 
         devServer: {
             port: 8080,
             host: '127.0.0.1',
-            publicPath: PUBLIC_PATH,
             hot: true,
-            overlay: {
-                warnings: true,
-                errors: true
-            },
             proxy: {
                 "/": {
                     target: "http://127.0.0.1:8000",
@@ -61,15 +53,6 @@ module.exports = (env, argv) => {
 
         module: {
             rules: [
-                {
-                    test: /\.fs(x|proj)?$/,
-                    use: {
-                        loader: "fable-loader",
-                        options: {
-                            silent: false
-                        }
-                    }
-                },
                 {
                     test: /\.(js|jsx)$/,
                     exclude: /node_modules/,
@@ -102,13 +85,6 @@ module.exports = (env, argv) => {
                     ]
                 },
                 {
-                    test: /\.(woff|woff2|eot|ttf|otf)$/,
-                    loader: 'file-loader',
-                    options: {
-                        name: '[name].[contenthash].[ext]',
-                    }
-                },
-                {
                     test: /\.(png|svg|jpg|gif)$/,
                     use: [
                         {
@@ -120,7 +96,7 @@ module.exports = (env, argv) => {
                         {
                             loader: 'image-webpack-loader',
                             options: {
-                                disable: ! isProduction,
+                                disable: !isProduction,
                             }
                         }
                     ]

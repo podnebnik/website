@@ -4,9 +4,10 @@
 
 This project uses the following requirements:
 
+- `node`
+- `.NET 6.0`
 - `Python 3.9`
 - `pipenv`
-- `node`
 
 To start developing, first create a python virtual environment, install dependencies and run the server:
 
@@ -33,7 +34,6 @@ Open a new terminal window and run the webpack development server:
 Point your browser to:
 
     http://127.0.0.1:8080/
-
 
 To use the CMS or Admin go to:
 
