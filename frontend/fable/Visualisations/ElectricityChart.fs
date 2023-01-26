@@ -168,4 +168,4 @@ let electricityChart elementId chartKind height dataId =
         | "totals" -> Highcharts.chart chartOptions
         | _ -> failwith (sprintf "Unknown chart kind: %s" chartKind)
 
-    ReactDOM.render (content, document.getElementById elementId)
+    (ReactDOM.createRoot(document.getElementById elementId)).render(content)

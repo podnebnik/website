@@ -16,8 +16,8 @@ feather.replace()
 
 // Visualisations
 
-import { electricityChart } from "./fsharp/src/Visualisations/ElectricityChart.fs"
-import { emissionsChart } from "./fsharp/src/Visualisations/EmissionsChart.fs"
+import { electricityChart } from "../fable/Visualisations/ElectricityChart.fs.js"
+import { emissionsChart } from "../fable/Visualisations/EmissionsChart.fs.js"
 
 window.Visualisations = {
     electricityChart: electricityChart,

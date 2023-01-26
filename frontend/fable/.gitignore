@@ -1,0 +1,7 @@
+bin
+obj
+fable_modules
+**/*.fs.js
+**/*.fs.js.map
+**/*.fs.jsx
+**/*.fs.jsx.map
