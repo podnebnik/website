@@ -6,6 +6,7 @@ verify_ssl = true
 [dev-packages]
 flake8 = "*"
 autopep8 = "*"
+pipenv = "*"
 
 [packages]
 django = "*"
@@ -15,4 +16,4 @@ frictionless = "*"
 wagtail = "*"
 
 [requires]
-python_version = "3"
+python_version = "3.11"
