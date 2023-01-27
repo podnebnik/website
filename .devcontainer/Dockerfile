@@ -1,9 +1,4 @@
-FROM python:3.9
+FROM python:3.11-slim
 
-ARG USERNAME=vscode
-
-ADD ./docker/setup.sh /setup.sh
-RUN /setup.sh --dev && rm /setup.sh
-
-USER ${USERNAME}
-ENV PATH=/home/${USERNAME}/.local/bin:${PATH}
+RUN apt-get update && \
+    apt-get install -y fish git pipenv
