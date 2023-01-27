@@ -16,9 +16,9 @@ To start developing, first create a python virtual environment, install dependen
     pipenv install --dev
     pipenv shell
 
-Pick one of the project configurations: develop.py, devcontainer.py, ...
+Activate the django project settings:
 
-    ln -s develop.py ./podnebnik/settings/__init__.py
+    cd podnebnik/settings ; ln -s develop.py __init__.py ; cd -
 
 Create a super user for the website:
 
