@@ -1,36 +1,35 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/docker-existing-dockerfile
 {
-	"name": "website",
+	"name": "Podnebnik",
 
-	"dockerComposeFile": [
-		"docker-compose.yml"
-	],
-	"service": "app",
-	"workspaceFolder": "/website",
+    "image": "python:3.11-slim",
 
-	// Set *default* container specific settings.json values on container create.
-	"settings": {
-		"terminal.integrated.shell.linux": "/usr/bin/zsh",
-		"python.pythonPath": "/usr/local/bin/python",
-		"python.linting.enabled": true,
-		"python.linting.flake8Enabled": true,
-		"python.linting.flake8Path": "/home/vscode/.local/bin/flake8",
-		"python.linting.pylintEnabled": false,
-		"python.formatting.autopep8Path": "/home/vscode/.local/bin/autopep8"
+    // Features to add to the dev container. More info: https://containers.dev/features.
+	"features": {
+		"ghcr.io/devcontainers/features/dotnet:1": {"version": "6.0"},
+		"ghcr.io/devcontainers/features/node:1": {}
 	},
 
-	// Add the IDs of extensions you want installed when the container is created.
-	"extensions": [
-		"ms-python.python",
-		"batisteo.vscode-django",
-		"ms-python.vscode-pylance"
-	],
+    // Finalize container setup when a dev container is created.
+	"onCreateCommand": "apt-get update && apt-get install -y fish git pipenv",
+
+    // A command to run each time the container is successfully started.
+    "postStartCommand": "yarn install && pipenv install --dev --system",
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
+	"forwardPorts": [8000, 8080],
 
-	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "pipenv lock -r > /tmp/requirements.txt && pip install -r /tmp/requirements.txt && rm /tmp/requirements.txt",
+	// Configure tool-specific properties.
+	"customizations": {
+        "vscode": {
+			"extensions": [
+                "ms-python.python",
+                "Ionide.Ionide-fsharp"
+            ]
+		}
+    }
 
-	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
-	"remoteUser": "vscode"
+	// Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
+	// "remoteUser": "devcontainer"
 }
