@@ -12,8 +12,12 @@ pipenv = "*"
 django = "*"
 psycopg2-binary = "*"
 pillow = "*"
-frictionless = "*"
 wagtail = "*"
+datasette = "*"
+sqlite-utils = "*"
+invoke = "*"
+frictionless = {extras = ["sql"], version = "*"}
+colorama = "*"
 
 [requires]
 python_version = "3.11"
