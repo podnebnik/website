@@ -10,6 +10,7 @@ __pycache__/
 
 /var/media
 /var/static
+/var/databases
 
 /*/static/frontend
 /*/settings/__init__.py
