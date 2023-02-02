@@ -7,6 +7,7 @@ from frictionless import Package
 
 BASE_DIR = Path(__file__).parent
 DATASETS_DIR = BASE_DIR / 'datasets'
+DATABASES_DIR = BASE_DIR / 'var/databases'
 
 
 class Color:
@@ -31,6 +32,7 @@ def get_datapackages():
 
 @task
 def validate(c):
+    print('Validating data packages:\n')
     invalid_package_paths = []
     for path in get_datapackage_paths():
         package = Package(path)
@@ -55,7 +57,24 @@ def validate(c):
 
 
 @task
+def create_databases(c):
+    validate(c)
+    for package_path in get_datapackage_paths():
+        package = Package(package_path)
+        database = Path(f'{DATABASES_DIR / package.name}.db')
+        print(f'\nImporting data package {package.name}:')
+        DATABASES_DIR.mkdir(parents=True, exist_ok=True)
+        database.unlink(missing_ok=True)
+        for resource in package.resources:
+            if resource.format == 'csv':
+                print(f'    Importing resource {resource.name}, {resource.format} @ {resource.path}')
+            else:
+                print(f'    Skipping resource {resource.name}, {resource.format} @ {resource.path}')
+            c.run(f'sqlite-utils insert {database} {resource.name} {DATASETS_DIR / package_path.parent /resource.path} --csv --detect-types --silent')
+
+
+@task
 def datasette(c):
-    dbname = 'datasette.db'
-    for package in get_datapackages():
-        package.to_sql(f'sqlite:///{dbname}.db')
+    create_databases(c)
+    print('\nStarting Datasette server:\n')
+    c.run(f'datasette serve {DATABASES_DIR} --port 8001 --cors')
