@@ -76,5 +76,5 @@ def create_databases(c):
 @task
 def datasette(c):
     create_databases(c)
-    print('\nStarting Datasette server:\n')
+    print('\nStarting Datasette server...\n')
     c.run(f'datasette serve {DATABASES_DIR} --port 8001 --cors')
