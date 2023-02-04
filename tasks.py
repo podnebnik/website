@@ -7,7 +7,7 @@ from frictionless import Package
 
 BASE_DIR = Path(__file__).parent
 DATASETS_DIR = BASE_DIR / 'datasets'
-DATABASES_DIR = BASE_DIR / 'var/databases'
+SQLITE_DIR = BASE_DIR / 'var/sqlite'
 
 
 class Color:
@@ -61,9 +61,9 @@ def create_databases(c):
     validate(c)
     for package_path in get_datapackage_paths():
         package = Package(package_path)
-        database = Path(f'{DATABASES_DIR / package.name}.db')
+        database = Path(f'{SQLITE_DIR / package.name}.db')
         print(f'\nImporting data package {package.name}:')
-        DATABASES_DIR.mkdir(parents=True, exist_ok=True)
+        SQLITE_DIR.mkdir(parents=True, exist_ok=True)
         database.unlink(missing_ok=True)
         for resource in package.resources:
             if resource.format == 'csv':
@@ -77,4 +77,4 @@ def create_databases(c):
 def datasette(c):
     create_databases(c)
     print('\nStarting Datasette server...\n')
-    c.run(f'datasette serve {DATABASES_DIR} --port 8001 --cors')
+    c.run(f'datasette serve {SQLITE_DIR} --port 8001 --cors')
