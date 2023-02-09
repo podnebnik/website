@@ -2,7 +2,7 @@
 layout: base.html
 title: Energetika
 ---
-# {{ title }}
+# Energetika
 
 Excepteur eu aliqua proident ut ea pariatur. Culpa exercitation est ex elit cillum eiusmod id. Magna eu est laboris reprehenderit ea et. Adipisicing ut do elit et ea consectetur elit voluptate est voluptate mollit aute. Mollit irure et cupidatat anim id enim anim aliquip fugiat. Enim deserunt ullamco Lorem magna elit.
 
