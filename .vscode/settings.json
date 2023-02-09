@@ -1,11 +1,11 @@
 {
     "files.exclude": {
-        "frontend/fable/bin": true,
-        "frontend/fable/obj": true,
-        "frontend/fable/fable_modules": true,
-        "frontend/fable/*.fs.js": true,
-        "frontend/fable/*.fs.js.map": true,
-        "frontend/fable/*.fs.jsx": true,
-        "frontend/fable/*.fs.jsx.map": true
+        "scripts/**/bin": true,
+        "scripts/**/obj": true,
+        "scripts/**/fable_modules": true,
+        "scripts/**/*.fs.js": true,
+        "scripts/**/*.fs.js.map": true,
+        "scripts/**/*.fs.jsx": true,
+        "scripts/**/*.fs.jsx.map": true
     }
 }

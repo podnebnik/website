@@ -8,7 +8,7 @@ from frictionless import Package
 
 
 BASE_DIR = Path(__file__).parent
-DATASETS_DIR = BASE_DIR / 'datasets'
+DATASETS_DIR = BASE_DIR / 'data'
 SQLITE_DIR = BASE_DIR / 'var/sqlite'
 
 
