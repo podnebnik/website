@@ -1,16 +1,16 @@
 .DS_Store
 
-.fake
-.ionide
-
-node_modules
-
 *.py[cod]
 __pycache__/
 
-/var/media
-/var/static
-/var/sqlite
+node_modules
 
-/*/static/frontend
-/*/settings/__init__.py
+scripts/**/bin
+scripts/**/obj
+scripts/**/fable_modules
+scripts/**/*.fs.js
+scripts/**/*.fs.js.map
+scripts/**/*.fs.jsx
+scripts/**/*.fs.jsx.map
+
+var

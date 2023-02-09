@@ -1,9 +1,0 @@
-{% load wagtailimages_tags wagtailcore_tags %}
-
-{% image self.image max-1350x1000 as im %}
-<div class="image{% if self.alignment %} image--{{ self.alignment }}{% endif %}" style="width: {{ im.width }}px; max-width: 100%">
-    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ im.alt }}" loading="lazy">
-    {% if self.caption %}
-    <div class="caption caption--image">{{ self.caption }}</div>
-    {% endif %}
-</div>

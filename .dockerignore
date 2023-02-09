@@ -3,12 +3,6 @@
 .vscode
 .helm
 
-var
-deployment
 node_modules
 
-**/*.pyc
-**/__pycache__
-
-*/static/fronted/*
-*/settings/__init__.py
+var

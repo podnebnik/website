@@ -9,14 +9,10 @@ autopep8 = "*"
 pipenv = "*"
 
 [packages]
-django = "*"
-psycopg2-binary = "*"
-pillow = "*"
-wagtail = "*"
 datasette = "*"
 sqlite-utils = "*"
 invoke = "*"
-frictionless = {extras = ["sql"], version = "*"}
+frictionless = "*"
 colorama = "*"
 
 [requires]

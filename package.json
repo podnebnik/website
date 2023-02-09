@@ -1,44 +1,22 @@
 {
-    "private": true,
-    "scripts": {
-        "postinstall": "dotnet tool restore",
-        "start": "dotnet fable watch frontend/fable --sourceMaps --run webpack serve",
-        "build": "dotnet fable frontend/fable --run webpack --mode production"
-    },
-    "browserslist": [
-        "defaults"
-    ],
-    "dependencies": {
-        "bulma": "^0.9.4",
-        "feather-icons": "^4.29.0",
-        "highcharts": "^9.0.0",
-        "highcharts-react-official": "^3.0.0",
-        "react": "^18.2.0",
-        "react-dom": "^18.2.0"
-    },
-    "devDependencies": {
-        "@babel/core": "^7.20.12",
-        "@babel/plugin-transform-runtime": "^7.19.6",
-        "@babel/preset-env": "^7.20.2",
-        "@babel/runtime": "^7.20.13",
-        "babel-loader": "^9.1.2",
-        "clean-webpack-plugin": "^4.0.0",
-        "copy-webpack-plugin": "^11.0.0",
-        "core-js": "^3.27.2",
-        "css-loader": "^6.7.3",
-        "file-loader": "^6.2.0",
-        "image-webpack-loader": "^8.1.0",
-        "mini-css-extract-plugin": "^2.7.2",
-        "postcss": "^8.4.21",
-        "postcss-flexbugs-fixes": "^5.0.2",
-        "postcss-loader": "^7.0.2",
-        "postcss-preset-env": "^8.0.0",
-        "sass": "^1.57.1",
-        "sass-loader": "^13.2.0",
-        "style-loader": "^3.3.1",
-        "webpack": "^5.75.0",
-        "webpack-bundle-analyzer": "^4.7.0",
-        "webpack-cli": "^5.0.1",
-        "webpack-dev-server": "^4.11.1"
-    }
+  "private": true,
+  "scripts": {
+    "clean": "rm -rf dist && dotnet fable clean",
+    "start": "npx @11ty/eleventy --serve --incremental --quiet",
+    "start-debug": "DEBUG=Eleventy* npx @11ty/eleventy --serve --incremental --quiet",
+    "build": "npx @11ty/eleventy",
+    "build-debug": "DEBUG=Eleventy* npx @11ty/eleventy"
+  },
+  "dependencies": {
+    "highcharts": "^10.3.3"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^2.0.0",
+    "@11ty/eleventy-plugin-vite": "^4.0.0",
+    "@11ty/is-land": "^3.0.1",
+    "sass": "^1.58.0",
+    "solid-element": "^1.6.3",
+    "solid-js": "^1.6.10",
+    "vite-plugin-solid": "^2.5.0"
+  }
 }
