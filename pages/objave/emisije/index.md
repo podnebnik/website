@@ -1,6 +1,6 @@
 ---
-layout: base.html
 title: Emisije
+date: git Last Modified
 ---
 # Emisije
 
