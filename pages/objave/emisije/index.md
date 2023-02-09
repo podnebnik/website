@@ -2,7 +2,7 @@
 layout: base.html
 title: Emisije
 ---
-# {{ title }}
+# Emisije
 
 Laborum aute exercitation ~~adipisicing nostrud~~ non enim exercitation exercitation sunt proident. Laborum deserunt labore et non in id Lorem sunt. Labore enim qui magna culpa est. Ea amet eu officia tempor excepteur duis est ea esse enim.
 
