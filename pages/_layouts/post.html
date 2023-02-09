@@ -1,0 +1,7 @@
+{% layout './base.html' %}
+
+{% block content %}
+Zadnja sprememba: {{ page.date | date: "%Y-%m-%d %H:%M" }}
+
+{{ content }}
+{% endblock %}

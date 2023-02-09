@@ -1,6 +1,6 @@
 ---
-layout: base.html
 title: Energetika
+date: git Last Modified
 ---
 # Energetika
 
