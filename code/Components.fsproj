@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Include="Counter.fs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Elmish.Solid" Version="1.0.0-beta-002" />
+        <PackageReference Include="Fable.Core" Version="4.0.0-theta-007" />
+        <PackageReference Include="Fable.Solid" Version="1.0.0-beta-004" />
+    </ItemGroup>
+</Project>
