@@ -1,11 +1,12 @@
 {
   "private": true,
   "scripts": {
+    "postinstall": "dotnet tool restore",
     "clean": "rm -rf dist && dotnet fable clean",
-    "start": "npx @11ty/eleventy --serve --incremental --quiet",
-    "start-debug": "DEBUG=Eleventy* npx @11ty/eleventy --serve --incremental --quiet",
-    "build": "npx @11ty/eleventy",
-    "build-debug": "DEBUG=Eleventy* npx @11ty/eleventy"
+    "start": "dotnet fable watch code --extension .fs.jsx --run npx @11ty/eleventy --serve --incremental --quiet",
+    "start-debug": "dotnet fable watch code --extension .fs.jsx --run DEBUG=Eleventy* npx @11ty/eleventy --serve --incremental --quiet",
+    "build": "dotnet fable code --extension .fs.jsx --run npx @11ty/eleventy",
+    "build-debug": "dotnet fable code --extension .fs.jsx --run DEBUG=Eleventy* npx @11ty/eleventy"
   },
   "dependencies": {
     "@tailwindcss/typography": "^0.5.9",

@@ -1,5 +1,7 @@
 .DS_Store
 
+.fake
+
 *.py[cod]
 __pycache__/
 
