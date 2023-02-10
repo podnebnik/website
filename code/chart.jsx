@@ -32,7 +32,12 @@ export function Chart(props) {
     const [config, setConfig] = createSignal(props.default === 1 ? config1 : config2);
 
     function chart(element) {
+        // Create a new chart every time the config changes
         createEffect(() => Highcharts.chart(element, config()))
+
+        // Update the existing chart when the config changes
+        // const chart = Highcharts.chart(element, config())
+        // createEffect(() => chart.update(config()))
     }
 
     return <>
