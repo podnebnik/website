@@ -4,21 +4,31 @@ date: git Last Modified
 ---
 # Emisije
 
-Laborum aute exercitation ~~adipisicing nostrud~~ non enim exercitation exercitation sunt proident. Laborum deserunt labore et non in id Lorem sunt. Labore enim qui magna culpa est. Ea amet eu officia tempor excepteur duis est ea esse enim.
+Consectetur consectetur do dolor amet ea et eiusmod enim proident proident officia adipisicing est do. Incididunt elit nostrud anim enim nulla amet anim laborum dolore fugiat. Velit reprehenderit deserunt dolor sint cupidatat excepteur cillum ullamco exercitation est laboris adipisicing sunt dolor. Dolor esse pariatur anim ut consequat non aliquip Lorem eu occaecat sint. Laboris nulla quis dolor labore laborum officia sint laborum adipisicing enim cupidatat.
 
-<div id="chart"></div>
+<div id="chart-from-fable"></div>
+
+<script type="module">
+    import { render } from 'solid-js/web'
+    import { Chart }  from '/code/Chart.fs.jsx'
+    render(() => Chart({kind: "bar"}), document.querySelector('#chart-from-fable'))
+</script>
+
+Labore Lorem consectetur nulla elit anim nostrud tempor nostrud sunt dolore proident nostrud elit. Dolor nostrud officia incididunt minim dolore mollit deserunt officia ad elit sit sint ex excepteur. Fugiat reprehenderit anim officia nisi nisi aliquip proident. Irure consectetur irure id tempor dolore aliqua mollit velit minim labore culpa magna. Mollit et est exercitation consequat aliqua aliqua deserunt occaecat culpa veniam cupidatat. Reprehenderit magna elit amet id id magna.
+
+Minim reprehenderit anim fugiat sunt Lorem anim veniam esse eu ea. Dolor quis id proident magna incididunt exercitation. Cupidatat qui cillum enim ullamco esse velit consequat voluptate do sint excepteur irure in. Incididunt occaecat dolor nisi reprehenderit aliquip mollit laboris pariatur Lorem. Ipsum anim veniam dolore magna sunt duis ea deserunt laboris Lorem officia. Ex nulla eu consequat et reprehenderit.
+
+<div id="chart-from-js"></div>
 
 <script type="module">
     import { render } from 'solid-js/web'
     import { Chart }  from '/code/Chart.jsx'
-    render(() => Chart({default: 1}), document.querySelector('#chart'))
+    render(() => Chart({default: 1}), document.querySelector('#chart-from-js'))
 </script>
 
 Ex exercitation ipsum pariatur eu ullamco et est excepteur consectetur qui irure. Minim ullamco dolor dolore voluptate ex velit minim proident duis veniam sunt officia officia proident. Id duis amet proident aliqua velit voluptate. Duis ad ipsum magna incididunt nostrud voluptate et duis fugiat. Id nulla officia laboris elit fugiat et aliquip ea non. Duis enim ut deserunt non. Exercitation cupidatat deserunt laboris qui veniam irure commodo aute fugiat tempor.
 
-Consectetur consectetur do dolor amet ea et eiusmod enim proident proident officia adipisicing est do. Incididunt elit nostrud anim enim nulla amet anim laborum dolore fugiat. Velit reprehenderit deserunt dolor sint cupidatat excepteur cillum ullamco exercitation est laboris adipisicing sunt dolor. Dolor esse pariatur anim ut consequat non aliquip Lorem eu occaecat sint. Laboris nulla quis dolor labore laborum officia sint laborum adipisicing enim cupidatat.
-
-Irure ad nostrud Lorem non eiusmod labore enim. Sunt esse proident ad labore officia consectetur et. Lorem deserunt ex velit veniam Lorem est fugiat sit.
+Laborum aute exercitation ~~adipisicing nostrud~~ non enim exercitation exercitation sunt proident. Laborum deserunt labore et non in id Lorem sunt. Labore enim qui magna culpa est. Ea amet eu officia tempor excepteur duis est ea esse enim.
 
 {% image "./images/landscape.png", "Exercitation qui dolor" %}
 
