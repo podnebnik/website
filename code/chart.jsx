@@ -50,7 +50,9 @@ const config2 = {
     }]
 }
 
-customElement("my-chart", { default: 1 }, (props, { element }) => {
+import style from './chart.sass?inline'
+
+export function Chart(props) {
     const [config, setConfig] = createSignal(props.default === 1 ? config1 : config2);
 
     const container = <div></div>;
@@ -58,8 +60,14 @@ customElement("my-chart", { default: 1 }, (props, { element }) => {
     Highcharts.chart(container, config());
 
     return <>
-        <button disabled={config() === config1} onClick={() => {setConfig(config1) ; Highcharts.chart(container, config())}}>Chart 1</button>
-        <button disabled={config() === config2} onClick={() => {setConfig(config2) ; Highcharts.chart(container, config())}}>Chart 2</button>
+        <style>{style}</style>
+        <div class="test">Chart</div>
+        <div part="buttons">
+            <button class="text-blue-500" disabled={config() === config1} onClick={() => {setConfig(config1) ; Highcharts.chart(container, config())}}>Chart 1</button>
+            <button disabled={config() === config2} onClick={() => {setConfig(config2) ; Highcharts.chart(container, config())}}>Chart 2</button>
+        </div>
         {container}
     </>
-})
+}
+
+customElement("my-chart", { default: 1 }, (props, { element }) => Chart(props))
