@@ -4,6 +4,18 @@ date: git Last Modified
 ---
 # Emisije
 
+<my-chart default="2"></my-chart>
+
+---
+
+<div id="foo"></div>
+
+<script type="module">
+    import { render } from 'solid-js/web'
+    import { Chart }  from '/code/chart.jsx'
+    render(() => Chart({default: 2}), document.querySelector('#foo'))
+</script>
+
 Laborum aute exercitation ~~adipisicing nostrud~~ non enim exercitation exercitation sunt proident. Laborum deserunt labore et non in id Lorem sunt. Labore enim qui magna culpa est. Ea amet eu officia tempor excepteur duis est ea esse enim.
 
 {% image "./images/landscape.png", "Exercitation qui dolor" %}
@@ -33,10 +45,6 @@ Tempor et sit velit id sint adipisicing aliquip ullamco amet non elit cillum iru
 Quis ipsum minim exercitation veniam ex fugiat enim ex adipisicing proident Lorem. Laborum esse sunt qui voluptate aute reprehenderit do. Est est nulla deserunt dolor nisi reprehenderit sunt laborum ea. Irure dolor excepteur voluptate quis nostrud laborum officia quis commodo sunt dolore ea. Eiusmod laboris commodo enim enim est dolor. Voluptate sit cupidatat anim non esse laborum proident velit.
 
 Consequat Lorem mollit labore occaecat reprehenderit proident duis. Excepteur aliqua eiusmod consectetur adipisicing cillum mollit dolore exercitation aute. Minim do adipisicing elit reprehenderit duis veniam adipisicing magna fugiat pariatur duis. Nisi aliquip labore tempor qui.
-
-<is-land on:visible on:idle>
-    <my-chart default="2"></my-chart>
-</is-land>
 
 Sint ea reprehenderit officia ut ea ullamco laboris incididunt. Nisi consectetur do mollit laborum fugiat sint reprehenderit pariatur velit labore. Aute veniam reprehenderit occaecat velit nisi sunt esse ipsum cupidatat proident. Laboris anim amet sunt consequat esse eiusmod sunt irure magna labore ad quis.
 
