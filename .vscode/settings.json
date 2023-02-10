@@ -1,11 +1,11 @@
 {
     "files.exclude": {
-        "scripts/**/bin": true,
-        "scripts/**/obj": true,
-        "scripts/**/fable_modules": true,
-        "scripts/**/*.fs.js": true,
-        "scripts/**/*.fs.js.map": true,
-        "scripts/**/*.fs.jsx": true,
-        "scripts/**/*.fs.jsx.map": true
+        "code/**/bin": true,
+        "code/**/obj": true,
+        "code/**/fable_modules": true,
+        "code/**/*.fs.js": true,
+        "code/**/*.fs.js.map": true,
+        "code/**/*.fs.jsx": true,
+        "code/**/*.fs.jsx.map": true
     }
 }

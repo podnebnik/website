@@ -5,13 +5,13 @@ __pycache__/
 
 node_modules
 
-scripts/**/bin
-scripts/**/obj
-scripts/**/fable_modules
-scripts/**/*.fs.js
-scripts/**/*.fs.js.map
-scripts/**/*.fs.jsx
-scripts/**/*.fs.jsx.map
+code/**/bin
+code/**/obj
+code/**/fable_modules
+code/**/*.fs.js
+code/**/*.fs.js.map
+code/**/*.fs.jsx
+code/**/*.fs.jsx.map
 
 var
 dist
