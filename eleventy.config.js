@@ -28,7 +28,7 @@ async function imageShortcode(src, alt, sizes) {
 }
 
 module.exports = function (eleventyConfig) {
-    eleventyConfig.addPassthroughCopy('scripts')
+    eleventyConfig.addPassthroughCopy('code')
     eleventyConfig.addPassthroughCopy('styles')
 
     eleventyConfig.addPlugin(EleventyVitePlugin, {

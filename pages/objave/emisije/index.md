@@ -43,5 +43,5 @@ Sint ea reprehenderit officia ut ea ullamco laboris incididunt. Nisi consectetur
 Cillum sit cupidatat velit qui. Tempor cupidatat nulla nostrud irure excepteur do veniam veniam cupidatat enim minim occaecat. Cupidatat ipsum velit ad reprehenderit eu tempor fugiat. Eiusmod aute proident enim sunt dolore elit velit. Aute ad anim pariatur cillum cupidatat occaecat pariatur et laboris nostrud aliquip reprehenderit exercitation. Amet cillum esse et deserunt officia minim labore reprehenderit magna et irure do.
 
 <script type="module">
-    import '/scripts/chart.jsx'
+    import '/code/chart.jsx'
 </script>
