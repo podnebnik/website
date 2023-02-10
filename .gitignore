@@ -7,13 +7,5 @@ __pycache__/
 
 node_modules
 
-code/**/bin
-code/**/obj
-code/**/fable_modules
-code/**/*.fs.js
-code/**/*.fs.js.map
-code/**/*.fs.jsx
-code/**/*.fs.jsx.map
-
 var
 dist
