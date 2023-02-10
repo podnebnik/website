@@ -50,7 +50,7 @@ const config2 = {
     }]
 }
 
-import style from './chart.sass?inline'
+import style from './Chart.sass?inline'
 
 export function Chart(props) {
     const [config, setConfig] = createSignal(props.default === 1 ? config1 : config2);
@@ -61,9 +61,8 @@ export function Chart(props) {
 
     return <>
         <style>{style}</style>
-        <div class="test">Chart</div>
         <div part="buttons">
-            <button class="text-blue-500" disabled={config() === config1} onClick={() => {setConfig(config1) ; Highcharts.chart(container, config())}}>Chart 1</button>
+            <button disabled={config() === config1} onClick={() => {setConfig(config1) ; Highcharts.chart(container, config())}}>Chart 1</button>
             <button disabled={config() === config2} onClick={() => {setConfig(config2) ; Highcharts.chart(container, config())}}>Chart 2</button>
         </div>
         {container}
