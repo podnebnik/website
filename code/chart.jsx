@@ -4,7 +4,7 @@ import { customElement } from 'solid-element';
 
 const config = {
     title: {
-        text: 'Fruit Consumption'
+        text: 'Fruit Consumption in JavaScript'
     },
     xAxis: {
         categories: ['Apples', 'Bananas', 'Oranges']
@@ -23,8 +23,8 @@ const config = {
     }]
 }
 
-const config1 = mergeProps(config, { chart: { type: 'bar'}})
-const config2 = mergeProps(config, { chart: { type: 'line'}})
+const config1 = mergeProps(config, { chart: { type: 'bar' } })
+const config2 = mergeProps(config, { chart: { type: 'line' } })
 
 import style from './Chart.sass?inline'
 
