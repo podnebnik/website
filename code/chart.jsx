@@ -1,11 +1,8 @@
 import Highcharts from 'highcharts'
-import { createSignal } from "solid-js";
+import { createSignal, createEffect, mergeProps } from "solid-js";
 import { customElement } from 'solid-element';
 
-const config1 = {
-    chart: {
-        type: 'bar'
-    },
+const config = {
     title: {
         text: 'Fruit Consumption'
     },
@@ -26,46 +23,25 @@ const config1 = {
     }]
 }
 
-const config2 = {
-    chart: {
-        type: 'line'
-    },
-    title: {
-        text: 'Fruit Consumption'
-    },
-    xAxis: {
-        categories: ['Apples', 'Bananas', 'Oranges']
-    },
-    yAxis: {
-        title: {
-            text: 'Fruit eaten'
-        }
-    },
-    series: [{
-        name: 'Fred',
-        data: [1, 0, 4]
-    }, {
-        name: 'Lydia',
-        data: [5, 7, 3]
-    }]
-}
+const config1 = mergeProps(config, { chart: { type: 'bar'}})
+const config2 = mergeProps(config, { chart: { type: 'line'}})
 
 import style from './Chart.sass?inline'
 
 export function Chart(props) {
     const [config, setConfig] = createSignal(props.default === 1 ? config1 : config2);
 
-    const container = <div></div>;
-
-    Highcharts.chart(container, config());
+    function chart(element) {
+        createEffect(() => Highcharts.chart(element, config()))
+    }
 
     return <>
         <style>{style}</style>
-        <div part="buttons">
-            <button disabled={config() === config1} onClick={() => {setConfig(config1) ; Highcharts.chart(container, config())}}>Chart 1</button>
-            <button disabled={config() === config2} onClick={() => {setConfig(config2) ; Highcharts.chart(container, config())}}>Chart 2</button>
+        <div>
+            <button disabled={config() === config1} onClick={() => setConfig(config1)}>Chart 1</button>
+            <button disabled={config() === config2} onClick={() => setConfig(config2)}>Chart 2</button>
         </div>
-        {container}
+        <div use:chart></div>
     </>
 }
 
