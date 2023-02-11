@@ -29,6 +29,7 @@ jobs:
 
       - name: Build the website
         run: yarn build
+      - run: touch dist/.nojekyll
 
       - name: Init new repo commit generated files
         run: |
