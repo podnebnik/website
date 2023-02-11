@@ -30,6 +30,7 @@ async function imageShortcode(src, alt, sizes) {
 module.exports = function (eleventyConfig) {
     eleventyConfig.addPassthroughCopy('code')
     eleventyConfig.addPassthroughCopy('styles')
+    eleventyConfig.addPassthroughCopy('images')
 
     eleventyConfig.addPlugin(EleventyVitePlugin, {
         viteOptions: {
@@ -43,8 +44,6 @@ module.exports = function (eleventyConfig) {
         dir: {
             input: 'pages',
             output: 'dist',
-            layouts: '_layouts',
-            includes: '_includes',
         },
 
         htmlTemplateEngine: 'liquid',
