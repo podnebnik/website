@@ -22,7 +22,7 @@ Minim reprehenderit anim fugiat sunt Lorem anim veniam esse eu ea. Dolor quis id
 
 <script type="module">
     import { render } from 'solid-js/web'
-    import { Chart }  from '/code/Chart.jsx'
+    import { Chart }  from '/code/chart.jsx'
     render(() => Chart({default: 1}), document.querySelector('#chart-from-js'))
 </script>
 
@@ -85,5 +85,5 @@ Sint ea reprehenderit officia ut ea ullamco laboris incididunt. Nisi consectetur
 Cillum sit cupidatat velit qui. Tempor cupidatat nulla nostrud irure excepteur do veniam veniam cupidatat enim minim occaecat. Cupidatat ipsum velit ad reprehenderit eu tempor fugiat. Eiusmod aute proident enim sunt dolore elit velit. Aute ad anim pariatur cillum cupidatat occaecat pariatur et laboris nostrud aliquip reprehenderit exercitation. Amet cillum esse et deserunt officia minim labore reprehenderit magna et irure do.
 
 <script type="module">
-    import '/code/Chart.jsx'
+    import '/code/chart.jsx'
 </script>
