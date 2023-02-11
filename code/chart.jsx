@@ -2,6 +2,8 @@ import Highcharts from 'highcharts'
 import { createSignal, createEffect, mergeProps } from "solid-js";
 import { customElement } from 'solid-element';
 
+import data from './data'
+
 const config = {
     title: {
         text: 'Fruit Consumption in JavaScript'
@@ -14,13 +16,7 @@ const config = {
             text: 'Fruit eaten'
         }
     },
-    series: [{
-        name: 'Fred',
-        data: [1, 0, 4]
-    }, {
-        name: 'Lydia',
-        data: [5, 7, 3]
-    }]
+    series: data
 }
 
 const config1 = mergeProps(config, { chart: { type: 'bar' } })
