@@ -25,12 +25,6 @@ let private config2 =
 [<ImportDefault("highcharts")>]
 let private highcharts: obj = jsNative
 
-type Foo = { Bar: string; Baz: string }
-
-type private Kind =
-    | Bar
-    | Line
-
 [<JSX.Component>]
 let Chart (kind: string) =
     let defaultConfig =

@@ -7,5 +7,9 @@
         // "code/**/*.fs.js.map": true,
         // "code/**/*.fs.jsx": true,
         // "code/**/*.fs.jsx.map": true
-    }
+    },
+    "FSharp.showExplorerOnStartup": false,
+    "FSharp.smartIndent": true,
+    "FSharp.codeLenses.references.enabled": true,
+    "editor.inlayHints.enabled": "offUnlessPressed"
 }
