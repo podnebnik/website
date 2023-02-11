@@ -53,5 +53,5 @@ Sint labore aute proident pariatur. Sunt commodo sit dolor dolor eu voluptate ve
 Id Lorem consectetur quis sit id non magna sit ea id dolore laborum anim. Occaecat excepteur cillum est nisi aute ex amet eu fugiat sunt dolore. Officia velit culpa anim tempor laboris dolore veniam et et sunt magna. Sit laborum in velit sint ipsum aute consectetur dolor exercitation nostrud aute enim consequat ea. Tempor sint mollit voluptate aliqua sit tempor.
 
 <script type="module">
-    import '/code/Chart.jsx'
+    import '/code/chart.jsx'
 </script>
