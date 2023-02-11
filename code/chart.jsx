@@ -22,7 +22,7 @@ const config = {
 const config1 = mergeProps(config, { chart: { type: 'bar' } })
 const config2 = mergeProps(config, { chart: { type: 'line' } })
 
-import style from './Chart.sass?inline'
+import style from './chart.sass?inline'
 
 export function Chart(props) {
     const [config, setConfig] = createSignal(props.default === 1 ? config1 : config2);
