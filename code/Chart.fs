@@ -4,16 +4,15 @@ open Fable.Core
 open Fable.Core.JsInterop
 open Elmish.Solid
 
+let private data : obj = importDefault "./data"
+
 let private config =
     {| title = {| text = "Fruit Consumption in F#" |}
        chart = {| ``type`` = "bar" |}
        xAxis = {| categories = [ "Apples", "Bananas", "Oranges" ] |}
        yAxis = {| title = {| text = "Fruit eaten" |} |}
-       series =
-        [| {| name = "Fred"
-              data = [| 1; 0; 4 |] |}
-           {| name = "Lydia"
-              data = [| 5; 7; 3 |] |} |] |}
+       series = data
+    |}
 
 let private config1 =
     {| config with
