@@ -28,10 +28,10 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Build the website
-        run: yarn build-github-pages
+        run: yarn build
       - run: touch dist/.nojekyll
 
-      - name: Init a new repo and commit the generated files
+      - name: Init new repo commit generated files
         run: |
           cd dist
           git init
