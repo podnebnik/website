@@ -11,6 +11,9 @@ module.exports = {
                 'tertiary': '#f3f1f0',
                 'muted': '#7a7a7a',
             },
+            borderColor: {
+                DEFAULT: '#D5D4D3',
+            },
             spacing: {
                 'gap': '1rem',
                 '2gap': '2rem',
@@ -22,8 +25,8 @@ module.exports = {
                 '8gap': '8rem',
             },
             fontFamily: {
-                sans: ['Bitter', 'Arial', 'Helvetica', 'sans-serif'],
-                serif: ['IBM Plex Sans', 'serif'],
+                serif: ['Bitter', 'Arial', 'Helvetica', 'serif'],
+                sans: ['IBM Plex Sans', 'sans-serif'],
             },
             typography: (theme) => ({
                 DEFAULT: {
