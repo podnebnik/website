@@ -1,14 +1,21 @@
 ---
 title: Energetika
 date: git Last Modified
+summary: Dolor esse pariatur anim ut consequat non aliquip Lorem eu occaecat sint. Laboris nulla quis dolor labore laborum officia sint laborum adipisicing enim cupidatat.
 ---
 # Energetika
 
+<div class="lead">
+{{ summary }}
+</div>
+
 Excepteur eu aliqua proident ut ea pariatur. Culpa exercitation est ex elit cillum eiusmod id. Magna eu est laboris reprehenderit ea et. Adipisicing ut do elit et ea consectetur elit voluptate est voluptate mollit aute. Mollit irure et cupidatat anim id enim anim aliquip fugiat. Enim deserunt ullamco Lorem magna elit.
 
-<is-land on:visible on:idle>
-    <my-chart default="1"></my-chart>
-</is-land>
+<div class="chart">
+    <is-land on:visible on:idle>
+        <my-chart default="1"></my-chart>
+    </is-land>
+</div>
 
 Nisi ullamco incididunt dolore culpa adipisicing laboris laborum cupidatat exercitation. Cillum do deserunt cillum dolore aliqua irure amet pariatur magna est. Amet enim do ipsum elit cillum adipisicing veniam id laboris Lorem pariatur quis. Eiusmod laborum mollit excepteur veniam. Pariatur ad non ad dolor aliquip nulla adipisicing. Veniam nulla adipisicing ad ipsum laboris et ea veniam minim ad dolor cupidatat incididunt fugiat. Veniam Lorem do fugiat elit dolore laboris aute aliqua.
 
@@ -22,7 +29,7 @@ Deserunt aliqua proident minim id sint enim amet in occaecat reprehenderit labor
 
 Officia sit sunt nostrud non ullamco commodo aliquip velit reprehenderit aliqua. Elit occaecat et tempor et ad. Laborum velit laboris nostrud excepteur fugiat irure excepteur deserunt et tempor. Sint occaecat mollit qui sit amet dolore. Pariatur eu ipsum sit dolor elit sint cupidatat magna. Non ex irure laboris proident sit. Elit mollit dolor amet occaecat veniam veniam exercitation tempor.
 
-{% image "./images/landscape.png", "Exercitation qui dolor" %}
+<div class="image">{% image "./images/landscape.png", "Exercitation qui dolor" %}</div>
 
 Ea labore ut aute duis anim laboris incididunt ipsum ea. Pariatur cupidatat esse sit in sunt. Elit cillum sunt non aute fugiat sint enim sunt. Non reprehenderit ea voluptate culpa proident qui magna est culpa in labore veniam ullamco deserunt. Consectetur enim dolor est magna elit sint ad aliqua adipisicing deserunt nisi ea cupidatat aute. Incididunt esse ea elit nostrud.
 
@@ -42,9 +49,11 @@ Esse esse deserunt magna laboris et veniam laborum consectetur ad consequat proi
 
 Ullamco sit dolor et tempor aliquip nostrud sunt. Culpa esse aliqua anim qui officia consequat ipsum mollit incididunt id duis. Adipisicing proident sunt aliqua elit laborum mollit tempor sit fugiat minim pariatur ad dolor minim. Nostrud nisi consectetur commodo reprehenderit qui ad ipsum laborum quis. Mollit irure non deserunt Lorem Lorem anim ea quis excepteur.
 
-<is-land on:visible on:idle>
-    <my-chart default="1"></my-chart>
-</is-land>
+<div class="chart">
+    <is-land on:visible on:idle>
+        <my-chart default="1"></my-chart>
+    </is-land>
+</div>
 
 Quis ex aute id voluptate sunt amet proident ex reprehenderit. Laboris consequat ipsum elit magna. Enim id eiusmod eu nulla amet ullamco eu ex esse aute aliqua ea reprehenderit. Consectetur veniam do consequat veniam. Excepteur aute duis aliqua voluptate occaecat veniam duis laboris et irure amet. Labore veniam ex mollit commodo amet aliquip adipisicing. Excepteur tempor culpa enim sunt minim pariatur non dolore.
 
