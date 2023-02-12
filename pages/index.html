@@ -2,10 +2,14 @@
 title: Podnebnik
 layout: base.html
 ---
-<h1>Podnebnik</h1>
 
-<ul>
+<div class="prose lg:prose-lg prose-neutral mx-auto px-gap prose-headings:font-sans prose-headings:font-bold">
+
+    <div class="lead">
+        S pomočjo analiz in prikazov podatkov omogočamo boljšo oceno tveganj podnebnih sprememb v Sloveniji.
+    </div>
+
     {%- for post in collections.post -%}
-    <li><a href="{{ post.url }}">{{ post.data.title }}</a></li>
+    {% include '_includes/card.html', url: post.url, title: post.data.title, summary: post.data.summary, date: post.data.date %}
     {%- endfor -%}
-</ul>
+</div>

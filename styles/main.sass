@@ -3,3 +3,21 @@
 @tailwind utilities
 
 @import 'octocat'
+
+@layer base
+    h1
+        @apply after:block after:mt-6 after:w-[50px] after:h-[6px] after:bg-secondary
+
+
+@layer components
+    .lead
+        @apply font-sans font-semibold leading-snug text-black py-2gap mb-2gap border-y #{!important}
+
+    .chart
+        @apply lg:ml-[-100px] lg:mr-[-100px] bg-white p-2gap
+
+    .image
+        @apply lg:ml-[-100px] lg:mr-[-100px]
+
+        img
+            @apply w-full h-auto

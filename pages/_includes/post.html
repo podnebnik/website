@@ -1,14 +1,12 @@
 ---
 layout: base.html
 ---
+
 {% block content %}
-Zadnja sprememba {{ page.date | date: "%Y-%m-%d ob %H:%M" }}
+<div class="prose lg:prose-lg prose-neutral mx-auto px-gap prose-headings:font-sans prose-headings:font-bold">
 
-<ul>
-    {%- for post in collections.post -%}
-    <li>{% include '_includes/card.html', url: post.url, title: post.data.title %}</li>
-    {%- endfor -%}
-</ul>
+    {{ content }}
 
-{{ content }}
+    <div class="text-sm mt-2gap">Zadnja sprememba {{ page.date | date: "%Y-%m-%d ob %H:%M" }}</div>
+</div>
 {% endblock %}

@@ -13,9 +13,9 @@
     <link rel="stylesheet" href="/styles/main.sass">
 </head>
 
-<body class="font-sans bg-tertiary">
+<body class="font-serif bg-tertiary">
     <header>
-        <nav role="navigation" class="bg-primary mb-2gap text-white flex items-stretch min-h-3gap" aria-label="Main">
+        <nav role="navigation" class="bg-primary mb-3gap text-white flex items-center min-h-[75px] px-3" aria-label="Main">
             <a href="/"><img src="/images/podnebnik-logo--orange.svg" alt="Podnebnik"></a>
             <a href="https://github.com/podnebnik/website/blob/eleventy/{{ page.inputPath }}" class="github-corner" aria-label="View source on GitHub"><svg width="60" height="60"
                     viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;"
@@ -37,43 +37,43 @@
         {% endblock %}
     </main>
 
-    <footer class="mt-3gap mx-3gap">
+    <footer class="mt-3gap mx-gap md:mx-3gap font-sans text-muted [&_a]:text-[#212529]">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-            <div class="border-t p-2gap lg:border-l">
-                <img src="/static/images/podnebnik-logo--black.svg" alt="Podnebnik" class="logo">
+            <div class="border-t pr-2gap py-2gap lg:p-2gap lg:border-r">
+                <img src="/images/podnebnik-logo--black.svg" alt="Podnebnik" class="opacity-50">
             </div>
-            <div class="border-t p-2gap lg:border-l">
-                <div class="font-bold uppercase text-muted">Podnebnik</div>
-                <ul>
-                    <li><a href="/sl/o-projektu/">O projektu</a></li>
-                    <li><a href="/sl/clanki/">Članki</a></li>
-                    <li><a href="/sl/faq/">FAQ</a></li>
+            <div class="border-t pr-2gap py-2gap lg:p-2gap lg:border-r">
+                <div class="font-bold uppercase text-muted opacity-50 tracking-widest text-xs">Podnebnik</div>
+                <ul class="mt-gap">
+                    <li class="mb-2"><a href="/sl/o-projektu/">O projektu</a></li>
+                    <li class="mb-2"><a href="/sl/clanki/">Članki</a></li>
+                    <li class="mb-2"><a href="/sl/faq/">FAQ</a></li>
                 </ul>
             </div>
-            <div class="border-t p-2gap lg:border-l">
-                <div class="font-bold uppercase text-muted">Naši projekti</div>
-                <ul>
-                    <li><a href="https://covid-19.sledilnik.org/">Covid-19 Sledilnik</a></li>
-                    <li><a href="https://zdravniki.sledilnik.org/">Zdravniki</a></li>
-                    <li><a href="https://podnebnik.org/">Podnebnik</a></li>
+            <div class="border-t pr-2gap py-2gap lg:p-2gap lg:border-r">
+                <div class="font-bold uppercase text-muted opacity-50 tracking-widest text-xs">Naši projekti</div>
+                <ul class="mt-gap">
+                    <li class="mb-2"><a href="https://covid-19.sledilnik.org/">Covid-19 Sledilnik</a></li>
+                    <li class="mb-2"><a href="https://zdravniki.sledilnik.org/">Zdravniki</a></li>
+                    <li class="mb-2"><a href="https://podnebnik.org/">Podnebnik</a></li>
                 </ul>
             </div>
-            <div class="border-t p-2gap">
-                <div class="font-bold uppercase text-muted">Povezave</div>
-                <div class="">
-                    <a href="https://medium.com/podnebnik" target="_blank" rel="noreferrer"><img class="h-[20px] opacity-30 mr-2" loading="lazy" src="https://sledilnik.org/img/medium-icon.94333022.svg" alt="Medium"> Medium</a>
-                    <a href="https://twitter.com/podnebnik" target="_blank" rel="noreferrer"><img class="h-[20px] opacity-30 mr-2" loading="lazy" src="https://sledilnik.org/img/tw-icon.28a330d7.svg" alt="Twitter"> Twitter</a>
-                    <a href="https://fb.me/SledilnikOrg" target="_blank" rel="noreferrer"><img class="h-[20px] opacity-30 mr-2" loading="lazy" src="https://sledilnik.org/img/fb-icon.6256917d.svg" alt="Facebook"> Facebook</a>
-                    <a href="https://www.youtube.com/channel/UCM_Sk2GZ8vTMiyBQ0SMHgJw/videos" target="_blank" rel="noreferrer"><img class="h-[20px] opacity-30 mr-2" loading="lazy" src="https://sledilnik.org/img/youtube.e571414b.svg" alt="YouTube"> YouTube</a>
-                    <a href="https://github.com/podnebnik" target="_blank" rel="noreferrer"><img class="h-[20px] opacity-30 mr-2" loading="lazy" src="https://sledilnik.org/img/gh-icon.040dd043.svg" alt="GitHub"> GitHub</a>
-                </div>
+            <div class="border-t pr-2gap py-2gap lg:p-2gap">
+                <div class="font-bold uppercase text-muted opacity-50 tracking-widest text-xs">Povezave</div>
+                <ul class="mt-gap">
+                    <li class="mb-2"><a href="https://medium.com/podnebnik" target="_blank" rel="noreferrer"><img class="h-[20px] w-[20px] opacity-30 mr-2 inline-block" loading="lazy" src="https://sledilnik.org/img/medium-icon.94333022.svg" alt="Medium"> Medium</a></li>
+                    <li class="mb-2"><a href="https://twitter.com/podnebnik" target="_blank" rel="noreferrer"><img class="h-[20px] w-[20px] opacity-30 mr-2 inline-block" loading="lazy" src="https://sledilnik.org/img/tw-icon.28a330d7.svg" alt="Twitter"> Twitter</a></li>
+                    <li class="mb-2"><a href="https://fb.me/SledilnikOrg" target="_blank" rel="noreferrer"><img class="h-[20px] w-[20px] opacity-30 mr-2 inline-block" loading="lazy" src="https://sledilnik.org/img/fb-icon.6256917d.svg" alt="Facebook"> Facebook</a></li>
+                    <li class="mb-2"><a href="https://www.youtube.com/channel/UCM_Sk2GZ8vTMiyBQ0SMHgJw/videos" target="_blank" rel="noreferrer"><img class="h-[20px] w-[20px] opacity-30 mr-2 inline-block" loading="lazy" src="https://sledilnik.org/img/youtube.e571414b.svg" alt="YouTube"> YouTube</a></li>
+                    <li class="mb-2"><a href="https://github.com/podnebnik" target="_blank" rel="noreferrer"><img class="h-[20px] w-[20px] opacity-30 mr-2 inline-block" loading="lazy" src="https://sledilnik.org/img/gh-icon.040dd043.svg" alt="GitHub"> GitHub</a></li>
+                </ul>
             </div>
         </div>
-        <div class="border-t border-dotted flex justify-between">
-            <div class="">
+        <div class="flex flex-col md:flex-row justify-between mt-2gap md:border-t md:border-dashed">
+            <div class="border-t border-dashed md:border-none pt-gap mb-gap">
                 © 2020-2022 Znanstveno društvo Sledilnik
             </div>
-            <div class="">
+            <div class="border-t border-dashed md:border-none pt-gap mb-gap space-x-gap">
                 <a href="mailto:info@podnebnik.org">info@podnebnik.org</a>
                 <a href="https://sledilnik.org/">sledilnik.org</a>
             </div>

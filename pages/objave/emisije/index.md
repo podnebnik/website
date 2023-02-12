@@ -1,12 +1,17 @@
 ---
 title: Emisije
 date: git Last Modified
+summary: Consectetur consectetur do dolor amet ea et eiusmod enim proident proident officia adipisicing est do. Incididunt elit nostrud anim enim nulla amet anim laborum dolore fugiat.
 ---
 # Emisije
 
+<div class="lead">
+{{ summary }}
+</div>
+
 Consectetur consectetur do dolor amet ea et eiusmod enim proident proident officia adipisicing est do. Incididunt elit nostrud anim enim nulla amet anim laborum dolore fugiat. Velit reprehenderit deserunt dolor sint cupidatat excepteur cillum ullamco exercitation est laboris adipisicing sunt dolor. Dolor esse pariatur anim ut consequat non aliquip Lorem eu occaecat sint. Laboris nulla quis dolor labore laborum officia sint laborum adipisicing enim cupidatat.
 
-<div id="chart-from-fable"></div>
+<div class="chart" id="chart-from-fable"></div>
 
 <script type="module">
     import { render } from 'solid-js/web'
@@ -18,7 +23,7 @@ Labore Lorem consectetur nulla elit anim nostrud tempor nostrud sunt dolore proi
 
 Minim reprehenderit anim fugiat sunt Lorem anim veniam esse eu ea. Dolor quis id proident magna incididunt exercitation. Cupidatat qui cillum enim ullamco esse velit consequat voluptate do sint excepteur irure in. Incididunt occaecat dolor nisi reprehenderit aliquip mollit laboris pariatur Lorem. Ipsum anim veniam dolore magna sunt duis ea deserunt laboris Lorem officia. Ex nulla eu consequat et reprehenderit.
 
-<div id="chart-from-js"></div>
+<div class="chart" id="chart-from-js"></div>
 
 <script type="module">
     import { render } from 'solid-js/web'
@@ -30,7 +35,7 @@ Ex exercitation ipsum pariatur eu ullamco et est excepteur consectetur qui irure
 
 Laborum aute exercitation ~~adipisicing nostrud~~ non enim exercitation exercitation sunt proident. Laborum deserunt labore et non in id Lorem sunt. Labore enim qui magna culpa est. Ea amet eu officia tempor excepteur duis est ea esse enim.
 
-{% image "./images/landscape.png", "Exercitation qui dolor" %}
+<div class="image">{% image "./images/landscape.png", "Exercitation qui dolor" %}</div>
 
 Exercitation qui dolor sint nulla tempor ullamco magna ipsum mollit. Aute laborum laboris dolor aliquip minim exercitation laborum nulla officia sunt ea ea duis. Et eu ipsum esse ad nostrud ea *consectetur* duis. Lorem ipsum id do duis pariatur minim. Et ut culpa occaecat cupidatat id exercitation proident aliquip elit anim.
 
@@ -66,9 +71,11 @@ Eu pariatur nisi proident cillum aliquip incididunt anim reprehenderit cillum cu
 
 Dolore voluptate minim id laborum elit do. Anim ea est velit non. Non proident irure nisi enim mollit dolor excepteur. Amet tempor ipsum veniam cupidatat occaecat consequat voluptate qui cupidatat cillum excepteur reprehenderit quis. Velit pariatur esse duis culpa incididunt consequat culpa sint fugiat in adipisicing. In excepteur fugiat occaecat culpa ad sint excepteur amet aliqua reprehenderit eu. Eu mollit pariatur ut duis consequat culpa.
 
-<is-land on:visible on:idle>
-    <my-chart default="2"></my-chart>
-</is-land>
+<div class="chart">
+    <is-land on:visible on:idle>
+        <my-chart default="2"></my-chart>
+    </is-land>
+</div>
 
 Do dolor minim fugiat velit ut exercitation. Laboris incididunt eiusmod nisi non esse elit nisi duis Lorem. Elit dolore veniam adipisicing sunt occaecat nulla occaecat sit qui deserunt reprehenderit dolore.
 
