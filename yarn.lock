@@ -107,11 +107,6 @@
     semver "^7.3.8"
     slugify "^1.6.5"
 
-"@11ty/is-land@^3.0.1":
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@11ty/is-land/-/is-land-3.0.1.tgz#d51e05e1f88603a77e2e3ecfab2a1cface7c7a2f"
-  integrity sha512-kzeTecbKN10CERZvQW4DC2QQhC/psYTdME/cGW5h3dPd9ejazUmVnmgKdRQ+E6mROAAxs7oCuGcgJhqKBq6oPg==
-
 "@ampproject/remapping@^2.1.0":
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@ampproject/remapping/-/remapping-2.2.0.tgz#56c133824780de3174aed5ab6834f3026790154d"
@@ -947,11 +942,6 @@ commander@^5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-5.1.0.tgz#46abbd1652f8e059bddaef99bbdcb2ad9cf179ae"
   integrity sha512-P0CysNDQ7rtVw4QIQtm+MRxV66vKFSvlsQvGYXZWR3qFU0jlMKHZZZgw8e+8DSah4UDKMqnknRDQz+xuQXQ/Zg==
-
-component-register@~0.8.2:
-  version "0.8.3"
-  resolved "https://registry.yarnpkg.com/component-register/-/component-register-0.8.3.tgz#d94513e72c85934f5abb22f131d6c3ca7e366085"
-  integrity sha512-/0u8ov0WPWi2FL78rgB9aFOcfY8pJT4jP/l9NTOukGNLVQ6hk35sEJE1RkEnNQU3yk48Qr7HlDQjRQKEVfgeWg==
 
 concat-map@0.0.1:
   version "0.0.1"
@@ -2434,13 +2424,6 @@ slugify@^1.6.5:
   version "1.6.5"
   resolved "https://registry.yarnpkg.com/slugify/-/slugify-1.6.5.tgz#c8f5c072bf2135b80703589b39a3d41451fbe8c8"
   integrity sha512-8mo9bslnBO3tr5PEVFzMPIWwWnipGS0xVbYf65zxDqfNwmzYn1LpiKNrR6DlClusuvo+hDHd1zKpmfAe83NQSQ==
-
-solid-element@^1.6.3:
-  version "1.6.3"
-  resolved "https://registry.yarnpkg.com/solid-element/-/solid-element-1.6.3.tgz#866a08dfb4ff4b2abe2c35a2f79b673d343196c2"
-  integrity sha512-yS/sePJNYsbdyZUL5LDIDVIW8VxDMbmx+qm8XRZ7WlR+cr5dHNjp1lIYqCku8DmGLzuYEoumHQAK2oPvEieqfQ==
-  dependencies:
-    component-register "~0.8.2"
 
 solid-js@^1.6.10:
   version "1.6.10"

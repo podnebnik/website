@@ -2,6 +2,7 @@
     "recommendations": [
         "ms-python.python",
         "Ionide.Ionide-fsharp",
+        "bradlc.vscode-tailwindcss",
         "alfonsogarciacaro.vscode-template-fsharp-highlight"
     ],
     "unwantedRecommendations": []

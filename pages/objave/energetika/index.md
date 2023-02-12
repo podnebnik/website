@@ -3,19 +3,15 @@ title: Energetika
 date: git Last Modified
 summary: Dolor esse pariatur anim ut consequat non aliquip Lorem eu occaecat sint. Laboris nulla quis dolor labore laborum officia sint laborum adipisicing enim cupidatat.
 ---
-# Energetika
-
-<div class="lead">
-{{ summary }}
-</div>
-
 Excepteur eu aliqua proident ut ea pariatur. Culpa exercitation est ex elit cillum eiusmod id. Magna eu est laboris reprehenderit ea et. Adipisicing ut do elit et ea consectetur elit voluptate est voluptate mollit aute. Mollit irure et cupidatat anim id enim anim aliquip fugiat. Enim deserunt ullamco Lorem magna elit.
 
-<div class="chart">
-    <is-land on:visible on:idle>
-        <my-chart default="1"></my-chart>
-    </is-land>
-</div>
+<div class="chart" id="chart-from-js"></div>
+
+<script type="module">
+    import { render } from 'solid-js/web'
+    import { Chart }  from '/code/chart.jsx'
+    render(() => Chart({default: 1}), document.querySelector('#chart-from-js'))
+</script>
 
 Nisi ullamco incididunt dolore culpa adipisicing laboris laborum cupidatat exercitation. Cillum do deserunt cillum dolore aliqua irure amet pariatur magna est. Amet enim do ipsum elit cillum adipisicing veniam id laboris Lorem pariatur quis. Eiusmod laborum mollit excepteur veniam. Pariatur ad non ad dolor aliquip nulla adipisicing. Veniam nulla adipisicing ad ipsum laboris et ea veniam minim ad dolor cupidatat incididunt fugiat. Veniam Lorem do fugiat elit dolore laboris aute aliqua.
 
@@ -49,18 +45,16 @@ Esse esse deserunt magna laboris et veniam laborum consectetur ad consequat proi
 
 Ullamco sit dolor et tempor aliquip nostrud sunt. Culpa esse aliqua anim qui officia consequat ipsum mollit incididunt id duis. Adipisicing proident sunt aliqua elit laborum mollit tempor sit fugiat minim pariatur ad dolor minim. Nostrud nisi consectetur commodo reprehenderit qui ad ipsum laborum quis. Mollit irure non deserunt Lorem Lorem anim ea quis excepteur.
 
-<div class="chart">
-    <is-land on:visible on:idle>
-        <my-chart default="1"></my-chart>
-    </is-land>
-</div>
+<div class="chart" id="chart-from-fable"></div>
+
+<script type="module">
+    import { render } from 'solid-js/web'
+    import { Chart }  from '/code/Chart.fs.jsx'
+    render(() => Chart({kind: "bar"}), document.querySelector('#chart-from-fable'))
+</script>
 
 Quis ex aute id voluptate sunt amet proident ex reprehenderit. Laboris consequat ipsum elit magna. Enim id eiusmod eu nulla amet ullamco eu ex esse aute aliqua ea reprehenderit. Consectetur veniam do consequat veniam. Excepteur aute duis aliqua voluptate occaecat veniam duis laboris et irure amet. Labore veniam ex mollit commodo amet aliquip adipisicing. Excepteur tempor culpa enim sunt minim pariatur non dolore.
 
 Sint labore aute proident pariatur. Sunt commodo sit dolor dolor eu voluptate veniam do. Enim esse commodo est elit est qui nisi aute incididunt non excepteur. In quis proident deserunt laborum enim labore deserunt aliquip. Laborum deserunt in id incididunt minim duis in sit nulla. Nisi aliquip ad sit aliqua quis irure et ad id ipsum adipisicing labore qui.
 
 Id Lorem consectetur quis sit id non magna sit ea id dolore laborum anim. Occaecat excepteur cillum est nisi aute ex amet eu fugiat sunt dolore. Officia velit culpa anim tempor laboris dolore veniam et et sunt magna. Sit laborum in velit sint ipsum aute consectetur dolor exercitation nostrud aute enim consequat ea. Tempor sint mollit voluptate aliqua sit tempor.
-
-<script type="module">
-    import '/code/chart.jsx'
-</script>
