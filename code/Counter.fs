@@ -11,7 +11,7 @@ let Counter () =
         $"""
     <>
         <p>Count is {let _ = printfn "Evaluating expression..." in count ()}</p>
-        <button onclick={fun _ -> count () + 1 |> setCount}>
+        <button class="btn" onclick={fun _ -> count () + 1 |> setCount}>
             Click me!
         </button>
     </>

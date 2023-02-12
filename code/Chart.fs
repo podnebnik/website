@@ -42,8 +42,8 @@ let Chart (kind: string) =
         $"""
     <>
         <div>
-            <button disabled={config () = config1} onClick={fun () -> setConfig (config1)}>Chart 1</button>
-            <button disabled={config () = config2} onClick={fun () -> setConfig (config2)}>Chart 2</button>
+            <button class="btn btn-sm" disabled={config () = config1} onClick={fun () -> setConfig (config1)}>Chart 1</button>
+            <button class="btn btn-sm ml-gap" disabled={config () = config2} onClick={fun () -> setConfig (config2)}>Chart 2</button>
         </div>
         <div use:chart></div>
     </>

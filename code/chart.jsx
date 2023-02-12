@@ -1,6 +1,5 @@
 import Highcharts from 'highcharts'
 import { createSignal, createEffect, mergeProps } from "solid-js";
-import { customElement } from 'solid-element';
 
 import data from './data'
 
@@ -22,7 +21,11 @@ const config = {
 const config1 = mergeProps(config, { chart: { type: 'bar' } })
 const config2 = mergeProps(config, { chart: { type: 'line' } })
 
-import style from './chart.sass?inline'
+// If you want to use the component scoped style:
+//   1. create the style
+//   2. uncomment the following line
+//   3. add the <style>{style}</style> component's return statement
+// import style from './chart.sass?inline'
 
 export function Chart(props) {
     const [config, setConfig] = createSignal(props.default === 1 ? config1 : config2);
@@ -37,13 +40,10 @@ export function Chart(props) {
     }
 
     return <>
-        <style>{style}</style>
         <div>
-            <button disabled={config() === config1} onClick={() => setConfig(config1)}>Chart 1</button>
-            <button disabled={config() === config2} onClick={() => setConfig(config2)}>Chart 2</button>
+            <button class="btn btn-sm" disabled={config() === config1} onClick={() => setConfig(config1)}>Chart 1</button>
+            <button class="btn btn-sm ml-gap" disabled={config() === config2} onClick={() => setConfig(config2)}>Chart 2</button>
         </div>
         <div use:chart></div>
     </>
 }
-
-customElement("my-chart", { default: 1 }, (props, { element }) => Chart(props))

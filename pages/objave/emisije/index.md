@@ -3,13 +3,7 @@ title: Emisije
 date: git Last Modified
 summary: Consectetur consectetur do dolor amet ea et eiusmod enim proident proident officia adipisicing est do. Incididunt elit nostrud anim enim nulla amet anim laborum dolore fugiat.
 ---
-# Emisije
-
-<div class="lead">
-{{ summary }}
-</div>
-
-Consectetur consectetur do dolor amet ea et eiusmod enim proident proident officia adipisicing est do. Incididunt elit nostrud anim enim nulla amet anim laborum dolore fugiat. Velit reprehenderit deserunt dolor sint cupidatat excepteur cillum ullamco exercitation est laboris adipisicing sunt dolor. Dolor esse pariatur anim ut consequat non aliquip Lorem eu occaecat sint. Laboris nulla quis dolor labore laborum officia sint laborum adipisicing enim cupidatat.
+Consectetur consectetur do dolor amet ea et eiusmod enim proident proident officia adipisicing est do. Incididunt **elit nostrud anim enim nulla amet** anim laborum dolore fugiat. Velit reprehenderit deserunt dolor sint cupidatat excepteur cillum ullamco exercitation est laboris adipisicing sunt dolor. *Dolor esse pariatur anim ut consequat non aliquip Lorem eu occaecat sint*. Laboris nulla quis dolor labore ~~laborum~~ officia sint laborum adipisicing enim cupidatat.
 
 <div class="chart" id="chart-from-fable"></div>
 
@@ -19,7 +13,7 @@ Consectetur consectetur do dolor amet ea et eiusmod enim proident proident offic
     render(() => Chart({kind: "bar"}), document.querySelector('#chart-from-fable'))
 </script>
 
-Labore Lorem consectetur nulla elit anim nostrud tempor nostrud sunt dolore proident nostrud elit. Dolor nostrud officia incididunt minim dolore mollit deserunt officia ad elit sit sint ex excepteur. Fugiat reprehenderit anim officia nisi nisi aliquip proident. Irure consectetur irure id tempor dolore aliqua mollit velit minim labore culpa magna. Mollit et est exercitation consequat aliqua aliqua deserunt occaecat culpa veniam cupidatat. Reprehenderit magna elit amet id id magna.
+Labore Lorem consectetur nulla elit anim nostrud tempor nostrud sunt dolore proident nostrud elit. Dolor nostrud officia incididunt **minim dolore mollit** deserunt officia ad elit sit sint ex excepteur. Fugiat reprehenderit anim officia nisi nisi aliquip proident. Irure consectetur irure id *tempor dolore aliqua mollit* velit minim labore culpa magna. Mollit et est exercitation consequat aliqua aliqua deserunt occaecat culpa veniam cupidatat. Reprehenderit magna elit amet id id magna.
 
 Minim reprehenderit anim fugiat sunt Lorem anim veniam esse eu ea. Dolor quis id proident magna incididunt exercitation. Cupidatat qui cillum enim ullamco esse velit consequat voluptate do sint excepteur irure in. Incididunt occaecat dolor nisi reprehenderit aliquip mollit laboris pariatur Lorem. Ipsum anim veniam dolore magna sunt duis ea deserunt laboris Lorem officia. Ex nulla eu consequat et reprehenderit.
 
@@ -45,7 +39,7 @@ Voluptate sit duis laboris consectetur in ex. Magna quis fugiat anim tempor id d
 
 ---
 
-## Application
+## Counter application
 
 <div id="counter"></div>
 
@@ -71,11 +65,13 @@ Eu pariatur nisi proident cillum aliquip incididunt anim reprehenderit cillum cu
 
 Dolore voluptate minim id laborum elit do. Anim ea est velit non. Non proident irure nisi enim mollit dolor excepteur. Amet tempor ipsum veniam cupidatat occaecat consequat voluptate qui cupidatat cillum excepteur reprehenderit quis. Velit pariatur esse duis culpa incididunt consequat culpa sint fugiat in adipisicing. In excepteur fugiat occaecat culpa ad sint excepteur amet aliqua reprehenderit eu. Eu mollit pariatur ut duis consequat culpa.
 
-<div class="chart">
-    <is-land on:visible on:idle>
-        <my-chart default="2"></my-chart>
-    </is-land>
-</div>
+<div class="chart" id="chart-from-js-2"></div>
+
+<script type="module">
+    import { render } from 'solid-js/web'
+    import { Chart }  from '/code/chart.jsx'
+    render(() => Chart({default: 1}), document.querySelector('#chart-from-js-2'))
+</script>
 
 Do dolor minim fugiat velit ut exercitation. Laboris incididunt eiusmod nisi non esse elit nisi duis Lorem. Elit dolore veniam adipisicing sunt occaecat nulla occaecat sit qui deserunt reprehenderit dolore.
 
@@ -90,7 +86,3 @@ Consequat Lorem mollit labore occaecat reprehenderit proident duis. Excepteur al
 Sint ea reprehenderit officia ut ea ullamco laboris incididunt. Nisi consectetur do mollit laborum fugiat sint reprehenderit pariatur velit labore. Aute veniam reprehenderit occaecat velit nisi sunt esse ipsum cupidatat proident. Laboris anim amet sunt consequat esse eiusmod sunt irure magna labore ad quis.
 
 Cillum sit cupidatat velit qui. Tempor cupidatat nulla nostrud irure excepteur do veniam veniam cupidatat enim minim occaecat. Cupidatat ipsum velit ad reprehenderit eu tempor fugiat. Eiusmod aute proident enim sunt dolore elit velit. Aute ad anim pariatur cillum cupidatat occaecat pariatur et laboris nostrud aliquip reprehenderit exercitation. Amet cillum esse et deserunt officia minim labore reprehenderit magna et irure do.
-
-<script type="module">
-    import '/code/chart.jsx'
-</script>
