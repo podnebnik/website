@@ -38,8 +38,7 @@ let Chart (kind: string) =
     let chart element =
         Solid.createEffect (fun () -> highcharts?chart (element, config ()))
 
-    JSX.html
-        $"""
+    JSX.html $"""
     <>
         <div>
             <button class="btn btn-sm" disabled={config () = config1} onClick={fun () -> setConfig (config1)}>Chart 1</button>
