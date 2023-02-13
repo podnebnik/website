@@ -5,25 +5,27 @@ summary: Consectetur consectetur do dolor amet ea et eiusmod enim proident proid
 ---
 Consectetur consectetur do dolor amet ea et eiusmod enim proident proident officia adipisicing est do. Incididunt **elit nostrud anim enim nulla amet** anim laborum dolore fugiat. Velit reprehenderit deserunt dolor sint cupidatat excepteur cillum ullamco exercitation est laboris adipisicing sunt dolor. *Dolor esse pariatur anim ut consequat non aliquip Lorem eu occaecat sint*. Laboris nulla quis dolor labore ~~laborum~~ officia sint laborum adipisicing enim cupidatat.
 
-<div class="chart" id="chart-from-fable"></div>
-
-<script type="module">
-    import { render } from 'solid-js/web'
-    import { Chart }  from '/code/Chart.fs.jsx'
-    render(() => Chart({kind: "bar"}), document.querySelector('#chart-from-fable'))
-</script>
+<div class="chart" id="chart-from-fable">
+    <script type="module">
+        import Lazy from '/code/Lazy.jsx'
+        import { render } from 'solid-js/web'
+        import { Chart }  from '/code/Chart.fs.jsx'
+        render(() => Lazy(() => Chart({kind: "bar"})), document.getElementById('chart-from-fable'))
+    </script>
+</div>
 
 Labore Lorem consectetur nulla elit anim nostrud tempor nostrud sunt dolore proident nostrud elit. Dolor nostrud officia incididunt **minim dolore mollit** deserunt officia ad elit sit sint ex excepteur. Fugiat reprehenderit anim officia nisi nisi aliquip proident. Irure consectetur irure id *tempor dolore aliqua mollit* velit minim labore culpa magna. Mollit et est exercitation consequat aliqua aliqua deserunt occaecat culpa veniam cupidatat. Reprehenderit magna elit amet id id magna.
 
 Minim reprehenderit anim fugiat sunt Lorem anim veniam esse eu ea. Dolor quis id proident magna incididunt exercitation. Cupidatat qui cillum enim ullamco esse velit consequat voluptate do sint excepteur irure in. Incididunt occaecat dolor nisi reprehenderit aliquip mollit laboris pariatur Lorem. Ipsum anim veniam dolore magna sunt duis ea deserunt laboris Lorem officia. Ex nulla eu consequat et reprehenderit.
 
-<div class="chart" id="chart-from-js"></div>
-
-<script type="module">
-    import { render } from 'solid-js/web'
-    import { Chart }  from '/code/chart.jsx'
-    render(() => Chart({default: 1}), document.querySelector('#chart-from-js'))
-</script>
+<div class="chart" id="chart-from-js">
+    <script type="module">
+        import Lazy from '/code/Lazy.jsx'
+        import { render } from 'solid-js/web'
+        import { Chart }  from '/code/chart.jsx'
+        render(() => Lazy(() => Chart({default: 1})), document.getElementById('chart-from-js'))
+    </script>
+</div>
 
 Ex exercitation ipsum pariatur eu ullamco et est excepteur consectetur qui irure. Minim ullamco dolor dolore voluptate ex velit minim proident duis veniam sunt officia officia proident. Id duis amet proident aliqua velit voluptate. Duis ad ipsum magna incididunt nostrud voluptate et duis fugiat. Id nulla officia laboris elit fugiat et aliquip ea non. Duis enim ut deserunt non. Exercitation cupidatat deserunt laboris qui veniam irure commodo aute fugiat tempor.
 
@@ -41,13 +43,13 @@ Voluptate sit duis laboris consectetur in ex. Magna quis fugiat anim tempor id d
 
 ## Counter application
 
-<div id="counter"></div>
-
-<script type="module">
-    import { render } from 'solid-js/web'
-    import { Counter }  from '/code/Counter.fs.jsx'
-    render(() => Counter(), document.querySelector('#counter'))
-</script>
+<div id="counter">
+    <script type="module">
+        import { render } from 'solid-js/web'
+        import { Counter }  from '/code/Counter.fs.jsx'
+        render(() => Counter(), document.getElementById('counter'))
+    </script>
+</div>
 
 ---
 
@@ -65,13 +67,14 @@ Eu pariatur nisi proident cillum aliquip incididunt anim reprehenderit cillum cu
 
 Dolore voluptate minim id laborum elit do. Anim ea est velit non. Non proident irure nisi enim mollit dolor excepteur. Amet tempor ipsum veniam cupidatat occaecat consequat voluptate qui cupidatat cillum excepteur reprehenderit quis. Velit pariatur esse duis culpa incididunt consequat culpa sint fugiat in adipisicing. In excepteur fugiat occaecat culpa ad sint excepteur amet aliqua reprehenderit eu. Eu mollit pariatur ut duis consequat culpa.
 
-<div class="chart" id="chart-from-js-2"></div>
-
-<script type="module">
-    import { render } from 'solid-js/web'
-    import { Chart }  from '/code/chart.jsx'
-    render(() => Chart({default: 1}), document.querySelector('#chart-from-js-2'))
-</script>
+<div class="chart" id="chart-from-js-2">
+    <script type="module">
+        import Lazy from '/code/Lazy.jsx'
+        import { render } from 'solid-js/web'
+        import { Chart }  from '/code/chart.jsx'
+        render(() => Lazy(() => Chart({default: 2})), document.getElementById('chart-from-js-2'))
+    </script>
+</div>
 
 Do dolor minim fugiat velit ut exercitation. Laboris incididunt eiusmod nisi non esse elit nisi duis Lorem. Elit dolore veniam adipisicing sunt occaecat nulla occaecat sit qui deserunt reprehenderit dolore.
 
