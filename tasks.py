@@ -86,10 +86,13 @@ def create_databases(c):
         'databases': {}
     }
 
+    databases = []
+
     # Create a new database for each data package
     for package_path in get_datapackage_paths():
         package = Package(package_path)
         database = Path(f'{SQLITE_DIR / package.name}.db')
+        databases.append(database)
 
         print(f'\nImporting data package {package.name}:')
 
@@ -124,7 +127,10 @@ def create_databases(c):
                 print(f'    Skipping resource {resource.name}, {resource.format} @ {resource.path}')
             c.run(f'sqlite-utils insert {database} {resource.name} {DATASETS_DIR / package_path.parent /resource.path} --csv --detect-types --silent')
 
-    # Write metadata
+    # Create the datasette inspect file
+    c.run(f'datasette inspect {" ".join([str(db) for db in databases])} --inspect-file {SQLITE_DIR / "inspect-data.json"}')
+
+    # Create the datasette metadata file
     with open(SQLITE_DIR / 'metadata.json', 'w') as fo:
         json.dump(metadata, fo, indent=4)
 
@@ -134,4 +140,4 @@ def datasette(c):
     '''Start datasette server.'''
     create_databases(c)
     print('\nStarting Datasette server...\n')
-    c.run(f'datasette serve {SQLITE_DIR} --metadata {SQLITE_DIR}/metadata.json --port 8001 --cors')
+    c.run(f'datasette serve {SQLITE_DIR} --inspect-file {SQLITE_DIR}/inspect-data.json --metadata {SQLITE_DIR}/metadata.json --port 8010 --cors')
