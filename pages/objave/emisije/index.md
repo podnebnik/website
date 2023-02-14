@@ -7,7 +7,7 @@ Consectetur consectetur do dolor amet ea et eiusmod enim proident proident offic
 
 <div class="chart" id="chart-from-fable">
     <script type="module">
-        import Lazy from '/code/Lazy.jsx'
+        import Lazy from '/code/lazy.jsx'
         import { render } from 'solid-js/web'
         import { Chart }  from '/code/Chart.fs.jsx'
         render(() => Lazy(() => Chart({kind: "bar"})), document.getElementById('chart-from-fable'))
@@ -20,7 +20,7 @@ Minim reprehenderit anim fugiat sunt Lorem anim veniam esse eu ea. Dolor quis id
 
 <div class="chart" id="chart-from-js">
     <script type="module">
-        import Lazy from '/code/Lazy.jsx'
+        import Lazy from '/code/lazy.jsx'
         import { render } from 'solid-js/web'
         import { Chart }  from '/code/chart.jsx'
         render(() => Lazy(() => Chart({default: 1})), document.getElementById('chart-from-js'))
@@ -69,7 +69,7 @@ Dolore voluptate minim id laborum elit do. Anim ea est velit non. Non proident i
 
 <div class="chart" id="chart-from-js-2">
     <script type="module">
-        import Lazy from '/code/Lazy.jsx'
+        import Lazy from '/code/lazy.jsx'
         import { render } from 'solid-js/web'
         import { Chart }  from '/code/chart.jsx'
         render(() => Lazy(() => Chart({default: 2})), document.getElementById('chart-from-js-2'))
