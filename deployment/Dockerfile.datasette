@@ -1,0 +1,27 @@
+FROM python:3.11-slim as builder
+
+WORKDIR /build
+
+RUN apt-get update && \
+    apt-get install -y pipenv
+
+COPY Pipfile /build/
+COPY Pipfile.lock /build/
+RUN pipenv install --system --deploy --ignore-pipfile
+
+COPY data /build/data/
+COPY tasks.py /build/
+
+RUN invoke create-databases
+
+# -----------------------------------------------------------------------------
+
+FROM datasetteproject/datasette
+
+WORKDIR /datasette
+
+COPY --from=builder /build/var/sqlite /datasette/sqlite
+
+EXPOSE 8001
+
+CMD datasette serve --host 0.0.0.0 --port 8001 --cors --inspect-file sqlite/inspect-data.json --metadata sqlite/metadata.json ./sqlite/*.db
