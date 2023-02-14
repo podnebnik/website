@@ -3,6 +3,6 @@
     <div class="leading-normal">{{ summary }}</div>
     <div class="flex justify-between mt-gap md:mt-2gap font-sans">
         <div class="text-sm bg-tertiary rounded-md py-[0.1rem] px-3">Kategorija</div>
-        <div class="text-sm text-muted">{{ date }}</div>
+        <div class="text-sm text-muted">{{ date | date: '%Y-%m-%d' }}</div>
     </div>
 </a>
