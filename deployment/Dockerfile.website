@@ -1,0 +1,26 @@
+FROM node:19 as builder
+
+WORKDIR /build
+
+RUN wget https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+RUN dpkg -i packages-microsoft-prod.deb
+
+RUN apt-get update && \
+    apt-get install -y dotnet-sdk-6.0
+
+COPY .config /build/
+RUN dotnet tool restore
+
+COPY package.json /build/
+COPY yarn.lock /build/
+RUN yarn install
+
+COPY . /build
+
+RUN yarn run build
+
+# -----------------------------------------------------------------------------
+
+FROM nginx:1.23
+
+COPY --from=builder /build/dist/ /usr/share/nginx/html/
