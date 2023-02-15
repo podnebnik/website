@@ -25,6 +25,8 @@ The project is build on top of the following fantastic tools:
 
 Depending on whether you want to author data, text or visualizations, you will need to install different tools. However, the basic setup is the same for all three.
 
+> NOTE If you are using the [VS Code](https://code.visualstudio.com/) editor, you can use the [Remote Containers](https://code.visualstudio.com/docs/remote/containers) extension and the provided development container to develop in a Docker container. This will ensure that you have all the necessary tools installed and configured automatically. You can find the configuration for the container in the `.devcontainer` folder. In this case you can skip the rest of this section (up to the NOTES) and start developing right away.
+
 To start developing you need to have the following requirements on:
 
 - `node` https://nodejs.org/en/
