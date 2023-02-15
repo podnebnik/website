@@ -10,8 +10,8 @@ Consectetur consectetur do dolor amet ea et eiusmod enim proident proident offic
     <script type="module">
         import Lazy from '/code/lazy.jsx'
         import { render } from 'solid-js/web'
-        import { Chart }  from '/code/Chart.fs.jsx'
-        render(() => Lazy(() => Chart({kind: "bar"})), document.getElementById('chart-from-fable'))
+        import { Chart }  from '/code/examples/fable.highcharts/Chart.fs.jsx'
+        render(() => Lazy(() => Chart({kind: 'bar'})), document.getElementById('chart-from-fable'))
     </script>
 </div>
 
@@ -19,12 +19,12 @@ Labore Lorem consectetur nulla elit anim nostrud tempor nostrud sunt dolore proi
 
 Minim reprehenderit anim fugiat sunt Lorem anim veniam esse eu ea. Dolor quis id proident magna incididunt exercitation. Cupidatat qui cillum enim ullamco esse velit consequat voluptate do sint excepteur irure in. Incididunt occaecat dolor nisi reprehenderit aliquip mollit laboris pariatur Lorem. Ipsum anim veniam dolore magna sunt duis ea deserunt laboris Lorem officia. Ex nulla eu consequat et reprehenderit.
 
-<div class="chart" id="chart-from-js">
+<div class="chart" id="chart-from-js-1">
     <script type="module">
         import Lazy from '/code/lazy.jsx'
         import { render } from 'solid-js/web'
-        import { Chart }  from '/code/chart.jsx'
-        render(() => Lazy(() => Chart({default: 1})), document.getElementById('chart-from-js'))
+        import Chart from '/code/examples/javascript.highcharts/chart.jsx'
+        render(() => Lazy(() => Chart({kind: 'bar'})), document.getElementById('chart-from-js-1'))
     </script>
 </div>
 
@@ -47,7 +47,7 @@ Voluptate sit duis laboris consectetur in ex. Magna quis fugiat anim tempor id d
 <div id="counter">
     <script type="module">
         import { render } from 'solid-js/web'
-        import { Counter }  from '/code/Counter.fs.jsx'
+        import { Counter }  from '/code/examples/fable.counter/Counter.fs.jsx'
         render(() => Counter(), document.getElementById('counter'))
     </script>
 </div>
@@ -72,8 +72,8 @@ Dolore voluptate minim id laborum elit do. Anim ea est velit non. Non proident i
     <script type="module">
         import Lazy from '/code/lazy.jsx'
         import { render } from 'solid-js/web'
-        import { Chart }  from '/code/chart.jsx'
-        render(() => Lazy(() => Chart({default: 2})), document.getElementById('chart-from-js-2'))
+        import Chart from '/code/examples/javascript.highcharts/chart.jsx'
+        render(() => Lazy(() => Chart({kind: 'line'})), document.getElementById('chart-from-js-2'))
     </script>
 </div>
 
