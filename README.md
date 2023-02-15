@@ -1,6 +1,6 @@
 # Podnebnik
 
-This repository is the source code for the podnebnik.org website.
+This repository is the source code for the [podnebnik.org](https://podnebnik.org) website.
 
 The project is structured as a multi page, statically generated web site that allows authors to create rich narratives by combining data, text and visualizations. By combining data, content and code in one repository it is possible to keep all three components in sync, have a single source of truth, and a complete history of changes.
 
@@ -59,7 +59,7 @@ and point your browser to:
 
 ## Developing data
 
-Please see https://github.com/podnebnik/data for more information. Please not that we are in the process of merging the two repositories so the current information in the `data` repository may be out of date.
+Please see ()[https://github.com/podnebnik/data] for more information. Please not that we are in the process of merging the two repositories so the current information in the `data` repository may be out of date.
 
 ## Developing content
 
