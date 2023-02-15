@@ -13,8 +13,8 @@ Excepteur eu aliqua proident ut ea pariatur. Culpa exercitation est ex elit cill
 <script type="module">
     import Lazy from '/code/lazy.jsx'
     import { render } from 'solid-js/web'
-    import { Chart }  from '/code/chart.jsx'
-    render(() => Lazy(() => Chart({default: 1})), document.querySelector('#chart-from-js'))
+    import Chart from '/code/examples/javascript.highcharts/chart.jsx'
+    render(() => Lazy(() => Chart({kind: 'bar'})), document.querySelector('#chart-from-js'))
 </script>
 
 Nisi ullamco incididunt dolore culpa adipisicing laboris laborum cupidatat exercitation. Cillum do deserunt cillum dolore aliqua irure amet pariatur magna est. Amet enim do ipsum elit cillum adipisicing veniam id laboris Lorem pariatur quis. Eiusmod laborum mollit excepteur veniam. Pariatur ad non ad dolor aliquip nulla adipisicing. Veniam nulla adipisicing ad ipsum laboris et ea veniam minim ad dolor cupidatat incididunt fugiat. Veniam Lorem do fugiat elit dolore laboris aute aliqua.
@@ -54,7 +54,7 @@ Ullamco sit dolor et tempor aliquip nostrud sunt. Culpa esse aliqua anim qui off
 <script type="module">
     import Lazy from '/code/lazy.jsx'
     import { render } from 'solid-js/web'
-    import { Chart }  from '/code/Chart.fs.jsx'
+    import { Chart }  from '/code/examples/fable.highcharts/Chart.fs.jsx'
     render(() => Lazy(() => Chart({kind: "bar"})), document.querySelector('#chart-from-fable'))
 </script>
 

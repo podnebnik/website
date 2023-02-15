@@ -3,7 +3,7 @@ module Chart
 open Fable.Core
 open Fable.Core.JsInterop
 
-let private data: obj = importDefault "./data"
+let private data: obj = importDefault "../data"
 
 let private config =
     {| title = {| text = "Fruit Consumption in F#" |}
