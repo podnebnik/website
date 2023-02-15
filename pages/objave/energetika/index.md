@@ -1,6 +1,9 @@
 ---
 title: Energetika
 date: git Last Modified
+topics:
+    - energetika
+    - emisije
 summary: Dolor esse pariatur anim ut consequat non aliquip Lorem eu occaecat sint. Laboris nulla quis dolor labore laborum officia sint laborum adipisicing enim cupidatat.
 ---
 Excepteur eu aliqua proident ut ea pariatur. Culpa exercitation est ex elit cillum eiusmod id. Magna eu est laboris reprehenderit ea et. Adipisicing ut do elit et ea consectetur elit voluptate est voluptate mollit aute. Mollit irure et cupidatat anim id enim anim aliquip fugiat. Enim deserunt ullamco Lorem magna elit.
