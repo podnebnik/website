@@ -8,7 +8,7 @@ layout: base.html
         S pomočjo analiz in prikazov podatkov omogočamo boljšo oceno tveganj podnebnih sprememb v Sloveniji.
     </div>
 
-    {%- for post in collections.post -%}
-    {% include '_includes/card.html', url: post.url, title: post.title, summary: post.data.summary, date: post.date %}
-    {%- endfor -%}
+    {% for post in collections.post reversed %}
+    {% include '_includes/card.html', url: post.url, title: post.data.title, summary: post.data.summary, date: post.date, tags: post.data.topics %}
+    {% endfor %}
 </div>
