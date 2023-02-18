@@ -29,7 +29,7 @@ Deserunt aliqua proident minim id sint enim amet in occaecat reprehenderit labor
 
 Officia sit sunt nostrud non ullamco commodo aliquip velit reprehenderit aliqua. Elit occaecat et tempor et ad. Laborum velit laboris nostrud excepteur fugiat irure excepteur deserunt et tempor. Sint occaecat mollit qui sit amet dolore. Pariatur eu ipsum sit dolor elit sint cupidatat magna. Non ex irure laboris proident sit. Elit mollit dolor amet occaecat veniam veniam exercitation tempor.
 
-<div class="image">{% image "./images/landscape.png", "Exercitation qui dolor" %}</div>
+<div class="image">{% image "./assets/landscape.png", "Exercitation qui dolor" %}</div>
 
 Ea labore ut aute duis anim laboris incididunt ipsum ea. Pariatur cupidatat esse sit in sunt. Elit cillum sunt non aute fugiat sint enim sunt. Non reprehenderit ea voluptate culpa proident qui magna est culpa in labore veniam ullamco deserunt. Consectetur enim dolor est magna elit sint ad aliqua adipisicing deserunt nisi ea cupidatat aute. Incididunt esse ea elit nostrud.
 
