@@ -24,7 +24,7 @@ summary: Consectetur consectetur do dolor amet ea et eiusmod enim proident proid
         <span id="yearLabel"></span>
         <input type="range" min="2020" max="2100" value="2050" class="form-range" id="yearSlider">
     </div>
-    <img id="svg_graph" src="/assets/pages/searise/graph.svg">
+    <img id="svg_graph" class="w-96" src="/assets/pages/dvig-morja/graph.svg">
 </div>
 
 <div class="chart h-80" id="searise"></div>
