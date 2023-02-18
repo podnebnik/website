@@ -1,15 +1,16 @@
-const Path = require('path')
+const path = require("path")
+const fs = require("fs")
 
 const Image = require("@11ty/eleventy-img")
 const SolidPlugin = require('vite-plugin-solid')
 const EleventyVitePlugin = require('@11ty/eleventy-plugin-vite')
 
 async function imageShortcode(src, alt, sizes) {
-    // If `src` is a relative path, resolve it relative to the current page.
-    const path = src.startsWith('./') ? Path.join(Path.dirname(this.page.inputPath), src) : src
+    // If src is a relative path, resolve it relative to the current page.
+    const imagePath = src.startsWith('./') ? path.join(path.dirname(this.page.inputPath), src) : src
 
-    let metadata = await Image(path, {
-        outputDir: "./dist/img/",
+    let metadata = await Image(imagePath, {
+        outputDir: "dist/img/",
         widths: [800],
         formats: ["webp"]
     })
@@ -21,22 +22,22 @@ async function imageShortcode(src, alt, sizes) {
         decoding: "async",
     }
 
-    // You bet we throw an error on missing alt in `imageAttributes` (alt="" works okay)
     return Image.generateHTML(metadata, imageAttributes, {
         whitespaceMode: "inline"
     })
 }
 
 module.exports = function (eleventyConfig) {
-    eleventyConfig.addPassthroughCopy('code')
-    eleventyConfig.addPassthroughCopy('styles')
-    eleventyConfig.addPassthroughCopy('assets')
-
     eleventyConfig.addPlugin(EleventyVitePlugin, {
         viteOptions: {
             plugins: [SolidPlugin()]
         }
     })
+
+    eleventyConfig.addPassthroughCopy('code')
+    eleventyConfig.addPassthroughCopy('styles')
+    eleventyConfig.addPassthroughCopy('assets')
+    eleventyConfig.addPassthroughCopy('public')
 
     eleventyConfig.addAsyncShortcode("image", imageShortcode)
 
