@@ -212,11 +212,11 @@
         },
         "frictionless": {
             "hashes": [
-                "sha256:025cc7d9e12793f9fccecfa3838cb8c6246ea8671588aedee1d8593b835f2313",
-                "sha256:f39f866d8676a268a7871bf306bc0f1fa80d35766bf637aa18b82586da04b9ff"
+                "sha256:83d395f0ede920a3acc86291fe4bc5d6f9d37912940f29d68ea3ba96c5089ac1",
+                "sha256:89ee4bca3017771238f145a1981b14f5cb2720fbda4d70d84f0d12d02d047e41"
             ],
             "index": "pypi",
-            "version": "==5.5.5"
+            "version": "==5.6.2"
         },
         "h11": {
             "hashes": [
