@@ -25,6 +25,7 @@
         "vscode": {
 			"extensions": [
                 "ms-python.python",
+                "georgewfraser.fsharp-language-server",
                 "Ionide.Ionide-fsharp"
             ]
 		}
