@@ -32,7 +32,7 @@ Ex exercitation ipsum pariatur eu ullamco et est excepteur consectetur qui irure
 
 Laborum aute exercitation ~~adipisicing nostrud~~ non enim exercitation exercitation sunt proident. Laborum deserunt labore et non in id Lorem sunt. Labore enim qui magna culpa est. Ea amet eu officia tempor excepteur duis est ea esse enim.
 
-<div class="image">{% image "assets/pages/emisije/landscape.png", "Exercitation qui dolor" %}</div>
+<div class="image">{% image "assets/objave/emisije/landscape.png", "Exercitation qui dolor" %}</div>
 
 Exercitation qui dolor sint nulla tempor ullamco magna ipsum mollit. Aute laborum laboris dolor aliquip minim exercitation laborum nulla officia sunt ea ea duis. Et eu ipsum esse ad nostrud ea *consectetur* duis. Lorem ipsum id do duis pariatur minim. Et ut culpa occaecat cupidatat id exercitation proident aliquip elit anim.
 
