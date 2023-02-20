@@ -16,3 +16,8 @@ updates:
   #   directory: "/" # Location of package manifests
   #   schedule:
   #     interval: "monthly"
+
+  - package-ecosystem: "docker" # See documentation for possible values
+    directory: "/deployment" # Location of package manifests
+    schedule:
+      interval: "monthly"
