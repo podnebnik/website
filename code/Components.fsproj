@@ -5,6 +5,7 @@
 
     <ItemGroup>
         <Compile Include="examples/fable.counter/Counter.fs" />
+        <Compile Include="examples/fable.elmish/Counter.fs" />
         <Compile Include="examples/fable.highcharts/Chart.fs" />
     </ItemGroup>
 

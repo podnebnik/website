@@ -40,9 +40,7 @@ Labore aliquip velit consequat veniam deserunt reprehenderit qui est Lorem. Dese
 
 Voluptate sit duis laboris consectetur in ex. Magna quis fugiat anim tempor id dolore adipisicing eu fugiat fugiat consectetur. Officia commodo ad sint culpa occaecat non commodo. Occaecat nulla sit excepteur labore dolore mollit nisi id adipisicing irure.
 
----
-
-## Counter application
+## Labore Counter
 
 <div id="counter">
     <script type="module">
@@ -52,13 +50,18 @@ Voluptate sit duis laboris consectetur in ex. Magna quis fugiat anim tempor id d
     </script>
 </div>
 
----
-
 Eiusmod laboris officia incididunt non eu sint esse sunt velit id pariatur. Officia consectetur exercitation do proident et minim in excepteur deserunt. Esse esse commodo irure elit nostrud aute eu. **Sint reprehenderit cillum exercitation eu anim tempor in non.** Labore aliquip ea non occaecat quis aliquip amet officia ex officia occaecat velit et. Eu Lorem officia pariatur quis mollit ut laborum aliqua ullamco in dolor irure qui fugiat. Commodo mollit occaecat ullamco laboris veniam non ut.
 
-## Voluptate aliqua ut incididunt velit officia ullamco officia dolor
+## Voluptate Elmish counter
 
-Pariatur do aliqua pariatur deserunt. Labore nulla ullamco nulla duis occaecat nostrud ad. Nulla est adipisicing sunt culpa labore mollit et ex enim ad et irure consequat. Esse excepteur est mollit officia. Nisi quis minim elit magna eu cillum anim adipisicing dolor aliquip. Aute minim consectetur consectetur aliqua ex exercitation aute consequat.
+<div id="elmish-counter">
+    <script type="module">
+        import Lazy from '/code/lazy.jsx'
+        import { render } from 'solid-js/web'
+        import { Counter } from '/code/examples/fable.elmish/Counter.fs.jsx'
+        render(() => Lazy(() => Counter()), document.getElementById('elmish-counter'))
+    </script>
+</div>
 
 Ex sunt ut pariatur laboris nostrud et esse nostrud. Ad sunt Lorem enim id qui ad incididunt ad. Ut tempor ex minim ipsum ut qui Lorem occaecat mollit dolore. Ullamco sint Lorem aliquip consequat adipisicing mollit nisi aute incididunt irure eiusmod commodo.
 
