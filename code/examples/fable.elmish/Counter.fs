@@ -10,18 +10,16 @@ type Message =
     | Increment
     | Decrement
 
-let init () = { Count = 0 }, Cmd.none
+[<Emit("setInterval($0, $1)")>]
+let setInterval (f: unit -> unit) (n: int) : unit = jsNative
+
+let init () =
+    { Count = 0 }, Cmd.ofEffect (fun dispatch -> setInterval (fun () -> dispatch Increment) 2000)
 
 let update (message: Message) (state: State) =
     match message with
-    | Increment ->
-        { state with
-            Count = state.Count + 1 },
-        Cmd.none
-    | Decrement ->
-        { state with
-            Count = state.Count - 1 },
-        Cmd.none
+    | Increment -> { state with Count = state.Count + 1 }, Cmd.none
+    | Decrement -> { state with Count = state.Count - 1 }, Cmd.none
 
 [<JSX.Component>]
 let Counter () =
