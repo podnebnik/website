@@ -1,0 +1,31 @@
+name: Build (pull request)
+
+on:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Install dotnet
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0.x'
+
+      - uses: actions/setup-node@v3.6
+        with:
+          node-version: '19'
+
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - uses: actions/cache@v3.2.6
+        with:
+          path: node_modeules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - run: yarn install
+      - run: yarn build
