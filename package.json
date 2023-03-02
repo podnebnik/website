@@ -21,6 +21,6 @@
     "autoprefixer": "^10.4.13",
     "postcss": "^8.4.21",
     "sass": "^1.58.3",
-    "vite-plugin-solid": "^2.5.0"
+    "vite-plugin-solid": "^2.6.1"
   }
 }
