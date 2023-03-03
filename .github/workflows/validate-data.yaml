@@ -4,7 +4,13 @@ on:
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/validate-data.yaml'
+      - 'data/**'
   pull_request:
+    paths:
+      - '.github/workflows/validate-data.yaml'
+      - 'data/**'
   workflow_dispatch:
 
 jobs:
