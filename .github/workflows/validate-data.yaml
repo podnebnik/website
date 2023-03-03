@@ -19,5 +19,5 @@ jobs:
 
       - name: Validate data
         uses: frictionlessdata/repository@v1
-          with:
-            packages: "data/**/*package.yaml"
+        with:
+          packages: "data/**/*package.yaml"
