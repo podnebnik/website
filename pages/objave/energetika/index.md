@@ -8,14 +8,14 @@ summary: Dolor esse pariatur anim ut consequat non aliquip Lorem eu occaecat sin
 ---
 Excepteur eu aliqua proident ut ea pariatur. Culpa exercitation est ex elit cillum eiusmod id. Magna eu est laboris reprehenderit ea et. Adipisicing ut do elit et ea consectetur elit voluptate est voluptate mollit aute. Mollit irure et cupidatat anim id enim anim aliquip fugiat. Enim deserunt ullamco Lorem magna elit.
 
-<div class="chart" id="chart-from-js"></div>
-
-<script type="module">
-    import Lazy from '/code/lazy.jsx'
-    import { render } from 'solid-js/web'
-    import Chart from '/code/examples/javascript.highcharts/chart.jsx'
-    render(() => Lazy(() => Chart({kind: 'bar'})), document.getElementById('chart-from-js'))
-</script>
+<div class="chart" id="chart-from-js">
+    <script type="module">
+        import Lazy from '/code/lazy.jsx'
+        import { render } from 'solid-js/web'
+        import Chart from '/code/examples/javascript.highcharts/chart.jsx'
+        render(() => Lazy(() => Chart({kind: 'bar'})), document.getElementById('chart-from-js'))
+    </script>
+</div>
 
 Nisi ullamco incididunt dolore culpa adipisicing laboris laborum cupidatat exercitation. Cillum do deserunt cillum dolore aliqua irure amet pariatur magna est. Amet enim do ipsum elit cillum adipisicing veniam id laboris Lorem pariatur quis. Eiusmod laborum mollit excepteur veniam. Pariatur ad non ad dolor aliquip nulla adipisicing. Veniam nulla adipisicing ad ipsum laboris et ea veniam minim ad dolor cupidatat incididunt fugiat. Veniam Lorem do fugiat elit dolore laboris aute aliqua.
 

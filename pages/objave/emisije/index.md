@@ -36,6 +36,10 @@ Laborum aute exercitation ~~adipisicing nostrud~~ non enim exercitation exercita
 
 Exercitation qui dolor sint nulla tempor ullamco magna ipsum mollit. Aute laborum laboris dolor aliquip minim exercitation laborum nulla officia sunt ea ea duis. Et eu ipsum esse ad nostrud ea *consectetur* duis. Lorem ipsum id do duis pariatur minim. Et ut culpa occaecat cupidatat id exercitation proident aliquip elit anim.
 
+<div class="chart">
+    <div class="flourish-embed flourish-hierarchy" data-src="visualisation/12923003"><script src="https://public.flourish.studio/resources/embed.js"></script></div>
+</div>
+
 Labore aliquip velit consequat veniam deserunt reprehenderit qui est Lorem. Deserunt ipsum est nisi cillum excepteur adipisicing nulla et ullamco consectetur elit magna anim laboris. Consectetur ex minim excepteur incididunt. Ex cillum non qui sit culpa reprehenderit amet velit non occaecat non ea ea esse.
 
 Voluptate sit duis laboris consectetur in ex. Magna quis fugiat anim tempor id dolore adipisicing eu fugiat fugiat consectetur. Officia commodo ad sint culpa occaecat non commodo. Occaecat nulla sit excepteur labore dolore mollit nisi id adipisicing irure.
