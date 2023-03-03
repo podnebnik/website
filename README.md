@@ -1,5 +1,8 @@
 # Podnebnik
 
+[![Build website](https://github.com/podnebnik/website/actions/workflows/push.yml/badge.svg)](https://github.com/podnebnik/website/actions/workflows/push.yml)
+[![Validate data](https://github.com/podnebnik/website/actions/workflows/validate-data.yaml/badge.svg)](https://repository.frictionlessdata.io/pages/dashboard.html?user=podnebnik&repo=website&flow=validate+data)
+
 This repository is the source code for the [podnebnik.org](https://podnebnik.org) website.
 
 The project is structured as a multi page, statically generated web site that allows authors to create rich narratives by combining data, text and visualizations. By combining data, content and code in one repository it is possible to keep all three components in sync, have a single source of truth, and a complete history of changes.
