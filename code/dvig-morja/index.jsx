@@ -40,9 +40,21 @@ export default function SeaRise(container) {
         zoom: 16,
         minZoom: 12,
         maxZoom: 18,
-        fullscreenControl: true
+        zoomControl: false
     })
 
+    L.control.zoom({
+        zoomInTitle: 'Povečava',
+        zoomOutTitle: 'Pomanjšava'
+    }).addTo(map);
+
+    map.addControl(new L.Control.Fullscreen({
+        title: {
+            'false': 'Celozaslonski način',
+            'true': 'Izhod iz celozaslonskega načina'
+        }
+    }));
+    
     const hash = L.hash(map, [parisAgreementCheckbox.checked ? 1 : 0, yearSelectionSlider.value])
 
     var svgGraphMarker = document.createElementNS("http://www.w3.org/2000/svg", 'circle') // Create a path in SVG's namespace
