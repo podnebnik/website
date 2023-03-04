@@ -39,7 +39,8 @@ export default function SeaRise(container) {
         center: [45.5449, 13.7269],
         zoom: 16,
         minZoom: 12,
-        maxZoom: 18
+        maxZoom: 18,
+        fullscreenControl: true
     })
 
     const hash = L.hash(map, [parisAgreementCheckbox.checked ? 1 : 0, yearSelectionSlider.value])
