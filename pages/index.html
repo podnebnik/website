@@ -1,11 +1,12 @@
 ---
 title: Podnebnik
 layout: base.html
+summary: S pomočjo analiz in prikazov podatkov omogočamo boljšo oceno tveganj podnebnih sprememb v Sloveniji.
 ---
 
 <div class="prose lg:prose-lg prose-neutral mx-auto px-gap prose-headings:font-sans prose-headings:font-bold">
     <div class="lead">
-        S pomočjo analiz in prikazov podatkov omogočamo boljšo oceno tveganj podnebnih sprememb v Sloveniji.
+        {{ summary }}
     </div>
 
     {% for post in collections.post reversed %}
