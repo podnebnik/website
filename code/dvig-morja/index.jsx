@@ -148,8 +148,8 @@ export default function SeaRise(container) {
             updateUI()
         }
 
-        const osm = L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-            attribution: '<a href="http://osm.org/copyright">OpenStreetMap</a>',
+        const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> contributors',
             minZoom: 1,
             maxZoom: 18
         })
@@ -158,7 +158,7 @@ export default function SeaRise(container) {
         elevationLayer = L.tileLayer.gl({
             fragmentShader: fragmentShader,
             uniforms: { uTargetHeight: Number(0) },
-            attribution: '<a href="http://gis.arso.gov.si">ARSO</a>, <a href="https://gitlab.com/IvanSanchez/Leaflet.TileLayer.GL">Leaflet.TileLayer.GL</a>',
+            attribution: '<a href="https://www.arso.gov.si/">ARSO</a>, <a href="https://gitlab.com/IvanSanchez/Leaflet.TileLayer.GL">Leaflet.TileLayer.GL</a>',
             tileLayers: [L.tileLayer('https://davidupload.blob.core.windows.net/data/tiles/{z}/{x}/{y}.png', { tms: true })]
         })
         elevationLayer.addTo(map)
