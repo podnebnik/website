@@ -4,7 +4,7 @@ layout: base.html
 
 {% block content %}
 <div class="prose lg:prose-lg prose-neutral mx-auto px-gap prose-headings:font-sans prose-headings:font-bold">
-    <h1 class="!mb-gap">{% block title %}{{ title }}</h1>{% endblock %}</h1>
+    <h1 class="!mb-gap">{% block title %}{{ title }}{% endblock %}</h1>
 
     <div class="text-sm text-right">Zadnja sprememba: {{ page.date | date: '%Y-%m-%d ob %H:%M' }}</div>
 
