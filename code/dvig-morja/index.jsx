@@ -1,4 +1,3 @@
-import './leaflet-hash'
 import './Leaflet.TileLayer.GL'
 
 import svgGraphData from '/assets/objave/dvig-morja/graph.svg'
@@ -26,13 +25,10 @@ void main(void) {
     }
 }`
 
-export default function SeaRise(container) {
+export default function SeaRise(container, svgGraph, parisAgreement, flooding) {
 
-    const parisAgreementCheckbox = container.querySelector('.parisAgreementCheckbox')
-    const yearSelectionSlider = document.querySelector('.yearSelectionSlider')
-    const yearSelectionLabel = document.querySelector('.yearSelectionLabel')
+    const yearSelectionSlider = container.querySelector('.yearSelectionSlider')
 
-    const svgGraph = document.querySelector('.svgGraph')
     svgGraph.data = svgGraphData
 
     const map = L.map(container.querySelector('.map'), {
@@ -54,8 +50,6 @@ export default function SeaRise(container) {
             'true': 'Izhod iz celozaslonskega načina'
         }
     }));
-    
-    const hash = L.hash(map, [parisAgreementCheckbox.checked ? 1 : 0, yearSelectionSlider.value])
 
     var svgGraphMarker = document.createElementNS("http://www.w3.org/2000/svg", 'circle') // Create a path in SVG's namespace
     svgGraphMarker.setAttribute("r", "10")
@@ -68,12 +62,12 @@ export default function SeaRise(container) {
     var elevationLayer = null
 
     function updatePath() {
-        path = parisAgreementCheckbox.checked ? svgGraph.contentDocument.getElementById('line2d_34') : svgGraph.contentDocument.getElementById('line2d_32')
-        svgGraphMarker.setAttribute("style", parisAgreementCheckbox.checked ? "fill: #4682b4" : "fill: #ff4500")
+        path = parisAgreement ? svgGraph.contentDocument.getElementById('line2d_34') : svgGraph.contentDocument.getElementById('line2d_32')
+        svgGraphMarker.setAttribute("style", parisAgreement ? "fill: #4682b4" : "fill: #ff4500")
     }
 
     function calcLevel() {
-        return 120 + (svgGraphMarker.getAttribute("cy") - yOf00) / (yOf10 - yOf00) * 100
+        return (flooding?120:0) + (svgGraphMarker.getAttribute("cy") - yOf00) / (yOf10 - yOf00) * 100
     }
 
     function findY(path, x) {
@@ -117,9 +111,8 @@ export default function SeaRise(container) {
         const levelValue = calcLevel()
         elevationLayer.setUniform('uTargetHeight', levelValue)
         elevationLayer.reRender()
-        yearSelectionLabel.innerHTML = 'Leto: ' + yearSelectionSlider.value
-        document.getElementById('levelLabel').innerHTML = 'Dvig gladine: ' + levelValue.toFixed(2) + ' cm'
-        hash.setArr([parisAgreementCheckbox.checked ? 1 : 0, yearSelectionSlider.value])
+        container.querySelector('.levelLabel').innerHTML = 'Dvig gladine: ' + levelValue.toFixed(2) + ' cm'
+        container.querySelector('.yearLabel').innerHTML = 'Leto: ' + yearSelectionSlider.value
     }
 
     function init() {
@@ -133,26 +126,14 @@ export default function SeaRise(container) {
 
         yearSelectionSlider.oninput = updateUI
 
-        parisAgreementCheckbox.onchange = () => {
-            updatePath()
-            updateUI()
-        }
-
-        hash.OnParse = function () {
-            if (hash.arr[0] === 1) {
-                parisAgreementCheckbox.checked = true
-            } else {
-                parisAgreementCheckbox.checked = false
-            }
-            yearSelectionSlider.value = hash.arr[1]
-            updateUI()
-        }
-
         const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> contributors',
             minZoom: 1,
             maxZoom: 18
         })
+        osm.on('tileloadstart', function (e) {
+            e.tile.classList.add("m-0","sm:m-0");
+        });
         osm.addTo(map)
 
         elevationLayer = L.tileLayer.gl({
@@ -166,7 +147,8 @@ export default function SeaRise(container) {
         const command = L.control({ position: 'topright' })
         command.onAdd = function (map) {
             const div = L.DomUtil.create('div', 'command')
-            div.innerHTML = '<div class="font-bold text-white bg-black p-2" id="levelLabel"></div>'
+            div.innerHTML = '<div class="font-bold text-white bg-black p-2 levelLabel"></div>'+
+                            '<div class="font-bold text-white bg-black p-2 yearLabel"></div>';
             return div
         }
         command.addTo(map)
@@ -177,6 +159,6 @@ export default function SeaRise(container) {
     if (isSvgGraphLoaded()) {
         init()
     } else {
-        svgGraph.onload = init
+        svgGraph.addEventListener('load', init);
     }
 }
