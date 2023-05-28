@@ -21,6 +21,6 @@ RUN yarn run build
 
 # -----------------------------------------------------------------------------
 
-FROM nginx:1.23
+FROM nginx:1.25
 
 COPY --from=builder /build/dist/ /usr/share/nginx/html/
