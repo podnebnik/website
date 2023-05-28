@@ -1,4 +1,4 @@
-name: Build data docker image
+name: "Docker: datasette"
 
 on:
   push:

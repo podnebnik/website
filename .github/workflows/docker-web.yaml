@@ -1,4 +1,4 @@
-name: Build website docker image
+name: "Docker: website"
 
 on:
   push:
