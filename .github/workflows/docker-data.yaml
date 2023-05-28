@@ -4,11 +4,17 @@ on:
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/validate-data.yaml'
+      - 'data/**'
     tags:
       - "v*.*.*"
   pull_request:
     branches:
       - "main"
+    paths:
+      - '.github/workflows/validate-data.yaml'
+      - 'data/**'
 
 jobs:
   docker:
