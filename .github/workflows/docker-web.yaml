@@ -20,9 +20,9 @@ jobs:
       - name: Get Git information
         id: git-info
         run: |
-          echo "::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/})"
-          echo "::set-output name=short_sha::$(echo ${GITHUB_SHA::7})"
-          echo "::set-output name=timestamp::$(date +%s)"
+          echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
+          echo "short_sha=$(echo ${GITHUB_SHA::7})" >> $GITHUB_OUTPUT
+          echo "timestamp=$(date +%s)" >> $GITHUB_OUTPUT
         shell: bash
       
       - name: Docker meta
