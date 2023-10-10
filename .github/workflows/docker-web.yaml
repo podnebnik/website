@@ -14,39 +14,47 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Checkout
+      - name: Checkout
         uses: actions/checkout@v3
-      -
-        name: Docker meta
+
+      - name: Get Git information
+        id: git-info
+        run: |
+          echo "::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/})"
+          echo "::set-output name=short_sha::$(echo ${GITHUB_SHA::7})"
+          echo "::set-output name=timestamp::$(date +%s)"
+        shell: bash
+      
+      - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
         with:
           images: |
             ghcr.io/${{ github.repository_owner }}/website
           tags: |
+            type=sha,value=${{ steps.git-info.outputs.branch }}-${{ steps.git-info.outputs.short_sha }}-${{ steps.git-info.outputs.timestamp }}
             type=raw,value=latest
             type=ref,event=branch
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=sha
-      - 
-        name: Set up QEMU
+      
+      - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
-      -
-        name: Set up Docker Buildx
+
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
         with:
           platforms: linux/amd64,linux/arm64
-      -
-        name: Login to Docker Hub
+
+      - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      -
-        name: Build and push
+      
+      - name: Build and push
         uses: docker/build-push-action@v4
         with:
           context: .
