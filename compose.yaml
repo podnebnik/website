@@ -1,0 +1,37 @@
+# How to use this:
+# Install docker and docker-compose
+# First build the images with this command: docker-compose -f compose.yaml build
+# Then when you want to run the system, run: docker-compose -f compose.yaml up
+
+services:
+  # base image is a base for website
+  # this image includes fetching and installing all the relevant libraries
+  base:
+    image: podnebnik/base:1.0
+    build:
+      context: .
+      dockerfile: deployment/Dockerfile.dev.base
+
+  # website is the runner for 
+  website:
+    build:
+      context: .
+      dockerfile: deployment/Dockerfile.dev.website
+    volumes:
+      - .:/build
+    command:
+      bash -c "yarn install && yarn run start"
+    ports:
+      # you can change the 8003 to something else if it clashes on your system
+      - "8003:8080"
+      # this is a websocket port that 11ty seems to use for something, not sure what 
+      # do not change this line below
+      - "24678:24678" 
+  
+  # datasette, the database interface behind podnebnik
+  datasette:
+    build:
+      context: .
+      dockerfile: deployment/Dockerfile.datasette
+    ports:
+      - "8001:8001"
