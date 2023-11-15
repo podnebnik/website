@@ -12,8 +12,10 @@ services:
       context: .
       dockerfile: deployment/Dockerfile.dev.base
 
-  # website is the runner for 
+  # website is the runner for yarn
   website:
+    depends_on:
+      - base # website needs to have base image built before
     build:
       context: .
       dockerfile: deployment/Dockerfile.dev.website
@@ -27,7 +29,7 @@ services:
       # this is a websocket port that 11ty seems to use for something, not sure what 
       # do not change this line below
       - "24678:24678" 
-  
+
   # datasette, the database interface behind podnebnik
   datasette:
     build:
