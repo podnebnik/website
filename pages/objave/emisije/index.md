@@ -1,99 +1,90 @@
 ---
-title: Emisije
+title: Emisije toplogrednih plinov
 date: git Last Modified
 topics: emisije
-summary: Consectetur consectetur do dolor amet ea et eiusmod enim proident proident officia adipisicing est do. Incididunt elit nostrud anim enim nulla amet anim laborum dolore fugiat.
+summary: Pregled stanja emisij toplogrednih plinov v Sloveniji
 ---
-Consectetur consectetur do dolor amet ea et eiusmod enim proident proident officia adipisicing est do. Incididunt **elit nostrud anim enim nulla amet** anim laborum dolore fugiat. Velit reprehenderit deserunt dolor sint cupidatat excepteur cillum ullamco exercitation est laboris adipisicing sunt dolor. *Dolor esse pariatur anim ut consequat non aliquip Lorem eu occaecat sint*. Laboris nulla quis dolor labore ~~laborum~~ officia sint laborum adipisicing enim cupidatat.
 
-<div class="chart" id="chart-from-fable">
-    <script type="module">
-        import Lazy from '/code/lazy.jsx'
-        import { render } from 'solid-js/web'
-        import { Chart }  from '/code/examples/fable.highcharts/Chart.fs.jsx'
-        render(() => Lazy(() => Chart({kind: 'bar'})), document.getElementById('chart-from-fable'))
-    </script>
-</div>
 
-Labore Lorem consectetur nulla elit anim nostrud tempor nostrud sunt dolore proident nostrud elit. Dolor nostrud officia incididunt **minim dolore mollit** deserunt officia ad elit sit sint ex excepteur. Fugiat reprehenderit anim officia nisi nisi aliquip proident. Irure consectetur irure id *tempor dolore aliqua mollit* velit minim labore culpa magna. Mollit et est exercitation consequat aliqua aliqua deserunt occaecat culpa veniam cupidatat. Reprehenderit magna elit amet id id magna.
+Izpusti toplogrednih plinov se merijo v ekvivalentu toplogrednega potenciala CO₂ in se v Sloveniji po področjih delijo na:
 
-Minim reprehenderit anim fugiat sunt Lorem anim veniam esse eu ea. Dolor quis id proident magna incididunt exercitation. Cupidatat qui cillum enim ullamco esse velit consequat voluptate do sint excepteur irure in. Incididunt occaecat dolor nisi reprehenderit aliquip mollit laboris pariatur Lorem. Ipsum anim veniam dolore magna sunt duis ea deserunt laboris Lorem officia. Ex nulla eu consequat et reprehenderit.
+ - Raba energije, 80% izpustov
+ - Kmetijstvo, 10% izpustov
+ - Industrijski procesi, 7,4% izpustov,
+ - Odpadki, 2,6% izpustov,
+ - Raba zemljišč, sprememba rabe zemljišč in gozdarstvo (ni upoštevana)
 
-<div class="chart" id="chart-from-js-1">
-    <script type="module">
-        import Lazy from '/code/lazy.jsx'
-        import { render } from 'solid-js/web'
-        import Chart from '/code/examples/javascript.highcharts/chart.jsx'
-        render(() => Lazy(() => Chart({kind: 'bar'})), document.getElementById('chart-from-js-1'))
-    </script>
-</div>
+<div class="flourish-embed flourish-hierarchy" data-src="visualisation/8885897"><script src="https://public.flourish.studio/resources/embed.js"></script></div>
 
-Ex exercitation ipsum pariatur eu ullamco et est excepteur consectetur qui irure. Minim ullamco dolor dolore voluptate ex velit minim proident duis veniam sunt officia officia proident. Id duis amet proident aliqua velit voluptate. Duis ad ipsum magna incididunt nostrud voluptate et duis fugiat. Id nulla officia laboris elit fugiat et aliquip ea non. Duis enim ut deserunt non. Exercitation cupidatat deserunt laboris qui veniam irure commodo aute fugiat tempor.
+Emisije iz “rabe zemljišč, spremembe rabe zemljišč in gozdarstva (LULUCF)” se spreminjajo glede na stanje gozdov in ni upoštevana v tem izračunu, ker imajo na njo naravni pojavi, kot je bil npr. žled leta 2014, zelo velik vpliv.
 
-Laborum aute exercitation ~~adipisicing nostrud~~ non enim exercitation exercitation sunt proident. Laborum deserunt labore et non in id Lorem sunt. Labore enim qui magna culpa est. Ea amet eu officia tempor excepteur duis est ea esse enim.
+Raba energije se deli na porabo goriv (78% izpustov) in na ubežne emisije (2% izpustov), ki nastanejo npr. zaradi neželenih izpustov pri izkopu in ravnanju s premogom oz. fosilnim plinom.
 
-<div class="image">{% image "./assets/landscape.png", "Exercitation qui dolor" %}</div>
+Poraba goriv (78%) se deli na:
+ - Promet, 32,8% izpustov,
+ - Energetika (elektrarne in toplarne), 27% izpustov
+ - Industrija in gradbeništvo, 10,8% izpustov,
+ - Drugi sektorji gospodarstva, 7,4% izpustov
 
-Exercitation qui dolor sint nulla tempor ullamco magna ipsum mollit. Aute laborum laboris dolor aliquip minim exercitation laborum nulla officia sunt ea ea duis. Et eu ipsum esse ad nostrud ea *consectetur* duis. Lorem ipsum id do duis pariatur minim. Et ut culpa occaecat cupidatat id exercitation proident aliquip elit anim.
+Kmetijstvo (10%) se deli na:
+ - Enterična fermentacija, to je proizvodnja metana kot del prebavnega procesa prežvekovalcev, 5,5% izpustov
+ - Kmetijska zemljišča, predvsem gnojenje 2,6% izpustov
+ - Ravnanje z gnojem, 1,9% izpustov
 
-<div class="chart">
-    <div class="flourish-embed flourish-hierarchy" data-src="visualisation/12923003"><script src="https://public.flourish.studio/resources/embed.js"></script></div>
-</div>
+Industrijski procesi (7,4%) se delijo na:
+ - Mineralni izdelki (cement, steklena in kamena volna), 3,3% izpustov
+ - Poraba halogeniranih ogljikovodikov in SF6 (hladilne tekočine, polnila za klimatske in toplotne črpalke, ter hladilna tekočina za transformatorje), 1,7% izpustov
+ - Proizvodnja kovin, 1,1% izpustov
+ - Kemična industrija, 0,3% izpustov
+ - Neenergetska raba goriv in topil, 0,2% izpustov
 
-Labore aliquip velit consequat veniam deserunt reprehenderit qui est Lorem. Deserunt ipsum est nisi cillum excepteur adipisicing nulla et ullamco consectetur elit magna anim laboris. Consectetur ex minim excepteur incididunt. Ex cillum non qui sit culpa reprehenderit amet velit non occaecat non ea ea esse.
+Odpadki (2,6%) povzročajo izpuste zaradi:
+ - Odlaganje trdnih odpadkov na zemljo (metan), 1,3% izpustov
+ - Čiščenje odpadnih vod, 1% izpustov.
 
-Voluptate sit duis laboris consectetur in ex. Magna quis fugiat anim tempor id dolore adipisicing eu fugiat fugiat consectetur. Officia commodo ad sint culpa occaecat non commodo. Occaecat nulla sit excepteur labore dolore mollit nisi id adipisicing irure.
 
-## Labore Counter
+## Rešljivost problema
 
-<div id="counter">
-    <script type="module">
-        import { render } from 'solid-js/web'
-        import { Counter }  from '/code/examples/fable.counter/Counter.fs.jsx'
-        render(() => Counter(), document.getElementById('counter'))
-    </script>
-</div>
+### Poraba goriv
 
-Eiusmod laboris officia incididunt non eu sint esse sunt velit id pariatur. Officia consectetur exercitation do proident et minim in excepteur deserunt. Esse esse commodo irure elit nostrud aute eu. **Sint reprehenderit cillum exercitation eu anim tempor in non.** Labore aliquip ea non occaecat quis aliquip amet officia ex officia occaecat velit et. Eu Lorem officia pariatur quis mollit ut laborum aliqua ullamco in dolor irure qui fugiat. Commodo mollit occaecat ullamco laboris veniam non ut.
+Strategije za zmanjšanje porabe goriv so odvisne od sektorja in so podrobneje razložene spodaj. Ima pa zmanjšana poraba goriv tudi znaten pozitiven lokalen vpliv, saj je sežig ogljikovodikov povezan tudi z drugimi izpusti, ki vplivajo na lokalno okolje, npr. prašni delci, dušikovi oksidi in izpusti goriv v okolje.
 
-## Voluptate Elmish counter
+### Promet
 
-<div id="elmish-counter">
-    <script type="module">
-        import Lazy from '/code/lazy.jsx'
-        import { render } from 'solid-js/web'
-        import { Counter } from '/code/examples/fable.elmish/Counter.fs.jsx'
-        render(() => Lazy(() => Counter()), document.getElementById('elmish-counter'))
-    </script>
-</div>
+Večino emisij v prometu nastaja zaradi cestnega prometa. Cestni promet je v Sloveniji skoraj izključno gnan s tekočimi fosilnimi gorivi oz. z naftnimi derivati, ki jih Slovenija v celoti uvaža.
 
-Ex sunt ut pariatur laboris nostrud et esse nostrud. Ad sunt Lorem enim id qui ad incididunt ad. Ut tempor ex minim ipsum ut qui Lorem occaecat mollit dolore. Ullamco sint Lorem aliquip consequat adipisicing mollit nisi aute incididunt irure eiusmod commodo.
+Osebni promet bo v prihodnosti najverjetneje izvajal z baterijskimi električnimi vozili, ki jih lahko polnimo tudi z energijo iz nizkoogljičnih virov. Pričakuje se, da bo poraba električne energije naraščala, raba primarne energije pa se bo zaradi večjih izkoristkov električnih vozil manjšala.
 
-### Non sunt nisi id ad mollit in excepteur ex sunt irure laborum consectetur incididunt
+Za tovorni promet trenutno še ni povsem jasno kaj bo prevladalo, dobra kandidata za nizkoogljični transport sta, poleg že uveljavljenega železniškega prevoza, baterijski pogon in pogon na vodikove gorivne celice v tovornjakih in drugih tovornih cestnih vozilih.
 
-Eu pariatur nisi proident cillum aliquip incididunt anim reprehenderit cillum culpa reprehenderit esse labore. Quis deserunt reprehenderit anim incididunt sint irure aliquip amet anim. Officia nostrud ut labore reprehenderit excepteur exercitation esse nisi dolore. Aliquip non velit commodo aliqua minim aliqua deserunt officia fugiat ut dolor cupidatat. Esse magna minim esse excepteur qui laboris. Exercitation officia fugiat non veniam ut mollit enim reprehenderit. Magna anim ea excepteur velit elit occaecat est pariatur.
+### Energetika
 
-Dolore voluptate minim id laborum elit do. Anim ea est velit non. Non proident irure nisi enim mollit dolor excepteur. Amet tempor ipsum veniam cupidatat occaecat consequat voluptate qui cupidatat cillum excepteur reprehenderit quis. Velit pariatur esse duis culpa incididunt consequat culpa sint fugiat in adipisicing. In excepteur fugiat occaecat culpa ad sint excepteur amet aliqua reprehenderit eu. Eu mollit pariatur ut duis consequat culpa.
+Porabo goriv za proizvodnjo električne energije se da učinkovito zmanjšati z uporabo nizkoogljičnih tehnologij za proizvodnjo električne energije: sončne, vetrne, hidro in jedrske elektrarne.
 
-<div class="chart" id="chart-from-js-2">
-    <script type="module">
-        import Lazy from '/code/lazy.jsx'
-        import { render } from 'solid-js/web'
-        import Chart from '/code/examples/javascript.highcharts/chart.jsx'
-        render(() => Lazy(() => Chart({kind: 'line'})), document.getElementById('chart-from-js-2'))
-    </script>
-</div>
+### Industrija in gradbeništvo
 
-Do dolor minim fugiat velit ut exercitation. Laboris incididunt eiusmod nisi non esse elit nisi duis Lorem. Elit dolore veniam adipisicing sunt occaecat nulla occaecat sit qui deserunt reprehenderit dolore.
+V gradbeništvu je izziv, da so gradbišča pogosto slabo infrastrukturno podprta ali pa so odročna in je zato potreben energent, ki omogoča avtonomno delovanje. Trenutno so to fosilna goriva, pričakuje pa se, da bo na tem področju pomembno vlogo igral vodik.
+Kmetijstvo
+Kmetijstvo je še nerešen problem. Večji del emisij v kmetijstvu pride iz izpustov metana, ki nastaja pri procesu prebavljanja pri prežvekovalcih, gnojenjem ter ravnanjem z gnojem. Največji potencial je tako v zmanjšanem obsegu živinoreje, ki je trenutno tudi močno subvecionirana.
 
-Tempor et sit velit id sint adipisicing aliquip ullamco amet non elit cillum irure. In ad commodo amet deserunt dolore dolor nulla ut sit. Excepteur nisi qui occaecat incididunt ea ad aliqua sunt eiusmod. Proident proident mollit elit aliquip. Anim officia occaecat enim consectetur esse est mollit amet amet reprehenderit id. Voluptate cillum labore ad amet et eu reprehenderit anim.
+### Industrijski procesi
 
-## Aliquip fugiat nostrud cupidatat officia
+V Sloveniji imamo manjše število večjih industrijskih obratov, ki naredijo večino industrijskih emisij toplogrednih plinov.
 
-Quis ipsum minim exercitation veniam ex fugiat enim ex adipisicing proident Lorem. Laborum esse sunt qui voluptate aute reprehenderit do. Est est nulla deserunt dolor nisi reprehenderit sunt laborum ea. Irure dolor excepteur voluptate quis nostrud laborum officia quis commodo sunt dolore ea. Eiusmod laboris commodo enim enim est dolor. Voluptate sit cupidatat anim non esse laborum proident velit.
+Večje izpuste predstavljajo proizvodnja cementa v Salonit Anhovo, proizvodnja papirja v Vipap Videm Krško, proizvodnja aluminija v Talumu, ter proizvodnja jekla v SIJ.
 
-Consequat Lorem mollit labore occaecat reprehenderit proident duis. Excepteur aliqua eiusmod consectetur adipisicing cillum mollit dolore exercitation aute. Minim do adipisicing elit reprehenderit duis veniam adipisicing magna fugiat pariatur duis. Nisi aliquip labore tempor qui.
+### Odpadki
 
-Sint ea reprehenderit officia ut ea ullamco laboris incididunt. Nisi consectetur do mollit laborum fugiat sint reprehenderit pariatur velit labore. Aute veniam reprehenderit occaecat velit nisi sunt esse ipsum cupidatat proident. Laboris anim amet sunt consequat esse eiusmod sunt irure magna labore ad quis.
+Znatne količine izpustov metana proizvajajo tudi odlagališča odpadkov, kjer obstaja možnost zajema t.i. odlagališčnega plina.
 
-Cillum sit cupidatat velit qui. Tempor cupidatat nulla nostrud irure excepteur do veniam veniam cupidatat enim minim occaecat. Cupidatat ipsum velit ad reprehenderit eu tempor fugiat. Eiusmod aute proident enim sunt dolore elit velit. Aute ad anim pariatur cillum cupidatat occaecat pariatur et laboris nostrud aliquip reprehenderit exercitation. Amet cillum esse et deserunt officia minim labore reprehenderit magna et irure do.
+
+### Ponori
+
+Na žalost tehnologija zajema in shranjevanja CO₂ še ni na dovolj visoki tehnološki ravni in na tej točki ni očitno ali bo kdaj praktično uporabna za shranjevanje znatne količine tega toplogrednega plina. S tem v mislih je tako bolje izpuste preprečiti, kot računati na to, da jih bomo kasneje odstranili iz atmosfere.
+
+
+----
+
+### Viri
+
+ - UNFCCC National Inventory Submissions 2021, CRF. (Poročanje za leto 2019).
