@@ -32,6 +32,11 @@ Običajen podnaslov na strani.
 
 Pod podnaslov. Zadnji, ki naj se še uporablja.
 
+## Blokcitati (blockquotes)
+
+> Po znaku za matematični simbol "večje od" se lahko vstavi tekst ki bo zgledal kot cicat. Citat je lahko dolg več vrstic. Vsaka nova prazna vrstica v tem citatu, mora imeti začeti z istim znakom, za katerim ni več teksta.
+>
+>> Če se pa uporabi dvakrat simbol "večje od" potem se pojavi vertikalna črta pred citiranim tekstom, ki povdari citat. Za vsaka nova prazna vrstica v takšnem citatu z vertikalo črto, velja isto mora imeti začeti z istima znakoma, za katerim ni več teksta.
 
 ## Grafi na Podnebniku
 
