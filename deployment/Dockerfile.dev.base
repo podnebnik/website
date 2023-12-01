@@ -1,4 +1,4 @@
-FROM bitnami/dotnet-sdk:6-debian-11 as builder
+FROM bitnami/dotnet-sdk:7-debian-11 as builder
 ARG NODE_MAJOR=20
 
 WORKDIR /build
