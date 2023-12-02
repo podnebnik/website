@@ -1,6 +1,6 @@
 # Podnebnik
 
-[![Build website](https://github.com/podnebnik/website/actions/workflows/push.yml/badge.svg)](https://github.com/podnebnik/website/actions/workflows/push.yml)
+[![Build website](https://github.com/podnebnik/website/actions/workflows/build.yaml/badge.svg)](https://github.com/podnebnik/website/actions/workflows/build.yaml)
 [![Validate data](https://github.com/podnebnik/website/actions/workflows/validate-data.yaml/badge.svg)](https://repository.frictionlessdata.io/pages/dashboard.html?user=podnebnik&repo=website&flow=validate+data)
 
 This repository is the source code for the [podnebnik.org](https://podnebnik.org) website.
