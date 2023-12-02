@@ -33,7 +33,7 @@ Depending on whether you want to author data, text or visualizations, you will n
 To start developing you need to have the following requirements on:
 
 - `node` https://nodejs.org/en/
-- `.NET 6.0` https://dotnet.microsoft.com/en-us/download
+- `.NET 7.0` https://dotnet.microsoft.com/en-us/download
 - `python 3.11` https://www.python.org/
 - `pipenv` https://pipenv.pypa.io/
 
