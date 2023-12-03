@@ -18,7 +18,7 @@
     "@11ty/eleventy": "^2.0.1",
     "@11ty/eleventy-img": "^3.0.0",
     "@11ty/eleventy-plugin-vite": "^4.0.0",
-    "autoprefixer": "^10.4.13",
+    "autoprefixer": "^10.4.16",
     "postcss": "^8.4.21",
     "sass": "^1.58.3",
     "vite": "^4.1.4",
