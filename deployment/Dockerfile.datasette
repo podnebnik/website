@@ -16,7 +16,7 @@ RUN invoke create-databases
 
 # -----------------------------------------------------------------------------
 
-FROM datasetteproject/datasette:0.64
+FROM datasetteproject/datasette:0.64.5
 
 WORKDIR /datasette
 
