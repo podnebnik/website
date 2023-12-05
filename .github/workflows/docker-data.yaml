@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - '.github/workflows/docker-data.yaml'
-      - './deployment/Dockerfile.datasette'
+      - 'deployment/Dockerfile.datasette'
       - 'data/**'
     tags:
       - "v*.*.*"
@@ -15,7 +15,7 @@ on:
       - "main"
     paths:
       - '.github/workflows/docker-data.yaml'
-      - './deployment/Dockerfile.datasette'
+      - 'deployment/Dockerfile.datasette'
       - 'data/**'
 
 jobs:
