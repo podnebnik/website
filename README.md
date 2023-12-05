@@ -1,6 +1,8 @@
 # Podnebnik
 
 [![Build website](https://github.com/podnebnik/website/actions/workflows/build.yaml/badge.svg)](https://github.com/podnebnik/website/actions/workflows/build.yaml)
+[![Docker: website](https://github.com/podnebnik/website/actions/workflows/docker-web.yaml/badge.svg)](https://github.com/podnebnik/website/actions/workflows/docker-web.yaml)
+[![Docker: datasette](https://github.com/podnebnik/website/actions/workflows/docker-data.yaml/badge.svg)](https://github.com/podnebnik/website/actions/workflows/docker-data.yaml)
 [![Validate data](https://github.com/podnebnik/website/actions/workflows/validate-data.yaml/badge.svg)](https://repository.frictionlessdata.io/pages/dashboard.html?user=podnebnik&repo=website&flow=validate+data)
 
 This repository is the source code for the [podnebnik.org](https://podnebnik.org) website.
