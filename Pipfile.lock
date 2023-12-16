@@ -782,11 +782,12 @@
         },
         "sqlite-utils": {
             "hashes": [
-                "sha256:30005c12d5f13445659f791766beb6a9900c25f442bea1f980f21d38b75f6e33",
-                "sha256:e2113e5ce8e9c69822fff419145d7144034b0bd7bb6bf9b8bf92bcc6de859705"
+                "sha256:b71e829755c2efbdcd6931a31968dee4e8bd71b3c14f0fe648b22377027c5bec",
+                "sha256:dcc311394fe86dc16f65037b0075e238efcfd2e12e65d53ed196954502996f3c"
             ],
             "index": "pypi",
-            "version": "==3.30"
+            "markers": "python_version >= '3.7'",
+            "version": "==3.36"
         },
         "stringcase": {
             "hashes": [
