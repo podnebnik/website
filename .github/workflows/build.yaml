@@ -12,6 +12,7 @@ on:
       - 'public/**'
       - 'styles/**'
       - '*config.js'
+      - '.config/**'
       - 'package*.json'
       - 'yarn.lock'
 
@@ -24,6 +25,7 @@ on:
       - 'public/**'
       - 'styles/**'
       - '*config.js'
+      - '.config/**'
       - 'package*.json'
       - 'yarn.lock'
 
