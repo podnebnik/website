@@ -33,7 +33,7 @@ updates:
     open-pull-requests-limit: 10
 
   # https://containers.dev/guide/dependabot
-  - package-ecosystem: "devcontainer" # See documentation for possible values
+  - package-ecosystem: "devcontainers" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
       interval: "monthly"
