@@ -15,7 +15,7 @@ COPY tasks.py /build/
 RUN invoke create-databases
 
 # -----------------------------------------------------------------------------
-FROM python:3.11.0-slim-bullseye as build
+FROM python:3.11.0-slim-bullseye
 
 WORKDIR /datasette
 RUN pip install --no-cache datasette==0.64.0
