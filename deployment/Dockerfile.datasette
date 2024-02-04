@@ -1,4 +1,4 @@
-FROM python:3.11-slim as builder
+FROM python:3.11-slim-bullseye as builder
 
 WORKDIR /build
 
@@ -15,13 +15,11 @@ COPY tasks.py /build/
 RUN invoke create-databases
 
 # -----------------------------------------------------------------------------
-
-FROM datasetteproject/datasette:0.64.6
+FROM python:3.11.0-slim-bullseye as build
 
 WORKDIR /datasette
-
+RUN pip install --no-cache datasette==0.64.0
 COPY --from=builder /build/var/sqlite /datasette/sqlite
 
 EXPOSE 8001
-
 CMD datasette serve --host 0.0.0.0 --port 8001 --cors --inspect-file sqlite/inspect-data.json --metadata sqlite/metadata.json ./sqlite/*.db
