@@ -12,7 +12,7 @@ schedule: annual
 licenses:
   - name: ODbL-1.0
     title: Open Data Commons Open Database License 1.0
-    path: http://www.opendefinition.org/licenses/odc-odbl
+    path: https://www.opendefinition.org/licenses/odc-odbl
 resources:
   - name: historical_emissions_from_agriculture
     title: Historical emissions from agriculture
