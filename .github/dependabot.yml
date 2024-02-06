@@ -32,6 +32,12 @@ updates:
       interval: "monthly"
     open-pull-requests-limit: 10
 
+  - package-ecosystem: "nuget" # See documentation for possible values
+    directory: "/" # Location of package manifests
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 10
+
   # https://containers.dev/guide/dependabot
   - package-ecosystem: "devcontainers" # See documentation for possible values
     directory: "/" # Location of package manifests
