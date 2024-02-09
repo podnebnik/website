@@ -17,8 +17,8 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 from scipy.interpolate import interp1d
 
-CONFIG_FILE = "./emissions/sources/update_emissions.config"
-INTERMEDIATE_LATEST="./emissions/sources/emissions_historical_latest.xlsx"
+CONFIG_FILE = "./data/emissions/sources/update_emissions.config"
+INTERMEDIATE_LATEST="./data/emissions/sources/emissions_historical_latest.xlsx"
 
 # Lines that follow are data scraping part 
 ###########################################
@@ -199,7 +199,7 @@ def download_emission_xlsx_files():
         for item in all_xlsx_files:
             #   ******* change this line ********
             new_date = readConfig("EU_LATEST_DATE",CONFIG_FILE)
-            dest_dir = "./emissions/sources/" + newest_date
+            dest_dir = "./data/emissions/sources/" + newest_date
             dest = os.path.join(dest_dir, item)
         
             
@@ -247,7 +247,7 @@ def create_intermediate_xlsx():
         print(f"{INTERMEDIATE_LATEST} already processed")
     else:
         inter_latest_date = readConfig("EU_LATEST_DATE",CONFIG_FILE)
-        latest_dir = "./emissions/sources/" + inter_latest_date
+        latest_dir = "./data/emissions/sources/" + inter_latest_date
         counted_files = count_files_in_directory(latest_dir)
 
         y = 1
@@ -256,7 +256,7 @@ def create_intermediate_xlsx():
             print(year)
             # Use a wildcard to match files with similar names
 
-            file_pattern = "./emissions/sources/" + inter_latest_date + "/SVN_"+ inter_latest_date[:4] + "_{:04d}_*.xlsx".format(year)
+            file_pattern = "./data/emissions/sources/" + inter_latest_date + "/SVN_"+ inter_latest_date[:4] + "_{:04d}_*.xlsx".format(year)
 
             # Use the glob module to find all files that match the pattern
             files = glob.glob(file_pattern)
@@ -308,13 +308,13 @@ def create_intermediate_xlsx():
 # method processes data from the historical transport and the intermediate data, processed from the EU site and creates a csv 
 
 def transport_historical():
-    TRANSPORT_LATEST="./emissions/sources/Emisije TGP iz cestnega prometa za Podnebnik razdelitev na potniški in težki tovorni promet.xlsx"
+    TRANSPORT_LATEST="./data/emissions/sources/Emisije TGP iz cestnega prometa za Podnebnik razdelitev na potniški in težki tovorni promet.xlsx"
 
     if compute_sha1_checksum(TRANSPORT_LATEST) == readConfig("CHKSUM_LATEST_TRANSPORT", CONFIG_FILE):
         print(f"{TRANSPORT_LATEST} already processed")
     else:
         # inter_latest_date = readConfig("EU_LATEST_DATE",CONFIG_FILE)
-        # latest_dir = "./emissions/sources/" + inter_latest_date
+        # latest_dir = "./data/emissions/sources/" + inter_latest_date
         # counted_files = count_files_in_directory(latest_dir)
 
         # global warming potential of gases
@@ -374,14 +374,14 @@ def transport_historical():
             print(y)
             # manually loop through sheets
             # original
-            # #file_name = glob.glob("./emissions/sources/20230414/SVN_{0:04d}_{1:04d}_*.xlsx".format(year_end,y))[0]
-            # file_name = glob.glob("./emissions/sources/20230414/SVN_{0:04d}_{1:04d}_*.xlsx".format(year_end,y))
+            # #file_name = glob.glob("./data/emissions/sources/20230414/SVN_{0:04d}_{1:04d}_*.xlsx".format(year_end,y))[0]
+            # file_name = glob.glob("./data/emissions/sources/20230414/SVN_{0:04d}_{1:04d}_*.xlsx".format(year_end,y))
             # print (file_name)
             # sys.exit(0)
 
             #### VVVVVVVVVV NEW VVVVVVVVVVVV ######
             inter_latest_date = readConfig("EU_LATEST_DATE",CONFIG_FILE)
-            file_pattern = "./emissions/sources/" + inter_latest_date + "/SVN_"+ inter_latest_date[:4] + "_{:04d}_*.xlsx".format(y)
+            file_pattern = "./data/emissions/sources/" + inter_latest_date + "/SVN_"+ inter_latest_date[:4] + "_{:04d}_*.xlsx".format(y)
 
             # Use the glob module to find all files that match the pattern
             file_name = glob.glob(file_pattern)[0]
@@ -442,7 +442,7 @@ def transport_historical():
                 'international_aviation': transport__international_aviation,
                 'international_navigation': transport__international_navigation
                 })
-        df.to_csv("./emissions/data/emissions.historical.energy.transport.csv",index=False,float_format='%.2f')
+        df.to_csv("./data/emissions/data/emissions.historical.energy.transport.csv",index=False,float_format='%.2f')
         writeConfig("CHKSUM_LATEST_TRANSPORT",compute_sha1_checksum(TRANSPORT_LATEST),CONFIG_FILE)
 
 
@@ -450,7 +450,7 @@ def transport_historical():
 # method processes data from the the intermediate data, processed from the EU site, and creates 6 csv-s
 
 def emissions_historical():
-    HISTORICAL_LATEST = "./emissions/sources/emissions_historical_latest.xlsx"
+    HISTORICAL_LATEST = "./data/emissions/sources/emissions_historical_latest.xlsx"
     check_and_touch(HISTORICAL_LATEST)
     if compute_sha1_checksum(HISTORICAL_LATEST) == readConfig("CHKSUM_LATEST_HISTORICAL", CONFIG_FILE):
         print(f"{HISTORICAL_LATEST} already processed for historical csvs")
@@ -559,7 +559,7 @@ def emissions_historical():
                                                     emissions_historical[ei["energy"]["fugitive_emissions_from_fuels"]["total"]],
                 'lulucf':                           emissions_historical[ei["lulucf"]["total"]]
                 })
-        df.to_csv("./emissions/data/emissions.historical.csv",index=False,float_format='%.2f')
+        df.to_csv("./data/emissions/data/emissions.historical.csv",index=False,float_format='%.2f')
         
 
 
@@ -577,7 +577,7 @@ def emissions_historical():
                 'fugitive_emissions_from_fuels.oil_natural_gas_and_energy_production':  emissions_historical[ei["energy"]["fugitive_emissions_from_fuels"]["oil_natural_gas_and_energy_production"]],
                 'co2_transport_storage':                                                emissions_historical[ei["energy"]["co2_transport_storage"]]
                 })
-        df.to_csv("./emissions/data/emissions.historical.energy.csv",index=False,float_format='%.2f')
+        df.to_csv("./data/emissions/data/emissions.historical.energy.csv",index=False,float_format='%.2f')
         
 
         df = pd.DataFrame({
@@ -592,7 +592,7 @@ def emissions_historical():
                 'other_product_manufacture_use': emissions_historical[ei["industrial_processes"]["other_product_manufacture_use"]],
                 'other': emissions_historical[ei["industrial_processes"]["other"]]
                 })
-        df.to_csv("./emissions/data/emissions.historical.industrial_processes.csv",index=False,float_format='%.2f')
+        df.to_csv("./data/emissions/data/emissions.historical.industrial_processes.csv",index=False,float_format='%.2f')
         
 
         df = pd.DataFrame({
@@ -609,7 +609,7 @@ def emissions_historical():
                 'carbon_containing_fertilizers': emissions_historical[ei["agriculture"]["carbon_containing_fertilizers"]],
                 'other':                emissions_historical[ei["agriculture"]["other"]]
                 })
-        df.to_csv("./emissions/data/emissions.historical.agriculture.csv",index=False,float_format='%.2f')
+        df.to_csv("./data/emissions/data/emissions.historical.agriculture.csv",index=False,float_format='%.2f')
 
 
         df = pd.DataFrame({
@@ -624,7 +624,7 @@ def emissions_historical():
                 'harvested_wood_prducts': emissions_historical[ei["lulucf"]["harvested_wood_prducts"]],
                 'other': emissions_historical[ei["lulucf"]["other"]]
                 })
-        df.to_csv("./emissions/data/emissions.historical.lulucf.csv",index=False,float_format='%.2f')
+        df.to_csv("./data/emissions/data/emissions.historical.lulucf.csv",index=False,float_format='%.2f')
 
 
         df = pd.DataFrame({
@@ -636,7 +636,7 @@ def emissions_historical():
                 "waste_water_treatment_discharge":    emissions_historical[ei["waste"]["waste_water_treatment_discharge"]],
                 'other':     emissions_historical[ei["waste"]["other"]]
                 })
-        df.to_csv("./emissions/data/emissions.historical.waste.csv",index=False,float_format='%.2f')
+        df.to_csv("./data/emissions/data/emissions.historical.waste.csv",index=False,float_format='%.2f')
 
 
         df = pd.DataFrame({
@@ -651,7 +651,7 @@ def emissions_historical():
                 "indirect_n20":    emissions_historical[ei["indirect_n20"]],
                 "indirect_co2":    emissions_historical[ei["indirect_co2"]]
                 })
-        df.to_csv("./emissions/data/emissions.historical.memo_items.csv",index=False,float_format='%.2f')
+        df.to_csv("./data/emissions/data/emissions.historical.memo_items.csv",index=False,float_format='%.2f')
 
         writeConfig("CHKSUM_LATEST_HISTORICAL",compute_sha1_checksum(HISTORICAL_LATEST),CONFIG_FILE)
 
@@ -659,7 +659,7 @@ def emissions_historical():
 # method processes data from the the paris projections data and creates 1 csv 
 
 def paris_projections():
-    PARIS_PROJECTIONS = "./emissions/sources/ProjekcijeGHG_Slovenija.xlsx"
+    PARIS_PROJECTIONS = "./data/emissions/sources/ProjekcijeGHG_Slovenija.xlsx"
     if compute_sha1_checksum(PARIS_PROJECTIONS) == readConfig("CHKSUM_PARIS", CONFIG_FILE):
         print(f"{PARIS_PROJECTIONS} already processed")
     else:
@@ -680,14 +680,14 @@ def paris_projections():
                         'ec':ec,
                         'paris20':paris20,
                         'paris15':paris15})
-        df.to_csv("./emissions/data/emissions.projections.ec_paris.csv",index=False,float_format="%.2f")
+        df.to_csv("./data/emissions/data/emissions.projections.ec_paris.csv",index=False,float_format="%.2f")
         writeConfig("CHKSUM_PARIS",compute_sha1_checksum(PARIS_PROJECTIONS),CONFIG_FILE)
 
 # Next lines of code are a method made by Žiga Zaplotnik and adapted a bit by Kesma, to integrate it with other part of the main script 
 # method processes data from the the NEPN projections data and creates 6 csvs
 
 def nepn_projections():
-    NEPN_PROJECTIONS = "./emissions/sources/energetska_bilanca_2050_nepn_dps.xlsx"
+    NEPN_PROJECTIONS = "./data/emissions/sources/energetska_bilanca_2050_nepn_dps.xlsx"
     if compute_sha1_checksum(NEPN_PROJECTIONS) == readConfig("CHKSUM_NEPN", CONFIG_FILE):
         print(f"{NEPN_PROJECTIONS} already processed")
     else:
@@ -831,12 +831,12 @@ def nepn_projections():
             df.to_csv(fnm,index=False,float_format='%.2f')
         
             
-        export_data(emissions_projections_current,years,"./emissions/data/emissions.projections.current.csv")
-        export_data(emissions_projections_bau,years,"./emissions/data/emissions.projections.bau.csv")
-        export_data(emissions_projections_add_nuc,years,"./emissions/data/emissions.projections.additional_nuclear.csv")
-        export_data(emissions_projections_add_syn,years,"./emissions/data/emissions.projections.additional_synthetic.csv")
-        export_data(emissions_projections_ambadd_nuc,years,"./emissions/data/emissions.projections.ambitious_additional_nuclear.csv")
-        export_data(emissions_projections_ambadd_syn,years,"./emissions/data/emissions.projections.ambitious_additional_synthetic.csv")
+        export_data(emissions_projections_current,years,"./data/emissions/data/emissions.projections.current.csv")
+        export_data(emissions_projections_bau,years,"./data/emissions/data/emissions.projections.bau.csv")
+        export_data(emissions_projections_add_nuc,years,"./data/emissions/data/emissions.projections.additional_nuclear.csv")
+        export_data(emissions_projections_add_syn,years,"./data/emissions/data/emissions.projections.additional_synthetic.csv")
+        export_data(emissions_projections_ambadd_nuc,years,"./data/emissions/data/emissions.projections.ambitious_additional_nuclear.csv")
+        export_data(emissions_projections_ambadd_syn,years,"./data/emissions/data/emissions.projections.ambitious_additional_synthetic.csv")
 
         writeConfig("CHKSUM_NEPN",compute_sha1_checksum(NEPN_PROJECTIONS),CONFIG_FILE)
 
