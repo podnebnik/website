@@ -91,7 +91,7 @@ resources:
     hashing: md5
     sources:
       - title: TODO
-        path: sources/aviation.xlsx
+        # path: sources/aviation.xlsx
         author: OECD
         # code: sources/xls_to_csv.py   @@@ needed source @@@
         date_accessed: "2020-03-08"
@@ -113,7 +113,7 @@ resources:
     hashing: md5
     sources:
       - title: TODO      # data source title
-        code: sources/xls_to_csv.py
+        # code: sources/xls_to_csv.py
         # path:          # path to file in repo if exists
         # url:           # url to original data source if possible
         # author:        # organization or person who is the owner of the data
@@ -353,7 +353,7 @@ resources:
     hashing: md5
     sources:
       - title: TODO    # data source title
-        code: sources/xls_to_csv.py
+        # code: sources/xls_to_csv.py
         # path:          # path to file in repo if exists
         # url:           # url to original data source if possible
         # author:        # organization or person who is the owner of the data
