@@ -592,7 +592,7 @@ def emissions_historical():
                 'other_product_manufacture_use': emissions_historical[ei["industrial_processes"]["other_product_manufacture_use"]],
                 'other': emissions_historical[ei["industrial_processes"]["other"]]
                 })
-        df.to_csv("./data/emissions/data/emissions.historical.industrial_processes.csv",index=False,float_format='%.2f')
+        df.to_csv("./data/emissions/data/emissions.historical.industrial.processes.csv",index=False,float_format='%.2f')
         
 
         df = pd.DataFrame({
