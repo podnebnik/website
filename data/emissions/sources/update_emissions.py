@@ -308,7 +308,7 @@ def create_intermediate_xlsx():
 # method processes data from the historical transport and the intermediate data, processed from the EU site and creates a csv 
 
 def transport_historical():
-    TRANSPORT_LATEST="./data/emissions/sources/Emisije TGP iz cestnega prometa za Podnebnik razdelitev na potniški in težki tovorni promet.xlsx"
+    TRANSPORT_LATEST="./data/emissions/sources/Emisije_TGP_iz_cestnega_prometa.xlsx"
 
     if compute_sha1_checksum(TRANSPORT_LATEST) == readConfig("CHKSUM_LATEST_TRANSPORT", CONFIG_FILE):
         print(f"{TRANSPORT_LATEST} already processed")
