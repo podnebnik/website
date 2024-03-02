@@ -6,7 +6,7 @@ summary: Pregled stanja emisij toplogrednih plinov v Sloveniji
 ---
 
 
-Izpusti toplogrednih plinov se merijo v ekvivalentu toplogrednega potenciala CO₂ in se v Sloveniji po področjih delijo na:
+Izpusti toplogrednih plinov se merijo v ekvivalentu toplogrednega potenciala CO₂ in se v Sloveniji po področjih delijo na ([ARSO, 2023](https://kazalci.arso.gov.si/sl/content/izpusti-toplogrednih-plinov-11?tid=102)):
 
  - Raba energije, 80% izpustov
  - Kmetijstvo, 10% izpustov
@@ -38,7 +38,7 @@ Industrijski procesi (7,4%) se delijo na:
  - Kemična industrija, 0,3% izpustov
  - Neenergetska raba goriv in topil, 0,2% izpustov
 
-Odpadki (2,6%) povzročajo izpuste zaradi:
+Odpadki (2,6%) povzročajo izpuste predvsem zaradi:
  - Odlaganje trdnih odpadkov na zemljo (metan), 1,3% izpustov
  - Čiščenje odpadnih vod, 1% izpustov.
 
@@ -64,7 +64,9 @@ Porabo goriv za proizvodnjo električne energije se da učinkovito zmanjšati z 
 ### Industrija in gradbeništvo
 
 V gradbeništvu je izziv, da so gradbišča pogosto slabo infrastrukturno podprta ali pa so odročna in je zato potreben energent, ki omogoča avtonomno delovanje. Trenutno so to fosilna goriva, pričakuje pa se, da bo na tem področju pomembno vlogo igral vodik.
-Kmetijstvo
+
+### Kmetijstvo
+
 Kmetijstvo je še nerešen problem. Večji del emisij v kmetijstvu pride iz izpustov metana, ki nastaja pri procesu prebavljanja pri prežvekovalcih, gnojenjem ter ravnanjem z gnojem. Največji potencial je tako v zmanjšanem obsegu živinoreje, ki je trenutno tudi močno subvecionirana.
 
 ### Industrijski procesi
@@ -75,8 +77,12 @@ Večje izpuste predstavljajo proizvodnja cementa v Salonit Anhovo, proizvodnja p
 
 ### Odpadki
 
-Znatne količine izpustov metana proizvajajo tudi odlagališča odpadkov, kjer obstaja možnost zajema t.i. odlagališčnega plina.
+Pri odlaganju bioloških odpadkov na odlagališča v anaerobnih pogojih globjih plasti nastaja metan. V Sloveniji je od 2016 prepovedano odlaganje takih odpadkov, zato delež s postopnim razplinjanjem starih odlagališč počasi pada. Nekatera odlagališča dodatno zajemajo t.i. odlagališčni plin, kjer metan predstavlja približno polovico.
 
+Drugi večji vir izpustov predstavlja čiščenje odpadnih voda, saj je sušenje blata iz čistilnih naprav energetsko intenzivno. Bioplinarne lahko koristno zajamejo del nastajajočih plinov.
+
+Sledi sežig odpadkov, kamor je vštet le sežig za odstranjevanje — izpusti iz obratov, kjer so odpadki del goriva (npr. v cementarnah), so všteti med industrijske vire.
+Majhen vir predstavlja tudi obdelava ločeno zbranih bioloških odpadkov kot naravni del procesa kompostiranja. V Sloveniji gre velik del teh odpadkov prvo skozi proces anaerobne prebave za pridobivanje bioplina.
 
 ### Ponori
 

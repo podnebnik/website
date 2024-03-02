@@ -28,6 +28,22 @@ The project is build on top of the following fantastic tools:
 
 ## Development setup
 
+For editing content or data packages, the simplest way to develop is using docker. For this you will only need to have docker and docker-compose installed. Then run:
+
+    docker-compose -f compose.yaml build
+    docker-compose -f compose.yaml up
+
+This will build website and datasette in a similar way as in production. The website will appear on http://127.0.0.1:8003/ and datasette will appear on http://127.0.0.1:8001/ If these ports clash with other things you might have running on your system, you can change the ports in compose.yaml to something else.
+
+If you are editing content on website you can just edit the files and the webpage will autorefresh on save.
+
+If you are developing data packages and want to re-import data into datasette, you need to build the datasette image again:
+
+    docker-compose -f compose.yaml build datasette
+
+
+## Manual development setup
+
 Depending on whether you want to author data, text or visualizations, you will need to install different tools. However, the basic setup is the same for all three.
 
 > NOTE If you are using the [VS Code](https://code.visualstudio.com/) editor, you can use the [Remote Containers](https://code.visualstudio.com/docs/remote/containers) extension and the provided development container to develop in a Docker container. This will ensure that you have all the necessary tools installed and configured automatically. You can find the configuration for the container in the `.devcontainer` folder. In this case you can skip the rest of this section (up to the NOTES) and start developing right away.

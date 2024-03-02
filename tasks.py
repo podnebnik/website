@@ -125,7 +125,7 @@ def create_databases(c):
                     metadata['databases'][package.name]['tables'][resource.name]['units'] = dict([(field.name, field.unit) for field in resource.schema.fields if hasattr(field, 'unit')])
             else:
                 print(f'    Skipping resource {resource.name}, {resource.format} @ {resource.path}')
-            c.run(f'sqlite-utils insert {database} {resource.name} {DATASETS_DIR / package_path.parent /resource.path} --csv --detect-types --silent')
+            c.run(f'sqlite-utils insert {database} {resource.name} {DATASETS_DIR / package_path.parent / resource.path} --csv --detect-types --silent')
 
     # Create the datasette inspect file
     c.run(f'datasette inspect {" ".join([str(db) for db in databases])} --inspect-file {SQLITE_DIR / "inspect-data.json"}')
