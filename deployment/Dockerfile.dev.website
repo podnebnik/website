@@ -3,4 +3,3 @@ FROM podnebnik/base:1.0 as builder
 COPY . /build
 
 RUN yarn install &&  yarn run build
-
