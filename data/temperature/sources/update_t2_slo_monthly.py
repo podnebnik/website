@@ -50,7 +50,7 @@ for y, matrix in zip(year_ranges, running_averages):
         for j in range(len(matrix[i])):
             if matrix[i][j] < - 1000:
                 continue
-            matrix_data.append([y[1], i, j, matrix[i][j]])
+            matrix_data.append([y[1], j, i, matrix[i][j]])
 
 df = pd.DataFrame(matrix_data, columns=['year_end', 'x', 'y', 'temperature_average'])
 df = df.astype({'year_end': 'int32'})
