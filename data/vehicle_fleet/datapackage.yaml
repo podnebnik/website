@@ -1,0 +1,68 @@
+profile: data-package
+name: vehicle_fleet
+title: Road vehicle fleet for Slovenia
+contributors:
+  - title: Ministrstvo za Infrastrukturo
+    role: author
+    path: https://www.gov.si/en/state-authorities/ministries/ministry-of-infrastructure/
+  - title: Gasper Zejn
+    role: author
+description: Monthly new vehicle registrations by type of vehicle and type of fuel
+keywords: [transport, road, vehicle, combustion, ev, ice]
+geography: Slovenia
+schedule: monthly
+licenses:
+  - name: ODbL-1.0
+    title: Open Data Commons Open Database License 1.0
+    path: https://www.opendefinition.org/licenses/odc-odbl
+resources:
+  - name: new_vehicle_registrations
+    title: New vehicle registrations
+    profile: tabular-data-resource
+    path: data/new_registrations.csv
+    scheme: file
+    format: csv
+    encoding: utf-8
+    hashing: md5
+    sources:
+      - title: Newly registered vehicles, by month, OPSI Portal
+        code: sources/update_emissions.py
+        # path:          # path to file in repo if exists
+        url: https://podatki.gov.si/dataset/prvic-registrirana-vozila-po-mesecih
+        author: MZI
+        date_accessed: "2024-01-06"
+    schema:
+      fields:
+        - name: mesec
+          type: yearmonth
+          title: Month
+        - name: tip
+          type: string
+          title: Type of vehicle
+        - name: st_vseh
+          title: Number of all newly registered vehicles
+          type: number
+        - name: st_dizel
+          title: Number of diesel powered newly registered vehicles
+          type: number
+        - name: st_dizel_hev
+          title: Number of hybrid diesel powered newly registered vehicles
+          type: number
+        - name: st_bencin
+          title: Number of petrol powered newly registered vehicles
+          type: number
+        - name: st_bencin_hev
+          title: Number of hybrid petrol powered newly registered vehicles
+          type: number
+        - name: st_skupaj_hev
+          title: Number of hybrid newly registered vehicles
+          type: number
+        - name: st_bev
+          title: Number of battery electric powered newly registered vehicles
+          type: number
+        - name: st_drugo
+          title: Number of other vehicles
+          type: number
+        - name: st_elektrificiranih
+          title: Number of vehicles having electric drive
+          type: number
