@@ -11,7 +11,7 @@ Nov odstavek se začne z vmesno prazno vrstico. Pod tem odstavkom je primer vdel
 
 POPRAVI: Kako se naredi podnapis k sliki?
 
-<div class="image">{% image "./triglav.jpg", "Exercitation qui dolor" %}</div>
+<div class="image">{% image "./gore-ales-krivec.jpg", "Exercitation qui dolor" %}</div>
 
 Primer tabele.
 
