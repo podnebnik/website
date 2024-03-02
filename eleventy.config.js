@@ -5,6 +5,13 @@ const Image = require("@11ty/eleventy-img")
 const SolidPlugin = require('vite-plugin-solid')
 const EleventyVitePlugin = require('@11ty/eleventy-plugin-vite')
 
+async function photoAuthorShortcode(author, link) {
+    return `<span class="photo-author inline-flex items-center gap-1.5 not-italic" title="Avtor fotografije">
+        <img src="/assets/icons/camera.svg" alt="Ikona fotoaparata" class="size-5 inline opacity-30">
+        ${author}
+    </span>`
+}
+
 async function imageShortcode(src, alt, sizes) {
     // If src is a relative path, resolve it relative to the current page.
     const imagePath = src.startsWith('./') ? path.join(path.dirname(this.page.inputPath), src) : src;
@@ -62,6 +69,7 @@ module.exports = function (eleventyConfig) {
     eleventyConfig.addPassthroughCopy('public')
 
     eleventyConfig.addAsyncShortcode("image", imageShortcode)
+    eleventyConfig.addShortcode("photoAuthor", photoAuthorShortcode)
 
     return {
         dir: {

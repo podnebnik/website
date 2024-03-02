@@ -1,5 +1,6 @@
 module.exports = {
     content: [
+        "./eleventy.config.js",
         "./pages/**/*.{html,md,js}",
         "./code/**/*.{html,js,jsx,ts,tsx}",
     ],
