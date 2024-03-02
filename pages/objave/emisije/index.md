@@ -64,7 +64,9 @@ Porabo goriv za proizvodnjo električne energije se da učinkovito zmanjšati z 
 ### Industrija in gradbeništvo
 
 V gradbeništvu je izziv, da so gradbišča pogosto slabo infrastrukturno podprta ali pa so odročna in je zato potreben energent, ki omogoča avtonomno delovanje. Trenutno so to fosilna goriva, pričakuje pa se, da bo na tem področju pomembno vlogo igral vodik.
-Kmetijstvo
+
+### Kmetijstvo
+
 Kmetijstvo je še nerešen problem. Večji del emisij v kmetijstvu pride iz izpustov metana, ki nastaja pri procesu prebavljanja pri prežvekovalcih, gnojenjem ter ravnanjem z gnojem. Največji potencial je tako v zmanjšanem obsegu živinoreje, ki je trenutno tudi močno subvecionirana.
 
 ### Industrijski procesi
