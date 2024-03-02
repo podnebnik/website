@@ -5,7 +5,6 @@ topics:
     - energetika
     - emisije
 summary: Hitri vpogled v prihodnost slovenskega (elektro)energetskega sistema
-
 ---
 
 V zadnjih letih so se razprave o oskrbi z (električno) energijo v Sloveniji, podobno kot drugje po svetu, uvrstile v dnevni nabor perečih tem, ki jih tako radi javno (pre)debatiramo. Naraščajoče zavedanje – bodisi dejansko bodisi le namišljeno – o okoljskih problemih, povezanih z našim neizmernim hlastanjem po energiji, je privedlo do širokega spektra mnenj o tem, kako ustrezno nasloviti bodočo oskrbo z (električno) energijo. Vseprisotni želji po zanesljivi in cenovno dostopni oskrbi z energijo pa je pereča okoljska kriza, ki je posledica antropogenih podnebnih sprememb, dodala še novo zahtevno sestavino. Razmah uporabe energije in razvoj energetike je tesno povezan z industrijskimi revolucijami, saj je obilje energije ključno vplivalo tudi na tehnološki, znanstveni in nenazadnje družbeni razvoj. Čeprav se morda zdi, da se v (elektro)energetiki v zadnjih sto letih ni kaj dosti spremenilo, je resničnost bolj zapletena. Električna omrežja so na primer postala izjemno zanesljiva, uporabniki pa elektriko pogosto dojemamo le še prek stikala, ne zavedajoč se truda in znanja potrebnega za zagotavljanje zanesljive oskrbe. V želji po omejevanju v mnogočem škodljivega vpliva pridobivanje energije na naše okolje, je energetika spet pred precejšnjimi in razmeroma hitrimi spremembami. 
