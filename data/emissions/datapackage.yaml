@@ -454,7 +454,7 @@ resources:
           type: number
           unit: tonnes CO2 equivalent
   - name: historical_emissions_from_memo_items
-    title: Historical emissions from memo items 
+    title: Historical emissions from memo items
     path: data/emissions.historical.memo_items.csv
     scheme: file
     format: csv

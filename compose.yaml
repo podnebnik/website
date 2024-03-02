@@ -26,9 +26,9 @@ services:
     ports:
       # you can change the 8003 to something else if it clashes on your system
       - "8003:8080"
-      # this is a websocket port that 11ty seems to use for something, not sure what 
+      # this is a websocket port that 11ty seems to use for something, not sure what
       # do not change this line below
-      - "24678:24678" 
+      - "24678:24678"
 
   # datasette, the database interface behind podnebnik
   datasette:
