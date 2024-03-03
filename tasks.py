@@ -140,4 +140,5 @@ def datasette(c):
     '''Start datasette server.'''
     create_databases(c)
     print('\nStarting Datasette server...\n')
-    c.run(f'datasette serve {SQLITE_DIR} --inspect-file {SQLITE_DIR}/inspect-data.json --metadata {SQLITE_DIR}/metadata.json --port 8010 --cors')
+    # TODO: remove custom setting when no longer needed
+    c.run(f'datasette serve {SQLITE_DIR} --inspect-file {SQLITE_DIR}/inspect-data.json --metadata {SQLITE_DIR}/metadata.json --port 8010 --cors --setting max_returned_rows 25000')
