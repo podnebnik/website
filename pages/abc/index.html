@@ -1,0 +1,15 @@
+---
+title: ABC podnebnih sprememb
+date: git Last Modified
+---
+
+{% block content %}
+
+<dl>
+{% for abc in abc %}
+    <dt>{{ abc.name }}</dt>
+    <dd>{{ abc.description }}</dd>
+{% endfor %}
+</dl>
+
+{% endblock %}

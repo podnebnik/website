@@ -9,9 +9,12 @@ layout: base.html
     <div class="text-sm text-right">Zadnja sprememba: {{ page.date | date: '%Y-%m-%d ob %H:%M' }}</div>
 
     {% block lead %}{% endblock %}
-    <div class="lead">
-    {{ summary }}
-    </div>
+
+    {% if summary %}
+    <div class="lead">{{ summary }}</div>
+    {% else %}
+    <div class="no-lead"></div>
+    {% endif %}
 
     {{ content }}
 </div>

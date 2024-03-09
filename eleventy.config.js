@@ -1,6 +1,6 @@
 const path = require("path")
 const fs = require("fs")
-
+const yaml = require("js-yaml")
 const Image = require("@11ty/eleventy-img")
 const SolidPlugin = require('vite-plugin-solid')
 const EleventyVitePlugin = require('@11ty/eleventy-plugin-vite')
@@ -33,6 +33,8 @@ module.exports = function (eleventyConfig) {
             plugins: [SolidPlugin()]
         }
     })
+
+    eleventyConfig.addDataExtension("yaml", contents => yaml.load(contents));
 
     eleventyConfig.addPassthroughCopy('code')
     eleventyConfig.addPassthroughCopy('styles')
