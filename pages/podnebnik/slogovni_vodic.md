@@ -5,7 +5,16 @@ topics: emisije
 summary: Pregled slogov za ustvarjanje objav in mehanizmov za vdelavo bogatih vsebin
 ---
 
-Primer besedila, ki bo objavljen. Besedilo je lahko **odebeljeno** ali *ležeče* ali ***odebeljeno ležeče***. Besedilo lahko tudi ~~prečrtamo~~. Za podpisane in nadpisane številke se priporoča uporaba ustreznih unicode znakov, npr. H₂O, CO₂ in CH₄.  
+<div id="emisije">
+    <script type="module">
+        import { render } from 'solid-js/web';
+        import '/code/Datasette.fs.jsx';
+        import { Chart }  from '/code/emisije/Chart.fs.jsx';
+        render(() => Chart(), document.getElementById('emisije'));
+    </script>
+</div>
+
+Primer besedila, ki bo objavljen. Besedilo je lahko **odebeljeno** ali *ležeče* ali ***odebeljeno ležeče***. Besedilo lahko tudi ~~prečrtamo~~. Za podpisane in nadpisane številke se priporoča uporaba ustreznih unicode znakov, npr. H₂O, CO₂ in CH₄.
 
 Nov odstavek se začne z vmesno prazno vrstico. Pod tem odstavkom je primer vdelave rastrske slike. Slike se na dovolj širokem zaslonu izrišejo v širini 948 pikslov in se raztegnejo, če so manjše.
 
@@ -60,7 +69,7 @@ Primer tabele.
 <div class="flex border-t border-slate-300 mb-4 pt-4 flex-wrap sm:no-flex">
     <h1 class="!m-0 w-full sm:w-1/3">Naslov</h1>
     <div>
-        Po moči je ekvivalenten naslovu strani. 
+        Po moči je ekvivalenten naslovu strani.
     </div>
 </div>
 <div class="flex border-t border-slate-300 mb-4 pt-4 flex-wrap sm:no-flex">
