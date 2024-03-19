@@ -169,10 +169,10 @@ def writeConfig(parameter, value, filename):
 # first of the main functions which to download emission xlsx files
 ###################################################################
 def download_emission_xlsx_files():
-    # URL where xlss are looked for
-    BaseURL = "https://cdr.eionet.europa.eu/si/eu/mmr/art07_inventory/ghg_inventory/"
+    # ODL URL
+    # BaseURL = "https://cdr.eionet.europa.eu/si/eu/mmr/art07_inventory/ghg_inventory/"
     # URL below will beceome new ULR from 15.3.2024 on
-    # BaseURL = "https://cdr.eionet.europa.eu/si/eu/govreg/inventory/"
+    BaseURL = "https://cdr.eionet.europa.eu/si/eu/govreg/inventory/"
     page = requests.get(BaseURL)
     page.raise_for_status()
     soupMain = BeautifulSoup(page.content, "html.parser")
