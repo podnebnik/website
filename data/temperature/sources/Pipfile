@@ -11,6 +11,8 @@ pipenv = "*"
 [packages]
 numpy = "*"
 pandas = "*"
+scipy = "==1.10.0"
+netcdf4 = "*"
 
 [requires]
 python_version = "3.11"
