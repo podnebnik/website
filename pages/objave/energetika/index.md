@@ -26,5 +26,5 @@ Elektroenergetski sistem, ne glede na bodoče načrte, potrebuje redno vzdrževa
 Nadgrajevanje elektroenergetskega sistema je mnogo več kot le odločitev o graditvi ene nove elektrarne. Izkušnje iz preteklosti kažejo, da postavitev novih elektroenergetskih objektov spremljajo številne težave – od težavnega umeščanja v prostor do raznovrstnih zapletov z ustreznim vodenjem projektov.  Javna debata o teh temah je zato koristna, a pripravljeni moramo biti tudi na vselej prisotno kakofonijo mnenj, objavljenih na socialnih medijih. A končni rezultat verjetno ne bo prevlada ene same samcate tehnologije, temveč skrbno izdelan mozaik pametnega upravljanja proizvodnje, razdelitve in tudi porabe. A ne moremo niti brez sinergijskih učinkov, saj bo (morebiten) uspeh energetske in okoljske preobrazbe tudi močan pozitiven signal celotni družbi. 
 
 <div style="text-align: right; font-weight: bold; font-style: italic;">
-  Marko Kovač in ekupa Podnebnika
+  Marko Kovač in ekipa Podnebnika
 </div>
