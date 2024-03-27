@@ -9,9 +9,9 @@ Toplogredni plini so tisti plini, ki imajo v zemeljski atmosferi zanimivo ter tu
 
 Razvoj naše civilizacije v zadnjih dveh stoletjih je bil resnično silovit. Če je bilo običajno življenje še na začetku devetnajstega stoletja bolj podobno tistemu v časih rimskega imperija, bi bil popotnik iz tistega časa danes verjetno povsem izgubljen. Industrijske revolucije so prinesle ne le pomemben znanstveni in tehnološki napredek, temveč so povzročile tudi znatne hitre družbeno-ekonomske in kulturne spremembe. Človeštvo je bilo s svojem napredkom tako učinkovito, da so vse te spremembe prinesle tudi nekatere neželene in negativne  vplive. Naš vpliv na naravo in okolje smo opazili že pred desetletji – pretirani izpusti žveplovega dioksida so zaradi pojava kislega dežja uničevali ne le naše gozdove temveč tudi naša pljuča, plini CFC so resno najedli ozonski plašč in dopuščali prehod škodljivega ultravijoličnega sevanja, svinec v bencinu pa je povzročal številne zdravstvene težave. S skupinskim delovanjem mednarodne skupnosti smo naštete težave precej omilili. 
 
-Toda težava s toplogrednimi plini je žal nekoliko zahtevnejša – tako zaradi količin kot tudi zaradi navezave na pridobivanje energije. Silovit razvoj je prinesel tudi naše vedno večje hlastanje po energiji. Pri pridobivanju energije pa smo bili precej iznajdljivi – težaško delo živali in kurjenje lesa so izpodrinili stroji, ki jih poganjajo fosilni viri – premog, nafta in zemeljski plin. Žal pa ta goriva izpuščajo tudi velike količine toplogrednih plinov, povečini prav ogljikov dioksid (CO2), ki je za zemeljske razmere najpomembnejši toplogredni plin. Njegova koncentracija je od začetka industrijske dobe narastla s približno 280 ppm (to je delcev na milijon oziroma 0,028 %) na več kot 420 ppm (ali 0,042 %). Učinek tople grede pa je to povečanje koncentracij toplogrednih plinov sprevrgel v povečevanje temperature, ki posledično vodi v podnebne spremembe.
+Toda težava s toplogrednimi plini je žal nekoliko zahtevnejša – tako zaradi količin kot tudi zaradi navezave na pridobivanje energije. Silovit razvoj je prinesel tudi naše vedno večje hlastanje po energiji. Pri pridobivanju energije pa smo bili precej iznajdljivi – težaško delo živali in kurjenje lesa so izpodrinili stroji, ki jih poganjajo fosilni viri – premog, nafta in zemeljski plin. Žal pa ta goriva izpuščajo tudi velike količine toplogrednih plinov, povečini prav ogljikov dioksid (CO₂), ki je za zemeljske razmere najpomembnejši toplogredni plin. Njegova koncentracija je od začetka industrijske dobe narastla s približno 280 ppm (to je delcev na milijon oziroma 0,028 %) na več kot 420 ppm (ali 0,042 %). Učinek tople grede pa je to povečanje koncentracij toplogrednih plinov sprevrgel v povečevanje temperature, ki posledično vodi v podnebne spremembe.
 
-Seveda ogljikov dioksid izpušča tudi celotna biosfera, torej ves živelj na planetu. Toda ti izpusti so uravnoteženi s porabo ogljikovega dioksida v obdobju rasti rastlin in drugimi naravnimi ponori. Ker pa človeštvo še ni iznašlo učinkovitih ponorov lastnih izpustov, bodisi naravnih bodisi umetnih, so ti glavni vzrok za naraščanje njegove koncentracije v ozračju. 
+Seveda ogljikov dioksid izpušča tudi celotna biosfera, torej ves živelj na planetu. Toda ti izpusti so uravnoteženi s porabo ogljikovega dioksida v obdobju rasti rastlin in drugimi naravnimi ponori. Ker pa človeštvo še ni iznašlo učinkovitih ponorov lastnih izpustov, bodisi naravnih bodisi umetnih, so ti glavni vzrok za naraščanje njegove koncentracije v ozračju.  
 Povečani izpusti toplogrednih plinov so prepleteni z raznovrstnimi človeškimi aktivnostmi. Boljše življenjske razmere so spodbudile rast števila prebivalstva. Zahteve po vse večjih potrebah po hrani so botrovale napredku v kmetijstvu, na primer z razvojem poljščin z visoko donosnostjo. Sintetična gnojila, ki prav tako omogočajo večje donose, so povezana z izpusti dušikovega oksida (N2O), še enega toplogrednega plina. Svojo vlogo pa igrajo tudi spremembe pri prehranjevanju, ki je bilo vse bolj usmerjeno k uživanju večjega deleža mesa in mlečnih izdelkov, ki so povezane z izpusti metana (CH4). Zaradi potreb po kmetijskih površinah so se krčili gozdovi, posebej v tropskih območjih, kar je neposredno vplivalo na sposobnost zadrževanja ogljikovega dioksida v zemljini (sekvestracija).
 
 Uporaba motoriziranih prometnih sredstev je omogočila ne le to, da potujemo dlje in predvsem več, temveč si neumorno dostavljamo izdelke z drugega konca sveta, pri čemer pogoni vozil, ladij in letal na fosilna goriva izpuščajo ogromne količine toplogrednih plinov. Rast industrije zahteva obilje surovin, ki se jih nato predeluje z energetsko intenzivno proizvodnjo, na primer s proizvodnjo jekla. Urbanizacija je dodala k razmahu gradbene industrije in proizvodnji cementa, ki je ravno tako vir obsežnih izpustov ogljikovega dioksida. 
@@ -21,33 +21,33 @@ Uporaba motoriziranih prometnih sredstev je omogočila ne le to, da potujemo dlj
 Poglejmo si na kratko glavne povzročitelje učinka tople grede in segrevanja planeta, po pomembnih lastnostih in učinkih plinov. S slednjimi ocenjujemo njihovo pomembnost pri podnebnih spremembah.
 Opomba: Razlage za Efektivni sevalni pribitek (ESP) in Ravnovesno podnebno občutljivost (RPO) so proti koncu teksta.
 
-### Ogljikov dioksid (CO2)
+### Ogljikov dioksid (CO₂)
 
 Vpliv na temperaturo: CO2 je najdebelejša odeja, ki zadržuje toploto in povzroča dvig temperature na Zemlji. Sprošča se pri izgorevanju fosilnih goriv, krčenju gozdov in industrijskih procesih.
-Življenjska doba (v ozračju): CO2 lahko ostane v ozračju več tisoč let, zato so njegovi učinki kopičenja in segrevanja dolgotrajni.
-Efektivni sevalni pribitek (ESP): CO2 ima med toplogrednimi plini najvišjo vrednost ERF, kar bistveno vpliva na količino toplote, ki jo zadrži Zemljino ozračje.
-Ravnovesna podnebna občutljivost (RPO) : Zaradi njene trajne narave in povratnih zank, kot je taljenje ledu, ki zmanjšuje albedo (kvocient odbojnosti Zemlje), lahko majhna povečanja CO2 povzročijo znatno dolgoročno segrevanje.
+Življenjska doba (v ozračju): CO2 lahko ostane v ozračju več tisoč let, zato so njegovi učinki kopičenja in segrevanja dolgotrajni.  
+Efektivni sevalni pribitek (**ESP**): CO2 ima med toplogrednimi plini najvišjo vrednost ERF, kar bistveno vpliva na količino toplote, ki jo zadrži Zemljino ozračje.  
+Ravnovesna podnebna občutljivost (**RPO**) : Zaradi njene trajne narave in povratnih zank, kot je taljenje ledu, ki zmanjšuje albedo (kvocient odbojnosti Zemlje), lahko majhna povečanja CO2 povzročijo znatno dolgoročno segrevanje.
 
-### Metan (CH4)
+### Metan (CH₄)
 
 Vpliv na temperaturo: CH4 je v obdobju 100 let več kot 25-krat močnejši od CO2, vendar se hitreje razgradi. Sprošča se iz odlagališč odpadkov, naftnih in plinskih sistemov ter živine.
-Življenjska doba: Metan traja približno 12 let, vendar je zaradi svojega močnega učinka na segrevanje ključni cilj za blažitev podnebnih sprememb.
-ESP: Kljub krajši življenjski dobi ima CH4 močan vpliv na ERF zaradi svoje velike sposobnosti zadrževanja toplote.
-RPO: Vpliv metana je kratkoročno močan, zato je takojšnje zmanjšanje zelo koristno za upočasnitev segrevanja ozračja.
+Življenjska doba: Metan "traja" približno 12 let, vendar je zaradi svojega močnega učinka na segrevanje ključni cilj za blažitev podnebnih sprememb.  
+**ESP**: Kljub krajši življenjski dobi ima CH₄ močan vpliv na ESP zaradi svoje velike sposobnosti zadrževanja toplote.  
+**RPO**: Vpliv metana je kratkoročno močan, zato je takojšnje zmanjšanje zelo koristno za upočasnitev segrevanja ozračja.
 
-### Dušikov oksid (N2O)
+### Dušikov oksid (N₂O)
 
-Vpliv na temperaturo: N2O je v obdobju 100 let 298-krat močnejši od CO2, Izvira predvsem iz kmetijskih dejavnosti in industrijskih procesov.
-Življenjska doba: V zraku se zadržuje 114 let in dolgoročno vpliva na segrevanje ozračja.
-ESP: N2O ima nekajkrat manjši skupni ESP v primerjavi s CO2 in CH4, vendar je zaradi svoje moči pomemben.
-RPO: Podobno kot CO2 lahko tudi N2O zaradi svoje dolge življenjske dobe povzroči dolgotrajno segrevanje, kar vpliva na podnebne vzorce in ekosisteme.
+Vpliv na temperaturo: N₂O je v obdobju 100 let 298-krat močnejši od CO₂, Izvira predvsem iz kmetijskih dejavnosti in industrijskih procesov.
+Življenjska doba: V zraku se zadržuje 114 let in dolgoročno vpliva na segrevanje ozračja.  
+**ESP**: N₂O ima nekajkrat manjši skupni ESP v primerjavi s CO₂ in CH₄, vendar je zaradi svoje moči pomemben.  
+**RPO**: Podobno kot CO₂ lahko tudi CH₄ zaradi svoje dolge življenjske dobe povzroči dolgotrajno segrevanje, kar vpliva na podnebne vzorce in ekosisteme.
 
 ### Fluorirani plini
 
 Vpliv na temperaturo: skupina sintetičnih plinov, ki se uporabljajo v klimatskih napravah, hladilnih napravah in proizvodnji imajo tudi močen učinek na segrevanje
-Življenjska doba: Odvisno od plina se zelo razlikuje, od nekaj let do več tisoč let.
-ESP: K učinku tople grede prispevajo manj kot CO2, CH4 ali N2O, vendar sta njihova velika moč in naraščajoča uporaba zaskrbljujoči.
-RPO: Zaradi njihove moči in v nekaterih primerih dolge življenjske dobe lahko njihovo zmanjšanje bistveno vpliva na podnebje.
+Življenjska doba: Odvisno od plina se zelo razlikuje, od nekaj let do več tisoč let.  
+**ESP**: K učinku tople grede prispevajo manj kot CO₂, CH₄ ali N₂O, vendar sta njihova velika moč in naraščajoča uporaba zaskrbljujoči.  
+**RPO**: Zaradi njihove moči in v nekaterih primerih dolge življenjske dobe lahko njihovo zmanjšanje bistveno vpliva na podnebje.
 
 ### Kako je vodna para drugačna
 
@@ -55,8 +55,8 @@ Tudi vodna para je pomemben toplogredni plin, vendar ne velja za neposrednega po
 
 ## Zakaj je vse to pomembno
 
-Ravnovesje toplogrednih plinov v našem ozračju je občutljivo. Njihova različna življenjska doba in učinki na sistem uravnavanja temperature na Zemlji so razlog, zakaj jih moramo razumeti in upravljati. Efektivni sevalni pribitek (ESP) meri vpliv plina na ravnovesje vpadne in izpadne energije v Zemljinem ozračju. To je ključna metrika za razumevanje, kako posamezni toplogredni plini prispevajo k segrevanju ozračja.
-Ravnotežna podnebna občutljivost odraža, za koliko bi se sčasoma povečala povprečna temperatura Zemlje, če bi se koncentracija CO2 podvojila in stabilizirala. Znanstvenikom pomaga napovedati dolgoročne podnebne spremembe, ki jih lahko pričakujemo od izpustov toplogrednih plinov.
+Ravnovesje toplogrednih plinov v našem ozračju je občutljivo. Njihova različna življenjska doba in učinki na sistem uravnavanja temperature na Zemlji so razlog, zakaj jih moramo razumeti in upravljati. Efektivni sevalni pribitek (ESP) meri vpliv plina na ravnovesje vpadne in izpadne energije v Zemljinem ozračju. To je ključna metrika za razumevanje, kako posamezni toplogredni plini prispevajo k segrevanju ozračja.  
+Ravnotežna podnebna občutljivost odraža, za koliko bi se sčasoma povečala povprečna temperatura Zemlje, če bi se koncentracija CO₂ podvojila in stabilizirala. Znanstvenikom pomaga napovedati dolgoročne podnebne spremembe, ki jih lahko pričakujemo od izpustov toplogrednih plinov.
 
 ## Ukrepanje
 
