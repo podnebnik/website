@@ -23,28 +23,28 @@ Opomba: Razlage za Efektivni sevalni pribitek (ESP) in Ravnovesno podnebno obču
 
 ### Ogljikov dioksid (CO₂)
 
-Vpliv na temperaturo: CO₂ je najdebelejša odeja, ki zadržuje toploto in povzroča dvig temperature na Zemlji. Sprošča se pri izgorevanju fosilnih goriv, krčenju gozdov in industrijskih procesih.
+Vpliv na temperaturo: CO₂ je najdebelejša odeja, ki zadržuje toploto in povzroča dvig temperature na Zemlji. Sprošča se pri izgorevanju fosilnih goriv, krčenju gozdov in industrijskih procesih.  
 Življenjska doba (v ozračju): CO₂ lahko ostane v ozračju več tisoč let, zato so njegovi učinki kopičenja in segrevanja dolgotrajni.  
 Efektivni sevalni pribitek (**ESP**): CO₂ ima med toplogrednimi plini najvišjo vrednost ESP, kar bistveno vpliva na količino toplote, ki jo zadrži Zemljino ozračje.  
 Ravnovesna podnebna občutljivost (**RPO**) : Zaradi njene trajne narave in povratnih zank, kot je taljenje ledu, ki zmanjšuje albedo (kvocient odbojnosti Zemlje), lahko majhna povečanja CO₂ povzročijo znatno dolgoročno segrevanje.
 
 ### Metan (CH₄)
 
-Vpliv na temperaturo: CH₄ je v obdobju 100 let več kot 25-krat močnejši od CO₂, vendar se hitreje razgradi. Sprošča se iz odlagališč odpadkov, naftnih in plinskih sistemov ter živine.
+Vpliv na temperaturo: CH₄ je v obdobju 100 let več kot 25-krat močnejši od CO₂, vendar se hitreje razgradi. Sprošča se iz odlagališč odpadkov, naftnih in plinskih sistemov ter živine.  
 Življenjska doba: Metan "traja" približno 12 let, vendar je zaradi svojega močnega učinka na segrevanje ključni cilj za blažitev podnebnih sprememb.  
 **ESP**: Kljub krajši življenjski dobi ima CH₄ močan vpliv na ESP zaradi svoje velike sposobnosti zadrževanja toplote.  
 **RPO**: Vpliv metana je kratkoročno močan, zato je takojšnje zmanjšanje zelo koristno za upočasnitev segrevanja ozračja.
 
 ### Dušikov oksid (N₂O)
 
-Vpliv na temperaturo: N₂O je v obdobju 100 let 298-krat močnejši od CO₂, Izvira predvsem iz kmetijskih dejavnosti in industrijskih procesov.
+Vpliv na temperaturo: N₂O je v obdobju 100 let 298-krat močnejši od CO₂, Izvira predvsem iz kmetijskih dejavnosti in industrijskih procesov.  
 Življenjska doba: V zraku se zadržuje 114 let in dolgoročno vpliva na segrevanje ozračja.  
 **ESP**: N₂O ima nekajkrat manjši skupni ESP v primerjavi s CO₂ in CH₄, vendar je zaradi svoje moči pomemben.  
 **RPO**: Podobno kot CO₂ lahko tudi CH₄ zaradi svoje dolge življenjske dobe povzroči dolgotrajno segrevanje, kar vpliva na podnebne vzorce in ekosisteme.
 
 ### Fluorirani plini
 
-Vpliv na temperaturo: skupina sintetičnih plinov, ki se uporabljajo v klimatskih napravah, hladilnih napravah in proizvodnji imajo tudi močen učinek na segrevanje
+Vpliv na temperaturo: skupina sintetičnih plinov, ki se uporabljajo v klimatskih napravah, hladilnih napravah in proizvodnji imajo tudi močen učinek na segrevanje.  
 Življenjska doba: Odvisno od plina se zelo razlikuje, od nekaj let do več tisoč let.  
 **ESP**: K učinku tople grede prispevajo manj kot CO₂, CH₄ ali , vendar sta njihova velika moč in naraščajoča uporaba zaskrbljujoči.  
 **RPO**: Zaradi njihove moči in v nekaterih primerih dolge življenjske dobe lahko njihovo zmanjšanje bistveno vpliva na podnebje.
