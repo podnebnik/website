@@ -1,5 +1,5 @@
 ---
-title: Uvod v probematiko emisij toplogrednih plinov
+title: Uvod v problematiko emisij toplogrednih plinov
 date: git Last Modified
 topics: emisije
 summary: Izpusti toplogrednih plinov in njihov vpliv na podnebne spremembe.
