@@ -25,7 +25,7 @@ Opomba: Razlage za Efektivni sevalni pribitek (ESP) in Ravnovesno podnebno obču
 
 Vpliv na temperaturo: CO₂ je najdebelejša odeja, ki zadržuje toploto in povzroča dvig temperature na Zemlji. Sprošča se pri izgorevanju fosilnih goriv, krčenju gozdov in industrijskih procesih.
 Življenjska doba (v ozračju): CO₂ lahko ostane v ozračju več tisoč let, zato so njegovi učinki kopičenja in segrevanja dolgotrajni.  
-Efektivni sevalni pribitek (**ESP**): CO₂ ima med toplogrednimi plini najvišjo vrednost ERF, kar bistveno vpliva na količino toplote, ki jo zadrži Zemljino ozračje.  
+Efektivni sevalni pribitek (**ESP**): CO₂ ima med toplogrednimi plini najvišjo vrednost ESP, kar bistveno vpliva na količino toplote, ki jo zadrži Zemljino ozračje.  
 Ravnovesna podnebna občutljivost (**RPO**) : Zaradi njene trajne narave in povratnih zank, kot je taljenje ledu, ki zmanjšuje albedo (kvocient odbojnosti Zemlje), lahko majhna povečanja CO₂ povzročijo znatno dolgoročno segrevanje.
 
 ### Metan (CH₄)
