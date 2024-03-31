@@ -23,7 +23,16 @@
 <body class="font-serif bg-tertiary">
     <header>
         <nav role="navigation" class="bg-primary mb-3gap text-white flex items-center min-h-[75px] px-3" aria-label="Main">
-            <a href="/"><img src="/assets/logo/logo-orange.svg" alt="Podnebnik"></a>
+            <a href="/"><img class="logo" src="/assets/logo/logo-orange.svg" alt="Podnebnik"></a>
+
+            <div class="hidden sm:mr-16 sm:block w-full">
+                <div class="flex justify-end space-x-3">
+                    <a class="nav-link" href="/" {% if page.url == "/" %} aria-current="page"{% endif %}>Članki</a>
+                    <a class="nav-link" href="/faq/" {% if page.url == "/faq/" %} aria-current="page"{% endif %}>Pojasnila</a>
+                    <a class="nav-link" href="/about/" {% if page.url == "/about/" %} aria-current="page"{% endif %}>O projektu</a>
+                </div>
+            </div>
+
             {% include 'octocat.html' %}
         </nav>
     </header>
@@ -44,7 +53,7 @@
                 <ul class="mt-gap">
                     <li class="mb-2"><a href="/about/">O projektu</a></li>
                     <li class="mb-2"><a href="/">Članki</a></li>
-                    <li class="mb-2"><a href="/faq/">FAQ</a></li>
+                    <li class="mb-2"><a href="/faq/">Pojasnila</a></li>
                 </ul>
             </div>
             <div class="border-t pr-2gap py-2gap lg:p-2gap lg:border-r">
