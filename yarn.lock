@@ -2671,10 +2671,10 @@ seroval-plugins@^1.0.3:
   resolved "https://registry.yarnpkg.com/seroval-plugins/-/seroval-plugins-1.0.4.tgz#917d2cd103525f0238433a49479def0ce65a56e4"
   integrity sha512-DQ2IK6oQVvy8k+c2V5x5YCtUa/GGGsUwUBNN9UqohrZ0rWdUapBFpNMYP1bCyRHoxOJjdKGl+dieacFIpU/i1A==
 
-seroval@^1.0.3:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/seroval/-/seroval-1.0.4.tgz#0400d24a48b1f6f44b8a3d55af0476a1c5e8643f"
-  integrity sha512-qQs/N+KfJu83rmszFQaTxcoJoPn6KNUruX4KmnmyD0oZkUoiNvJ1rpdYKDf4YHM05k+HOgCxa3yvf15QbVijGg==
+seroval@^1.0.4:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/seroval/-/seroval-1.0.5.tgz#d71ee540d936babaed92f56eda3e52d8e2a3deed"
+  integrity sha512-TM+Z11tHHvQVQKeNlOUonOWnsNM+2IBwZ4vwoi4j3zKzIpc5IDw8WPwCfcc8F17wy6cBcJGbZbFOR0UCuTZHQA==
 
 sharp@^0.31.3:
   version "0.31.3"
@@ -2738,13 +2738,13 @@ slugify@^1.6.6:
   resolved "https://registry.yarnpkg.com/slugify/-/slugify-1.6.6.tgz#2d4ac0eacb47add6af9e04d3be79319cbcc7924b"
   integrity sha512-h+z7HKHYXj6wJU+AnS/+IH8Uh9fdcX1Lrhg1/VMdf9PwoBQXFcXiAdsy2tSK0P6gKwJLXp02r90ahUCqHk9rrw==
 
-solid-js@^1.8.15:
-  version "1.8.15"
-  resolved "https://registry.yarnpkg.com/solid-js/-/solid-js-1.8.15.tgz#af4eef7203203efefb605613f3c244b5bcdb63bc"
-  integrity sha512-d0QP/efr3UVcwGgWVPveQQ0IHOH6iU7yUhc2piy8arNG8wxKmvUy1kFxyF8owpmfCWGB87usDKMaVnsNYZm+Vw==
+solid-js@^1.8.16:
+  version "1.8.16"
+  resolved "https://registry.yarnpkg.com/solid-js/-/solid-js-1.8.16.tgz#33ce9bff617154d5f4b889e1b2fb89d682b7a422"
+  integrity sha512-rja94MNU9flF3qQRLNsu60QHKBDKBkVE1DldJZPIfn2ypIn3NV2WpSbGTQIvsyGPBo+9E2IMjwqnqpbgfWuzeg==
   dependencies:
     csstype "^3.1.0"
-    seroval "^1.0.3"
+    seroval "^1.0.4"
     seroval-plugins "^1.0.3"
 
 solid-refresh@^0.5.0:
