@@ -1,7 +1,11 @@
 ---
 title: Uvod v problematiko emisij toplogrednih plinov
 date: git Last Modified
+published: 31. marec 2024
 topics: emisije
+authors:
+ - Marko Kovač
+ - Vladimir Nešković
 summary: Izpusti toplogrednih plinov in njihov vpliv na podnebne spremembe.
 ---
 

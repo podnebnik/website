@@ -2,11 +2,15 @@
     <div class="text-3xl font-sans font-semibold mb-2">{{ title }}</div>
     <div class="leading-normal">{{ summary }}</div>
     <div class="flex justify-between mt-gap md:mt-2gap font-sans">
-        <div class="flex space-x-2">
+        <div class="flex flex-wrap space-x-2">
             {% for tag in tags %}
             <div class="text-sm bg-tertiary rounded-md py-[0.1rem] px-3">{{ tag }}</div>
             {% endfor %}
         </div>
-        <div class="text-sm text-muted">{{ date | date: '%d. %m. %Y' }}</div>
+        <div class="text-sm text-muted">
+            {% publishedAt published true %}
+            &nbsp;&nbsp;
+            {% editedAt date true %}
+        </div>
     </div>
 </a>

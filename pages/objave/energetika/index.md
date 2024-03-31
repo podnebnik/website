@@ -1,9 +1,12 @@
 ---
 title: Energetika
 date: git Last Modified
+published: 31. marec 2024
 topics:
-    - energetika
-    - emisije
+  - energetika
+  - emisije
+authors:
+  - Marko Kovač
 summary: Hiter vpogled v prihodnost slovenskega elektroenergetskega sistema
 ---
 

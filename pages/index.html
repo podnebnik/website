@@ -10,6 +10,6 @@ summary: S pomočjo analiz in prikazov podatkov omogočamo boljšo oceno tveganj
     </div>
 
     {% for post in collections.post reversed %}
-    {% include '_includes/card.html', url: post.url, title: post.data.title, summary: post.data.summary, date: post.date, tags: post.data.topics %}
+    {% include '_includes/card.html', url: post.url, title: post.data.title, summary: post.data.summary, date: post.date, published: post.data.published, tags: post.data.topics %}
     {% endfor %}
 </div>

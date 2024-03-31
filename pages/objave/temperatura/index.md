@@ -1,7 +1,13 @@
 ---
 title: Temperatura in klimatski pasovi
 date: git Last Modified
+published: 1. januar 2024
 topics: temperatura
+authors:
+ - Žiga Zaplotnik
+ - Zarja Muršič
+ - Tadej Novak
+ - Matic Pikovnik
 summary: TODO
 ---
 

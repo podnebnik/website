@@ -20,6 +20,15 @@
     .lead
         @apply font-serif text-2xl font-semibold leading-snug text-black pt-2gap pb-2gap border-y #{!important}
 
+    .article-metadata
+        @apply inline-flex items-center text-muted
+    
+        img 
+            @apply size-5 inline opacity-30 mr-1.5
+
+        .author
+            @apply font-bold text-black
+
     .article-content
         h1:after
             display: none
