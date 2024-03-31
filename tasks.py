@@ -125,7 +125,7 @@ def create_databases(c):
                     metadata['databases'][package.name]['tables'][resource.name]['units'] = dict([(field.name, field.unit) for field in resource.schema.fields if hasattr(field, 'unit')])
             else:
                 print(f'    Skipping resource {resource.name}, {resource.format} @ {resource.path}')
-            c.run(f'sqlite-utils insert {database} {resource.name} {DATASETS_DIR / package_path.parent /resource.path} --csv --detect-types --silent')
+            c.run(f'sqlite-utils insert {database} {resource.name} {DATASETS_DIR / package_path.parent / resource.path} --csv --detect-types --silent')
 
     # Create the datasette inspect file
     c.run(f'datasette inspect {" ".join([str(db) for db in databases])} --inspect-file {SQLITE_DIR / "inspect-data.json"}')
@@ -140,4 +140,5 @@ def datasette(c):
     '''Start datasette server.'''
     create_databases(c)
     print('\nStarting Datasette server...\n')
-    c.run(f'datasette serve {SQLITE_DIR} --inspect-file {SQLITE_DIR}/inspect-data.json --metadata {SQLITE_DIR}/metadata.json --port 8010 --cors')
+    # TODO: remove custom setting when no longer needed
+    c.run(f'datasette serve {SQLITE_DIR} --inspect-file {SQLITE_DIR}/inspect-data.json --metadata {SQLITE_DIR}/metadata.json --port 8010 --cors --setting max_returned_rows 150000')

@@ -1,9 +1,12 @@
 {
     "recommendations": [
         "ms-python.python",
+        "ms-python.autopep8",
+        "ms-python.flake8",
         "Ionide.Ionide-fsharp",
         "bradlc.vscode-tailwindcss",
-        "alfonsogarciacaro.vscode-template-fsharp-highlight"
+        "alfonsogarciacaro.vscode-template-fsharp-highlight",
+        "syler.sass-indented",
     ],
     "unwantedRecommendations": []
 }

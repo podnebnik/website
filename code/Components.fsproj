@@ -10,7 +10,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Fable.Core" Version="4.2.0" />
+        <PackageReference Include="Fable.Core" Version="4.3.0" />
         <PackageReference Include="Fable.Solid" Version="1.0.0-beta-004" />
         <PackageReference Include="Elmish.Solid" Version="1.0.0-beta-002" />
     </ItemGroup>

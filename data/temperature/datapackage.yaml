@@ -1,0 +1,136 @@
+profile: data-package
+name: temperature
+title: Historical and projected temperatures
+contributors:
+  - title: Žiga Zaplotnik
+    role: author
+    path: https://twitter.com/zaplotnikziga
+  - title: Tadej Novak
+    role: author
+description: Temperature data for Slovenia and Europe
+keywords: [temperature, historical]
+geography: Slovenia
+schedule: annual
+resources:
+  - name: temperature.slovenia_historical.country_yearly_average
+    type: table
+    path: data/temperature.slovenia_historical.country_yearly_average.csv
+    title: Yearly average temperature at 2m in Slovenia
+    scheme: file
+    format: csv
+    mediatype: text/csv
+    encoding: utf-8
+    schema:
+      fields:
+        - name: year
+          title: Year
+          type: integer
+        - name: temperature_average
+          title: Average temperature at 2m in °C
+          type: number
+  - name: temperature.slovenia_historical.country_running_10year_average
+    type: table
+    path: data/temperature.slovenia_historical.country_running_10year_average.csv
+    title: 10-year running average temperature at 2m in Slovenia
+    scheme: file
+    format: csv
+    mediatype: text/csv
+    encoding: utf-8
+    schema:
+      fields:
+        - name: year_start
+          title: Start year
+          type: integer
+        - name: year_end
+          title: End year
+          type: integer
+        - name: temperature_average
+          title: Average temperature at 2m in °C
+          type: number
+  - name: temperature.slovenia_historical.country_special_average
+    type: table
+    path: data/temperature.slovenia_historical.country_special_average.csv
+    title: Average temperature at 2m in Slovenia for special time ranges
+    scheme: file
+    format: csv
+    mediatype: text/csv
+    encoding: utf-8
+    schema:
+      fields:
+        - name: year_start
+          title: Start year
+          type: integer
+        - name: year_end
+          title: End year
+          type: integer
+        - name: temperature_average
+          title: Average temperature at 2m in °C
+          type: number
+  - name: temperature.slovenia_historical.map_running_10year_average
+    type: table
+    path: data/temperature.slovenia_historical.map_running_10year_average.csv
+    title: 10-year running average temperature at 2m at different locations in Slovenia
+    scheme: file
+    format: csv
+    mediatype: text/csv
+    encoding: utf-8
+    schema:
+      fields:
+        - name: year_start
+          title: Start year
+          type: integer
+        - name: year_end
+          title: End year
+          type: integer
+        - name: x
+          title: Relative x coordinate
+          type: number
+        - name: y
+          title: Relative y coordinate
+          type: number
+        - name: temperature_average
+          title: Average temperature at 2m in °C
+          type: number
+        - name: temperature_difference_to_average
+          title: Difference to average temperature at 2m between 1961 and 2020 in °C
+          type: number
+        - name: temperature_difference_to_average_until_1990
+          title: Difference to average temperature at 2m between 1961 and 1990 in °C
+          type: number
+  - name: temperature.climate_models.map_running_10year_average
+    type: table
+    path: data/temperature.climate_models.map_running_10year_average.csv
+    title: 10-year running average modelled temperature at 2m in Europe between 1850 and 2099
+    scheme: file
+    format: csv
+    mediatype: text/csv
+    encoding: utf-8
+    schema:
+      fields:
+        - name: year_start
+          title: Start year
+          type: integer
+        - name: year_end
+          title: End year
+          type: integer
+        - name: latitude
+          title: Latitude
+          type: number
+        - name: longitude
+          title: Longitude
+          type: number
+        - name: temperature_ensemble_mean
+          title: Ensemble mean temperature in °C
+          type: number
+        - name: temperature_percentile_10
+          title: Mean temperature at 10. percentile in °C
+          type: number
+        - name: temperature_percentile_25
+          title: Mean temperature at 25. percentile in °C
+          type: number
+        - name: temperature_percentile_75
+          title: Mean temperature at 75. percentile in °C
+          type: number
+        - name: temperature_percentile_90
+          title: Mean temperature at 90. percentile in °C
+          type: number
