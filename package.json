@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@highcharts/map-collection": "^2.1.0",
-    "@tailwindcss/typography": "^0.5.10",
+    "@tailwindcss/typography": "^0.5.12",
     "highcharts": "^11.3.0",
     "solid-js": "^1.8.16",
     "tailwindcss": "^3.4.1"
