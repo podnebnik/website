@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - '.github/workflows/docker-data.yaml'
+      - '.dockerignore'
       - 'deployment/Dockerfile.datasette'
       - 'Pipfile*'
       - '**.py'
@@ -18,6 +19,7 @@ on:
       - "main"
     paths:
       - '.github/workflows/docker-data.yaml'
+      - '.dockerignore'
       - 'deployment/Dockerfile.datasette'
       - 'Pipfile*'
       - '**.py'
