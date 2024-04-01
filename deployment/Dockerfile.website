@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install nodejs -y && npm install --global yarn
 
 COPY . /build
 
-RUN dotnet tool restore && yarn install &&  yarn run build
+RUN dotnet tool restore && yarn install && yarn add sharp --ignore-engines && yarn run build
 
 # -----------------------------------------------------------------------------
 

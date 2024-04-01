@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install nodejs -y && npm install --global yarn
 # to update software, remove this image and rebuild base image
 COPY . /build
 
-RUN dotnet tool restore && yarn install
+RUN dotnet tool restore && yarn install && yarn add sharp --ignore-engines
 
 # yarn run build
 
