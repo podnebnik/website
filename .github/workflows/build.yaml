@@ -49,5 +49,7 @@ jobs:
           node-version: '20'
           cache: 'yarn'
 
-      - run: yarn install
+      - run: |
+          yarn install
+          yarn add sharp --ignore-engines
       - run: yarn build
