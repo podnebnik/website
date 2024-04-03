@@ -16,7 +16,7 @@ Sodelavci in sodelavke projekta:
 - [Luka Renko](https://twitter.com/lukarenko)
 - [Marko Brumen](https://twitter.com/multikultivator)
 - [Štefan Baebler](https://www.linkedin.com/in/stefanbaebler/) - spletna stran
-- [Vladimir Nesković](https://www.linkedin.com/in/k35m4/) - koordinacija, vsebine
+- [Vladimir Nesković](https://bsky.app/profile/kesma.bsky.social) - koordinacija, vsebine
 - [Tadej Novak](https://tano.si) - vsebine, spletna stran
 - [Zarja Muršič](https://twitter.com/piskotk)
 - [Žiga Zaplotnik](https://twitter.com/ZaplotnikZiga) - vsebine
