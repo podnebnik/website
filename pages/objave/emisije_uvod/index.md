@@ -14,10 +14,10 @@ Toplogredni plini so tisti plini, ki imajo v zemeljski atmosferi zanimivo ter tu
 Razvoj naše civilizacije v zadnjih dveh stoletjih je bil resnično silovit. Če je bilo običajno življenje še na začetku devetnajstega stoletja bolj podobno tistemu v časih rimskega imperija, bi bil popotnik iz tistega časa danes verjetno povsem izgubljen. Industrijske revolucije so prinesle ne le pomemben znanstveni in tehnološki napredek, temveč so povzročile tudi znatne hitre družbeno-ekonomske in kulturne spremembe. Človeštvo je bilo s svojem napredkom tako učinkovito, da so vse te spremembe prinesle tudi nekatere neželene in negativne  vplive. Naš vpliv na naravo in okolje smo opazili že pred desetletji – pretirani izpusti žveplovega dioksida so zaradi pojava kislega dežja uničevali ne le naše gozdove temveč tudi naša pljuča, plini CFC so resno najedli ozonski plašč in dopuščali prehod škodljivega ultravijoličnega sevanja, svinec v bencinu pa je povzročal številne zdravstvene težave. S skupinskim delovanjem mednarodne skupnosti smo naštete težave precej omilili. 
 
 <figure class="image">
-    {% image './assets/Termoelektrarna_Sostanj_SV_blok_6.jpeg', ‘Kako bi izgledala termoelektrarna Šoštanj po izgradnji bloka 6’ %}
+    {% image './assets/Termoelektrarna_Sostanj_SV_blok_6.jpeg' %}
     <figcaption>
         Kako bi izgleda termoelektrarna Šoštanj po izgradnji bloka 6
-        {% photoAuthor ‘Wikipedia’ %}
+        {% photoAuthor 'Wikipedia' %}
     </figcaption>
 </figure>
 
@@ -27,10 +27,10 @@ Seveda ogljikov dioksid izpušča tudi celotna biosfera, torej ves živelj na pl
 Povečani izpusti toplogrednih plinov so prepleteni z raznovrstnimi človeškimi aktivnostmi. Boljše življenjske razmere so spodbudile rast števila prebivalstva. Zahteve po vse večjih potrebah po hrani so botrovale napredku v kmetijstvu, na primer z razvojem poljščin z visoko donosnostjo. Sintetična gnojila, ki prav tako omogočajo večje donose, so povezana z izpusti dušikovega oksida (N₂O), še enega toplogrednega plina. Svojo vlogo pa igrajo tudi spremembe pri prehranjevanju, ki je bilo vse bolj usmerjeno k uživanju večjega deleža mesa in mlečnih izdelkov, ki so povezane z izpusti metana (CH₄). Zaradi potreb po kmetijskih površinah so se krčili gozdovi, posebej v tropskih območjih, kar je neposredno vplivalo na sposobnost zadrževanja ogljikovega dioksida v zemljini (sekvestracija).
 
 <figure class="image">
-    {% image './assets/DARS_promet_Slovenija.png', ‘Prikaz transporta na avtocesti Sloveniji’ %}
+    {% image './assets/DARS_promet_Slovenija.png' %}
     <figcaption>
         Prikaz transporta na avtocesti Sloveniji
-        {% photoAuthor ‘DARS’ %}
+        {% photoAuthor 'DARS' %}
     </figcaption>
 </figure>
 
@@ -56,10 +56,10 @@ Vpliv na temperaturo: CH₄ je v obdobju 100 let več kot 25-krat močnejši od 
 **RPO**: Vpliv metana je kratkoročno močan, zato je takojšnje zmanjšanje zelo koristno za upočasnitev segrevanja ozračja.
 
 <figure class="image">
-    {% image './assets/greenhouse-effect.png', ‘Učinek tople grede'  %}
+    {% image './assets/greenhouse-effect.png' %}
     <figcaption>
         Učinek tople grede
-        {% photoAuthor ‘NASA’ %}
+        {% photoAuthor 'NASA' %}
     </figcaption>
 </figure>
 
