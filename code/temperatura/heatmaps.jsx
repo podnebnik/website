@@ -52,55 +52,75 @@ const colors = [
     '#18000b',
 ]
 
-let colorCategoriesWide = []
+const colorsNoFocus = [
+    '#caeaf4',
+    '#b7d2e5',
+    '#8d9cbe',
+    '#151352',
+    '#132c86',
+    '#1f4498',
+    '#245da4',
+    '#1d89b7',
+    '#1ca2bb',
+    '#78c8bf',
+    '#90dfa5',
+    '#d7f3c5',
+    '#faf0b2',
+    '#f8cb66',
+    '#fb9647',
+    '#f74e27',
+    '#e42026',
+    '#980428',
+    '#4b0219',
+    '#18000b',
+]
+
 let colorStepsWide = []
-const colorCategoriesWideStart = -10
-const colorStepsStart = -12
-const colorCategoriesWideEnd = colorCategoriesWideStart + 2 * (colors.length - 2)
-const colorStepsEnd = 30
+let colorStepsNarrow = []
+const colorStepsStartWide = -10
+const colorStepsEndWide = 30
+const colorStepsStartNarrow = -1
+const colorStepsEndNarrow = 18
 for (let i = 0; i < colors.length; i++) {
     colorStepsWide.push([i / (colors.length - 1), colors[i]])
-
-    if (i === 0) {
-        colorCategoriesWide.push({
-            to: colorCategoriesWideStart,
-            color: colors[i]
-        })
-    } else if (i === colors.length - 1) {
-        colorCategoriesWide.push({
-            from: colorCategoriesWideStart + (i - 1) * 2,
-            color: colors[i]
-        })
-    } else {
-        colorCategoriesWide.push({
-            from: colorCategoriesWideStart + (i - 1) * 2,
-            to: colorCategoriesWideStart + i * 2,
-            color: colors[i]
-        })
-    }
+}
+for (let i = 0; i < colorsNoFocus.length; i++) {
+    colorStepsNarrow.push([i / (colorsNoFocus.length - 1), colorsNoFocus[i]])
 }
 
 const configSlovenia = {
-    data: {
-        csvURL: `${baseUrl}/temperature/temperature~2Eslovenia_historical~2Emap_running_10year_average.csv?_stream=on&_sort=rowid&year_end__exact=2020&_size=max&_col=x&_col=y&_col=temperature_average`,
-        parsed: function () {
-            // TODO: figure out how to get rid of rowid in CSV
-            this.columns.shift()
-            this.rawColumns.shift()
-        }
-    },
-
     chart: {
         type: 'heatmap',
         height: '65%'
     },
 
-    boost: {
-        useGPUTranslations: true
+    title: {
+        text: 'Povprečna letna temperatura',
+        floating: true,
+        align: 'left',
+        x: 0,
+        y: 10,
+        style: {
+            textOutline: '2px white',
+        },
+        widthAdjust: 0
+    },
+    subtitle: {
+        text: '',
+        floating: true,
+        align: 'left',
+        x: 0,
+        y: 30,
+        style: {
+            color: 'black',
+            fontSize: '1em',
+            textOutline: '1.5px white',
+        },
+        widthAdjust: 0
     },
 
-    title: {
-        text: 'Desetletno povprečje temperature na dveh metrih'
+    boost: {
+        useGPUTranslations: true
     },
 
     xAxis: {
@@ -116,18 +136,18 @@ const configSlovenia = {
     },
 
     colorAxis: {
-        stops: [
-            [0, '#3060cf'],
-            [0.5, '#fffbbc'],
-            [0.9, '#c4463a'],
-            [1, '#c4463a']
-        ],
-        min: 0,
-        max: 20,
+        stops: colorStepsNarrow,
+        min: colorStepsStartNarrow,
+        max: colorStepsEndNarrow,
         startOnTick: false,
         endOnTick: false,
         labels: {
-            format: '{value} °C'
+            format: '{value}',
+            style: {
+                color: 'black',
+                fontWeight: 'bold',
+                textOutline: '1px white',
+            }
         },
         reversed: false
     },
@@ -135,8 +155,8 @@ const configSlovenia = {
     legend: {
         align: 'right',
         layout: 'vertical',
-        verticalAlign: 'top',
-        margin: 0,
+        verticalAlign: 'bottom',
+        floating: true,
     },
 
     series: [{
@@ -159,7 +179,7 @@ const configEurope = {
     },
 
     title: {
-        text: 'Povprečna letna temperatura na 2 metrih',
+        text: 'Povprečna letna temperatura',
         floating: true,
         align: 'left',
         x: 20,
@@ -227,12 +247,12 @@ const configEurope = {
 
     colorAxis: {
         stops: colorStepsWide,
-        min: colorStepsStart,
-        max: colorStepsEnd,
+        min: colorStepsStartWide,
+        max: colorStepsEndWide,
         startOnTick: false,
         endOnTick: false,
         labels: {
-            format: '{value} °C',
+            format: '{value}',
             style: {
                 color: 'black',
                 fontWeight: 'bold',
@@ -266,23 +286,32 @@ const configEurope = {
 }
 
 export function TemperatureSloveniaHeatMap() {
-    const patternInput = createSignal(2020);
-    const setYear = patternInput[1];
-    const year = patternInput[0];
+    const patternInputMode = createSignal('2020');
+    const setMode = patternInputMode[1];
+    const mode = patternInputMode[0];
+
+    const patternInputYear = createSignal(2020);
+    const setYear = patternInputYear[1];
+    const year = patternInputYear[0];
 
     let hm = null
 
     let temperature_data = {}
 
     function chart(element) {
-        // Create a new chart every time the config changes
-        createEffect(() => {
-            hm = Highcharts.chart(element, configSlovenia)
-        })
+        // createEffect(() => {
+        hm = Highcharts.chart(element, configSlovenia)
+        hm.showLoading()
+
+        requestData(year(), hm)
+        // })
     }
 
     async function requestData(year, hm) {
+        console.log(`Requesting temperature for ${year}`)
         if (temperature_data[year] === undefined) {
+            console.log(`Loading ${year} data`)
+
             const result = await fetch(`${baseUrl}/temperature/temperature~2Eslovenia_historical~2Emap_running_10year_average.json?_sort=rowid&year_end__exact=${year}&_size=max&_col=x&_col=y&_col=temperature_average`);
             if (result.ok) {
                 const data = await result.json();
@@ -293,32 +322,44 @@ export function TemperatureSloveniaHeatMap() {
                 temperature_data[year] = rows;
 
                 hm.hideLoading();
+                hm.setSubtitle({text: `${year-9}-${year}`})
                 hm.series[0].setData(rows);
 
                 console.log(`Loaded ${year} data`);
             }
         } else {
             hm.hideLoading();
+            hm.setSubtitle({text: `${year-9}-${year}`})
             hm.series[0].setData(temperature_data[year]);
         }
     }
 
-    async function yearChanged(event) {
-        const value = event.target.value
-        console.log(value)
-
+    function setModeAndYear(value) {
+        console.log(`Setting mode to ${value}`)
         hm.showLoading()
 
-        await requestData(value, hm)
-
+        setMode(value.toString())
         setYear(value)
+        requestData(value, hm)
     }
 
     return <>
         <div use:chart></div>
-        <div id="play-controls">
-            <input id="range" type="range" min="1970" max="2020" step="1" value="2020" onInput={yearChanged} />
-            <label id="value">{year}</label>
+        <div className="flex flex-col gap-1">
+            <div className="flex flex-wrap text-sm items-center gap-1">
+                <span>Leto:</span>
+                <button class="btn-control btn-sm" disabled={mode() == '1970'} onClick={() => setModeAndYear(1970)}>1970</button>
+                <button class="btn-control btn-sm" disabled={mode() == '1990'} onClick={() => setModeAndYear(1990)}>1990</button>
+                <button class="btn-control btn-sm" disabled={mode() == '2000'} onClick={() => setModeAndYear(2000)}>2000</button>
+                <button class="btn-control btn-sm" disabled={mode() == '2010'} onClick={() => setModeAndYear(2010)}>2010</button>
+                <button class="btn-control btn-sm" disabled={mode() == '2020'} onClick={() => setModeAndYear(2020)}>2020</button>
+                <button class="btn-control btn-sm" disabled={mode() == 'slider'} onClick={() => setMode('slider')}>Drsnik</button>
+
+                <input id="steps-range" type="range" min="0" max="5" value="2.5" step="0.5" className="input-range" disabled={mode() != 'slider'} />
+            </div>
+            <div className="text-sm italic">
+                Lorem ipsum ...
+            </div>
         </div>
     </>
 }
@@ -410,7 +451,7 @@ export function TemperatureEuropeHeatMap() {
         requestData(percentile(), value, hm)
     }
 
-    return <div>
+    return <>
         <div use:chart></div>
         <div className="flex flex-col gap-1">
             <div className="flex flex-wrap text-sm items-center gap-1">
@@ -434,5 +475,5 @@ export function TemperatureEuropeHeatMap() {
                 Lorem ipsum ...
             </div>
         </div>
-    </div>
+    </>
 }
