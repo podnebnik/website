@@ -13,10 +13,26 @@ Toplogredni plini so tisti plini, ki imajo v zemeljski atmosferi zanimivo ter tu
 
 Razvoj naše civilizacije v zadnjih dveh stoletjih je bil resnično silovit. Če je bilo običajno življenje še na začetku devetnajstega stoletja bolj podobno tistemu v časih rimskega imperija, bi bil popotnik iz tistega časa danes verjetno povsem izgubljen. Industrijske revolucije so prinesle ne le pomemben znanstveni in tehnološki napredek, temveč so povzročile tudi znatne hitre družbeno-ekonomske in kulturne spremembe. Človeštvo je bilo s svojem napredkom tako učinkovito, da so vse te spremembe prinesle tudi nekatere neželene in negativne  vplive. Naš vpliv na naravo in okolje smo opazili že pred desetletji – pretirani izpusti žveplovega dioksida so zaradi pojava kislega dežja uničevali ne le naše gozdove temveč tudi naša pljuča, plini CFC so resno najedli ozonski plašč in dopuščali prehod škodljivega ultravijoličnega sevanja, svinec v bencinu pa je povzročal številne zdravstvene težave. S skupinskim delovanjem mednarodne skupnosti smo naštete težave precej omilili. 
 
+<figure class="image">
+    {% image './assets/Termoelektrarna_Sostanj_SV_blok_6.jpeg', ‘Kako bi izgledala termoelektrarna Šoštanj po izgradnji bloka 6’ %}
+    <figcaption>
+        Kako bi izgleda termoelektrarna Šoštanj po izgradnji bloka 6
+        {% photoAuthor ‘Wikipedia’ %}
+    </figcaption>
+</figure>
+
 Toda težava s toplogrednimi plini je žal nekoliko zahtevnejša – tako zaradi količin kot tudi zaradi navezave na pridobivanje energije. Silovit razvoj je prinesel tudi naše vedno večje hlastanje po energiji. Pri pridobivanju energije pa smo bili precej iznajdljivi – težaško delo živali in kurjenje lesa so izpodrinili stroji, ki jih poganjajo fosilni viri – premog, nafta in zemeljski plin. Žal pa ta goriva izpuščajo tudi velike količine toplogrednih plinov, povečini prav ogljikov dioksid (CO₂), ki je za zemeljske razmere najpomembnejši toplogredni plin. Njegova koncentracija je od začetka industrijske dobe narastla s približno 280 ppm (to je delcev na milijon oziroma 0,028 %) na več kot 420 ppm (ali 0,042 %). Učinek tople grede pa je to povečanje koncentracij toplogrednih plinov sprevrgel v povečevanje temperature, ki posledično vodi v podnebne spremembe.
 
 Seveda ogljikov dioksid izpušča tudi celotna biosfera, torej ves živelj na planetu. Toda ti izpusti so uravnoteženi s porabo ogljikovega dioksida v obdobju rasti rastlin in drugimi naravnimi ponori. Ker pa človeštvo še ni iznašlo učinkovitih ponorov lastnih izpustov, bodisi naravnih bodisi umetnih, so ti glavni vzrok za naraščanje njegove koncentracije v ozračju.  
 Povečani izpusti toplogrednih plinov so prepleteni z raznovrstnimi človeškimi aktivnostmi. Boljše življenjske razmere so spodbudile rast števila prebivalstva. Zahteve po vse večjih potrebah po hrani so botrovale napredku v kmetijstvu, na primer z razvojem poljščin z visoko donosnostjo. Sintetična gnojila, ki prav tako omogočajo večje donose, so povezana z izpusti dušikovega oksida (N₂O), še enega toplogrednega plina. Svojo vlogo pa igrajo tudi spremembe pri prehranjevanju, ki je bilo vse bolj usmerjeno k uživanju večjega deleža mesa in mlečnih izdelkov, ki so povezane z izpusti metana (CH₄). Zaradi potreb po kmetijskih površinah so se krčili gozdovi, posebej v tropskih območjih, kar je neposredno vplivalo na sposobnost zadrževanja ogljikovega dioksida v zemljini (sekvestracija).
+
+<figure class="image">
+    {% image './assets/DARS_promet_Slovenija.png', ‘Prikaz transporta na avtocesti Sloveniji’ %}
+    <figcaption>
+        Prikaz transporta na avtocesti Sloveniji
+        {% photoAuthor ‘DARS’ %}
+    </figcaption>
+</figure>
 
 Uporaba motoriziranih prometnih sredstev je omogočila ne le to, da potujemo dlje in predvsem več, temveč si neumorno dostavljamo izdelke z drugega konca sveta, pri čemer pogoni vozil, ladij in letal na fosilna goriva izpuščajo ogromne količine toplogrednih plinov. Rast industrije zahteva obilje surovin, ki se jih nato predeluje z energetsko intenzivno proizvodnjo, na primer s proizvodnjo jekla. Urbanizacija je dodala k razmahu gradbene industrije in proizvodnji cementa, ki je ravno tako vir obsežnih izpustov ogljikovega dioksida. 
 
@@ -38,6 +54,14 @@ Vpliv na temperaturo: CH₄ je v obdobju 100 let več kot 25-krat močnejši od 
 Življenjska doba: Metan "traja" približno 12 let, vendar je zaradi svojega močnega učinka na segrevanje ključni cilj za blažitev podnebnih sprememb.  
 **ESP**: Kljub krajši življenjski dobi ima CH₄ močan vpliv na ESP zaradi svoje velike sposobnosti zadrževanja toplote.  
 **RPO**: Vpliv metana je kratkoročno močan, zato je takojšnje zmanjšanje zelo koristno za upočasnitev segrevanja ozračja.
+
+<figure class="image">
+    {% image './assets/greenhouse-effect.png', ‘Učinek tople grede'  %}
+    <figcaption>
+        Učinek tople grede
+        {% photoAuthor ‘NASA’ %}
+    </figcaption>
+</figure>
 
 ### Dušikov oksid (N₂O)
 
@@ -66,6 +90,3 @@ Ravnotežna podnebna občutljivost odraža, za koliko bi se sčasoma povečala p
 
 Razumevanje teh plinov in njihovih vplivov nam omogoča, da sprejemamo informirane odločitve in ukrepamo. Zmanjšanje izpustov, povečanje naravnih ponorov ogljika in razvoj nizkoogljičnih tehnologij so ključni koraki k hladnejšemu in bolj trajnostnemu planetu.
 
-<div style="text-align: right; font-weight: bold; font-style: italic;">
-  Marko Kovač, Vladimir Nešković in ekipa Podnebnika
-</div>
