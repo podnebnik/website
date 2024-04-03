@@ -29,7 +29,7 @@ Povečani izpusti toplogrednih plinov so prepleteni z raznovrstnimi človeškimi
 <figure class="image">
     {% image './assets/DARS_promet_Slovenija.png' %}
     <figcaption>
-        Prikaz transporta na avtocesti Sloveniji
+        Prikaz transporta na avtocesti v Sloveniji
         {% photoAuthor 'DARS' %}
     </figcaption>
 </figure>
