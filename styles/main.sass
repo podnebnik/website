@@ -1,3 +1,5 @@
+@use 'sass:color'
+
 @tailwind base
 @tailwind components
 @tailwind utilities
@@ -22,8 +24,8 @@
 
     .article-metadata
         @apply inline-flex items-center text-muted
-    
-        img 
+
+        img
             @apply size-5 inline opacity-30 mr-1.5
 
         .author
@@ -48,7 +50,7 @@
                 margin-left: 0
 
     .chart
-        @apply lg:ml-[-100px] lg:mr-[-100px] bg-white p-2gap rounded-md
+        @apply lg:ml-[-100px] lg:mr-[-100px] bg-white p-gap sm:p-2gap rounded-md
 
     .image
         @apply lg:ml-[-100px] lg:mr-[-100px]
@@ -64,7 +66,10 @@
                 @apply w-full h-auto rounded
 
     .btn
-        @apply inline-block font-sans text-secondary bg-primary px-3 py-1 rounded-md
+        @apply inline-block font-sans text-secondary bg-primary hover:bg-primary-dark px-3 py-1 rounded-md transition-colors duration-300
+
+    .btn-control
+        @apply inline-block font-sans bg-zinc-100 hover:bg-zinc-200 px-3 py-1 rounded-md transition-colors duration-300
 
     .btn-sm
         @apply text-sm
@@ -72,13 +77,16 @@
     .btn[disabled]
         @apply opacity-40
 
+    .btn-control[disabled]
+        @apply bg-secondary font-bold
+
     .logo
         min-width: 181px
         min-height: 54px
 
     .nav-link
         @apply text-base opacity-70 hover:opacity-100 focus:opacity-100 font-sans px-3 py-2 font-medium transition-all duration-300
-    
+
         &:hover, &[aria-current="page"]
             box-shadow: inset 0px -10px 0 var(--color-secondary)
 

@@ -159,14 +159,28 @@ const configEurope = {
     },
 
     title: {
-        text: 'Povprečna letna temperatura na 2 metrih, 1850-1859',
+        text: 'Povprečna letna temperatura na 2 metrih',
         floating: true,
         align: 'left',
         x: 20,
         y: 30,
         style: {
             textOutline: '2px white',
-        }
+        },
+        widthAdjust: 0
+    },
+    subtitle: {
+        text: '',
+        floating: true,
+        align: 'left',
+        x: 20,
+        y: 50,
+        style: {
+            color: 'black',
+            fontSize: '1em',
+            textOutline: '1.5px white',
+        },
+        widthAdjust: 0
     },
 
     mapNavigation: {
@@ -311,67 +325,114 @@ export function TemperatureSloveniaHeatMap() {
 
 
 export function TemperatureEuropeHeatMap() {
-    const patternInputMode = createSignal('1850');
+    const patternInputPercentile = createSignal('50');
+    const setPercentile = patternInputPercentile[1];
+    const percentile = patternInputPercentile[0];
+
+    const patternInputMode = createSignal('2020');
     const setMode = patternInputMode[1];
     const mode = patternInputMode[0];
 
-    const patternInputYear = createSignal(1850);
+    const patternInputYear = createSignal(2020);
     const setYear = patternInputYear[1];
     const year = patternInputYear[0];
 
     let hm = null
 
-    let temperature_data = {}
+    let temperature_data = {
+        '50': {},
+        '10': {},
+        '25': {},
+        '75': {},
+        '90': {}
+    }
 
-    async function requestData(year, hm) {
-        if (temperature_data[year] === undefined) {
-            const result = await fetch(`${baseUrl}/temperature/temperature~2Eclimate_models~2Emap_running_10year_average.json?_sort=rowid&year_start__exact=${year}&_size=max&_col=longitude&_col=latitude&_col=temperature_ensemble_mean`);
+    async function requestData(percentile, year, hm) {
+        console.log(`Requesting ${percentile} percentile for ${year}`)
+        let percentileLabel = 'srednja vrednost'
+        if (percentile != '50') {
+            percentileLabel = `${percentile}. percentil`
+        }
+
+        if (temperature_data[percentile][year] === undefined) {
+            console.log(`Loading ${year} data for ${percentile} percentile`)
+
+            let variable = 'temperature_ensemble_mean'
+            if (percentile != '50') {
+                variable = `temperature_percentile_${percentile}`
+            }
+            const result = await fetch(`${baseUrl}/temperature/temperature~2Eclimate_models~2Emap_running_10year_average.json?_sort=rowid&year_start__exact=${year}&_size=max&_col=longitude&_col=latitude&_col=${variable}`);
             if (result.ok) {
                 const data = await result.json();
                 const rows = data['rows'];
                 for (var row of rows) {
                     row.shift();
                 }
-                temperature_data[year] = rows;
+                temperature_data[percentile][year] = rows;
 
                 hm.hideLoading();
-                hm.setTitle({text: `Povprečna letna temperatura na 2 metrih, ${year}-${year + 9}`})
+                hm.setSubtitle({text: `${year}-${year + 9}, ${percentileLabel}`})
                 hm.series[0].setData(rows);
 
-                console.log(`Loaded ${year} data`);
+                console.log(`Loaded ${year} data for ${percentile} percentile`);
             }
         } else {
             hm.hideLoading();
-            hm.setTitle({text: `Povprečna letna temperatura na 2 metrih, ${year}-${year + 9}`})
-            hm.series[0].setData(temperature_data[year]);
+            hm.setSubtitle({text: `${year}-${year + 9}, ${percentileLabel}`})
+            hm.series[0].setData(temperature_data[percentile][year]);
         }
     }
 
     function chart(element) {
-        // Create a new chart every time the config changes
-        createEffect(() => {
-            hm = Highcharts.mapChart(element, configEurope)
-            hm.showLoading()
-            requestData(1850, hm)
-        })
+        // createEffect(() => {
+        hm = Highcharts.mapChart(element, configEurope)
+        hm.showLoading()
+
+        requestData(percentile(), year(), hm)
+        // })
+    }
+
+    function setPercentileClick(value) {
+        console.log(`Setting percentile to ${value}`)
+
+        hm.showLoading()
+
+        setPercentile(value)
+        requestData(value, year(), hm)
     }
 
     function setModeAndYear(value) {
+        console.log(`Setting mode to ${value}`)
         hm.showLoading()
 
         setMode(value.toString())
-        requestData(value, hm)
+        setYear(value)
+        requestData(percentile(), value, hm)
     }
 
-    return <div className="lg:flex lg:flex-row">
-        <div use:chart className="lg:basis-3/4"></div>
-        <div className="lg:basis-1/4">
-            <button class="btn btn-sm" disabled={mode() == '1850'} onClick={() => setModeAndYear(1850)}>1850</button>
-            <button class="btn btn-sm ml-gap" disabled={mode() == '2020'} onClick={() => setModeAndYear(2020)}>2020</button>
-            <button class="btn btn-sm ml-gap" disabled={mode() == '2090'} onClick={() => setModeAndYear(2090)}>2090</button>
-            <button class="btn btn-sm ml-gap" disabled={mode() == 'slider'} onClick={() => setMode('slider')}>Drsnik</button>
+    return <div>
+        <div use:chart></div>
+        <div className="flex flex-col gap-1">
+            <div className="flex flex-wrap text-sm items-center gap-1">
+                <span>Vrednost temperature:</span>
+                <button class="btn-control btn-sm" disabled={percentile() == '50'} onClick={() => setPercentileClick('50')}>Srednja vrednost</button>
+                <button class="btn-control btn-sm" disabled={percentile() == '10'} onClick={() => setPercentileClick('10')}>10. percentil</button>
+                <button class="btn-control btn-sm" disabled={percentile() == '25'} onClick={() => setPercentileClick('25')}>25. percentil</button>
+                <button class="btn-control btn-sm" disabled={percentile() == '75'} onClick={() => setPercentileClick('75')}>75. percentil</button>
+                <button class="btn-control btn-sm" disabled={percentile() == '90'} onClick={() => setPercentileClick('90')}>90. percentil</button>
+            </div>
+            <div className="flex flex-wrap text-sm items-center gap-1">
+                <span>Leto:</span>
+                <button class="btn-control btn-sm" disabled={mode() == '1850'} onClick={() => setModeAndYear(1850)}>1850</button>
+                <button class="btn-control btn-sm" disabled={mode() == '2020'} onClick={() => setModeAndYear(2020)}>2020</button>
+                <button class="btn-control btn-sm" disabled={mode() == '2090'} onClick={() => setModeAndYear(2090)}>2090</button>
+                <button class="btn-control btn-sm" disabled={mode() == 'slider'} onClick={() => setMode('slider')}>Drsnik</button>
 
-            <input id="steps-range" type="range" min="0" max="5" value="2.5" step="0.5" className="input-range" disabled={mode() != 'slider'} />
+                <input id="steps-range" type="range" min="0" max="5" value="2.5" step="0.5" className="input-range" disabled={mode() != 'slider'} />
+            </div>
+            <div className="text-sm italic">
+                Lorem ipsum ...
+            </div>
         </div>
     </div>
 }
