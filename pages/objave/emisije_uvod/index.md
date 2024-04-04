@@ -14,7 +14,7 @@ Toplogredni plini so tisti plini, ki imajo v zemeljski atmosferi zanimivo ter tu
 Razvoj naše civilizacije v zadnjih dveh stoletjih je bil resnično silovit. Če je bilo običajno življenje še na začetku devetnajstega stoletja bolj podobno tistemu v časih rimskega imperija, bi bil popotnik iz tistega časa danes verjetno povsem izgubljen. Industrijske revolucije so prinesle ne le pomemben znanstveni in tehnološki napredek, temveč so povzročile tudi znatne hitre družbeno-ekonomske in kulturne spremembe. Človeštvo je bilo s svojem napredkom tako učinkovito, da so vse te spremembe prinesle tudi nekatere neželene in negativne  vplive. Naš vpliv na naravo in okolje smo opazili že pred desetletji – pretirani izpusti žveplovega dioksida so zaradi pojava kislega dežja uničevali ne le naše gozdove temveč tudi naša pljuča, plini CFC so resno najedli ozonski plašč in dopuščali prehod škodljivega ultravijoličnega sevanja, svinec v bencinu pa je povzročal številne zdravstvene težave. S skupinskim delovanjem mednarodne skupnosti smo naštete težave precej omilili. 
 
 <figure class="image">
-    {% image './assets/Termoelektrarna_Sostanj_SV_blok_6.jpeg' %}
+    {% image './assets/landscape_Termoelektrarna_Sostanj_SV_blok_6.jpeg' %}
     <figcaption>
         Kako bi izgleda termoelektrarna Šoštanj po izgradnji bloka 6
         {% photoAuthor 'Wikipedia' %}
