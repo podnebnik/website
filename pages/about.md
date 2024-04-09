@@ -4,7 +4,9 @@ layout: page.html
 summary: S pomočjo analiz in prikazov podatkov omogočamo boljšo oceno tveganj podnebnih sprememb v Sloveniji.
 ---
 
-## Ekipa
+## Ekipa (TBD)
+
+(spodnji seznam je testni oz. kopija nekaterih sodelavcev iz seznama za Sledilnik)
 
 Sodelavci in sodelavke projekta:
 
