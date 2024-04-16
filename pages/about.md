@@ -24,15 +24,20 @@ Z veseljem sodelujemo tudi z mediji, podjetji, društvi in tudi posamezniki, ki 
 
 Sodelavci in sodelavke projekta:
 
-- [Janez Novak](https://covid-19.sledilnik.org) - testni sodelavec
+- [Aljoša Slameršak](https://portalrecerca.uab.cat/en/persons/aljosa-slamersak) - podatki
 - [Andraž Vrhovec](https://github.com/overlordtm) - spletna stran, infrastruktura
-- [Barbara Krajnc](https://twitter.com/bakrajnc)
+- [David Karlaš](https://github.com/DavidKarlas) - vizualizacije
+- [Barbara Krajnc](https://twitter.com/bakrajnc) - vsebine
 - [Branko Jevtić](https://www.bananica.com/) - grafično oblikovanje, spletna stran
+- [Gašper Žejn](https://zejn.net/) - podatki, vsebine, vizualizacije
 - [Joh Dokler](https://github.com/joahim) - spletna stran
-- [Luka Renko](https://twitter.com/lukarenko)
-- [Marko Brumen](https://twitter.com/multikultivator)
+- [Luka Renko](https://twitter.com/lukarenko) - koordinacija
+- [Marko Brumen](https://twitter.com/multikultivator) - vsebine
+- [Marko Kovač](https://ceu.ijs.si/zaposleni/dr-marko-kovac/) - vsebine
+- [Matjaž Ličer](https://www.nib.si/mbp/sl/cv/matjaz-licer) - vsebine, podatki, vizualizacije
 - [Štefan Baebler](https://www.linkedin.com/in/stefanbaebler/) - spletna stran
-- [Vladimir Nesković](https://bsky.app/profile/kesma.bsky.social) - koordinacija, vsebine
-- [Tadej Novak](https://tano.si) - vsebine, spletna stran
-- [Zarja Muršič](https://twitter.com/piskotk)
-- [Žiga Zaplotnik](https://twitter.com/ZaplotnikZiga) - vsebine
+- [Tadej Novak](https://tano.si) - podatki, vizualizacije, spletna stran
+- [Tajda Mekinda Majaron](https://www.linkedin.com/in/tajda-mekinda-majaron-a1194552) - podatki
+- [Vladimir Nešković - Kesma](https://bsky.app/profile/kesma.bsky.social) - podatki, tehnično urejanje
+- [Zarja Muršič](https://twitter.com/piskotk) - vsebine
+- [Žiga Zaplotnik](https://twitter.com/ZaplotnikZiga) - vsebine, podatki
