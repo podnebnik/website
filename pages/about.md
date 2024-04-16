@@ -35,7 +35,7 @@ Sodelavci in sodelavke projekta:
 - [Marko Brumen](https://twitter.com/multikultivator) - vsebine
 - [Marko Kovač](https://ceu.ijs.si/zaposleni/dr-marko-kovac/) - vsebine
 - [Matjaž Ličer](https://www.nib.si/mbp/sl/cv/matjaz-licer) - vsebine, podatki, vizualizacije
-- [Štefan Baebler](https://www.linkedin.com/in/stefanbaebler/) - spletna stran
+- [Štefan Baebler](https://www.linkedin.com/in/stefanbaebler/) - podatki
 - [Tadej Novak](https://tano.si) - podatki, vizualizacije, spletna stran
 - [Tajda Mekinda Majaron](https://www.linkedin.com/in/tajda-mekinda-majaron-a1194552) - podatki
 - [Vladimir Nešković - Kesma](https://bsky.app/profile/kesma.bsky.social) - podatki, tehnično urejanje
