@@ -30,7 +30,7 @@ Sodelavci in sodelavke projekta:
 - [Barbara Krajnc](https://twitter.com/bakrajnc) - vsebine
 - [Branko Jevtić](https://www.bananica.com/) - grafično oblikovanje, spletna stran
 - [Gašper Žejn](https://zejn.net/) - podatki, vsebine, vizualizacije
-- [Joh Dokler](https://github.com/joahim) - spletna stran
+- [Joh Dokler](https://github.com/joahim) - spletna stran, vizualizacije, podatki
 - [Luka Renko](https://twitter.com/lukarenko) - koordinacija
 - [Marko Brumen](https://twitter.com/multikultivator) - vsebine
 - [Marko Kovač](https://ceu.ijs.si/zaposleni/dr-marko-kovac/) - vsebine
