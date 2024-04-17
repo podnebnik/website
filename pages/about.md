@@ -26,8 +26,9 @@ Sodelavci in sodelavke projekta:
 
 - [Aljoša Slameršak](https://portalrecerca.uab.cat/en/persons/aljosa-slamersak) - podatki
 - [Andraž Vrhovec](https://github.com/overlordtm) - spletna stran, infrastruktura
-- [David Karlaš](https://github.com/DavidKarlas) - vizualizacije
 - [Barbara Krajnc](https://twitter.com/bakrajnc) - vsebine
+- [David Karlaš](https://github.com/DavidKarlas) - vizualizacije
+- [Dora Rupčić](https://www.linkedin.com/in/dora-rup%C4%8Di%C4%87-2633b520a/) - vizualizacije
 - [Branko Jevtić](https://www.bananica.com/) - grafično oblikovanje, spletna stran
 - [Gašper Žejn](https://zejn.net/) - podatki, vsebine, vizualizacije
 - [Joh Dokler](https://github.com/joahim) - spletna stran, vizualizacije, podatki
