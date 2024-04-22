@@ -32,7 +32,7 @@ Sodelavci in sodelavke projekta:
 - [Branko Jevtić](https://www.bananica.com/) - grafično oblikovanje, spletna stran
 - [Gašper Žejn](https://zejn.net/) - podatki, vsebine, vizualizacije
 - [Joh Dokler](https://github.com/joahim) - spletna stran, vizualizacije, podatki
-- [Luka Renko](https://twitter.com/lukarenko) - koordinacija
+- [Luka Renko](https://twitter.com/lukarenko) - pobuda, koordinacija
 - [Marko Brumen](https://twitter.com/multikultivator) - vsebine
 - [Marko Kovač](https://ceu.ijs.si/zaposleni/dr-marko-kovac/) - vsebine
 - [Matjaž Ličer](https://www.nib.si/mbp/sl/cv/matjaz-licer) - vsebine, podatki, vizualizacije
@@ -41,4 +41,4 @@ Sodelavci in sodelavke projekta:
 - [Tajda Mekinda Majaron](https://www.linkedin.com/in/tajda-mekinda-majaron-a1194552) - podatki
 - [Vladimir Nešković - Kesma](https://bsky.app/profile/kesma.bsky.social) - podatki, tehnično urejanje
 - [Zarja Muršič](https://twitter.com/piskotk) - vsebine
-- [Žiga Zaplotnik](https://twitter.com/ZaplotnikZiga) - vsebine, podatki
+- [Žiga Zaplotnik](https://twitter.com/ZaplotnikZiga) - pobuda, vsebine, podatki
