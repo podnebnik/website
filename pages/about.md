@@ -20,8 +20,6 @@ Z veseljem sodelujemo tudi z mediji, podjetji, društvi in tudi posamezniki, ki 
 
 ## Ekipa (TBD)
 
-(spodnji seznam je testni oz. kopija nekaterih sodelavcev iz seznama za Sledilnik)
-
 Sodelavci in sodelavke projekta:
 
 - [Aljoša Slameršak](https://portalrecerca.uab.cat/en/persons/aljosa-slamersak) - podatki
