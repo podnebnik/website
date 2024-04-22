@@ -35,6 +35,7 @@ Sodelavci in sodelavke projekta:
 - [Luka Renko](https://twitter.com/lukarenko) - pobuda, koordinacija
 - [Marko Brumen](https://twitter.com/multikultivator) - vsebine
 - [Marko Kovač](https://ceu.ijs.si/zaposleni/dr-marko-kovac/) - vsebine
+- [Matic Pikovnik](https://www.fmf.uni-lj.si/sl/imenik/1342/pikovnik-matic/) - vsebine
 - [Matjaž Ličer](https://www.nib.si/mbp/sl/cv/matjaz-licer) - vsebine, podatki, vizualizacije
 - [Štefan Baebler](https://www.linkedin.com/in/stefanbaebler/) - podatki
 - [Tadej Novak](https://tano.si) - podatki, vizualizacije, spletna stran
