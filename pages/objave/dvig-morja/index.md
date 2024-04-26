@@ -62,7 +62,7 @@ Prikaz poplavnih območij v primeru scenarija **SSP2-4.5** po letih
         import SeaRise from '/code/dvig-morja/index.jsx'
         SeaRise(document.getElementById('seaRise45Flood'), "RCP45", true)
     </script>
-    <div class="chart map h-80"></div>
+    <div class="chart map" style="height: 40rem;"></div>
     <div>
         <input class="yearSelectionSlider w-full" type="range" min="2023" max="2100" value="2050">
         <div class="grid grid-cols-3 gap-4 place-items-center">
@@ -94,7 +94,7 @@ Scenarij **SSP5-8**
         import SeaRise from '/code/dvig-morja/index.jsx'
         SeaRise(document.getElementById('seaRise85Flood'), "RCP85", true)
     </script>
-    <div class="chart map h-80"></div>
+    <div class="chart map" style="height: 40rem;"></div>
     <div>
         <input class="yearSelectionSlider w-full" type="range" min="2023" max="2100" value="2050">
         <div class="grid grid-cols-3 gap-4 place-items-center">
