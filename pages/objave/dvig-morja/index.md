@@ -208,7 +208,6 @@ Z meteorološkim vplivom, ki je povsem neodvisen od plimovanja, pa opisujemo pre
 [https://www.zrss.si/arhiv_clankov/podnebne-spremembe-vplivajo-na-pogostejse-poplave-morja/](https://www.zrss.si/arhiv_clankov/podnebne-spremembe-vplivajo-na-pogostejse-poplave-morja/)
 
 
-<!-- Footnotes themselves at the bottom. -->
 ## Notes
 
 [^1]: Kovačič, Gregor, Kolega, Nataša, Brečko Grubar, Valentina, Kovačič, Primož (2016). Vpliv podnebnih sprememb na količine vode in poplave morja v slovenski Istri. Geografski vestnik, letnik 88, številka 1, str. 21-36. [URN:NBN:SI:DOC-V22YIFK6](http://www.dlib.si)
