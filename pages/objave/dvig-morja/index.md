@@ -19,7 +19,7 @@ Da morje od časa do časa zalije Tartinijev trg v Piranu ali beneške ulice ni 
     {% image './assets/okolje_piran.png' %}
     <figcaption>
         Posledice poplavljanja morja v Piranu
-        {% photoAuthor 'Okolje Piran' %}
+        {% photoAuthor 'Ubald Trnkoczy' %}
     </figcaption>
 </figure>
 
