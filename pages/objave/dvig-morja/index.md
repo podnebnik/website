@@ -1,6 +1,7 @@
 ---
 title: Dvig gladine morja v Sloveniji
 date: git Last Modified
+published: 15. april 2024
 topics: dvig morja
 summary: Za koliko se bo v prihodnjih letih dvignila gladina morja? Kateri deli slovenske obale bodo (bolj pogosto) poplavljeni - in zakaj?
 authors:
