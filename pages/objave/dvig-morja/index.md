@@ -67,16 +67,16 @@ Prikaz poplavnih območij v primeru scenarija **SSP2-4.5** po letih
         <input class="yearSelectionSlider w-full" type="range" min="2023" max="2100" value="2050">
         <div class="grid grid-cols-3 gap-4 place-items-center">
             <div>
-                <input type="radio" id="probability070" name="probability" value="0.7">
-                <label for="probability070">Zelo verjetno</label>
+                <input type="radio" class="probability070" id="probability070_45" name="probability" value="0.7">
+                <label for="probability070_45">Zelo verjetno</label>
             </div>
             <div>
-                <input type="radio" id="probability020" name="probability" checked="checked" value="0.2">
-                <label for="probability020">Srednje verjetno</label>
+                <input type="radio" class="probability020" id="probability020_45" name="probability" checked="checked" value="0.2">
+                <label for="probability020_45">Srednje verjetno</label>
             </div>
             <div>
-                <input type="radio" id="probability001" name="probability" value="0.01">
-                <label for="probability001">Malo verjetno</label>
+                <input type="radio" class="probability001" id="probability001_45" name="probability" value="0.01">
+                <label for="probability001_45">Malo verjetno</label>
             </div>
         </div>
     </div>
@@ -99,16 +99,16 @@ Scenarij **SSP5-8**
         <input class="yearSelectionSlider w-full" type="range" min="2023" max="2100" value="2050">
         <div class="grid grid-cols-3 gap-4 place-items-center">
             <div>
-                <input type="radio" id="probability070" name="probability_85" value="0.7">
-                <label for="probability070">Zelo verjetno</label>
+                <input type="radio" class="probability070" id="probability070_85" name="probability_85" value="0.7">
+                <label for="probability070_85">Zelo verjetno</label>
             </div>
             <div>
-                <input type="radio" id="probability020" name="probability_85" checked="checked" value="0.2">
-                <label for="probability020">Srednje verjetno</label>
+                <input type="radio" class="probability020" id="probability020_85" name="probability_85" checked="checked" value="0.2">
+                <label for="probability020_85">Srednje verjetno</label>
             </div>
             <div>
-                <input type="radio" id="probability001" name="probability_85" value="0.01">
-                <label for="probability001">Malo verjetno</label>
+                <input type="radio" class="probability001" id="probability001_85" name="probability_85" value="0.01">
+                <label for="probability001_85">Malo verjetno</label>
             </div>
         </div>
     </div>
