@@ -29,9 +29,9 @@ export default function SeaRise(container, scenario, flooding) {
 
     const yearSelectionSlider = container.querySelector('.yearSelectionSlider')
 
-    const probability070 = container.querySelector("#probability070");
-    const probability020 = container.querySelector("#probability020");
-    const probability001 = container.querySelector("#probability001");
+    const probability070 = container.querySelector(".probability070");
+    const probability020 = container.querySelector(".probability020");
+    const probability001 = container.querySelector(".probability001");
 
     const map = L.map(container.querySelector('.map'), {
         center: [45.5449, 13.7269],
