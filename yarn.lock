@@ -2371,10 +2371,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"highcharts@npm:^11.4.6":
-  version: 11.4.6
-  resolution: "highcharts@npm:11.4.6"
-  checksum: 10c0/9bbc4761725e52d6f7fbf90a276ff6b2577840020675f314f264d4e3391c888ee5fc9b6320ce6a597a962775f98a47a68c1b6b5682c9bbd026f48cdb4973fb9b
+"highcharts@npm:^11.4.8":
+  version: 11.4.8
+  resolution: "highcharts@npm:11.4.8"
+  checksum: 10c0/6169d82a5708bc02a38e71a27d7fe710190021d0b4cce663a8acc2b92d150446ce858ed05475f2cbc837832ffdcd3908572e6a5b37b0809edbc3fefcae206a65
   languageName: node
   linkType: hard
 
@@ -3909,7 +3909,7 @@ __metadata:
     "@highcharts/map-collection": "npm:^2.2.0"
     "@tailwindcss/typography": "npm:^0.5.13"
     autoprefixer: "npm:^10.4.19"
-    highcharts: "npm:^11.4.6"
+    highcharts: "npm:^11.4.8"
     postcss: "npm:^8.4.40"
     sass: "npm:^1.77.8"
     sharp: "npm:^0.33.4"
