@@ -576,10 +576,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@highcharts/map-collection@npm:^2.2.0":
-  version: 2.2.0
-  resolution: "@highcharts/map-collection@npm:2.2.0"
-  checksum: 10c0/659134778100deaa93ca61f996f1544d01d29764aab4defad400c7b688eb1eab545382e8d3f5f7d7bdc844d37c29222ac70d22016c42da7a7fd0dfda64ee5d07
+"@highcharts/map-collection@npm:^2.3.0":
+  version: 2.3.0
+  resolution: "@highcharts/map-collection@npm:2.3.0"
+  checksum: 10c0/b811dcf623fdd1e1ab7c9a2bf1e30519217a54e83769d6f4fa28ed63bf7e45f0ab2f240c10f1a4bafd9aab5ff05744e5c4f82458870c35d34c0ff2bc57f49663
   languageName: node
   linkType: hard
 
@@ -3962,7 +3962,7 @@ __metadata:
     "@11ty/eleventy": "npm:^2.0.1"
     "@11ty/eleventy-img": "npm:^4.0.2"
     "@11ty/eleventy-plugin-vite": "npm:^4.0.0"
-    "@highcharts/map-collection": "npm:^2.2.0"
+    "@highcharts/map-collection": "npm:^2.3.0"
     "@tailwindcss/typography": "npm:^0.5.13"
     autoprefixer: "npm:^10.4.19"
     highcharts: "npm:^11.4.8"
