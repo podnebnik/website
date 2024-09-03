@@ -3,7 +3,7 @@
 {
 	"name": "Podnebnik",
 
-    "image": "python:3.11-slim",
+    "image": "python:3.12-slim",
 
     // Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {
