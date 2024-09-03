@@ -1,0 +1,18 @@
+---
+layout: base.html
+---
+
+{% block content %}
+<article class="prose lg:prose-lg prose-neutral mx-auto px-gap prose-headings:font-sans prose-headings:font-bold">
+    <h1 class="!mb-gap">{% block title %}{{ title }}{% endblock %}</h1>
+
+    {% block lead %}{% endblock %}
+    <div class="lead">
+    {{ summary }}
+    </div>
+
+    <div class="article-content">
+        {{ content }}
+    </div>
+</article>
+{% endblock %}

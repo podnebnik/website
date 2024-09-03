@@ -8,6 +8,7 @@ on:
       - "v*.*.*"
     paths:
       - '.github/workflows/docker-web.yaml'
+      - '.dockerignore'
       - 'deployment/Dockerfile.website'
       - 'assets/**'
       - 'code/**'
@@ -24,6 +25,7 @@ on:
       - "main"
     paths:
       - '.github/workflows/docker-web.yaml'
+      - '.dockerignore'
       - 'deployment/Dockerfile.website'
       - 'assets/**'
       - 'code/**'
@@ -42,6 +44,8 @@ jobs:
       -
         name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       -
         name: Get Git information
@@ -87,7 +91,7 @@ jobs:
 
       -
         name: Build and push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ./deployment/Dockerfile.website

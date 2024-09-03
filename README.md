@@ -50,9 +50,10 @@ Depending on whether you want to author data, text or visualizations, you will n
 
 To start developing you need to have the following requirements on:
 
-- `node` https://nodejs.org/en/
+- `node` https://nodejs.org/en/ with `corepack` enabled
+- `yarn` https://yarnpkg.com
 - `.NET 8.0` https://dotnet.microsoft.com/en-us/download
-- `python 3.11` https://www.python.org/
+- `python 3.12` https://www.python.org/
 - `pipenv` https://pipenv.pypa.io/
 
 We suggest uou use [pyenv](https://github.com/pyenv/pyenv) to install and manage the python version(s) on your system. Once you have `pyenv` installed, the `pipenv` will automatically use it to install the correct python version.

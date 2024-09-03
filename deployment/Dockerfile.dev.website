@@ -1,5 +1,5 @@
-FROM podnebnik/base:1.0 as builder
+FROM podnebnik/base:1.0 AS builder
 
 COPY . /build
 
-RUN yarn install &&  yarn run build
+RUN yarn install && yarn run build

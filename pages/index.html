@@ -1,7 +1,7 @@
 ---
 title: Podnebnik
 layout: base.html
-summary: S pomočjo analiz in prikazov podatkov omogočamo boljšo oceno tveganj podnebnih sprememb v Sloveniji.
+summary: S pomočjo podatkov, analiz in simulacij pomagamo k boljšemu razumevanju podnebnih sprememb in okoljskih tveganj v Sloveniji.
 ---
 
 <div class="prose lg:prose-lg prose-neutral mx-auto px-gap prose-headings:font-sans prose-headings:font-bold">
@@ -10,6 +10,6 @@ summary: S pomočjo analiz in prikazov podatkov omogočamo boljšo oceno tveganj
     </div>
 
     {% for post in collections.post reversed %}
-    {% include '_includes/card.html', url: post.url, title: post.data.title, summary: post.data.summary, date: post.date, tags: post.data.topics %}
+    {% include '_includes/card.html', url: post.url, title: post.data.title, summary: post.data.summary, date: post.date, published: post.data.published, tags: post.data.topics %}
     {% endfor %}
 </div>

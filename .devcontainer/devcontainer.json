@@ -3,12 +3,12 @@
 {
 	"name": "Podnebnik",
 
-    "image": "python:3.11-slim",
+    "image": "python:3.12-slim",
 
     // Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {
 		"ghcr.io/devcontainers/features/dotnet:2": {"version": "8.0"},
-		"ghcr.io/devcontainers/features/node:1": {}
+		"ghcr.io/devcontainers/features/node:1": {"version": "22"}
 	},
 
     // Finalize container setup when a dev container is created.

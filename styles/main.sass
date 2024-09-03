@@ -1,3 +1,5 @@
+@use 'sass:color'
+
 @tailwind base
 @tailwind components
 @tailwind utilities
@@ -5,16 +7,36 @@
 @import 'octocat'
 
 @layer base
+    :root
+        --color-primary: #462a44
+        --color-secondary: #ffb644
+
     h1
         @apply after:block after:mt-6 after:w-[50px] after:h-[6px] after:bg-secondary
+
+    footer
+        a
+            @apply transition-colors duration-300 hover:text-primary
 
 @layer components
     .lead
         @apply font-serif text-2xl font-semibold leading-snug text-black pt-2gap pb-2gap border-y #{!important}
 
+    .article-metadata
+        @apply inline-flex items-center text-muted
+
+        img
+            @apply size-5 inline opacity-30 mr-1.5
+
+        .author
+            @apply font-bold text-black
+
     .article-content
         h1:after
             display: none
+
+        a
+            @apply transition-colors duration-300 hover:text-primary
 
         blockquote
             margin-left: -1.5em
@@ -28,13 +50,13 @@
                 margin-left: 0
 
     .chart
-        @apply lg:ml-[-100px] lg:mr-[-100px] bg-white p-2gap rounded-md
+        @apply lg:ml-[-100px] lg:mr-[-100px] bg-white p-gap sm:p-2gap rounded-md
 
     .image
         @apply lg:ml-[-100px] lg:mr-[-100px]
 
         figcaption
-            @apply gap-5 flex justify-end text-sm  items-start items-center text-muted italic
+            @apply gap-5 flex justify-end text-sm items-start text-muted italic
 
             img
                 @apply m-0  #{!important}
@@ -44,10 +66,32 @@
                 @apply w-full h-auto rounded
 
     .btn
-        @apply inline-block font-sans text-secondary bg-primary px-3 py-1 rounded-md
+        @apply inline-block font-sans text-secondary bg-primary hover:bg-primary-dark px-3 py-1 rounded-md transition-colors duration-300
+
+    .btn-control
+        @apply inline-block font-sans bg-zinc-100 hover:bg-zinc-200 px-3 py-1 rounded-md transition-colors duration-300
 
     .btn-sm
         @apply text-sm
 
     .btn[disabled]
         @apply opacity-40
+
+    .btn-control[disabled]
+        @apply bg-secondary font-bold
+
+    .logo
+        min-width: 181px
+        min-height: 54px
+
+    .nav-link
+        @apply text-base opacity-70 hover:opacity-100 focus:opacity-100 font-sans px-3 py-2 font-medium transition-all duration-300
+
+        &:hover, &[aria-current="page"]
+            box-shadow: inset 0px -10px 0 var(--color-secondary)
+
+        &[aria-current="page"]
+            @apply opacity-100
+
+    .input-range
+        @apply h-[4px] w-full cursor-pointer disabled:cursor-auto appearance-none border-transparent bg-neutral-600 disabled:bg-neutral-200 accent-primary

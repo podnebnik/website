@@ -6,7 +6,12 @@ layout: base.html
 <article class="prose lg:prose-lg prose-neutral mx-auto px-gap prose-headings:font-sans prose-headings:font-bold">
     <h1 class="!mb-gap">{% block title %}{{ title }}{% endblock %}</h1>
 
-    <div class="text-sm text-right">Zadnja sprememba: {{ page.date | date: '%d. %m. %Y ob %H:%M' }}</div>
+    <div class="text-sm flex flex-wrap justify-end gap-3">
+        {% articleAuthors authors %}
+        <span class="grow"></span>
+        {% publishedAt published %}
+        {% editedAt page.date %}
+    </div>
 
     {% block lead %}{% endblock %}
     <div class="lead">
