@@ -1,5 +1,5 @@
 FROM bitnami/dotnet-sdk:8-debian-12 AS builder
-ARG NODE_MAJOR=20
+ARG NODE_MAJOR=22
 
 WORKDIR /build
 
