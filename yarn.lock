@@ -4003,7 +4003,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:^8.4.43, postcss@npm:^8.4.44":
+"postcss@npm:^8.4.43":
   version: 8.4.44
   resolution: "postcss@npm:8.4.44"
   dependencies:
@@ -4011,6 +4011,17 @@ __metadata:
     picocolors: "npm:^1.0.1"
     source-map-js: "npm:^1.2.0"
   checksum: 10c0/53c33338261a3d4f4198f8893e9dfe8b828d8d9186142ee85f02d228f04245c5bbe31239411a357a556ad20ed96f28db24d0921d63edc428fdc9133289371a1d
+  languageName: node
+  linkType: hard
+
+"postcss@npm:^8.4.45":
+  version: 8.4.45
+  resolution: "postcss@npm:8.4.45"
+  dependencies:
+    nanoid: "npm:^3.3.7"
+    picocolors: "npm:^1.0.1"
+    source-map-js: "npm:^1.2.0"
+  checksum: 10c0/ad6f8b9b1157d678560373696109745ab97a947d449f8a997acac41c7f1e4c0f3ca4b092d6df1387f430f2c9a319987b1780dbdc27e35800a88cde9b606c1e8f
   languageName: node
   linkType: hard
 
@@ -4431,7 +4442,7 @@ __metadata:
     "@tailwindcss/typography": "npm:^0.5.15"
     autoprefixer: "npm:^10.4.20"
     highcharts: "npm:^11.4.8"
-    postcss: "npm:^8.4.44"
+    postcss: "npm:^8.4.45"
     sass: "npm:^1.77.8"
     sharp: "npm:^0.33.5"
     solid-js: "npm:^1.8.22"
