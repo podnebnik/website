@@ -4468,7 +4468,7 @@ __metadata:
     postcss: "npm:^8.4.47"
     sass: "npm:^1.79.4"
     sharp: "npm:^0.33.5"
-    solid-js: "npm:^1.8.22"
+    solid-js: "npm:^1.9.2"
     tailwindcss: "npm:^3.4.13"
     vite: "npm:^5.4.8"
     vite-plugin-solid: "npm:^2.10.2"
@@ -4792,14 +4792,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"solid-js@npm:^1.8.22":
-  version: 1.8.22
-  resolution: "solid-js@npm:1.8.22"
+"solid-js@npm:^1.9.2":
+  version: 1.9.2
+  resolution: "solid-js@npm:1.9.2"
   dependencies:
     csstype: "npm:^3.1.0"
     seroval: "npm:^1.1.0"
     seroval-plugins: "npm:^1.1.0"
-  checksum: 10c0/bb631114bbf19d072634ac0e22493d4e6427060c2ef6c4c21ff40469ba01bd69e966d997c42c0ff2ffa8d54a4cd4656bfd17618b140de340a95273044307c0a9
+  checksum: 10c0/d97673712509d22e40f817d518d8b65b29037c24bdb28ddec2221b3c05c44273ad64c7bc69707f2efec4f49d1e510a9f61b2d030ea914e6471f7a303387baa56
   languageName: node
   linkType: hard
 
