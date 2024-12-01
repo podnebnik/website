@@ -4471,7 +4471,7 @@ __metadata:
     solid-js: "npm:^1.8.22"
     tailwindcss: "npm:^3.4.13"
     vite: "npm:^5.4.8"
-    vite-plugin-solid: "npm:^2.10.2"
+    vite-plugin-solid: "npm:^2.11.0"
   languageName: unknown
   linkType: soft
 
@@ -5158,24 +5158,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite-plugin-solid@npm:^2.10.2":
-  version: 2.10.2
-  resolution: "vite-plugin-solid@npm:2.10.2"
+"vite-plugin-solid@npm:^2.11.0":
+  version: 2.11.0
+  resolution: "vite-plugin-solid@npm:2.11.0"
   dependencies:
     "@babel/core": "npm:^7.23.3"
     "@types/babel__core": "npm:^7.20.4"
     babel-preset-solid: "npm:^1.8.4"
     merge-anything: "npm:^5.1.7"
     solid-refresh: "npm:^0.6.3"
-    vitefu: "npm:^0.2.5"
+    vitefu: "npm:^1.0.4"
   peerDependencies:
     "@testing-library/jest-dom": ^5.16.6 || ^5.17.0 || ^6.*
     solid-js: ^1.7.2
-    vite: ^3.0.0 || ^4.0.0 || ^5.0.0
+    vite: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0
   peerDependenciesMeta:
     "@testing-library/jest-dom":
       optional: true
-  checksum: 10c0/872a9d63d9d1ada29921de37f7420b0636ae7bc4c596072da0f098d03d932dee38b9e5f6ce88b42b4d3b19c9f06ceffcb86a335d2752784da18ca2827bf8ee56
+  checksum: 10c0/033cb6a2d2f2d47b8278ad2559c56afab9d2283c1810417f33cc8a4ab04159fb0be0582d49d536116cde2346f6e896a6b1c4f756d03106f6c2c85930bbb73115
   languageName: node
   linkType: hard
 
@@ -5262,15 +5262,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vitefu@npm:^0.2.5":
-  version: 0.2.5
-  resolution: "vitefu@npm:0.2.5"
+"vitefu@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "vitefu@npm:1.0.4"
   peerDependencies:
-    vite: ^3.0.0 || ^4.0.0 || ^5.0.0
+    vite: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0
   peerDependenciesMeta:
     vite:
       optional: true
-  checksum: 10c0/5781ece3025b6be0eb87ee7d97760a7721b1c6c5ad60ede5f37c86393ece3c8fce4245472f62368eb192448034086e25bdcadf098eefc271277176ab9a430204
+  checksum: 10c0/d7356312c76fdfa78d6a8880f2abbcb375cf67d034b6e79436c954974cf3059b1bed737245cdc3df6a68835d577b55c27b358bc2a693bfcb96f7bb19467bd28d
   languageName: node
   linkType: hard
 
