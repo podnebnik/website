@@ -1,3 +1,10 @@
+# This Dockerfile uses docker multi stage build to avoid having big image.
+# https://docs.docker.com/build/building/multi-stage/
+#
+# To build only the "builder" stage, one can do:
+# docker build --target=builder --progress=plain -f deployment/Dockerfile.datasette .
+
+
 FROM python:3.12-slim-bullseye AS builder
 
 WORKDIR /build
@@ -9,12 +16,17 @@ COPY Pipfile /build/
 COPY Pipfile.lock /build/
 RUN pipenv install --system --deploy --ignore-pipfile
 
+#  Note: docker caches image building so uncomment and change next line
+#  when you change tasks.py or data to make sure they are pulled fresh into image
+# RUN echo cache busting!
+
 COPY data /build/data/
 COPY tasks.py /build/
 
 RUN invoke create-databases
 
 # -----------------------------------------------------------------------------
+
 FROM python:3.12-slim-bullseye
 
 WORKDIR /datasette
