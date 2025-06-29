@@ -134,7 +134,7 @@ resources:
         - name: temperature_percentile_90
           title: Mean temperature at 90. percentile in °C
           type: number
-  - name: temperature.daily.csv
+  - name: temperature.daily
     type: table
     path: data/temperature.daily.csv
     title: Daily temperature statistics at 2m in Slovenia
@@ -168,7 +168,7 @@ resources:
         - name: temperature_min_2m
           title: Minimum temperature in °C
           type: number
-  - name: temperature.subhourly.csv
+  - name: temperature.subhourly
     type: table
     path: data/temperature.subhourly.csv
     title: Sub-hourly temperature measurements at 2m in Slovenia
