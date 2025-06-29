@@ -205,3 +205,40 @@ resources:
         - name: temperature_max_2m
           title: Maximum temperature in °C
           type: number
+  - name: temperature.daily.average_percentiles
+    type: table
+    path: data/temperature.daily.average_percentiles.csv
+    title: Percentiles
+    scheme: file
+    format: csv
+    mediatype: text/csv
+    encoding: utf-8
+    schema:
+      fields:
+        - name: date
+          title: Date
+          type: date
+        - name: p00
+          title: 0th percentile
+          type: number
+        - name: p05
+          title: 5th percentile
+          type: number
+        - name: p20
+          title: 20th percentile
+          type: number
+        - name: p40
+          title: 40th percentile
+          type: number
+        - name: p60
+          title: 60th percentile
+          type: number
+        - name: p80
+          title: 80th percentile
+          type: number
+        - name: p95
+          title: 95th percentile
+          type: number
+        - name: p100
+          title: 100th percentile
+          type: number
