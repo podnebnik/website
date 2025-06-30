@@ -5,48 +5,48 @@ updates:
   - package-ecosystem: "pip" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
-      interval: "monthly"
+      interval: "quarterly"
     open-pull-requests-limit: 10
 
   - package-ecosystem: "pip" # See documentation for possible values
     directory: "/data/​temperature/​sources" # Location of package manifests
     schedule:
-      interval: "monthly"
+      interval: "quarterly"
     open-pull-requests-limit: 10
 
   - package-ecosystem: "npm" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
-      interval: "monthly"
+      interval: "quarterly"
     open-pull-requests-limit: 10
 
   - package-ecosystem: "github-actions" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
-      interval: "monthly"
+      interval: "quarterly"
     open-pull-requests-limit: 10
 
   - package-ecosystem: "docker" # See documentation for possible values
     directory: "/deployment" # Location of package manifests
     schedule:
-      interval: "monthly"
+      interval: "quarterly"
     open-pull-requests-limit: 10
 
   - package-ecosystem: "nuget" # See documentation for possible values
     directory: "/code" # Location of package manifests
     schedule:
-      interval: "monthly"
+      interval: "quarterly"
     open-pull-requests-limit: 10
 
   - package-ecosystem: "nuget" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
-      interval: "monthly"
+      interval: "quarterly"
     open-pull-requests-limit: 10
 
   # https://containers.dev/guide/dependabot
   - package-ecosystem: "devcontainers" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
-      interval: "monthly"
+      interval: "quarterly"
     open-pull-requests-limit: 10
