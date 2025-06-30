@@ -1,6 +1,7 @@
 from invoke import task
 
 import glob
+import io
 import json
 import shutil
 import sys
@@ -130,7 +131,16 @@ def create_databases(c):
                     metadata['databases'][package.name]['tables'][resource.name]['units'] = dict([(field.name, field.unit) for field in resource.schema.fields if hasattr(field, 'unit')])
             else:
                 log(f'    Skipping resource {resource.name}, {resource.format} @ {resource.path}')
-            c.run(f'sqlite-utils insert {database} {resource.name} {DATASETS_DIR / package_path.parent / resource.path} --csv --detect-types --silent')
+
+            # this only creates tables
+            c.run(f'sqlite-utils insert {database} {resource.name} {DATASETS_DIR / package_path.parent / resource.path} --csv --detect-types --silent --stop-after 10')
+
+            # this loads the data
+            fake_stdin = io.StringIO()
+            fake_stdin.write(f"""delete from "{resource.name}";\n.import --csv --skip 1 {DATASETS_DIR / package_path.parent / resource.path} {resource.name}""")
+            fake_stdin.seek(0)
+            c.run(f'sqlite3 {database}', in_stream=fake_stdin)
+
 
     # Create the datasette inspect file
 

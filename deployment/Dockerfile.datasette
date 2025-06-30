@@ -10,7 +10,7 @@ FROM python:3.12-slim-bullseye AS builder
 WORKDIR /build
 
 RUN apt-get update && \
-    apt-get install -y pipenv
+    apt-get install -y pipenv sqlite3
 
 COPY Pipfile /build/
 COPY Pipfile.lock /build/
