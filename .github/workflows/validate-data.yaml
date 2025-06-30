@@ -22,6 +22,7 @@ jobs:
         with:
           lfs: true # add this to download LFS files
           submodules: true # add this to download submodules
+          persist-credentials: false
 
       - name: Install the latest version of uv
         uses: astral-sh/setup-uv@bd01e18f51369d5a26f1651c3cb451d3417e3bba # v6.3.1
