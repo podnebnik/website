@@ -54,14 +54,9 @@ To start developing you need to have the following requirements on:
 - `yarn` https://yarnpkg.com
 - `.NET 8.0` https://dotnet.microsoft.com/en-us/download
 - `python 3.12` https://www.python.org/
-- `pipenv` https://pipenv.pypa.io/
+- `uv` https://docs.astral.sh/uv/
 
-We suggest uou use [pyenv](https://github.com/pyenv/pyenv) to install and manage the python version(s) on your system. Once you have `pyenv` installed, the `pipenv` will automatically use it to install the correct python version.
-
-To start developing, first create a python virtual environment, install the necessary dependencies and activate the created virtual environment:
-
-    pipenv install --dev
-    pipenv shell
+Use uv to install and manage the python version(s) on your system. Once you have uv installed, it will automatically use it to install the correct python version packages.
 
 Next, install the JavaScript dependencies:
 
@@ -81,7 +76,29 @@ and point your browser to:
 
 ## Developing data
 
-Please see ()[https://github.com/podnebnik/data] for more information. Please not that we are in the process of merging the two repositories so the current information in the `data` repository may be out of date.
+### Importing data into datasette and running it
+
+To import datapackages into datasette, run:
+
+    uv run invoke create-databases
+
+To then start datasette, run:
+
+    uv run invoke datasette
+
+
+### Creating new datapackages
+
+A datapackage is a combination of data resources (`.csv` data files) and a datapackage descriptor file (`.yaml`) containing the metadata. Check the existing data packages for an example how to write a descriptor file.
+
+Data files should be in CSV format, as this is what our current system knows how to import into datasette.
+
+After creating CSV files and writing a package description, validate it, to check the metadata matches the data: 
+
+    uv run frictionless validate data/package/description.yaml
+
+
+You can also check [old data repository](https://github.com/podnebnik/data) for more hints. 
 
 ## Developing content
 

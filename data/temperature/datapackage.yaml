@@ -134,3 +134,111 @@ resources:
         - name: temperature_percentile_90
           title: Mean temperature at 90. percentile in °C
           type: number
+  - name: temperature.daily
+    type: table
+    path: data/temperature.daily.csv
+    title: Daily temperature statistics at 2m in Slovenia
+    scheme: file
+    format: csv
+    mediatype: text/csv
+    encoding: utf-8
+    schema:
+      fields:
+        - name: postaja
+          title: Station
+          type: string
+        - name: timestamp
+          title: Timestamp
+          type: date
+        - name: year
+          title: Year
+          type: number
+        - name: month
+          title: Month
+          type: number
+        - name: day
+          title: Day
+          type: number
+        - name: temperature_max_2m
+          title: Maximum temperature in °C
+          type: number
+        - name: temperature_average_2m
+          title: Average temperature in °C
+          type: number
+        - name: temperature_min_2m
+          title: Minimum temperature in °C
+          type: number
+  - name: temperature.subhourly
+    type: table
+    path: data/temperature.subhourly.csv
+    title: Sub-hourly temperature measurements at 2m in Slovenia
+    scheme: file
+    format: csv
+    mediatype: text/csv
+    encoding: utf-8
+    schema:
+      fields:
+        - name: postaja
+          title: Station
+          type: string
+        - name: timestamp
+          title: Timestamp
+          type: datetime
+        - name: year
+          title: Year
+          type: number
+        - name: month
+          title: Month
+          type: number
+        - name: day
+          title: Day
+          type: number
+        - name: temperature_interval_2m
+          title: Interval temperature in °C
+          type: number
+        - name: temperature_average_2m
+          title: Average temperature in °C
+          type: number
+        - name: temperature_min_2m
+          title: Minimum temperature in °C
+          type: number
+        - name: temperature_max_2m
+          title: Maximum temperature in °C
+          type: number
+  - name: temperature.daily.average_percentiles
+    type: table
+    path: data/temperature.daily.average_percentiles.csv
+    title: Percentiles
+    scheme: file
+    format: csv
+    mediatype: text/csv
+    encoding: utf-8
+    schema:
+      fields:
+        - name: date
+          title: Date
+          type: date
+        - name: p00
+          title: 0th percentile
+          type: number
+        - name: p05
+          title: 5th percentile
+          type: number
+        - name: p20
+          title: 20th percentile
+          type: number
+        - name: p40
+          title: 40th percentile
+          type: number
+        - name: p60
+          title: 60th percentile
+          type: number
+        - name: p80
+          title: 80th percentile
+          type: number
+        - name: p95
+          title: 95th percentile
+          type: number
+        - name: p100
+          title: 100th percentile
+          type: number

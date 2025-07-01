@@ -9,21 +9,21 @@
     "build-debug": "dotnet fable code --extension .fs.jsx --run DEBUG=Eleventy* npx @11ty/eleventy"
   },
   "dependencies": {
-    "@highcharts/map-collection": "^2.3.0",
-    "@tailwindcss/typography": "^0.5.15",
+    "@highcharts/map-collection": "^2.3.1",
+    "@tailwindcss/typography": "^0.5.16",
     "highcharts": "^11.4.8",
-    "solid-js": "^1.8.22",
-    "tailwindcss": "^3.4.10"
+    "solid-js": "^1.9.7",
+    "tailwindcss": "^3.4.13"
   },
   "devDependencies": {
     "@11ty/eleventy": "^2.0.1",
     "@11ty/eleventy-img": "^4.0.2",
     "@11ty/eleventy-plugin-vite": "^4.0.0",
     "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.42",
-    "sass": "^1.77.8",
-    "sharp": "^0.33.5",
-    "vite": "^4.5.3",
+    "postcss": "^8.5.6",
+    "sass": "^1.89.2",
+    "sharp": "^0.34.2",
+    "vite": "^5.4.8",
     "vite-plugin-solid": "^2.10.2"
   },
   "packageManager": "yarn@4.1.1"

@@ -23,7 +23,11 @@ jobs:
           lfs: true # add this to download LFS files
           submodules: true # add this to download submodules
 
-      - name: Validate data
-        uses: frictionlessdata/repository@v2
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v6
         with:
-          packages: "data/**/*package.yaml"
+          version: "latest"
+
+      - name: Validate data
+        run: find ./data -name '*package.yaml' | xargs -I {} sh -c 'echo "\nValidating {}:"; uvx frictionless validate {}'
+        # run: uv run --group=build invoke validate

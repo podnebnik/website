@@ -1,8 +1,10 @@
 from invoke import task
 
 import glob
+import io
 import json
 import shutil
+import sys
 from pathlib import Path
 from frictionless import Package
 
@@ -24,6 +26,10 @@ class Color:
         return f'{Color.Fore.RED}{text}{Color.Style.RESET_ALL}'
 
 
+def log(msg):
+    print(msg, file=sys.stderr)
+
+
 def get_datapackage_paths():
     return [Path(p) for p in glob.glob(f'{DATASETS_DIR}/*/datapackage.yaml')]
 
@@ -35,27 +41,27 @@ def get_datapackages():
 @task
 def validate(c):
     '''Validate available data packages.'''
-    print('Validating data packages:\n')
+    log('Validating data packages:\n')
     invalid_package_paths = []
     for path in get_datapackage_paths():
         package = Package(path)
-        print(f'  Name: {package.name}')
-        print(f'  Path: {path}')
-        print(f' Title: {package.title}')
+        log(f'  Name: {package.name}')
+        log(f'  Path: {path}')
+        log(f' Title: {package.title}')
         report = package.validate()
         if report.valid:
-            print(f'Status: {Color.success("valid")}')
+            log(f'Status: {Color.success("valid")}')
         if not report.valid:
-            print(f'Status: {Color.failure("invalid")}')
+            log(f'Status: {Color.failure("invalid")}')
             invalid_package_paths.append(path)
-        print()
+        log('\n')
 
     if not invalid_package_paths:
-        print('All data packages are valid.')
+        log('All data packages are valid.')
     else:
-        print('Please validate the followind data packages to get more information:')
+        log('Please validate the followind data packages to get more information:')
         for path in invalid_package_paths:
-            print(f'  frictionless validate {path}')
+            log(f'  frictionless validate {path}')
         exit(1)
 
 
@@ -66,10 +72,25 @@ def none_if_empty(value):
         return None
 
 
-@task
-def create_databases(c):
+@task(iterable=['no_validate_arch'])
+def create_databases(c, no_validate=False, no_validate_arch=None):
     '''Create sqlite database, import resources data and generate datasette metadata.'''
-    validate(c)
+
+    do_validation = True
+    if no_validate:
+        log("Passed in --no-validate, not doing validation")
+        do_validation = False
+
+    if do_validation and no_validate_arch:
+        # this is a pragmatic option to avoid doing slow data validation in github action
+        import platform
+        machine = platform.machine()
+        if machine in no_validate_arch:
+            log(f"Passed in --no-slow-validate, not doing validation on {machine}.")
+            do_validation = False
+
+    if do_validation:
+        validate(c)
 
     # Reset the sqlite databases directory
     shutil.rmtree(SQLITE_DIR, ignore_errors=True)
@@ -94,7 +115,7 @@ def create_databases(c):
         database = Path(f'{SQLITE_DIR / package.name}.db')
         databases.append(database)
 
-        print(f'\nImporting data package {package.name}:')
+        log(f'\nImporting data package {package.name}:')
 
         # Package metadata
         metadata['databases'][package.name] = {
@@ -111,7 +132,7 @@ def create_databases(c):
         for resource in package.resources:
             if resource.format == 'csv':
                 # Import the resource if it is a CSV file
-                print(f'    Importing resource {resource.name}, {resource.format} @ {resource.path}')
+                log(f'    Importing resource {resource.name}, {resource.format} @ {resource.path}')
                 metadata['databases'][package.name]['tables'][resource.name] = {
                     'title': resource.title,
                     'description': resource.description,
@@ -124,21 +145,33 @@ def create_databases(c):
                     metadata['databases'][package.name]['tables'][resource.name]['columns'] = dict([(field.name, field.title) for field in resource.schema.fields if hasattr(field, 'title')])
                     metadata['databases'][package.name]['tables'][resource.name]['units'] = dict([(field.name, field.unit) for field in resource.schema.fields if hasattr(field, 'unit')])
             else:
-                print(f'    Skipping resource {resource.name}, {resource.format} @ {resource.path}')
-            c.run(f'sqlite-utils insert {database} {resource.name} {DATASETS_DIR / package_path.parent / resource.path} --csv --detect-types --silent')
+                log(f'    Skipping resource {resource.name}, {resource.format} @ {resource.path}')
+
+            # this only creates tables
+            c.run(f'sqlite-utils insert {database} {resource.name} {DATASETS_DIR / package_path.parent / resource.path} --csv --detect-types --silent --stop-after 10')
+
+            # this loads the data
+            fake_stdin = io.StringIO()
+            fake_stdin.write(f"""delete from "{resource.name}";\n.import --csv --skip 1 {DATASETS_DIR / package_path.parent / resource.path} {resource.name}""")
+            fake_stdin.seek(0)
+            c.run(f'sqlite3 {database}', in_stream=fake_stdin)
+
 
     # Create the datasette inspect file
+
+    log('Creating datasette inspect json.')
     c.run(f'datasette inspect {" ".join([str(db) for db in databases])} --inspect-file {SQLITE_DIR / "inspect-data.json"}')
 
     # Create the datasette metadata file
     with open(SQLITE_DIR / 'metadata.json', 'w') as fo:
         json.dump(metadata, fo, indent=4)
 
+    log('Done importing data packages.')
+
 
 @task
 def datasette(c):
     '''Start datasette server.'''
-    create_databases(c)
-    print('\nStarting Datasette server...\n')
+    log('\nStarting Datasette server...\n')
     # TODO: remove custom setting when no longer needed
     c.run(f'datasette serve {SQLITE_DIR} --inspect-file {SQLITE_DIR}/inspect-data.json --metadata {SQLITE_DIR}/metadata.json --port 8010 --cors --setting max_returned_rows 150000')

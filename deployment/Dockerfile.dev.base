@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y ca-certificates curl gnupg && mkdir -p 
 
 RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" > /etc/apt/sources.list.d/nodesource.list;
 
-RUN apt-get update && apt-get install nodejs -y && corepack enable
+RUN apt-get update && apt-get install git nodejs -y && corepack enable
 
 # this assumes no major changes to software packages are going on while developing
 # to update software, remove this image and rebuild base image
