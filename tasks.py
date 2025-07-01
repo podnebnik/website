@@ -73,9 +73,11 @@ def none_if_empty(value):
 
 
 @task
-def create_databases(c):
+def create_databases(c, no_validate=False):
     '''Create sqlite database, import resources data and generate datasette metadata.'''
-    validate(c)
+
+    if not no_validate:
+        validate(c)
 
     # Reset the sqlite databases directory
     shutil.rmtree(SQLITE_DIR, ignore_errors=True)
@@ -157,7 +159,6 @@ def create_databases(c):
 @task
 def datasette(c):
     '''Start datasette server.'''
-    create_databases(c)
     log('\nStarting Datasette server...\n')
     # TODO: remove custom setting when no longer needed
     c.run(f'datasette serve {SQLITE_DIR} --inspect-file {SQLITE_DIR}/inspect-data.json --metadata {SQLITE_DIR}/metadata.json --port 8010 --cors --setting max_returned_rows 150000')
