@@ -72,11 +72,24 @@ def none_if_empty(value):
         return None
 
 
-@task
-def create_databases(c, no_validate=False):
+@task(iterable=['no_validate_arch'])
+def create_databases(c, no_validate=False, no_validate_arch=None):
     '''Create sqlite database, import resources data and generate datasette metadata.'''
 
-    if not no_validate:
+    do_validation = True
+    if no_validate:
+        log("Passed in --no-validate, not doing validation")
+        do_validation = False
+
+    if do_validation and no_validate_arch:
+        # this is a pragmatic option to avoid doing slow data validation in github action
+        import platform
+        machine = platform.machine()
+        if machine in no_validate_arch:
+            log(f"Passed in --no-slow-validate, not doing validation on {machine}.")
+            do_validation = False
+
+    if do_validation:
         validate(c)
 
     # Reset the sqlite databases directory
