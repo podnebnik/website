@@ -9,7 +9,7 @@
     "build-debug": "dotnet fable code --extension .fs.jsx --run DEBUG=Eleventy* npx @11ty/eleventy"
   },
   "dependencies": {
-    "@highcharts/map-collection": "^2.3.0",
+    "@highcharts/map-collection": "^2.3.1",
     "@tailwindcss/typography": "^0.5.16",
     "highcharts": "^11.4.8",
     "solid-js": "^1.9.7",
