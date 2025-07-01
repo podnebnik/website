@@ -34,7 +34,7 @@ RUN uv sync --group build --locked
 
 RUN ls -al /build/
 
-RUN uv run invoke create-databases
+RUN uv run invoke create-databases --no-validate-arch=aarch64
 
 # -----------------------------------------------------------------------------
 
