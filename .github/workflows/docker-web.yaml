@@ -37,6 +37,10 @@ on:
       - 'package*.json'
       - 'yarn.lock'
 
+permissions:
+  contents: read # to allow the action to read the repository contents
+  packages: write # to allow the action to push Docker images to GitHub Packages
+
 jobs:
   docker:
     runs-on: ubuntu-latest

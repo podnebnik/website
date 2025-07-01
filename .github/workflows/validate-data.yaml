@@ -13,6 +13,9 @@ on:
       - 'data/**'
   workflow_dispatch:
 
+permissions:
+  contents: read # to allow the action to read the repository contents
+
 jobs:
   validate:
     runs-on: ubuntu-latest
