@@ -29,4 +29,4 @@ jobs:
           version: "latest"
 
       - name: Validate data
-        run: uv run invoke validate
+        run: uv run --group=build invoke validate
