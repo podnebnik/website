@@ -28,8 +28,5 @@ jobs:
         with:
           version: "latest"
 
-      - name: Validate emissions data
-        run: uvx frictionless validate data/emissions/datapackage.yaml
-
-      - name: Validate temperature data
-        run: uvx frictionless validate data/temperature/datapackage.yaml
+      - name: Validate data
+        run: uv run invoke validate
