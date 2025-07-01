@@ -1,5 +1,6 @@
 ---
 title: ABC podnebnih sprememb
+layout: page.html
 date: git Last Modified
 topics: Slovar podnebnih sprememb
 summary: Slovar podnebnih sprememb
