@@ -33,5 +33,5 @@ jobs:
           version: "latest"
 
       - name: Validate data
-        run: find ./data -name '*package.yaml' | xargs -I {} sh -c 'echo "\nValidating {}:"; uvx frictionless validate {}'
+        run: find ./data -name '*package.yaml' -print0 | xargs -0 -I {} sh -c 'echo "\nValidating {}:"; uvx frictionless validate {}'
         # run: uv run --group=build invoke validate
