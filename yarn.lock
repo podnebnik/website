@@ -2058,6 +2058,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"clsx@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "clsx@npm:2.1.1"
+  checksum: 10c0/c4c8eb865f8c82baab07e71bfa8897c73454881c4f99d6bc81585aecd7c441746c1399d08363dc096c550cceaf97bd4ce1e8854e1771e9998d9f94c4fe075839
+  languageName: node
+  linkType: hard
+
 "color-convert@npm:^1.9.0":
   version: 1.9.3
   resolution: "color-convert@npm:1.9.3"
@@ -4656,11 +4663,13 @@ __metadata:
     "@highcharts/map-collection": "npm:^2.3.0"
     "@tailwindcss/typography": "npm:^0.5.16"
     autoprefixer: "npm:^10.4.20"
+    clsx: "npm:^2.1.1"
     highcharts: "npm:^11.4.8"
     postcss: "npm:^8.5.6"
     sass: "npm:^1.89.2"
     sharp: "npm:^0.34.2"
     solid-js: "npm:^1.9.7"
+    tailwind-merge: "npm:^3.3.1"
     tailwindcss: "npm:^3.4.13"
     vite: "npm:^5.4.8"
     vite-plugin-solid: "npm:^2.10.2"
@@ -5165,6 +5174,13 @@ __metadata:
   version: 1.0.0
   resolution: "supports-preserve-symlinks-flag@npm:1.0.0"
   checksum: 10c0/6c4032340701a9950865f7ae8ef38578d8d7053f5e10518076e6554a9381fa91bd9c6850193695c141f32b21f979c985db07265a758867bac95de05f7d8aeb39
+  languageName: node
+  linkType: hard
+
+"tailwind-merge@npm:^3.3.1":
+  version: 3.3.1
+  resolution: "tailwind-merge@npm:3.3.1"
+  checksum: 10c0/b84c6a78d4669fa12bf5ab8f0cdc4400a3ce0a7c006511af4af4be70bb664a27466dbe13ee9e3b31f50ddf6c51d380e8192ce0ec9effce23ca729d71a9f63818
   languageName: node
   linkType: hard
 

@@ -4,15 +4,17 @@
     "postinstall": "dotnet tool restore",
     "clean": "rm -rf dist && dotnet fable clean",
     "start": "dotnet fable watch code --extension .fs.jsx --run npx @11ty/eleventy --serve --incremental --quiet",
-    "start-debug": "dotnet fable watch code --extension .fs.jsx --run DEBUG=Eleventy* npx @11ty/eleventy --serve --incremental --quiet",
+    "start-debug": "dotnet fable watch code --extension .fs.jsx --run sh -c 'DEBUG=\"Eleventy*\" npx @11ty/eleventy --serve --incremental --quiet'",
     "build": "dotnet fable code --extension .fs.jsx --run npx @11ty/eleventy",
-    "build-debug": "dotnet fable code --extension .fs.jsx --run DEBUG=Eleventy* npx @11ty/eleventy"
+    "build-debug": "dotnet fable code --extension .fs.jsx --run sh -c 'DEBUG=\"Eleventy*\" npx @11ty/eleventy'"
   },
   "dependencies": {
     "@highcharts/map-collection": "^2.3.0",
     "@tailwindcss/typography": "^0.5.16",
+    "clsx": "^2.1.1",
     "highcharts": "^11.4.8",
     "solid-js": "^1.9.7",
+    "tailwind-merge": "^3.3.1",
     "tailwindcss": "^3.4.13"
   },
   "devDependencies": {
