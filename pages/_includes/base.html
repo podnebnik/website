@@ -8,9 +8,11 @@
     <title>{{ title }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=IBM+Plex+Sans:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=IBM+Plex+Sans:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap"
+        rel="stylesheet">
     <script type="module" src="/code/main.js"></script>
-    <link rel="stylesheet" href="/styles/main.sass">
+    <link rel="stylesheet" href="/styles/main.css">
     <meta name="description" content="{{ summary }}">
     <meta property="og:title" content="{{ title }}" />
     <meta property="og:type" content="article" />
@@ -22,15 +24,19 @@
 
 <body class="font-serif bg-tertiary">
     <header>
-        <nav role="navigation" class="bg-primary mb-3gap text-white flex items-center min-h-[75px] px-3" aria-label="Main">
+        <nav role="navigation" class="bg-primary mb-3gap text-white flex items-center min-h-[75px] px-3"
+            aria-label="Main">
             <a href="/"><img class="logo" src="/assets/logo/logo-orange.svg" alt="Podnebnik"></a>
 
             <div class="hidden sm:mr-16 sm:block w-full">
                 <div class="flex justify-end space-x-3">
-                    <a class="nav-link" href="/ali-je-vroce/" {% if page.url == "/ali-je-vroce/" %} aria-current="page"{% endif %}>Ali je vroče?</a>
-                    <a class="nav-link" href="/" {% if page.url == "/" %} aria-current="page"{% endif %}>Članki</a>
-                    <a class="nav-link" href="/faq/" {% if page.url == "/faq/" %} aria-current="page"{% endif %}>Pojasnila</a>
-                    <a class="nav-link" href="/about/" {% if page.url == "/about/" %} aria-current="page"{% endif %}>O projektu</a>
+                    <a class="nav-link" href="/ali-je-vroce/" {% if page.url=="/ali-je-vroce/" %} aria-current="page" {%
+                        endif %}>Ali je vroče?</a>
+                    <a class="nav-link" href="/" {% if page.url=="/" %} aria-current="page" {% endif %}>Članki</a>
+                    <a class="nav-link" href="/faq/" {% if page.url=="/faq/" %} aria-current="page" {% endif
+                        %}>Pojasnila</a>
+                    <a class="nav-link" href="/about/" {% if page.url=="/about/" %} aria-current="page" {% endif %}>O
+                        projektu</a>
                 </div>
             </div>
 
@@ -68,11 +74,21 @@
             <div class="border-t pr-2gap py-2gap lg:p-2gap">
                 <div class="font-bold uppercase text-muted opacity-50 tracking-widest text-xs">Povezave</div>
                 <ul class="mt-gap">
-                    <li class="mb-2"><a href="https://medium.com/podnebnik" target="_blank" rel="noreferrer"><img class="h-[20px] w-[20px] opacity-30 mr-2 inline-block" loading="lazy" src="/assets/icons/medium-icon.svg" alt="Medium"> Medium</a></li>
-                    <li class="mb-2"><a href="https://twitter.com/podnebnik" target="_blank" rel="noreferrer"><img class="h-[20px] w-[20px] opacity-30 mr-2 inline-block" loading="lazy" src="/assets/icons/x-icon.svg" alt="Twitter"> X</a></li>
-                    <li class="mb-2"><a href="https://fb.me/SledilnikOrg" target="_blank" rel="noreferrer"><img class="h-[20px] w-[20px] opacity-30 mr-2 inline-block" loading="lazy" src="/assets/icons/fb-icon.svg" alt="Facebook"> Facebook</a></li>
-                    <li class="mb-2"><a href="https://www.youtube.com/channel/UCM_Sk2GZ8vTMiyBQ0SMHgJw/videos" target="_blank" rel="noreferrer"><img class="h-[20px] w-[20px] opacity-30 mr-2 inline-block" loading="lazy" src="/assets/icons/youtube.svg" alt="YouTube"> YouTube</a></li>
-                    <li class="mb-2"><a href="https://github.com/podnebnik" target="_blank" rel="noreferrer"><img class="h-[20px] w-[20px] opacity-30 mr-2 inline-block" loading="lazy" src="/assets/icons/gh-icon.svg" alt="GitHub"> GitHub</a></li>
+                    <li class="mb-2"><a href="https://medium.com/podnebnik" target="_blank" rel="noreferrer"><img
+                                class="h-[20px] w-[20px] opacity-30 mr-2 inline-block" loading="lazy"
+                                src="/assets/icons/medium-icon.svg" alt="Medium"> Medium</a></li>
+                    <li class="mb-2"><a href="https://twitter.com/podnebnik" target="_blank" rel="noreferrer"><img
+                                class="h-[20px] w-[20px] opacity-30 mr-2 inline-block" loading="lazy"
+                                src="/assets/icons/x-icon.svg" alt="Twitter"> X</a></li>
+                    <li class="mb-2"><a href="https://fb.me/SledilnikOrg" target="_blank" rel="noreferrer"><img
+                                class="h-[20px] w-[20px] opacity-30 mr-2 inline-block" loading="lazy"
+                                src="/assets/icons/fb-icon.svg" alt="Facebook"> Facebook</a></li>
+                    <li class="mb-2"><a href="https://www.youtube.com/channel/UCM_Sk2GZ8vTMiyBQ0SMHgJw/videos"
+                            target="_blank" rel="noreferrer"><img class="h-[20px] w-[20px] opacity-30 mr-2 inline-block"
+                                loading="lazy" src="/assets/icons/youtube.svg" alt="YouTube"> YouTube</a></li>
+                    <li class="mb-2"><a href="https://github.com/podnebnik" target="_blank" rel="noreferrer"><img
+                                class="h-[20px] w-[20px] opacity-30 mr-2 inline-block" loading="lazy"
+                                src="/assets/icons/gh-icon.svg" alt="GitHub"> GitHub</a></li>
                 </ul>
             </div>
         </div>

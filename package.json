@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "private": true,
   "scripts": {
     "postinstall": "dotnet tool restore",
@@ -18,15 +19,15 @@
     "tailwindcss": "^3.4.13"
   },
   "devDependencies": {
-    "@11ty/eleventy": "^2.0.1",
-    "@11ty/eleventy-img": "^4.0.2",
-    "@11ty/eleventy-plugin-vite": "^4.0.0",
+    "@11ty/eleventy": "^3.1.2",
+    "@11ty/eleventy-img": "^6.0.4",
+    "@11ty/eleventy-plugin-vite": "^7.0.0",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.5.6",
     "sass": "^1.89.2",
     "sharp": "^0.34.2",
-    "vite": "^5.4.8",
-    "vite-plugin-solid": "^2.10.2"
+    "vite": "^7.0.0",
+    "vite-plugin-solid": "^2.11.7"
   },
   "packageManager": "yarn@4.1.1"
 }
