@@ -13,21 +13,25 @@ on:
       - 'data/**'
   workflow_dispatch:
 
+permissions:
+  contents: read # to allow the action to read the repository contents
+
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           lfs: true # add this to download LFS files
           submodules: true # add this to download submodules
+          persist-credentials: false
 
       - name: Install the latest version of uv
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@bd01e18f51369d5a26f1651c3cb451d3417e3bba # v6.3.1
         with:
           version: "latest"
 
       - name: Validate data
-        run: find ./data -name '*package.yaml' | xargs -I {} sh -c 'echo "\nValidating {}:"; uvx frictionless validate {}'
+        run: find ./data -name '*package.yaml' -print0 | xargs -0 -I {} sh -c 'echo "\nValidating {}:"; uvx frictionless validate {}'
         # run: uv run --group=build invoke validate
