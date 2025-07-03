@@ -1,146 +1,180 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import "octocat.css";
 
+@plugin "@tailwindcss/typography";
+
+@custom-variant aria-current-page (&[aria-current="page"]);
 
 
 :root {
-  --color-primary: #462a44;
-  --color-secondary: #ffb644;
+    --font-serif: 'Bitter', 'Arial', 'Helvetica', 'serif';
+    --font-sans: 'IBM Plex Sans', 'sans-serif';
+
+    --color-primary: #462a44;
+    --color-secondary: #ffb644;
+    --color-primary-dark: #3f253d;
+    --color-tertiary: #f3f1f0;
+    --color-muted: rgb(122, 122, 122);
+
+    --border-color: #D5D4D3;
+    
+    --gap: 1rem;
+    --2gap: 2rem;
+    --3gap: 3rem;
+    --4gap: 4rem;
+    --5gap: 5rem;
+    --6gap: 6rem;
+    --7gap: 7rem;
+    --8gap: 8rem;
+  }
+@theme {
+    --color-primary: var(--color-primary);
+    --color-secondary: var(--color-secondary);
+    --color-primary-dark: var(--color-primary-dark);
+    --color-tertiary: var(--color-tertiary);
+    --color-muted: var(--color-muted);
+    --font-serif: var(--font-serif);
+    --font-sans: var(--font-sans);
+
+    --animate-octocat-wave: 560ms ease-in-out;
+
+    @keyframes octocat-wave {
+        0%, 100% { transform: rotate(0); }
+        20%, 60% { transform: rotate(-25deg); }
+        40%, 80% { transform: rotate(10deg); }
+    }
+  }
+
+@layer base {
+
+  body {
+    @apply bg-tertiary;
+  }
+
+  header nav {
+      background-color: var(--color-primary);
+  }
+
+  h1 {
+    @apply after:block after:mt-6 after:w-[50px] after:h-[6px] after:bg-secondary;
+  }
+
+  footer a {
+    @apply transition-colors duration-300 hover:text-primary;
+  }
 }
 
-h1::after {
-  display: block;
-  margin-top: 1.5rem;
-  width: 50px;
-  height: 6px;
-  background: var(--color-secondary);
-  content: "";
+@layer components {
+  .lead {
+    @apply font-serif text-2xl font-semibold leading-snug text-black pt-(--2gap) pb-(--2gap) border-y;
+  }
+
+  .article-metadata {
+    @apply inline-flex items-center text-muted;
+  }
+
+  .article-metadata img {
+    @apply size-5 inline opacity-30 mr-1.5;
+  }
+
+  .article-metadata .author {
+    @apply font-bold text-black;
+  }
+
+  .article-content h1 {
+    @apply after:hidden;
+  }
+
+  .article-content a {
+    @apply transition-colors duration-300 hover:text-primary;
+  }
+  .article-content blockquote {
+    @apply -ml-[1em] pl-[1.5em];
+    @apply text-xl font-medium border-l-2 border-primary;
+  }
+
+  .article-content blockquote p {
+    @apply before:hidden after:hidden;
+  }
+
+  .article-content blockquote blockquote {
+    @apply ml-0;
+  }
+
+  .chart {
+    @apply lg:-ml-[100px] lg:-mr-[100px] bg-white p-(--gap) sm:p-(--2gap) rounded-md;
+  }
+
+  .image {
+    @apply lg:-ml-[100px] lg:-mr-[100px];
+  }
+
+  .image figcaption {
+    @apply gap-5 flex justify-end text-sm items-start text-muted italic;
+  }
+
+  .image figcaption img {
+    @apply m-0;
+  }
+
+  .image picture img {
+    @apply w-full h-auto rounded;
+  }
+
+  .btn {
+    @apply inline-block font-sans text-secondary bg-primary hover:bg-primary-dark px-3 py-1 rounded-md transition-colors duration-300;
+    @apply disabled:opacity-40;
+  }
+
+  .btn-control {
+    @apply inline-block font-sans bg-zinc-100 hover:bg-zinc-200 px-3 py-1 rounded-md transition-colors duration-300;
+    @apply disabled:bg-secondary disabled:font-bold;
+  }
+ 
+  .btn-sm {
+    @apply text-sm;
+  }
+  .logo {
+    @apply min-w-[181px] min-h-[54px];
+  }
+
+  .nav-link {
+    @apply text-base opacity-70 hover:opacity-100 focus:opacity-100 font-sans px-3 py-2 font-medium transition-all duration-300;
+    @apply hover:[box-shadow:inset_0px_-10px_0_var(--color-secondary)];
+    @apply aria-current-page:[box-shadow:inset_0px_-10px_0_var(--color-secondary)];
+    @apply aria-current-page:opacity-100;
+  }
+
+
+  .input-range {
+    @apply h-[4px] w-full cursor-pointer disabled:cursor-auto appearance-none border-transparent bg-neutral-600 disabled:bg-neutral-200 accent-primary
+  }
+  .input-range:disabled {
+    cursor: auto;
+    background-color: rgb(229 231 235);
+  }
+
+  .select {
+    @apply [box-shadow:inset_0px_-10px_0_var(--color-secondary)];
+    @apply focus:[box-shadow:inset_0px_-10px_0_var(--color-secondary)];
+    @apply hover:[box-shadow:none];
+  }
 }
 
-footer a {
-  transition-property: color;
-  transition-duration: 300ms;
-}
-footer a:hover {
-  color: var(--color-primary);
-}
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
 
-.lead {
-  font-family: var(--font-serif, serif);
-  font-size: 1.5rem;
-  font-weight: 600;
-  line-height: 1.375;
-  color: #000;
-  padding-top: var(--gap, 0.5rem);
-  padding-bottom: var(--gap, 0.5rem);
-  border-top: 1px solid #e5e7eb;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.article-metadata {
-  display: inline-flex;
-  align-items: center;
-  color: var(--tw-text-muted, #6b7280);
-}
-
-.article-metadata img {
-  width: 1.25rem;
-  height: 1.25rem;
-  display: inline;
-  opacity: 0.3;
-  margin-right: 0.375rem;
-}
-
-.article-metadata .author {
-  font-weight: bold;
-  color: #000;
-}
-
-.article-content h1::after {
-  display: none;
-}
-
-.article-content a {
-  transition-property: color;
-  transition-duration: 300ms;
-}
-.article-content a:hover {
-  color: var(--color-primary);
-}
-
-blockquote {
-  margin-left: -1.5em;
-  padding-left: 1.5em;
-  @apply text-xl font-medium border-l-2 border-primary;
-}
-blockquote p:before,
-blockquote p:after {
-  display: none;
-}
-blockquote blockquote {
-  margin-left: 0;
-}
-
-.chart {
-  @apply lg:ml-[-100px] lg:mr-[-100px] bg-white p-gap sm:p-2gap rounded-md;
-}
-
-.image {
-  @apply lg:ml-[-100px] lg:mr-[-100px];
-}
-.image figcaption {
-  @apply gap-5 flex justify-end text-sm items-start text-muted italic;
-}
-.image figcaption img {
-  @apply m-0 !important;
-}
-.image picture img {
-  @apply w-full h-auto rounded;
-}
-
-.btn {
-  @apply inline-block font-sans text-secondary bg-primary hover:bg-primary-dark px-3 py-1 rounded-md transition-colors duration-300;
-}
-.btn-control {
-  @apply inline-block font-sans bg-zinc-100 hover:bg-zinc-200 px-3 py-1 rounded-md transition-colors duration-300;
-}
-.btn-sm {
-  @apply text-sm;
-}
-.btn[disabled] {
-  @apply opacity-40;
-}
-.btn-control[disabled] {
-  @apply bg-secondary font-bold;
-}
-
-.logo {
-  min-width: 181px;
-  min-height: 54px;
-}
-
-.nav-link {
-  @apply text-base opacity-70 hover:opacity-100 focus:opacity-100 font-sans px-3 py-2 font-medium transition-all duration-300;
-}
-.nav-link:hover,
-.nav-link[aria-current="page"] {
-  box-shadow: inset 0px -10px 0 var(--color-secondary);
-}
-.nav-link[aria-current="page"] {
-  @apply opacity-100;
-}
-
-.input-range {
-  @apply h-[4px] w-full cursor-pointer disabled:cursor-auto appearance-none border-transparent bg-neutral-600 disabled:bg-neutral-200 accent-primary;
-}
-
-.select {
-  box-shadow: inset 0px -10px 0 var(--color-secondary);
-}
-.select:focus {
-  box-shadow: inset 0px -10px 0 var(--color-secondary);
-}
-.select:hover {
-  box-shadow: none;
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--border-color, currentColor);
+  }
 }

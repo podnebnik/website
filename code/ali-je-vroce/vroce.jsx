@@ -146,7 +146,7 @@ export function AliJeVroce() {
         <p class="font-normal text-5xl font-sans">
             Ali je danes vroče v 
             <select id="locations"
-                class="select font-bold appearance-none inline-block bg-transparent rounded-none focus:outline-none leading-[64px] hover:cursor-pointer transition-all duration-300">
+                class="select font-bold appearance-none inline-block bg-transparent rounded-none focus:outline-hidden leading-[64px] hover:cursor-pointer transition-all duration-300">
             <option value="LJU">Ljubljani</option>
             </select>
             ?

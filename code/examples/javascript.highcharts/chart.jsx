@@ -36,7 +36,7 @@ export default function Chart(props) {
     return <>
         <div>
             <button class="btn btn-sm" disabled={config() === config1} onClick={() => setConfig(config1)}>Bar chart</button>
-            <button class="btn btn-sm ml-gap" disabled={config() === config2} onClick={() => setConfig(config2)}>Line chart</button>
+            <button class="btn btn-sm ml-(--gap)" disabled={config() === config2} onClick={() => setConfig(config2)}>Line chart</button>
         </div>
         <div use:chart></div>
     </>

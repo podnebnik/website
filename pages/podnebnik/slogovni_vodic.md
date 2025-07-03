@@ -58,19 +58,19 @@ Primer tabele.
 ## Naslovi in podnaslovi
 
 <div class="flex border-t border-slate-300 mb-4 pt-4 flex-wrap sm:no-flex">
-    <h1 class="!m-0 w-full sm:w-1/3">Naslov</h1>
+    <h1 class="m-0! w-full sm:w-1/3">Naslov</h1>
     <div>
         Po moči je ekvivalenten naslovu strani. 
     </div>
 </div>
 <div class="flex border-t border-slate-300 mb-4 pt-4 flex-wrap sm:no-flex">
-    <h2 class="!m-0 w-full sm:w-1/3">Podnaslov</h2>
+    <h2 class="m-0! w-full sm:w-1/3">Podnaslov</h2>
     <div>
         Običajen podnaslov na strani.
     </div>
 </div>
 <div class="flex border-t border-slate-300 mb-4 pt-4 flex-wrap sm:no-flex">
-    <h3 class="!m-0 w-full sm:w-1/3">Pod podnaslov</h3>
+    <h3 class="m-0! w-full sm:w-1/3">Pod podnaslov</h3>
     <div>
         Pod podnaslov. Zadnji, ki naj se še uporablja.
     </div>
