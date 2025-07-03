@@ -71,10 +71,7 @@ function formatTime(date, updated) {
 
 export function AliJeVroce() {
     const vremenarBaseUrl = 'https://podnebnik.vremenar.app/staging'
-    const station = {
-        vremenarID: 'METEO-1495',
-        localID: 'LJU',
-    }
+    const stationID = 1495
 
     const [result, setResult] = createSignal('');
     const [tempMin, setTempMin] = createSignal('');
@@ -84,10 +81,10 @@ export function AliJeVroce() {
     const [tempAvg, setTempAvg] = createSignal('');
     const [timeUpdated, setTimeUpdated] = createSignal('');
 
-    async function requestData(station) {
-        console.log(`Loading ${station.localID} data`)
+    async function requestData(stationID) {
+        console.log(`Loading ${stationID} data`)
 
-        const resultAverage = await fetch(`${vremenarBaseUrl}/stations/details/${station.vremenarID}?country=si`);
+        const resultAverage = await fetch(`${vremenarBaseUrl}/stations/details/METEO-${stationID}?country=si`);
         if (resultAverage.ok) {            
             const dataAverage = await resultAverage.json();
             const averageTemperature = dataAverage.statistics.temperature_average_24h;
@@ -108,11 +105,11 @@ export function AliJeVroce() {
             setTempAvg(averageTemperature)
             setTimeUpdated(timeUpdated.toLocaleString())
 
-            const resultPercentile = await fetch(`${baseUrl}/temperature/temperature~2Edaily~2Eaverage_percentiles.json?date__exact=${date}&_col=p05&_col=p20&_col=p40&_col=p60&_col=p80&_col=p95`);
+            const resultPercentile = await fetch(`${baseUrl}/temperature/temperature~2Eslovenia_historical~2Edaily~2Eaverage_percentiles.json?date__exact=${date}&_col=p05&_col=p20&_col=p40&_col=p60&_col=p80&_col=p95`);
             if (resultPercentile.ok) {
                 const dataPercentile = await resultPercentile.json();
 
-                console.log(`Loaded ${station.localID} data`);
+                console.log(`Loaded ${stationID} data`);
 
                 let columns = dataPercentile['columns'];
                 let rows = dataPercentile['rows'][0];
@@ -140,7 +137,7 @@ export function AliJeVroce() {
         }
     }
 
-    requestData(station)
+    requestData(stationID)
 
     return <div class="text-center">
         <p class="font-normal text-5xl font-sans">

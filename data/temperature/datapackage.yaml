@@ -134,21 +134,21 @@ resources:
         - name: temperature_percentile_90
           title: Mean temperature at 90. percentile in °C
           type: number
-  - name: temperature.daily
+  - name: temperature.slovenia_historical.daily
     type: table
-    path: data/temperature.daily.csv
-    title: Daily temperature statistics at 2m in Slovenia
+    path: data/temperature.slovenia_historical.daily.csv
+    title: Daily temperature statistics at 2m in Slovenia between 1950 and 2025
     scheme: file
     format: csv
     mediatype: text/csv
     encoding: utf-8
     schema:
       fields:
-        - name: postaja
-          title: Station
-          type: string
-        - name: timestamp
-          title: Timestamp
+        - name: station_id
+          title: Station ID
+          type: integer
+        - name: date
+          title: Date
           type: date
         - name: year
           title: Year
@@ -168,9 +168,9 @@ resources:
         - name: temperature_min_2m
           title: Minimum temperature in °C
           type: number
-  - name: temperature.subhourly
+  - name: temperature.slovenia_historical.subhourly
     type: table
-    path: data/temperature.subhourly.csv
+    path: data/temperature.slovenia_historical.subhourly.csv
     title: Sub-hourly temperature measurements at 2m in Slovenia
     scheme: file
     format: csv
@@ -178,9 +178,9 @@ resources:
     encoding: utf-8
     schema:
       fields:
-        - name: postaja
-          title: Station
-          type: string
+        - name: station_id
+          title: Station ID
+          type: integer
         - name: timestamp
           title: Timestamp
           type: datetime
@@ -205,10 +205,10 @@ resources:
         - name: temperature_max_2m
           title: Maximum temperature in °C
           type: number
-  - name: temperature.daily.average_percentiles
+  - name: temperature.slovenia_historical.daily.average_percentiles
     type: table
-    path: data/temperature.daily.average_percentiles.csv
-    title: Percentiles
+    path: data/temperature.slovenia_historical.daily.average_percentiles.csv
+    title: Average daily temperature percentiles at 2m in Slovenia between 1950 and 2025 in 15 day ranges around a date
     scheme: file
     format: csv
     mediatype: text/csv
@@ -241,4 +241,35 @@ resources:
           type: number
         - name: p100
           title: 100th percentile
+          type: number
+  - name: temperature.slovenia_stations
+    type: table
+    path: data/temperature.slovenia_stations.csv
+    title: Stations
+    scheme: file
+    format: csv
+    mediatype: text/csv
+    encoding: utf-8
+    schema:
+      fields:
+        - name: official_name
+          title: Official name
+          type: string
+        - name: name
+          title: Name
+          type: string
+        - name: station_id
+          title: Station numeric ID
+          type: integer
+        - name: xml_id
+          title: Station text ID
+          type: string
+        - name: elevation
+          title: Elevation
+          type: number
+        - name: longitude
+          title: Longitude
+          type: number
+        - name: latitude
+          title: Latitude
           type: number
