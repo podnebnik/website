@@ -1,4 +1,5 @@
 import { createSignal } from "solid-js";
+import { IsItHotDot } from "../components/is-it-hot-dot.jsx";
 
 // URL
 const baseUrl = 'https://stage-data.podnebnik.org'
@@ -37,17 +38,12 @@ const opisi = {
     '': '',
 }
 
-const barve = {
-    'p0': '#2166ac',
-    'p05': '#67a9cf',
-    'p20': '#d1e5f0',
-    'p40': '#ebebeb',
-    'p60': '#f7cfb7',
-    'p80': '#fc946a',
-    'p95': '#b2182b',
-    '': 'transparent',
-}
-
+/**
+ * Returns a string representation of a number, prefixing it with a zero if it is less than 10.
+ *
+ * @param {number} number - The number to format.
+ * @returns {string} The zero-prefixed number as a string if less than 10, otherwise the number as a string.
+ */
 function zeroPrefix(number) {
     if (number < 10) {
         return `0${number}`
@@ -55,6 +51,12 @@ function zeroPrefix(number) {
     return `${number}`
 }
 
+/**
+ * Formats a JavaScript Date object into a string suitable for queries (YYYY-MM-DD).
+ *
+ * @param {Date} date - The date to format.
+ * @returns {string} The formatted date string in 'YYYY-MM-DD' format.
+ */
 function formatDateForQuery(date) {
     let year = `${date.getFullYear()}`
     let month = `${zeroPrefix(date.getMonth() + 1)}`
@@ -62,6 +64,14 @@ function formatDateForQuery(date) {
     return `${year}-${month}-${day}`
 }
 
+/**
+ * Formats a given date as a human-readable string indicating whether the date is today or yesterday,
+ * and includes the time in HH:MM format.
+ *
+ * @param {Date} date - The date to format.
+ * @param {Date} updated - The reference date to compare against for determining "today" or "yesterday".
+ * @returns {string} A formatted string such as "danes ob 14:30" or "včeraj ob 09:15".
+ */
 function formatTime(date, updated) {
     let day = date.getDate() == updated.getDate() ? 'danes' : 'včeraj'
     let time = `${zeroPrefix(date.getHours())}:${zeroPrefix(date.getMinutes())}`
@@ -69,6 +79,16 @@ function formatTime(date, updated) {
     return `${day} ob ${time}`
 }
 
+/**
+ * AliJeVroce is a Solid JS component that displays whether it is hot today in a selected location,
+ * based on temperature statistics fetched from a remote API. It shows the minimum, average, and
+ * maximum temperatures over the last 24 hours, their respective times, and compares the average
+ * temperature to historical percentiles. The component also provides a textual and visual
+ * representation of the result, along with the time of the last data update.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered component displaying temperature statistics and percentile comparison.
+ */
 export function AliJeVroce() {
     const vremenarBaseUrl = 'https://podnebnik.vremenar.app/staging'
     const station = {
@@ -106,7 +126,12 @@ export function AliJeVroce() {
             setTempMax(dataAverage.statistics.temperature_max_24h)
             setTimeMax(formatTime(timeMaxDate, timeUpdated))
             setTempAvg(averageTemperature)
-            setTimeUpdated(timeUpdated.toLocaleString())
+            setTimeUpdated(new Intl.DateTimeFormat('sl-SI', {
+                dateStyle: 'long',
+                timeStyle: 'short',
+            }).format(timeUpdated));
+
+
 
             const resultPercentile = await fetch(`${baseUrl}/temperature/temperature~2Edaily~2Eaverage_percentiles.json?date__exact=${date}&_col=p05&_col=p20&_col=p40&_col=p60&_col=p80&_col=p95`);
             if (resultPercentile.ok) {
@@ -152,8 +177,7 @@ export function AliJeVroce() {
             ?
         </p>
         <p class="font-black text-6xl">
-            <span class="inline-text rounded-[36px] px-9 mr-8" style={"background-color: " + barve[result()] + ";"}></span>
-            {vrednosti[result()]}
+            <IsItHotDot color={result()} class="mr-8" />{vrednosti[result()]}
         </p>
         <p class="text-4xl font-semibold">{opisi[result()]}</p>
 
