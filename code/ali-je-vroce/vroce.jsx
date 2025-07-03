@@ -1,4 +1,4 @@
-import { createSignal } from "solid-js";
+import { createSignal, Show } from "solid-js";
 import { IsItHotDot } from "../components/is-it-hot-dot.jsx";
 
 // URL
@@ -24,7 +24,7 @@ const vrednosti = {
     'p60': 'Ja.',
     'p80': 'Ja!',
     'p95': 'Ja, absolutno!',
-    '': '',
+    '': 'Trenutno ni podatka',
 }
 
 const opisi = {
@@ -166,6 +166,8 @@ export function AliJeVroce() {
     }
 
     requestData(station)
+    const colorKey = result() === "" ? "initial" : result();
+
 
     return <div class="text-center">
         <p class="font-normal text-5xl font-sans">
@@ -177,7 +179,10 @@ export function AliJeVroce() {
             ?
         </p>
         <p class="font-black text-6xl">
-            <IsItHotDot color={result()} class="mr-8" />{vrednosti[result()]}
+            <Show when={colorKey !== "initial"} fallback={<span class="text-gray-400">Trenutno ni podatka!</span>}>
+                <IsItHotDot color={colorKey} class="mr-8" />{" "}
+                {vrednosti[result()]}
+            </Show>
         </p>
         <p class="text-4xl font-semibold">{opisi[result()]}</p>
 

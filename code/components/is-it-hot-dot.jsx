@@ -1,6 +1,6 @@
 import { cva } from "class-variance-authority";
 import { createMemo } from "solid-js";
-import { cn } from "../utils.js";
+import { cn } from "../utils.mjs";
 
 // Define your variants using cva
 const dot = cva("rounded-full", {
@@ -17,7 +17,7 @@ const dot = cva("rounded-full", {
         },
         size: {
             default: "px-9",
-        }
+        },
     },
     defaultVariants: {
         color: "initial",
@@ -40,12 +40,14 @@ const dot = cva("rounded-full", {
  */
 export function IsItHotDot(props) {
     // Create a reactive memo that tracks the color prop
-    const classes = createMemo(() => {
-        const { color, class: className } = props;
-        return cn(dot({ color }), className);
+    const classNames = createMemo(() => {
+        const { color, class: className, hasData } = props;
+        console.log("IsItHotDot props:", props);
+        return cn(dot({ color, hasData }), className);
     });
 
-    console.log(props)
+    console.log("props:", { props });
 
-    return <span class={classes()}></span>;
+
+    return <span class={classNames()}></span>;
 }
