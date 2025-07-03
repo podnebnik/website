@@ -13,6 +13,7 @@
     "@highcharts/map-collection": "^2.3.0",
     "@tailwindcss/postcss": "^4.1.11",
     "@tailwindcss/typography": "^0.5.16",
+    "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "highcharts": "^11.4.8",
     "solid-js": "^1.9.7",
