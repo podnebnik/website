@@ -1,11 +1,11 @@
-import { createSignal } from "solid-js";
+import { createSignal, For } from "solid-js";
 
 // URL
 const baseUrl = 'https://stage-data.podnebnik.org'
 // const baseUrl = 'http://localhost:8010'
 
 const percentile_labels = {
-    'p0': 'manj kot 5 %',
+    'p00': 'manj kot 5 %',
     'p05': '5 %',
     'p20': '20 %',
     'p40': '40 %',
@@ -16,7 +16,7 @@ const percentile_labels = {
 }
 
 const vrednosti = {
-    'p0': 'Niti pod razno',
+    'p00': 'Niti pod razno',
     'p05': 'Ne!',
     'p20': 'Ne.',
     'p40': 'Niti ne.',
@@ -27,7 +27,7 @@ const vrednosti = {
 }
 
 const opisi = {
-    'p0': 'Se hecaš?! Ful je mraz!',
+    'p00': 'Se hecaš?! Ful je mraz!',
     'p05': 'Pravzaprav je res mrzlo.',
     'p20': 'Dejansko je kar hladno.',
     'p40': 'Precej povprečno.',
@@ -38,7 +38,7 @@ const opisi = {
 }
 
 const barve = {
-    'p0': '#2166ac',
+    'p00': '#2166ac',
     'p05': '#67a9cf',
     'p20': '#d1e5f0',
     'p40': '#ebebeb',
@@ -71,15 +71,37 @@ function formatTime(date, updated) {
 
 export function AliJeVroce() {
     const vremenarBaseUrl = 'https://podnebnik.vremenar.app/staging'
-    const stationID = 1495
+    // const vremenarBaseUrl = 'http://localhost:8000'
 
+    const [stations, setStations] = createSignal([{'station_id': 1495, 'name_locative': 'Ljubljani'}]);
+    const [stationPrefix, setStationPrefix] = createSignal('v')
     const [result, setResult] = createSignal('');
+    const [resultTemperature, setResultTemperature] = createSignal('');
     const [tempMin, setTempMin] = createSignal('');
     const [timeMin, setTimeMin] = createSignal('');
     const [tempMax, setTempMax] = createSignal('');
     const [timeMax, setTimeMax] = createSignal('');
     const [tempAvg, setTempAvg] = createSignal('');
     const [timeUpdated, setTimeUpdated] = createSignal('');
+
+    async function loadStations() {
+        const resultStations = await fetch(`${baseUrl}/temperature/temperature~2Eslovenia_stations.json?&_col=station_id&_col=name&_col=name_locative&_sort=name`);
+        if (resultStations.ok) {
+            let stationsList = [];
+            const dataStations = await resultStations.json();
+            for (let row of dataStations["rows"]) {
+                console.log(row);
+                let name_list = row[3].split(' ')
+                stationsList.push({
+                    'station_id': row[1],
+                    'name_locative': name_list.slice(1).join(" "),
+                    'prefix': name_list[0],
+                })
+            }
+            setStations(stationsList);
+        }
+        document.getElementById("locations").value = 1495 // Ljubljana
+    }
 
     async function requestData(stationID) {
         console.log(`Loading ${stationID} data`)
@@ -105,26 +127,30 @@ export function AliJeVroce() {
             setTempAvg(averageTemperature)
             setTimeUpdated(timeUpdated.toLocaleString())
 
-            const resultPercentile = await fetch(`${baseUrl}/temperature/temperature~2Eslovenia_historical~2Edaily~2Eaverage_percentiles.json?date__exact=${date}&_col=p05&_col=p20&_col=p40&_col=p60&_col=p80&_col=p95`);
+            const resultPercentile = await fetch(`${baseUrl}/temperature/temperature~2Eslovenia_historical~2Edaily~2Eaverage_percentiles.json?date__exact=${date}&station_id__exact=${stationID}&_col=p05&_col=p20&_col=p40&_col=p60&_col=p80&_col=p95`);
             if (resultPercentile.ok) {
                 const dataPercentile = await resultPercentile.json();
 
                 console.log(`Loaded ${stationID} data`);
 
                 let columns = dataPercentile['columns'];
-                let rows = dataPercentile['rows'][0];
+                let values = dataPercentile['rows'][0];
                 columns.shift();
-                rows.shift();
+                values.shift();
 
                 let resultValue = -1
-                if (averageTemperature < rows[0]) {
-                    resultValue = 'p0'
+                let resultTemperatureValue = -1
+                if (averageTemperature < values[0]) {
+                    resultValue = 'p00'
+                    resultTemperatureValue = values[0]
                 } else {
-                    for (let i = 0; i < rows.length; i++) {
-                        if (i == rows.length - 1) {
+                    for (let i = 0; i < values.length; i++) {
+                        if (i == values.length - 1) {
                             resultValue = 'p95'
-                        } else if (averageTemperature >= rows[i] && averageTemperature < rows[i + 1]) {
+                            resultTemperatureValue = values[i]
+                        } else if (averageTemperature >= values[i] && averageTemperature < values[i + 1]) {
                             resultValue = columns[i]
+                            resultTemperatureValue = values[i]
                             break
                         }
                     }
@@ -133,18 +159,32 @@ export function AliJeVroce() {
                 console.log(`Rezultat: ${vrednosti[resultValue]} (${opisi[resultValue]})`)
 
                 setResult(resultValue)
+                setResultTemperature(`${resultTemperatureValue} °C`)
             }
         }
     }
 
-    requestData(stationID)
+    function changedValue(event) {
+        let newID = event.target.value;
+        for (let station of stations()) {
+            if (station.station_id == newID) {
+                setStationPrefix(station.prefix);
+                break;
+            }
+        }
+        requestData(newID);
+    }
+
+    loadStations()
+    requestData(1495)
 
     return <div class="text-center">
         <p class="font-normal text-5xl font-sans">
-            Ali je danes vroče v 
+            Ali je danes vroče {stationPrefix()}&nbsp;
             <select id="locations"
-                class="select font-bold appearance-none inline-block bg-transparent rounded-none focus:outline-none leading-[64px] hover:cursor-pointer transition-all duration-300">
-            <option value="LJU">Ljubljani</option>
+                class="select font-bold appearance-none inline-block bg-transparent rounded-none focus:outline-none leading-[64px] hover:cursor-pointer transition-all duration-300"
+                onChange={changedValue}>
+            <For each={stations()}>{(item) => <option value={item.station_id}>{item.name_locative}</option>}</For>
             </select>
             ?
         </p>
@@ -173,7 +213,8 @@ export function AliJeVroce() {
         </p>
 
         <p class="text-normal font-sans">V <span class="font-semibold">{percentile_labels[result()]}</span> vseh
-        zabeleženih dni v tem obdobju je bila temperatura nižja.</p>
+        zabeleženih dni od leta 1950 v 15-dnevnem obdobju okoli današnjega dneva je bila povprečna dnevna temperatura nižja kot 
+        <span class="font-semibold">{resultTemperature()}</span>.</p>
 
         <p class="text-gray-400 text-sm leading-6 italic">Zadnja posodobitev: {timeUpdated()}</p>
     </div>;

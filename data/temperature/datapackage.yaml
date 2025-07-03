@@ -215,6 +215,9 @@ resources:
     encoding: utf-8
     schema:
       fields:
+        - name: station_id
+          title: Station ID
+          type: integer
         - name: date
           title: Date
           type: date
@@ -229,6 +232,9 @@ resources:
           type: number
         - name: p40
           title: 40th percentile
+          type: number
+        - name: p50
+          title: 50th percentile
           type: number
         - name: p60
           title: 60th percentile
@@ -257,6 +263,9 @@ resources:
           type: string
         - name: name
           title: Name
+          type: string
+        - name: name_locative
+          title: Name in locative
           type: string
         - name: station_id
           title: Station numeric ID
