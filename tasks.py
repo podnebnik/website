@@ -1,6 +1,7 @@
 from invoke import task
 
 import glob
+import io
 import json
 import shutil
 import sys
@@ -71,10 +72,25 @@ def none_if_empty(value):
         return None
 
 
-@task
-def create_databases(c):
+@task(iterable=['no_validate_arch'])
+def create_databases(c, no_validate=False, no_validate_arch=None):
     '''Create sqlite database, import resources data and generate datasette metadata.'''
-    validate(c)
+
+    do_validation = True
+    if no_validate:
+        log("Passed in --no-validate, not doing validation")
+        do_validation = False
+
+    if do_validation and no_validate_arch:
+        # this is a pragmatic option to avoid doing slow data validation in github action
+        import platform
+        machine = platform.machine()
+        if machine in no_validate_arch:
+            log(f"Passed in --no-slow-validate, not doing validation on {machine}.")
+            do_validation = False
+
+    if do_validation:
+        validate(c)
 
     # Reset the sqlite databases directory
     shutil.rmtree(SQLITE_DIR, ignore_errors=True)
@@ -130,7 +146,16 @@ def create_databases(c):
                     metadata['databases'][package.name]['tables'][resource.name]['units'] = dict([(field.name, field.unit) for field in resource.schema.fields if hasattr(field, 'unit')])
             else:
                 log(f'    Skipping resource {resource.name}, {resource.format} @ {resource.path}')
-            c.run(f'sqlite-utils insert {database} {resource.name} {DATASETS_DIR / package_path.parent / resource.path} --csv --detect-types --silent')
+
+            # this only creates tables
+            c.run(f'sqlite-utils insert {database} {resource.name} {DATASETS_DIR / package_path.parent / resource.path} --csv --detect-types --silent --stop-after 10')
+
+            # this loads the data
+            fake_stdin = io.StringIO()
+            fake_stdin.write(f"""delete from "{resource.name}";\n.import --csv --skip 1 {DATASETS_DIR / package_path.parent / resource.path} {resource.name}""")
+            fake_stdin.seek(0)
+            c.run(f'sqlite3 {database}', in_stream=fake_stdin)
+
 
     # Create the datasette inspect file
 
@@ -147,7 +172,6 @@ def create_databases(c):
 @task
 def datasette(c):
     '''Start datasette server.'''
-    create_databases(c)
     log('\nStarting Datasette server...\n')
     # TODO: remove custom setting when no longer needed
     c.run(f'datasette serve {SQLITE_DIR} --inspect-file {SQLITE_DIR}/inspect-data.json --metadata {SQLITE_DIR}/metadata.json --port 8010 --cors --setting max_returned_rows 150000')

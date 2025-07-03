@@ -5,34 +5,54 @@
 # docker build --target=builder --progress=plain -f deployment/Dockerfile.datasette .
 
 
-FROM python:3.12-slim-bullseye AS builder
+FROM python:3.13-slim-bookworm AS uv_setup
 
 WORKDIR /build
 
 RUN apt-get update && \
-    apt-get install -y pipenv
+    apt-get install -y --no-install-recommends sqlite3 curl ca-certificates
 
-COPY Pipfile /build/
-COPY Pipfile.lock /build/
-RUN pipenv install --system --deploy --ignore-pipfile
+# uv
+ADD https://astral.sh/uv/0.7.17/install.sh /uv-installer.sh
+RUN sh /uv-installer.sh && rm /uv-installer.sh
+ENV PATH="/root/.local/bin/:$PATH"
+
+# -----------------------------------------------------------------------------
+
+FROM uv_setup AS builder
+
+WORKDIR /build
 
 #  Note: docker caches image building so uncomment and change next line
 #  when you change tasks.py or data to make sure they are pulled fresh into image
 # RUN echo cache busting!
 
-COPY data /build/data/
-COPY tasks.py /build/
+COPY pyproject.toml .python-version uv.lock tasks.py ./
+COPY data /build/data
 
-RUN invoke create-databases
+RUN uv sync --group build --locked
+
+RUN ls -al /build/
+
+RUN uv run invoke create-databases --no-validate-arch=aarch64
 
 # -----------------------------------------------------------------------------
 
-FROM python:3.12-slim-bullseye
+FROM uv_setup
+
+RUN apt-get update && \
+    apt-get install -y sqlite3
 
 WORKDIR /datasette
-RUN pip install --no-cache datasette==0.64.0 setuptools
+
+COPY pyproject.toml .python-version uv.lock ./
+
+RUN uv sync --locked
+
 COPY --from=builder /build/var/sqlite /datasette/sqlite
+
+
 
 EXPOSE 8001
 # TODO: remove custom setting when no longer needed
-CMD datasette serve --host 0.0.0.0 --port 8001 --cors --inspect-file sqlite/inspect-data.json --metadata sqlite/metadata.json ./sqlite/*.db  --setting max_returned_rows 150000
+CMD uv run datasette serve --host 0.0.0.0 --port 8001 --cors --inspect-file sqlite/inspect-data.json --metadata sqlite/metadata.json ./sqlite/*.db  --setting max_returned_rows 150000
