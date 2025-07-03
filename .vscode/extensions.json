@@ -6,7 +6,7 @@
         "Ionide.Ionide-fsharp",
         "bradlc.vscode-tailwindcss",
         "alfonsogarciacaro.vscode-template-fsharp-highlight",
-        "syler.sass-indented",
+        "tailwindcss.tailwindcss-intellisense",
     ],
     "unwantedRecommendations": []
 }
