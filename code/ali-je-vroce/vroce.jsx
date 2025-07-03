@@ -88,7 +88,7 @@ export function AliJeVroce() {
         console.log(`Loading ${station.localID} data`)
 
         const resultAverage = await fetch(`${vremenarBaseUrl}/stations/details/${station.vremenarID}?country=si`);
-        if (resultAverage.ok) {            
+        if (resultAverage.ok) {
             const dataAverage = await resultAverage.json();
             const averageTemperature = dataAverage.statistics.temperature_average_24h;
 
@@ -144,10 +144,10 @@ export function AliJeVroce() {
 
     return <div class="text-center">
         <p class="font-normal text-5xl font-sans">
-            Ali je danes vroče v 
+            Ali je danes vroče v{" "}
             <select id="locations"
                 class="select font-bold appearance-none inline-block bg-transparent rounded-none focus:outline-hidden leading-[64px] hover:cursor-pointer transition-all duration-300">
-            <option value="LJU">Ljubljani</option>
+                <option value="LJU">Ljubljani</option>
             </select>
             ?
         </p>
@@ -176,7 +176,7 @@ export function AliJeVroce() {
         </p>
 
         <p class="text-normal font-sans">V <span class="font-semibold">{percentile_labels[result()]}</span> vseh
-        zabeleženih dni v tem obdobju je bila temperatura nižja.</p>
+            zabeleženih dni v tem obdobju je bila temperatura nižja.</p>
 
         <p class="text-gray-400 text-sm leading-6 italic">Zadnja posodobitev: {timeUpdated()}</p>
     </div>;
