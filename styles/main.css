@@ -16,6 +16,14 @@
     --color-tertiary: #f3f1f0;
     --color-muted: rgb(122, 122, 122);
 
+    --color-p0: #2166ac;
+    --color-p05: #67a0cf;
+    --color-p20: #d1e5f0;
+    --color-p40: #ebebeb;
+    --color-p60: #f7cfb7;
+    --color-p80: #fc946a;
+    --color-p95: #b2182b;
+
     --border-color: #D5D4D3;
     
     --gap: 1rem;
@@ -33,6 +41,15 @@
     --color-primary-dark: var(--color-primary-dark);
     --color-tertiary: var(--color-tertiary);
     --color-muted: var(--color-muted);
+    --color-p0: var(--color-p0);
+    --color-p05: var(--color-p05);
+    --color-p20: var(--color-p20);
+    --color-p40: var(--color-p40);
+    --color-p60: var(--color-p60);
+    --color-p80: var(--color-p80);
+    --color-p95: var(--color-p95);
+
+
     --font-serif: var(--font-serif);
     --font-sans: var(--font-sans);
 
