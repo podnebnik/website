@@ -2,11 +2,17 @@ import { cva } from "class-variance-authority";
 import { createMemo } from "solid-js";
 import { cn } from "../utils.mjs";
 
+/**
+ * @typedef {import('class-variance-authority').VariantProps<typeof dot>} DotVariants
+ */
+
+
+
 // Define your variants using cva
 const dot = cva("rounded-full", {
     variants: {
         color: {
-            p0: "bg-p0",
+            p00: "bg-p00",
             p05: "bg-p05",
             p20: "bg-p20",
             p40: "bg-p40",
@@ -35,19 +41,15 @@ const dot = cva("rounded-full", {
  * It uses class-variance-authority (cva) to manage styles.
  *
  * @param {Object} props - The component props.
- * @param {DotVariants['color']} props.color - The color variant for the dot.
+ * @param {DotVariants["color"]} props.color - The color variant for the dot.
  * @param {import('solid-js').JSX.HTMLAttributes<HTMLSpanElement>["class"]} [props.class] - Additional class names to apply to the dot.
  */
 export function IsItHotDot(props) {
     // Create a reactive memo that tracks the color prop
     const classNames = createMemo(() => {
         const { color, class: className, hasData } = props;
-        console.log("IsItHotDot props:", props);
         return cn(dot({ color, hasData }), className);
     });
-
-    console.log("props:", { props });
-
 
     return <span class={classNames()}></span>;
 }

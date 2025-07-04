@@ -1,10 +1,20 @@
 import { createSignal, Show, For } from "solid-js";
 import { IsItHotDot } from "../components/is-it-hot-dot.jsx";
 
+/**
+ * @typedef {'p00' | 'p05' | 'p20' | 'p40' | 'p60' | 'p80' | 'p95'} ValidPercentile
+ * @typedef { ValidPercentile | ''} PercentileKey
+ */
+
+const DEFAULT_STATION_ID = 1495; // Ljubljana
+
 // URL
 const baseUrl = 'https://stage-data.podnebnik.org'
 // const baseUrl = 'http://localhost:8010'
 
+/**
+ * @type {Record<PercentileKey, string>} PercentileLabels
+ */
 const percentile_labels = {
     'p00': 'manj kot 5 %',
     'p05': '5 %',
@@ -16,6 +26,9 @@ const percentile_labels = {
     '': '',
 }
 
+/**
+ * @type {Record<PercentileKey, string>} PercentileValues
+ */
 const vrednosti = {
     'p00': 'Niti pod razno',
     'p05': 'Ne!',
@@ -24,9 +37,12 @@ const vrednosti = {
     'p60': 'Ja.',
     'p80': 'Ja!',
     'p95': 'Ja, absolutno!',
-    '': 'Trenutno ni podatka',
+    '': '',
 }
 
+/**
+ * @type {Record<PercentileKey, string>} PercentileDescriptions
+ */
 const opisi = {
     'p00': 'Se hecaš?! Ful je mraz!',
     'p05': 'Pravzaprav je res mrzlo.',
@@ -95,8 +111,18 @@ export function AliJeVroce() {
 
     const [stations, setStations] = createSignal([{ 'station_id': 1495, 'name_locative': 'Ljubljani' }]);
     const [stationPrefix, setStationPrefix] = createSignal('v')
+
+    /**
+     * Signal to hold the result of the temperature percentile comparison.
+     * It indicates how the current average temperature compares to historical data.
+     * Possible values are 'p00', 'p05', 'p20', 'p40', 'p60', 'p80', 'p95', or an empty string if no data is available.
+     * @type {import('solid-js').Signal<PercentileKey>}
+     * @see {@link https://solidjs.com/docs/api#createsignal}
+     */
     const [result, setResult] = createSignal('');
     const [resultTemperature, setResultTemperature] = createSignal('');
+
+    // TODO: most likely we can join next 
     const [tempMin, setTempMin] = createSignal('');
     const [timeMin, setTimeMin] = createSignal('');
     const [tempMax, setTempMax] = createSignal('');
@@ -201,22 +227,23 @@ export function AliJeVroce() {
     }
 
     loadStations()
-    requestData(1495)
+    requestData(DEFAULT_STATION_ID)
     const colorKey = result() === "" ? "initial" : result();
 
 
     return <div class="text-center">
         <p class="font-normal text-5xl font-sans">
             Ali je danes vroče {stationPrefix()}&nbsp;
+            <label for="locations" class="sr-only">Izberite lokacijo</label>
             <select id="locations"
-                class="select font-bold appearance-none inline-block bg-transparent rounded-none focus:outline-hidden leading-[64px] hover:cursor-pointer transition-all duration-300"
+                class="select max-fit font-bold appearance-none inline-block bg-transparent rounded-none focus:outline-hidden leading-[64px] hover:cursor-pointer transition-all duration-300"
                 onChange={changedValue}>
                 <For each={stations()}>{(item) => <option value={item.station_id}>{item.name_locative}</option>}</For>
             </select>
             ?
         </p>
         <p class="font-black text-6xl">
-            <Show when={colorKey !== "initial"} fallback={<span class="text-gray-400">Trenutno ni podatka!</span>}>
+            <Show when={colorKey !== "initial"} fallback={<span class="text-muted">Trenutno ni podatka!</span>}>
                 <IsItHotDot color={colorKey} class="mr-8" />{" "}
                 {vrednosti[result()]}
             </Show>
@@ -242,7 +269,7 @@ export function AliJeVroce() {
         </p>
 
         <p class="text-normal font-sans">V <span class="font-semibold">{percentile_labels[result()]}</span> vseh
-            zabeleženih dni od leta 1950 v 15-dnevnem obdobju okoli današnjega dneva je bila povprečna dnevna temperatura nižja kot
+            zabeleženih dni od leta 1950 v 15-dnevnem obdobju okoli današnjega dneva je bila povprečna dnevna temperatura nižja kot{" "}
             <span class="font-semibold">{resultTemperature()}</span>.</p>
 
         <p class="text-gray-400 text-sm leading-6 italic">Zadnja posodobitev: {timeUpdated()}</p>

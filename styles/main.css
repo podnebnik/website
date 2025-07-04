@@ -16,7 +16,7 @@
     --color-tertiary: #f3f1f0;
     --color-muted: rgb(122, 122, 122);
 
-    --color-p0: #2166ac;
+    --color-p00: #2166ac;
     --color-p05: #67a0cf;
     --color-p20: #d1e5f0;
     --color-p40: #ebebeb;
@@ -41,7 +41,7 @@
     --color-primary-dark: var(--color-primary-dark);
     --color-tertiary: var(--color-tertiary);
     --color-muted: var(--color-muted);
-    --color-p0: var(--color-p0);
+    --color-p00: var(--color-p00);
     --color-p05: var(--color-p05);
     --color-p20: var(--color-p20);
     --color-p40: var(--color-p40);
