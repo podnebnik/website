@@ -9,10 +9,12 @@ import { IsItHotDot } from "../components/is-it-hot-dot.jsx";
 
 const DEFAULT_STATION_ID = 1495; // Ljubljana
 const DEFAULT_STATION_NAME = 'Ljubljana';
+const DEFAULT_STATION_PREFIX = 'v'; // 'v' for "v Ljubljani"    
 
 const DEFAULT_STATION = {
     value: DEFAULT_STATION_ID,
     label: DEFAULT_STATION_NAME,
+    prefix: DEFAULT_STATION_PREFIX,
 }
 
 // URL
@@ -121,7 +123,6 @@ async function loadStations() {
         let stationsList = [];
         const dataStations = await resultStations.json();
         for (let row of dataStations["rows"]) {
-            console.log(row);
             let name_list = row[3].split(' ')
             stationsList.push({
                 'station_id': row[1],
@@ -135,19 +136,34 @@ async function loadStations() {
     return [];
 }
 
+/**
+ * Fetches and processes temperature data for a given weather station.
+ *
+ * Retrieves the latest average, minimum, and maximum temperatures, as well as historical percentile data,
+ * for the specified station. Determines the percentile bucket for the current average temperature.
+ *
+ * @async
+ * @param {string} stationID - The ID of the weather station to fetch data for.
+ * @returns {Promise<{
+ *   resultValue: string,
+ *   resultTemperatureValue: number|string,
+ *   tempMin: number|string,
+ *   timeMin: string,
+ *   tempMax: number|string,
+ *   timeMax: string,
+ *   tempAvg: number|string,
+ *   timeUpdated: string
+ * }>} An object containing temperature statistics and percentile results. If the request fails, returns empty strings for all fields.
+ */
 async function requestData(stationID) {
-    console.log(`Loading ${stationID} data`)
     const resultAverage = await fetch(`${vremenarBaseUrl}/stations/details/METEO-${stationID}?country=si`);
     if (resultAverage.ok) {
         const dataAverage = await resultAverage.json();
         const averageTemperature = dataAverage.statistics.temperature_average_24h;
 
-        console.log(`Average temperature: ${averageTemperature}`)
-
         let timeUpdated = new Date(Number(dataAverage.statistics.timestamp))
 
         const date = formatDateForQuery(timeUpdated)
-        console.log(`Date: ${timeUpdated} ${date}`)
 
         let timeMinDate = new Date(Number(dataAverage.statistics.timestamp_temperature_min_24h))
         let timeMaxDate = new Date(Number(dataAverage.statistics.timestamp_temperature_max_24h))
@@ -155,8 +171,6 @@ async function requestData(stationID) {
         const resultPercentile = await fetch(`${baseUrl}/temperature/temperature~2Eslovenia_historical~2Edaily~2Eaverage_percentiles.json?date__exact=${date}&station_id__exact=${stationID}&_col=p05&_col=p20&_col=p40&_col=p60&_col=p80&_col=p95`);
         if (resultPercentile.ok) {
             const dataPercentile = await resultPercentile.json();
-
-            console.log(`Loaded ${stationID} data`);
 
             let columns = dataPercentile['columns'];
             let values = dataPercentile['rows'][0];
@@ -180,8 +194,6 @@ async function requestData(stationID) {
                     }
                 }
             }
-
-            console.log(`Rezultat: ${vrednosti[resultValue]} (${opisi[resultValue]})`)
 
             return {
                 resultValue,
@@ -253,6 +265,7 @@ export function AliJeVroce() {
         timeMax,
         tempAvg,
         timeUpdated,
+
     }) {
         setResultTemperature(`${resultTemperatureValue} °C`);
         setTempMin(tempMin);
@@ -265,16 +278,14 @@ export function AliJeVroce() {
     }
 
     onMount(async () => {
-        console.log("onMount", { selectedStation: selectedStation().value })
         const results = await requestData(selectedStation().value);
-        console.log("onMount", { results })
         updateData(results)
         const stationsList = await loadStations();
         setStations(stationsList);
     })
 
     function onStationChange(station) {
-        console.log("onStationChange", { station });
+        setStationPrefix(station.prefix);
         setSelectedStation(station);
         requestData(station.value).then(updateData);
     }
