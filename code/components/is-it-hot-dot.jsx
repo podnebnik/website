@@ -47,8 +47,8 @@ const dot = cva("rounded-full", {
 export function IsItHotDot(props) {
     // Create a reactive memo that tracks the color prop
     const classNames = createMemo(() => {
-        const { color, class: className, hasData } = props;
-        return cn(dot({ color, hasData }), className);
+        const { color, class: className } = props;
+        return cn(dot({ color }), className);
     });
 
     return <span class={classNames()}></span>;
