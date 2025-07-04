@@ -1,4 +1,4 @@
-import { createSignal, Show, For } from "solid-js";
+import { createSignal, Show, For, onMount, createEffect } from "solid-js";
 import { Select } from "@kobalte/core/select";
 import { IsItHotDot } from "../components/is-it-hot-dot.jsx";
 
@@ -18,6 +18,8 @@ const DEFAULT_STATION = {
 // URL
 const baseUrl = 'https://stage-data.podnebnik.org'
 // const baseUrl = 'http://localhost:8010'
+const vremenarBaseUrl = 'https://podnebnik.vremenar.app/staging'
+// const vremenarBaseUrl = 'http://localhost:8000'
 
 /**
  * @type {Record<PercentileKey, string>} PercentileLabels
@@ -103,6 +105,113 @@ function formatTime(date, updated) {
 }
 
 /**
+ * Asynchronously loads a list of temperature stations from a remote JSON endpoint.
+ *
+ * Fetches station data, processes each station row, and returns an array of station objects.
+ * Each object contains the station's ID, the locative name (excluding the prefix), and the prefix itself.
+ *
+ * @async
+ * @function loadStations
+ * @returns {Promise<Array<{station_id: string, name_locative: string, prefix: string}>>}
+ *   Resolves to an array of station objects, or an empty array if the fetch fails.
+ */
+async function loadStations() {
+    const resultStations = await fetch(`${baseUrl}/temperature/temperature~2Eslovenia_stations.json?&_col=station_id&_col=name&_col=name_locative&_sort=name`);
+    if (resultStations.ok) {
+        let stationsList = [];
+        const dataStations = await resultStations.json();
+        for (let row of dataStations["rows"]) {
+            console.log(row);
+            let name_list = row[3].split(' ')
+            stationsList.push({
+                'station_id': row[1],
+                'name_locative': name_list.slice(1).join(" "),
+                'prefix': name_list[0],
+            })
+        }
+        return stationsList;
+    }
+    console.error('Failed to load stations');
+    return [];
+}
+
+async function requestData(stationID) {
+    console.log(`Loading ${stationID} data`)
+    const resultAverage = await fetch(`${vremenarBaseUrl}/stations/details/METEO-${stationID}?country=si`);
+    if (resultAverage.ok) {
+        const dataAverage = await resultAverage.json();
+        const averageTemperature = dataAverage.statistics.temperature_average_24h;
+
+        console.log(`Average temperature: ${averageTemperature}`)
+
+        let timeUpdated = new Date(Number(dataAverage.statistics.timestamp))
+
+        const date = formatDateForQuery(timeUpdated)
+        console.log(`Date: ${timeUpdated} ${date}`)
+
+        let timeMinDate = new Date(Number(dataAverage.statistics.timestamp_temperature_min_24h))
+        let timeMaxDate = new Date(Number(dataAverage.statistics.timestamp_temperature_max_24h))
+
+        const resultPercentile = await fetch(`${baseUrl}/temperature/temperature~2Eslovenia_historical~2Edaily~2Eaverage_percentiles.json?date__exact=${date}&station_id__exact=${stationID}&_col=p05&_col=p20&_col=p40&_col=p60&_col=p80&_col=p95`);
+        if (resultPercentile.ok) {
+            const dataPercentile = await resultPercentile.json();
+
+            console.log(`Loaded ${stationID} data`);
+
+            let columns = dataPercentile['columns'];
+            let values = dataPercentile['rows'][0];
+            columns.shift();
+            values.shift();
+
+            let resultValue = -1
+            let resultTemperatureValue = -1
+            if (averageTemperature < values[0]) {
+                resultValue = 'p00'
+                resultTemperatureValue = values[0]
+            } else {
+                for (let i = 0; i < values.length; i++) {
+                    if (i == values.length - 1) {
+                        resultValue = 'p95'
+                        resultTemperatureValue = values[i]
+                    } else if (averageTemperature >= values[i] && averageTemperature < values[i + 1]) {
+                        resultValue = columns[i]
+                        resultTemperatureValue = values[i]
+                        break
+                    }
+                }
+            }
+
+            console.log(`Rezultat: ${vrednosti[resultValue]} (${opisi[resultValue]})`)
+
+            return {
+                resultValue,
+                resultTemperatureValue,
+                tempMin: dataAverage.statistics.temperature_min_24h,
+                timeMin: formatTime(timeMinDate, timeUpdated),
+                tempMax: dataAverage.statistics.temperature_max_24h,
+                timeMax: formatTime(timeMaxDate, timeUpdated),
+                tempAvg: averageTemperature,
+                timeUpdated: new Intl.DateTimeFormat('sl-SI', {
+                    dateStyle: 'long',
+                    timeStyle: 'short',
+                }).format(timeUpdated),
+            }
+        }
+    }
+    console.error(`Failed to load data for station ${stationID}`);
+    return {
+        resultValue: '',
+        resultTemperatureValue: '',
+        tempMin: '',
+        timeMin: '',
+        tempMax: '',
+        timeMax: '',
+        tempAvg: '',
+        timeUpdated: '',
+    };
+}
+
+/**
  * AliJeVroce is a Solid JS component that displays whether it is hot today in a selected location,
  * based on temperature statistics fetched from a remote API. It shows the minimum, average, and
  * maximum temperatures over the last 24 hours, their respective times, and compares the average
@@ -113,8 +222,7 @@ function formatTime(date, updated) {
  * @returns {JSX.Element} The rendered component displaying temperature statistics and percentile comparison.
  */
 export function AliJeVroce() {
-    const vremenarBaseUrl = 'https://podnebnik.vremenar.app/staging'
-    // const vremenarBaseUrl = 'http://localhost:8000'
+
 
     const [stations, setStations] = createSignal([{ 'station_id': 1495, 'name_locative': 'Ljubljani', 'prefix': 'v' }]);
     const [stationPrefix, setStationPrefix] = createSignal('v')
@@ -136,96 +244,40 @@ export function AliJeVroce() {
     const [tempAvg, setTempAvg] = createSignal('');
     const [timeUpdated, setTimeUpdated] = createSignal('');
 
-    async function loadStations() {
-        const resultStations = await fetch(`${baseUrl}/temperature/temperature~2Eslovenia_stations.json?&_col=station_id&_col=name&_col=name_locative&_sort=name`);
-        if (resultStations.ok) {
-            let stationsList = [];
-            const dataStations = await resultStations.json();
-            for (let row of dataStations["rows"]) {
-                console.log(row);
-                let name_list = row[3].split(' ')
-                stationsList.push({
-                    'station_id': row[1],
-                    'name_locative': name_list.slice(1).join(" "),
-                    'prefix': name_list[0],
-                })
-            }
-            setStations(stationsList);
-        }
+    function updateData({
+        resultValue,
+        resultTemperatureValue,
+        tempMin,
+        timeMin,
+        tempMax,
+        timeMax,
+        tempAvg,
+        timeUpdated,
+    }) {
+        setResultTemperature(`${resultTemperatureValue} °C`);
+        setTempMin(tempMin);
+        setTimeMin(timeMin);
+        setTempMax(tempMax);
+        setTimeMax(timeMax);
+        setTempAvg(tempAvg);
+        setTimeUpdated(timeUpdated);
+        setResult(resultValue);
     }
 
-    async function requestData(stationID) {
-        console.log(`Loading ${stationID} data`)
+    onMount(async () => {
+        console.log("onMount", { selectedStation: selectedStation().value })
+        const results = await requestData(selectedStation().value);
+        console.log("onMount", { results })
+        updateData(results)
+        const stationsList = await loadStations();
+        setStations(stationsList);
+    })
 
-        const resultAverage = await fetch(`${vremenarBaseUrl}/stations/details/METEO-${stationID}?country=si`);
-        if (resultAverage.ok) {
-            const dataAverage = await resultAverage.json();
-            const averageTemperature = dataAverage.statistics.temperature_average_24h;
-
-            console.log(`Average temperature: ${averageTemperature}`)
-
-            let timeUpdated = new Date(Number(dataAverage.statistics.timestamp))
-
-            const date = formatDateForQuery(timeUpdated)
-            console.log(`Date: ${timeUpdated} ${date}`)
-
-            let timeMinDate = new Date(Number(dataAverage.statistics.timestamp_temperature_min_24h))
-            let timeMaxDate = new Date(Number(dataAverage.statistics.timestamp_temperature_max_24h))
-            setTempMin(dataAverage.statistics.temperature_min_24h)
-            setTimeMin(formatTime(timeMinDate, timeUpdated))
-            setTempMax(dataAverage.statistics.temperature_max_24h)
-            setTimeMax(formatTime(timeMaxDate, timeUpdated))
-            setTempAvg(averageTemperature)
-            setTimeUpdated(new Intl.DateTimeFormat('sl-SI', {
-                dateStyle: 'long',
-                timeStyle: 'short',
-            }).format(timeUpdated));
-
-
-
-            const resultPercentile = await fetch(`${baseUrl}/temperature/temperature~2Eslovenia_historical~2Edaily~2Eaverage_percentiles.json?date__exact=${date}&station_id__exact=${stationID}&_col=p05&_col=p20&_col=p40&_col=p60&_col=p80&_col=p95`);
-            if (resultPercentile.ok) {
-                const dataPercentile = await resultPercentile.json();
-
-                console.log(`Loaded ${stationID} data`);
-
-                let columns = dataPercentile['columns'];
-                let values = dataPercentile['rows'][0];
-                columns.shift();
-                values.shift();
-
-                let resultValue = -1
-                let resultTemperatureValue = -1
-                if (averageTemperature < values[0]) {
-                    resultValue = 'p00'
-                    resultTemperatureValue = values[0]
-                } else {
-                    for (let i = 0; i < values.length; i++) {
-                        if (i == values.length - 1) {
-                            resultValue = 'p95'
-                            resultTemperatureValue = values[i]
-                        } else if (averageTemperature >= values[i] && averageTemperature < values[i + 1]) {
-                            resultValue = columns[i]
-                            resultTemperatureValue = values[i]
-                            break
-                        }
-                    }
-                }
-
-                console.log(`Rezultat: ${vrednosti[resultValue]} (${opisi[resultValue]})`)
-
-                setResult(resultValue)
-                setResultTemperature(`${resultTemperatureValue} °C`)
-            }
-        }
+    function onStationChange(station) {
+        console.log("onStationChange", { station });
+        setSelectedStation(station);
+        requestData(station.value).then(updateData);
     }
-
-
-
-    loadStations()
-    requestData(selectedStation().value);
-    const colorKey = result() === "" ? "initial" : result();
-
 
 
     return <div class="text-center">
@@ -240,7 +292,7 @@ export function AliJeVroce() {
                 optionValue="value"
                 optionTextValue="label"
                 value={selectedStation()}
-                onChange={setSelectedStation}
+                onChange={onStationChange}
                 disallowEmptySelection={true}
                 itemComponent={props => (
                     <Select.Item item={props.item} class="flex items-center justify-between py-2 relative select-none outline-none hover:bg-gray-100 hover:text-black">
@@ -263,10 +315,8 @@ export function AliJeVroce() {
         </p>
         <p></p>
         <p class="font-black text-6xl">
-            <Show when={colorKey !== "initial"} fallback={<span class="text-muted">Trenutno ni podatka!</span>}>
-                <IsItHotDot color={colorKey} class="mr-8" />{" "}
-                {vrednosti[result()]}
-            </Show>
+            <IsItHotDot color={result() === "" ? "initial" : result()} class="mr-8" />{" "}
+            {vrednosti[result()]}
         </p>
         <p class="text-4xl font-semibold">{opisi[result()]}</p>
 
