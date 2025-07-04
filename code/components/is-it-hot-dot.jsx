@@ -33,10 +33,6 @@ const dot = cva("rounded-full", {
 
 
 /**
- * @typedef {import('class-variance-authority').VariantProps<typeof dot>} DotVariants
- */
-
-/**
  * IsItHotDot component renders a colored dot based on the provided color prop.
  * It uses class-variance-authority (cva) to manage styles.
  *
