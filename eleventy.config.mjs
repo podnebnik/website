@@ -1,6 +1,7 @@
 import path from "path";
 import Image from "@11ty/eleventy-img";
 import SolidPlugin from "vite-plugin-solid";
+import TailwindCSS from "@tailwindcss/vite";
 import EleventyVitePlugin from "@11ty/eleventy-plugin-vite";
 
 function monthToNumber(date) {
@@ -123,13 +124,11 @@ export default function (eleventyConfig) {
     eleventyConfig.addPlugin(EleventyVitePlugin, {
         viteOptions: {
             plugins: [
-                SolidPlugin()
+                TailwindCSS(),
+                SolidPlugin(),
             ]
         }
     })
-
-
-
 
     eleventyConfig.addPassthroughCopy('code')
     eleventyConfig.addPassthroughCopy('styles')
