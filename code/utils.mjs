@@ -13,5 +13,5 @@ import { twMerge } from "tailwind-merge";
  * @returns {string} The merged class string with Tailwind CSS classes deduplicated.
  */
 export function cn(...inputs) {
-    return twMerge(clsx(inputs));
+    return twMerge(clsx(...inputs));
 }
