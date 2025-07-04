@@ -1,19 +1,12 @@
 // setup HighCharts
 import Highcharts from 'highcharts'
-import Map from 'highcharts/modules/map'
-import Heatmap from 'highcharts/modules/heatmap'
-import GeoHeatmap from 'highcharts/modules/geoheatmap'
-import Data from 'highcharts/modules/data'
-import BoostCanvas from 'highcharts/modules/boost-canvas'
-import Boost from 'highcharts/modules/boost'
-import Accessibility from 'highcharts/modules/accessibility'
-Map(Highcharts)
-Heatmap(Highcharts)
-GeoHeatmap(Highcharts)
-Data(Highcharts)
-BoostCanvas(Highcharts)
-Boost(Highcharts)
-Accessibility(Highcharts)
+import 'highcharts/modules/map'
+import 'highcharts/modules/heatmap'
+import 'highcharts/modules/geoheatmap'
+import 'highcharts/modules/data'
+import 'highcharts/modules/boost-canvas'
+import 'highcharts/modules/boost'
+import 'highcharts/modules/accessibility'
 
 // World map
 import topology from '@highcharts/map-collection/custom/world-highres.topo.json'
