@@ -62,15 +62,28 @@ export function AliJeVroce() {
 
     onMount(async () => {
         const results = await requestData(selectedStation().value);
-        updateData(results)
+        if (!results.success) {
+            console.error('Failed to load data for station:', results.error);
+            return;
+        }
+        updateData(results.data)
         const stationsList = await loadStations();
-        setStations(stationsList);
+        if (!stationsList.success) {
+            console.error('Failed to load stations:', stationsList.error);
+            return;
+        }
+        setStations(stationsList.stations);
     })
 
-    function onStationChange(station) {
+    async function onStationChange(station) {
         setStationPrefix(station.prefix);
         setSelectedStation(station);
-        requestData(station.value).then(updateData);
+        const results = await requestData(station.value)
+        if (!results.success) {
+            console.error('Failed to load data for station:', results.error);
+            return;
+        }
+        updateData(results.data);
     }
 
 

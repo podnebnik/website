@@ -1,5 +1,18 @@
 import { BASE_URL, VREMENAR_BASE_URL } from "./constants.mjs"
 
+/**
+ * @typedef {Object} RequestStationData
+ * @property {string} resultValue - The percentile result of the current average temperature.
+ * @property {number} resultTemperatureValue - The temperature value corresponding to the percentile result.
+ * @property {number} tempMin - The minimum temperature recorded in the last 24 hours.
+ * @property {string} timeMin - The time when the minimum temperature was recorded, formatted as "danes ob HH:MM" or "včeraj ob HH:MM".
+ * @property {number} tempMax - The maximum temperature recorded in the last 24 hours.
+ * @property {string} timeMax - The time when the maximum temperature was recorded, formatted as "danes ob HH:MM" or "včeraj ob HH:MM".
+ * @property {number} tempAvg - The average temperature recorded in the last 24 hours.
+ * @property {string} timeUpdated - The last update time of the temperature data,
+ */
+
+
 
 /**
  * Returns a string representation of a number, prefixing it with a zero if it is less than 10.
@@ -50,26 +63,33 @@ function formatTime(date, updated) {
  *
  * @async
  * @function loadStations
- * @returns {Promise<Array<{station_id: string, name_locative: string, prefix: string}>>}
+ * @returns {Promise<{ success: true, stations: Array<{ station_id: number, name_locative: string, prefix: string }> } | { success: false, error: Error | string }>}
  *   Resolves to an array of station objects, or an empty array if the fetch fails.
  */
 export async function loadStations() {
     const resultStations = await fetch(`${BASE_URL}/temperature/temperature~2Eslovenia_stations.json?&_col=station_id&_col=name&_col=name_locative&_sort=name`);
+
     if (resultStations.ok) {
-        let stationsList = [];
-        const dataStations = await resultStations.json();
-        for (let row of dataStations["rows"]) {
-            let name_list = row[3].split(' ')
-            stationsList.push({
-                'station_id': row[1],
-                'name_locative': name_list.slice(1).join(" "),
-                'prefix': name_list[0],
-            })
+        try {
+            let stationsList = [];
+            const dataStations = await resultStations.json();
+            for (let row of dataStations["rows"]) {
+                let name_list = row[3].split(' ')
+                stationsList.push({
+                    'station_id': row[1],
+                    'name_locative': name_list.slice(1).join(" "),
+                    'prefix': name_list[0],
+                })
+            }
+            return { success: true, stations: stationsList };
+        } catch (error) {
+            console.error('Error processing station data:', error);
+            return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
         }
-        return stationsList;
+
     }
     console.error('Failed to load stations');
-    return [];
+    return { success: false, error: 'Failed to load stations' };
 }
 
 /**
@@ -80,81 +100,78 @@ export async function loadStations() {
  *
  * @async
  * @param {string} stationID - The ID of the weather station to fetch data for.
- * @returns {Promise<{
- *   resultValue: string,
- *   resultTemperatureValue: number|string,
- *   tempMin: number|string,
- *   timeMin: string,
- *   tempMax: number|string,
- *   timeMax: string,
- *   tempAvg: number|string,
- *   timeUpdated: string
- * }>} An object containing temperature statistics and percentile results. If the request fails, returns empty strings for all fields.
+ * @returns {Promise<{success: true, data: RequestStationData} | {success: false, error: Error | string}>} An object containing temperature statistics and percentile results. If the request fails, returns empty strings for all fields.
  */
 export async function requestData(stationID) {
-    const resultAverage = await fetch(`${VREMENAR_BASE_URL}/stations/details/METEO-${stationID}?country=si`);
-    if (resultAverage.ok) {
-        const dataAverage = await resultAverage.json();
-        const averageTemperature = dataAverage.statistics.temperature_average_24h;
+    try {
+        const resultAverage = await fetch(`${VREMENAR_BASE_URL}/stations/details/METEO-${stationID}?country=si`);
+        if (resultAverage.ok) {
+            const dataAverage = await resultAverage.json();
+            const averageTemperature = dataAverage.statistics.temperature_average_24h;
 
-        let timeUpdated = new Date(Number(dataAverage.statistics.timestamp))
+            let timeUpdated = new Date(Number(dataAverage.statistics.timestamp))
 
-        const date = formatDateForQuery(timeUpdated)
+            const date = formatDateForQuery(timeUpdated)
 
-        let timeMinDate = new Date(Number(dataAverage.statistics.timestamp_temperature_min_24h))
-        let timeMaxDate = new Date(Number(dataAverage.statistics.timestamp_temperature_max_24h))
+            let timeMinDate = new Date(Number(dataAverage.statistics.timestamp_temperature_min_24h))
+            let timeMaxDate = new Date(Number(dataAverage.statistics.timestamp_temperature_max_24h))
 
-        const resultPercentile = await fetch(`${BASE_URL}/temperature/temperature~2Eslovenia_historical~2Edaily~2Eaverage_percentiles.json?date__exact=${date}&station_id__exact=${stationID}&_col=p05&_col=p20&_col=p40&_col=p60&_col=p80&_col=p95`);
-        if (resultPercentile.ok) {
-            const dataPercentile = await resultPercentile.json();
+            const resultPercentile = await fetch(`${BASE_URL}/temperature/temperature~2Eslovenia_historical~2Edaily~2Eaverage_percentiles.json?date__exact=${date}&station_id__exact=${stationID}&_col=p05&_col=p20&_col=p40&_col=p60&_col=p80&_col=p95`);
+            if (resultPercentile.ok) {
+                const dataPercentile = await resultPercentile.json();
 
-            let columns = dataPercentile['columns'];
-            let values = dataPercentile['rows'][0];
-            columns.shift();
-            values.shift();
+                let columns = dataPercentile['columns'];
+                let values = dataPercentile['rows'][0];
+                columns.shift();
+                values.shift();
 
-            let resultValue = -1
-            let resultTemperatureValue = -1
-            if (averageTemperature < values[0]) {
-                resultValue = 'p00'
-                resultTemperatureValue = values[0]
-            } else {
-                for (let i = 0; i < values.length; i++) {
-                    if (i == values.length - 1) {
-                        resultValue = 'p95'
-                        resultTemperatureValue = values[i]
-                    } else if (averageTemperature >= values[i] && averageTemperature < values[i + 1]) {
-                        resultValue = columns[i]
-                        resultTemperatureValue = values[i]
-                        break
+                let resultValue = -1
+                let resultTemperatureValue = -1
+                if (averageTemperature < values[0]) {
+                    resultValue = 'p00'
+                    resultTemperatureValue = values[0]
+                } else {
+                    for (let i = 0; i < values.length; i++) {
+                        if (i == values.length - 1) {
+                            resultValue = 'p95'
+                            resultTemperatureValue = values[i]
+                        } else if (averageTemperature >= values[i] && averageTemperature < values[i + 1]) {
+                            resultValue = columns[i]
+                            resultTemperatureValue = values[i]
+                            break
+                        }
+                    }
+                }
+
+                return {
+                    success: true,
+                    data: {
+                        resultValue,
+                        resultTemperatureValue,
+                        tempMin: dataAverage.statistics.temperature_min_24h,
+                        timeMin: formatTime(timeMinDate, timeUpdated),
+                        tempMax: dataAverage.statistics.temperature_max_24h,
+                        timeMax: formatTime(timeMaxDate, timeUpdated),
+                        tempAvg: averageTemperature,
+                        timeUpdated: new Intl.DateTimeFormat('sl-SI', {
+                            dateStyle: 'long',
+                            timeStyle: 'short',
+                        }).format(timeUpdated),
                     }
                 }
             }
-
-            return {
-                resultValue,
-                resultTemperatureValue,
-                tempMin: dataAverage.statistics.temperature_min_24h,
-                timeMin: formatTime(timeMinDate, timeUpdated),
-                tempMax: dataAverage.statistics.temperature_max_24h,
-                timeMax: formatTime(timeMaxDate, timeUpdated),
-                tempAvg: averageTemperature,
-                timeUpdated: new Intl.DateTimeFormat('sl-SI', {
-                    dateStyle: 'long',
-                    timeStyle: 'short',
-                }).format(timeUpdated),
-            }
         }
+    } catch (error) {
+        console.error(`Error fetching data for station ${stationID}:`, error);
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'Unknown error',
+        };
     }
+
     console.error(`Failed to load data for station ${stationID}`);
     return {
-        resultValue: '',
-        resultTemperatureValue: '',
-        tempMin: '',
-        timeMin: '',
-        tempMax: '',
-        timeMax: '',
-        tempAvg: '',
-        timeUpdated: '',
+        success: false,
+        error: 'Failed to load data for station ' + stationID,
     };
 }
