@@ -7,8 +7,8 @@ export function Faq() {
     const [expandedItem, setExpandedItem] = createSignal(["item-1"]);
 
     return (
-        <div class="not-prose">
-            <section >Section</section>
+        <section>
+            <h2>Section</h2>
             <Accordion value={expandedItem()} onChange={setExpandedItem} collapsible>
                 <AccordionItem value="item-1">
                     <AccordionTrigger>Title 1</AccordionTrigger>
@@ -28,6 +28,6 @@ export function Faq() {
                     </AccordionContent>
                 </AccordionItem>
             </Accordion>
-        </div>
+        </section>
     );
 }

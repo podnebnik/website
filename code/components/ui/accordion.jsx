@@ -9,8 +9,8 @@ const accordionVariants = cva("w-full font-sans",
     {
         variants: {
             variant: {
-                default: "",
-                outline: "border border-border rounded-md",
+                default: "not-prose",
+                outline: "border border-border rounded-md not-prose",
             },
 
         },
@@ -50,7 +50,7 @@ export const AccordionTrigger = (props) => {
         <AccordionPrimitive.Header class="flex">
             <AccordionPrimitive.Trigger
                 class={cn(
-                    "flex flex-1 items-center justify-between py-4 text-sm font-medium transition-all hover:underline text-left [&[data-expanded]>svg]:rotate-180",
+                    "flex flex-1 items-center justify-between py-4 font-semibold transition-all hover:underline text-left [&[data-expanded]>svg]:rotate-180",
                     local.class
                 )}
                 {...others}
@@ -67,7 +67,7 @@ export const AccordionContent = (props) => {
 
     return (
         <AccordionPrimitive.Content
-            class="overflow-hidden text-sm data-expanded:animate-accordion-down data-closed:animate-accordion-up"
+            class="overflow-hidden data-expanded:animate-accordion-down data-closed:animate-accordion-up"
             {...others}
         >
             <div class={cn("pb-4 pt-0", local.class)}>

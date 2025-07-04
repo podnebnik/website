@@ -1,6 +1,6 @@
 ---
 title: Pogosta vprašanja
-layout: base.html
+layout: page.html
 summary: S pomočjo podatkov, analiz in simulacij pomagamo k boljšemu razumevanju podnebnih sprememb in okoljskih tveganj v Sloveniji.
 ---
 
