@@ -1,7 +1,7 @@
-<a href="{{ url }}" class="block bg-white p-2gap pb-gap mb-2gap no-underline">
+<a href="{{ url }}" class="bg-white block p-(--2gap) pb-(--gap) mb-(--2gap) no-underline">
     <div class="text-3xl font-sans font-semibold mb-2">{{ title }}</div>
     <div class="leading-normal">{{ summary }}</div>
-    <div class="flex justify-between mt-gap md:mt-2gap font-sans">
+    <div class="flex justify-between mt-(--gap) md:mt-(--2gap) font-sans">
         <div class="flex flex-wrap space-x-2">
             {% for tag in tags %}
             <div class="text-sm bg-tertiary rounded-md py-[0.1rem] px-3">{{ tag }}</div>

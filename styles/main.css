@@ -1,0 +1,217 @@
+@import "tailwindcss";
+@import "./octocat.css";
+
+@plugin "@tailwindcss/typography";
+
+@custom-variant aria-current-page (&[aria-current="page"]);
+
+
+:root {
+    --font-serif: 'Bitter', 'Arial', 'Helvetica', 'serif';
+    --font-sans: 'IBM Plex Sans', 'sans-serif';
+
+    --color-primary: #462a44;
+    --color-secondary: #ffb644;
+    --color-primary-dark: #3f253d;
+    --color-tertiary: #f3f1f0;
+    --color-muted: rgb(122, 122, 122);
+
+    --color-p00: #2166ac;
+    --color-p05: #67a0cf;
+    --color-p20: #d1e5f0;
+    --color-p40: #ebebeb;
+    --color-p60: #f7cfb7;
+    --color-p80: #fc946a;
+    --color-p95: #b2182b;
+
+    --border-color: #D5D4D3;
+    
+    --gap: 1rem;
+    --2gap: 2rem;
+    --3gap: 3rem;
+    --4gap: 4rem;
+    --5gap: 5rem;
+    --6gap: 6rem;
+    --7gap: 7rem;
+    --8gap: 8rem;
+  }
+@theme {
+    --color-primary: var(--color-primary);
+    --color-secondary: var(--color-secondary);
+    --color-primary-dark: var(--color-primary-dark);
+    --color-tertiary: var(--color-tertiary);
+    --color-muted: var(--color-muted);
+    --color-p00: var(--color-p00);
+    --color-p05: var(--color-p05);
+    --color-p20: var(--color-p20);
+    --color-p40: var(--color-p40);
+    --color-p60: var(--color-p60);
+    --color-p80: var(--color-p80);
+    --color-p95: var(--color-p95);
+
+
+    --font-serif: var(--font-serif);
+    --font-sans: var(--font-sans);
+
+    --animate-octocat-wave: 560ms ease-in-out;
+
+    --animate-accordion-down: accordion-down 300ms ease-in-out;
+    --animate-accordion-up: accordion-up 300ms ease-in-out;
+
+    @keyframes octocat-wave {
+        0%, 100% { transform: rotate(0); }
+        20%, 60% { transform: rotate(-25deg); }
+        40%, 80% { transform: rotate(10deg); }
+    }
+
+    @keyframes accordion-down {
+      from {
+        height: 0;
+      }
+      to {
+        height: var(--kb-accordion-content-height);
+      }
+    }
+    @keyframes accordion-up {
+      from {
+        height: var(--kb-accordion-content-height);
+      }
+      to {
+        height: 0;
+      }
+    }
+}
+
+@layer base {
+
+  body {
+    @apply bg-tertiary;
+  }
+
+  header nav {
+      background-color: var(--color-primary);
+  }
+
+  h1 {
+    @apply after:block after:mt-6 after:w-[50px] after:h-[6px] after:bg-secondary;
+  }
+
+  footer a {
+    @apply transition-colors duration-300 hover:text-primary;
+  }
+}
+
+@layer utilities {
+  .lead {
+    @apply font-serif text-2xl font-semibold leading-snug text-black pt-(--2gap) pb-(--2gap) border-y;
+  }
+
+  .article-metadata {
+    @apply inline-flex items-center text-muted;
+  }
+
+  .article-metadata img {
+    @apply size-5 inline opacity-30 mr-1.5;
+  }
+
+  .article-metadata .author {
+    @apply font-bold text-black;
+  }
+
+  .article-content h1 {
+    @apply after:hidden;
+  }
+
+  .article-content a {
+    @apply transition-colors duration-300 hover:text-primary;
+  }
+  .article-content blockquote {
+    @apply -ml-[1em] pl-[1.5em];
+    @apply text-xl font-medium border-l-2 border-primary;
+  }
+
+  .article-content blockquote p {
+    @apply before:hidden after:hidden;
+  }
+
+  .article-content blockquote blockquote {
+    @apply ml-0;
+  }
+
+  .chart {
+    @apply lg:-ml-[100px] lg:-mr-[100px] bg-white p-(--gap) sm:p-(--2gap) rounded-md;
+  }
+
+  .image {
+    @apply lg:-ml-[100px] lg:-mr-[100px];
+  }
+
+  .image figcaption {
+    @apply gap-5 flex justify-end text-sm items-start text-muted italic;
+  }
+
+  .image figcaption img {
+    @apply m-0;
+  }
+
+  .image picture img {
+    @apply w-full h-auto rounded;
+  }
+
+  .btn {
+    @apply inline-block font-sans text-secondary bg-primary hover:bg-primary-dark px-3 py-1 rounded-md transition-colors duration-300;
+    @apply disabled:opacity-40;
+  }
+
+  .btn-control {
+    @apply inline-block font-sans bg-zinc-100 hover:bg-zinc-200 px-3 py-1 rounded-md transition-colors duration-300;
+    @apply disabled:bg-secondary disabled:font-bold;
+  }
+ 
+  .btn-sm {
+    @apply text-sm;
+  }
+  .logo {
+    @apply min-w-[181px] min-h-[54px];
+  }
+
+  .nav-link {
+    @apply text-base opacity-70 hover:opacity-100 focus:opacity-100 font-sans px-3 py-2 font-medium transition-all duration-300;
+    @apply hover:[box-shadow:inset_0px_-10px_0_var(--color-secondary)];
+    @apply aria-current-page:[box-shadow:inset_0px_-10px_0_var(--color-secondary)];
+    @apply aria-current-page:opacity-100;
+  }
+
+
+  .input-range {
+    @apply h-[4px] w-full cursor-pointer disabled:cursor-auto appearance-none border-transparent bg-neutral-600 disabled:bg-neutral-200 accent-primary
+  }
+  .input-range:disabled {
+    cursor: auto;
+    background-color: rgb(229 231 235);
+  }
+
+  .select {
+    @apply [box-shadow:inset_0px_-10px_0_var(--color-secondary)];
+    @apply focus:[box-shadow:inset_0px_-10px_0_var(--color-secondary)];
+    @apply hover:[box-shadow:none];
+  }
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--border-color, currentColor);
+  }
+}

@@ -1,9 +1,8 @@
-const path = require("path")
-const fs = require("fs")
-
-const Image = require("@11ty/eleventy-img")
-const SolidPlugin = require('vite-plugin-solid')
-const EleventyVitePlugin = require('@11ty/eleventy-plugin-vite')
+import path from "path";
+import Image from "@11ty/eleventy-img";
+import SolidPlugin from "vite-plugin-solid";
+import TailwindCSS from "@tailwindcss/vite";
+import EleventyVitePlugin from "@11ty/eleventy-plugin-vite";
 
 function monthToNumber(date) {
     return date.replace('januar', '1.')
@@ -66,9 +65,9 @@ async function publishedShortcode(published, short) {
 async function editedShortcode(edited, short) {
     let value
     if (short) {
-        value = `${edited.getDate()}. ${edited.getMonth()+1}. ${edited.getFullYear()}`
+        value = `${edited.getDate()}. ${edited.getMonth() + 1}. ${edited.getFullYear()}`
     } else {
-        value = `zadnja sprememba: ${edited.getDate()}. ${edited.getMonth()+1}. ${edited.getFullYear()} ob ${edited.getHours()}:${edited.getMinutes()}`
+        value = `zadnja sprememba: ${edited.getDate()}. ${edited.getMonth() + 1}. ${edited.getFullYear()} ob ${edited.getHours()}:${edited.getMinutes()}`
     }
 
     return `<span class="article-metadata not-italic not-prose" title="Urejeno">
@@ -109,8 +108,8 @@ async function imageShortcode(src, alt, sizes) {
     // responsive/retina images
     return `<picture>
         ${Object.values(metadata).map(imageFormat => {
-            return `  <source type="${imageFormat[0].sourceType}" srcset="${imageFormat.map(entry => entry.srcset).join(", ")}">`;
-        }).join("\n")}
+        return `  <source type="${imageFormat[0].sourceType}" srcset="${imageFormat.map(entry => entry.srcset).join(", ")}">`;
+    }).join("\n")}
             <img
                 src="${lowRes.url}"
                 width="${lowRes.width}"
@@ -121,10 +120,13 @@ async function imageShortcode(src, alt, sizes) {
             </picture>`;
 }
 
-module.exports = function (eleventyConfig) {
+export default function (eleventyConfig) {
     eleventyConfig.addPlugin(EleventyVitePlugin, {
         viteOptions: {
-            plugins: [SolidPlugin()]
+            plugins: [
+                TailwindCSS(),
+                SolidPlugin(),
+            ]
         }
     })
 
@@ -143,8 +145,9 @@ module.exports = function (eleventyConfig) {
         dir: {
             input: 'pages',
             output: 'dist',
-        },
 
+
+        },
         htmlTemplateEngine: 'liquid',
         markdownTemplateEngine: 'liquid',
     }
