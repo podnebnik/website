@@ -1,4 +1,5 @@
 import { createSignal, Show, For } from "solid-js";
+import { Select } from "@kobalte/core/select";
 import { IsItHotDot } from "../components/is-it-hot-dot.jsx";
 
 /**
@@ -7,6 +8,12 @@ import { IsItHotDot } from "../components/is-it-hot-dot.jsx";
  */
 
 const DEFAULT_STATION_ID = 1495; // Ljubljana
+const DEFAULT_STATION_NAME = 'Ljubljana';
+
+const DEFAULT_STATION = {
+    value: DEFAULT_STATION_ID,
+    label: DEFAULT_STATION_NAME,
+}
 
 // URL
 const baseUrl = 'https://stage-data.podnebnik.org'
@@ -109,8 +116,9 @@ export function AliJeVroce() {
     const vremenarBaseUrl = 'https://podnebnik.vremenar.app/staging'
     // const vremenarBaseUrl = 'http://localhost:8000'
 
-    const [stations, setStations] = createSignal([{ 'station_id': 1495, 'name_locative': 'Ljubljani' }]);
+    const [stations, setStations] = createSignal([{ 'station_id': 1495, 'name_locative': 'Ljubljani', 'prefix': 'v' }]);
     const [stationPrefix, setStationPrefix] = createSignal('v')
+    const [selectedStation, setSelectedStation] = createSignal(DEFAULT_STATION);
 
     /**
      * Signal to hold the result of the temperature percentile comparison.
@@ -121,8 +129,6 @@ export function AliJeVroce() {
      */
     const [result, setResult] = createSignal('');
     const [resultTemperature, setResultTemperature] = createSignal('');
-
-    // TODO: most likely we can join next 
     const [tempMin, setTempMin] = createSignal('');
     const [timeMin, setTimeMin] = createSignal('');
     const [tempMax, setTempMax] = createSignal('');
@@ -146,7 +152,6 @@ export function AliJeVroce() {
             }
             setStations(stationsList);
         }
-        document.getElementById("locations").value = 1495 // Ljubljana
     }
 
     async function requestData(stationID) {
@@ -215,33 +220,48 @@ export function AliJeVroce() {
         }
     }
 
-    function changedValue(event) {
-        let newID = event.target.value;
-        for (let station of stations()) {
-            if (station.station_id == newID) {
-                setStationPrefix(station.prefix);
-                break;
-            }
-        }
-        requestData(newID);
-    }
+
 
     loadStations()
-    requestData(DEFAULT_STATION_ID)
+    requestData(selectedStation().value);
     const colorKey = result() === "" ? "initial" : result();
 
 
+
     return <div class="text-center">
-        <p class="font-normal text-5xl font-sans">
+        <p class="font-normal text-5xl font-sans text-balance">
             Ali je danes vroče {stationPrefix()}&nbsp;
-            <label for="locations" class="sr-only">Izberite lokacijo</label>
-            <select id="locations"
-                class="select max-fit font-bold appearance-none inline-block bg-transparent rounded-none focus:outline-hidden leading-[64px] hover:cursor-pointer transition-all duration-300"
-                onChange={changedValue}>
-                <For each={stations()}>{(item) => <option value={item.station_id}>{item.name_locative}</option>}</For>
-            </select>
-            ?
+            <Select
+                options={stations().map(station => ({
+                    value: station.station_id,
+                    label: station.name_locative,
+                    prefix: station.prefix,
+                }))}
+                optionValue="value"
+                optionTextValue="label"
+                value={selectedStation()}
+                onChange={setSelectedStation}
+                disallowEmptySelection={true}
+                itemComponent={props => (
+                    <Select.Item item={props.item} class="flex items-center justify-between py-2 relative select-none outline-none hover:bg-gray-100 hover:text-black">
+                        <Select.ItemLabel>{props.item.rawValue.label}</Select.ItemLabel>
+                        <Select.ItemIndicator>✓</Select.ItemIndicator>
+                    </Select.Item>
+                )}
+            >
+                <Select.Label class="sr-only">Izberite lokacijo</Select.Label>
+                <Select.Trigger class="select font-bold appearance-none inline-block bg-transparent rounded-none focus:outline-hidden leading-[64px] hover:cursor-pointer transition-all duration-300">
+                    <Select.Value>{state => state.selectedOption().label}</Select.Value>
+                </Select.Trigger>?
+                <Select.Portal>
+                    <Select.Content class="bg-muted text-white px-2 py-2 max-w-fit">
+                        <Select.Listbox class="max-h-80 overflow-auto p-2 max-w-fit" />
+                    </Select.Content>
+                </Select.Portal>
+            </Select>
+
         </p>
+        <p></p>
         <p class="font-black text-6xl">
             <Show when={colorKey !== "initial"} fallback={<span class="text-muted">Trenutno ni podatka!</span>}>
                 <IsItHotDot color={colorKey} class="mr-8" />{" "}

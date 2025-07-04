@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@highcharts/map-collection": "^2.3.0",
+    "@kobalte/core": "^0.13.10",
     "@tailwindcss/postcss": "^4.1.11",
     "@tailwindcss/typography": "^0.5.16",
     "class-variance-authority": "^0.7.1",
