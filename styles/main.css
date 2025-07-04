@@ -101,7 +101,7 @@
   }
 }
 
-@layer components {
+@layer utilities {
   .lead {
     @apply font-serif text-2xl font-semibold leading-snug text-black pt-(--2gap) pb-(--2gap) border-y;
   }
