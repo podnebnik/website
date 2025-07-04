@@ -55,12 +55,32 @@
 
     --animate-octocat-wave: 560ms ease-in-out;
 
+    --animate-accordion-down: accordion-down 300ms ease-in-out;
+    --animate-accordion-up: accordion-up 300ms ease-in-out;
+
     @keyframes octocat-wave {
         0%, 100% { transform: rotate(0); }
         20%, 60% { transform: rotate(-25deg); }
         40%, 80% { transform: rotate(10deg); }
     }
-  }
+
+    @keyframes accordion-down {
+      from {
+        height: 0;
+      }
+      to {
+        height: var(--kb-accordion-content-height);
+      }
+    }
+    @keyframes accordion-up {
+      from {
+        height: var(--kb-accordion-content-height);
+      }
+      to {
+        height: 0;
+      }
+    }
+}
 
 @layer base {
 
