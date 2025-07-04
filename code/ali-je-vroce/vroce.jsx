@@ -107,9 +107,10 @@ export function AliJeVroce() {
             </Select>
 
         </p>
-        <p></p>
         <p class="font-black text-6xl">
-            <IsItHotDot color={result()} class="mr-8" />{" "}
+            <Show when={result() !== ""} fallback="Ni podatkov">
+                <IsItHotDot color={result()} class="mr-8" />{" "}
+            </Show>
             {vrednosti[result()]}
         </p>
         <p class="text-4xl font-semibold">{opisi[result()]}</p>
