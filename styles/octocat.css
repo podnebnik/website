@@ -1,0 +1,5 @@
+.github-corner .octo-arm {
+    @apply animate-octocat-wave;
+    @apply hover:sm:animate-octocat-wave;
+}
+

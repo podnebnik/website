@@ -1,30 +1,34 @@
 {
+  "type": "module",
   "private": true,
   "scripts": {
     "postinstall": "dotnet tool restore",
     "clean": "rm -rf dist && dotnet fable clean",
     "start": "dotnet fable watch code --extension .fs.jsx --run npx @11ty/eleventy --serve --incremental --quiet",
-    "start-debug": "dotnet fable watch code --extension .fs.jsx --run DEBUG=Eleventy* npx @11ty/eleventy --serve --incremental --quiet",
+    "start-debug": "dotnet fable watch code --extension .fs.jsx --run sh -c 'DEBUG=\"Eleventy*\" npx @11ty/eleventy --serve --incremental --quiet'",
     "build": "dotnet fable code --extension .fs.jsx --run npx @11ty/eleventy",
-    "build-debug": "dotnet fable code --extension .fs.jsx --run DEBUG=Eleventy* npx @11ty/eleventy"
+    "build-debug": "dotnet fable code --extension .fs.jsx --run sh -c 'DEBUG=\"Eleventy*\" npx @11ty/eleventy'"
   },
   "dependencies": {
     "@highcharts/map-collection": "^2.3.1",
+    "@kobalte/core": "^0.13.10",
     "@tailwindcss/typography": "^0.5.16",
-    "highcharts": "^11.4.8",
+    "@tailwindcss/vite": "^4.1.11",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "highcharts": "^12.3.0",
     "solid-js": "^1.9.7",
-    "tailwindcss": "^3.4.13"
+    "tailwind-merge": "^3.3.1",
+    "tailwindcss": "^4.1.11"
   },
   "devDependencies": {
-    "@11ty/eleventy": "^2.0.1",
-    "@11ty/eleventy-img": "^4.0.2",
-    "@11ty/eleventy-plugin-vite": "^4.0.0",
-    "autoprefixer": "^10.4.20",
-    "postcss": "^8.5.6",
+    "@11ty/eleventy": "^3.1.2",
+    "@11ty/eleventy-img": "^6.0.4",
+    "@11ty/eleventy-plugin-vite": "^7.0.0",
     "sass": "^1.89.2",
     "sharp": "^0.34.2",
-    "vite": "^5.4.8",
-    "vite-plugin-solid": "^2.10.2"
+    "vite": "^7.0.2",
+    "vite-plugin-solid": "^2.11.7"
   },
   "packageManager": "yarn@4.1.1"
 }

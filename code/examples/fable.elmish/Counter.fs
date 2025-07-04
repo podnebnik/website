@@ -39,7 +39,7 @@ let Counter () =
         <button class="btn" onclick={fun _ -> dispatch Increment}>
             Increment
         </button>
-        <button class="btn ml-gap" onclick={fun _ -> dispatch Decrement}>
+        <button class="btn ml-(--gap)" onclick={fun _ -> dispatch Decrement}>
             Decrement
         </button>
     </>

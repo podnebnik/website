@@ -1,82 +1,37 @@
-import { createSignal } from "solid-js";
+import { createSignal, Show, For, onMount, createEffect } from "solid-js";
+import { Select } from "@kobalte/core/select";
+import { IsItHotDot } from "../components/is-it-hot-dot.jsx";
 
-// URL
-const baseUrl = 'https://stage-data.podnebnik.org'
-// const baseUrl = 'http://localhost:8010'
+import { requestData, loadStations } from "./helpers.mjs";
+import { vrednosti, opisi, percentile_labels } from "./constants.mjs";
+import { DEFAULT_STATION } from "./constants.mjs";
 
-const percentile_labels = {
-    'p0': 'manj kot 5 %',
-    'p05': '5 %',
-    'p20': '20 %',
-    'p40': '40 %',
-    'p60': '60 %',
-    'p80': '80 %',
-    'p95': '95 %',
-    '': '',
-}
-
-const vrednosti = {
-    'p0': 'Niti pod razno',
-    'p05': 'Ne!',
-    'p20': 'Ne.',
-    'p40': 'Niti ne.',
-    'p60': 'Ja.',
-    'p80': 'Ja!',
-    'p95': 'Ja, absolutno!',
-    '': '',
-}
-
-const opisi = {
-    'p0': 'Se hecaš?! Ful je mraz!',
-    'p05': 'Pravzaprav je res mrzlo.',
-    'p20': 'Dejansko je kar hladno.',
-    'p40': 'Precej povprečno.',
-    'p60': 'Je topleje kot običajno.',
-    'p80': 'Res je vroče!',
-    'p95': 'Peklensko vroče je!',
-    '': '',
-}
-
-const barve = {
-    'p0': '#2166ac',
-    'p05': '#67a9cf',
-    'p20': '#d1e5f0',
-    'p40': '#ebebeb',
-    'p60': '#f7cfb7',
-    'p80': '#fc946a',
-    'p95': '#b2182b',
-    '': 'transparent',
-}
-
-function zeroPrefix(number) {
-    if (number < 10) {
-        return `0${number}`
-    }
-    return `${number}`
-}
-
-function formatDateForQuery(date) {
-    let year = `${date.getFullYear()}`
-    let month = `${zeroPrefix(date.getMonth() + 1)}`
-    let day = `${zeroPrefix(date.getDate())}`
-    return `${year}-${month}-${day}`
-}
-
-function formatTime(date, updated) {
-    let day = date.getDate() == updated.getDate() ? 'danes' : 'včeraj'
-    let time = `${zeroPrefix(date.getHours())}:${zeroPrefix(date.getMinutes())}`
-
-    return `${day} ob ${time}`
-}
-
+/**
+ * AliJeVroce is a Solid JS component that displays whether it is hot today in a selected location,
+ * based on temperature statistics fetched from a remote API. It shows the minimum, average, and
+ * maximum temperatures over the last 24 hours, their respective times, and compares the average
+ * temperature to historical percentiles. The component also provides a textual and visual
+ * representation of the result, along with the time of the last data update.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered component displaying temperature statistics and percentile comparison.
+ */
 export function AliJeVroce() {
-    const vremenarBaseUrl = 'https://podnebnik.vremenar.app/staging'
-    const station = {
-        vremenarID: 'METEO-1495',
-        localID: 'LJU',
-    }
 
+
+    const [stations, setStations] = createSignal([{ 'station_id': 1495, 'name_locative': 'Ljubljani', 'prefix': 'v' }]);
+    const [stationPrefix, setStationPrefix] = createSignal('v')
+    const [selectedStation, setSelectedStation] = createSignal(DEFAULT_STATION);
+
+    /**
+     * Signal to hold the result of the temperature percentile comparison.
+     * It indicates how the current average temperature compares to historical data.
+     * Possible values are 'p00', 'p05', 'p20', 'p40', 'p60', 'p80', 'p95', or an empty string if no data is available.
+     * @type {import('solid-js').Signal<PercentileKey>}
+     * @see {@link https://solidjs.com/docs/api#createsignal}
+     */
     const [result, setResult] = createSignal('');
+    const [resultTemperature, setResultTemperature] = createSignal('');
     const [tempMin, setTempMin] = createSignal('');
     const [timeMin, setTimeMin] = createSignal('');
     const [tempMax, setTempMax] = createSignal('');
@@ -84,75 +39,91 @@ export function AliJeVroce() {
     const [tempAvg, setTempAvg] = createSignal('');
     const [timeUpdated, setTimeUpdated] = createSignal('');
 
-    async function requestData(station) {
-        console.log(`Loading ${station.localID} data`)
+    function updateData({
+        resultValue,
+        resultTemperatureValue,
+        tempMin,
+        timeMin,
+        tempMax,
+        timeMax,
+        tempAvg,
+        timeUpdated,
 
-        const resultAverage = await fetch(`${vremenarBaseUrl}/stations/details/${station.vremenarID}?country=si`);
-        if (resultAverage.ok) {            
-            const dataAverage = await resultAverage.json();
-            const averageTemperature = dataAverage.statistics.temperature_average_24h;
-
-            console.log(`Average temperature: ${averageTemperature}`)
-
-            let timeUpdated = new Date(Number(dataAverage.statistics.timestamp))
-
-            const date = formatDateForQuery(timeUpdated)
-            console.log(`Date: ${timeUpdated} ${date}`)
-
-            let timeMinDate = new Date(Number(dataAverage.statistics.timestamp_temperature_min_24h))
-            let timeMaxDate = new Date(Number(dataAverage.statistics.timestamp_temperature_max_24h))
-            setTempMin(dataAverage.statistics.temperature_min_24h)
-            setTimeMin(formatTime(timeMinDate, timeUpdated))
-            setTempMax(dataAverage.statistics.temperature_max_24h)
-            setTimeMax(formatTime(timeMaxDate, timeUpdated))
-            setTempAvg(averageTemperature)
-            setTimeUpdated(timeUpdated.toLocaleString())
-
-            const resultPercentile = await fetch(`${baseUrl}/temperature/temperature~2Edaily~2Eaverage_percentiles.json?date__exact=${date}&_col=p05&_col=p20&_col=p40&_col=p60&_col=p80&_col=p95`);
-            if (resultPercentile.ok) {
-                const dataPercentile = await resultPercentile.json();
-
-                console.log(`Loaded ${station.localID} data`);
-
-                let columns = dataPercentile['columns'];
-                let rows = dataPercentile['rows'][0];
-                columns.shift();
-                rows.shift();
-
-                let resultValue = -1
-                if (averageTemperature < rows[0]) {
-                    resultValue = 'p0'
-                } else {
-                    for (let i = 0; i < rows.length; i++) {
-                        if (i == rows.length - 1) {
-                            resultValue = 'p95'
-                        } else if (averageTemperature >= rows[i] && averageTemperature < rows[i + 1]) {
-                            resultValue = columns[i]
-                            break
-                        }
-                    }
-                }
-
-                console.log(`Rezultat: ${vrednosti[resultValue]} (${opisi[resultValue]})`)
-
-                setResult(resultValue)
-            }
-        }
+    }) {
+        setResultTemperature(`${resultTemperatureValue} °C`);
+        setTempMin(tempMin);
+        setTimeMin(timeMin);
+        setTempMax(tempMax);
+        setTimeMax(timeMax);
+        setTempAvg(tempAvg);
+        setTimeUpdated(timeUpdated);
+        setResult(resultValue);
     }
 
-    requestData(station)
+    onMount(async () => {
+        const results = await requestData(selectedStation().value);
+        if (!results.success) {
+            console.error('Failed to load data for station:', results.error);
+            return;
+        }
+        updateData(results.data)
+        const stationsList = await loadStations();
+        if (!stationsList.success) {
+            console.error('Failed to load stations:', stationsList.error);
+            return;
+        }
+        setStations(stationsList.stations);
+    })
+
+    async function onStationChange(station) {
+        setStationPrefix(station.prefix);
+        setSelectedStation(station);
+        const results = await requestData(station.value)
+        if (!results.success) {
+            console.error('Failed to load data for station:', results.error);
+            return;
+        }
+        updateData(results.data);
+    }
+
 
     return <div class="text-center">
-        <p class="font-normal text-5xl font-sans">
-            Ali je danes vroče v 
-            <select id="locations"
-                class="select font-bold appearance-none inline-block bg-transparent rounded-none focus:outline-none leading-[64px] hover:cursor-pointer transition-all duration-300">
-            <option value="LJU">Ljubljani</option>
-            </select>
-            ?
+        <p class="font-normal text-5xl font-sans text-balance">
+            Ali je danes vroče {stationPrefix()}&nbsp;
+            <Select
+                options={stations().map(station => ({
+                    value: station.station_id,
+                    label: station.name_locative,
+                    prefix: station.prefix,
+                }))}
+                optionValue="value"
+                optionTextValue="label"
+                value={selectedStation()}
+                onChange={onStationChange}
+                disallowEmptySelection={true}
+                itemComponent={props => (
+                    <Select.Item item={props.item} class="flex items-center justify-between py-2 relative select-none outline-none hover:bg-gray-100 hover:text-black">
+                        <Select.ItemLabel>{props.item.rawValue.label}</Select.ItemLabel>
+                        <Select.ItemIndicator>✓</Select.ItemIndicator>
+                    </Select.Item>
+                )}
+            >
+                <Select.Label class="sr-only">Izberite lokacijo</Select.Label>
+                <Select.Trigger class="select font-bold appearance-none inline-block bg-transparent rounded-none focus:outline-hidden leading-[64px] hover:cursor-pointer transition-all duration-300">
+                    <Select.Value>{state => state.selectedOption().label}</Select.Value>
+                </Select.Trigger>?
+                <Select.Portal>
+                    <Select.Content class="bg-muted text-white px-2 py-2 max-w-fit">
+                        <Select.Listbox class="max-h-80 overflow-auto p-2 max-w-fit" />
+                    </Select.Content>
+                </Select.Portal>
+            </Select>
+
         </p>
         <p class="font-black text-6xl">
-            <span class="inline-text rounded-[36px] px-9 mr-8" style={"background-color: " + barve[result()] + ";"}></span>
+            <Show when={result() !== ""} fallback="Ni podatkov">
+                <IsItHotDot color={result()} class="mr-8" />{" "}
+            </Show>
             {vrednosti[result()]}
         </p>
         <p class="text-4xl font-semibold">{opisi[result()]}</p>
@@ -176,7 +147,8 @@ export function AliJeVroce() {
         </p>
 
         <p class="text-normal font-sans">V <span class="font-semibold">{percentile_labels[result()]}</span> vseh
-        zabeleženih dni v tem obdobju je bila temperatura nižja.</p>
+            zabeleženih dni od leta 1950 v 15-dnevnem obdobju okoli današnjega dneva je bila povprečna dnevna temperatura nižja kot{" "}
+            <span class="font-semibold">{resultTemperature()}</span>.</p>
 
         <p class="text-gray-400 text-sm leading-6 italic">Zadnja posodobitev: {timeUpdated()}</p>
     </div>;

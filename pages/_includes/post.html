@@ -3,8 +3,8 @@ layout: base.html
 ---
 
 {% block content %}
-<article class="prose lg:prose-lg prose-neutral mx-auto px-gap prose-headings:font-sans prose-headings:font-bold">
-    <h1 class="!mb-gap">{% block title %}{{ title }}{% endblock %}</h1>
+<article class="prose lg:prose-lg prose-neutral mx-auto px-(--gap) prose-headings:font-sans prose-headings:font-bold">
+    <h1 class="mb-(--gap)!">{% block title %}{{ title }}{% endblock %}</h1>
 
     <div class="text-sm flex flex-wrap justify-end gap-3">
         {% articleAuthors authors %}
@@ -15,7 +15,7 @@ layout: base.html
 
     {% block lead %}{% endblock %}
     <div class="lead">
-    {{ summary }}
+        {{ summary }}
     </div>
 
     <div class="article-content">

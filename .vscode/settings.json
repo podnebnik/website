@@ -11,5 +11,16 @@
     "FSharp.showExplorerOnStartup": false,
     "FSharp.smartIndent": true,
     "FSharp.codeLenses.references.enabled": true,
-    "editor.inlayHints.enabled": "offUnlessPressed"
+    "editor.inlayHints.enabled": "offUnlessPressed",
+    "tailwindCSS.experimental.configFile": "styles/main.css",
+    "tailwindCSS.classFunctions": [
+        "cn",
+        "cva",
+        "tw",
+        "clsx",
+        "tw\\.[a-z-]+"
+    ],
+    "editor.quickSuggestions": {
+        "strings": "on"
+    }
 }
