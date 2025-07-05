@@ -10,7 +10,6 @@ import { announce } from "./utils/a11y.js";
 import { StationSelector } from "./components/StationSelector.jsx";
 import { TemperatureDisplay } from "./components/TemperatureDisplay.jsx";
 import { ErrorMessage } from "./components/ErrorMessage.jsx";
-import { LoadingIndicator } from "./components/LoadingIndicator.jsx";
 
 /**
  * AliJeVroce is a Solid JS component that displays whether it is hot today in a selected location,
@@ -23,8 +22,6 @@ import { LoadingIndicator } from "./components/LoadingIndicator.jsx";
  * @returns {JSX.Element} The rendered component displaying temperature statistics and percentile comparison.
  */
 export function AliJeVroce() {
-    // Track whether keyboard navigation is being used
-    const [isKeyboardUser, setIsKeyboardUser] = createSignal(false);
     const [mainContentId] = createSignal('main-content');
 
     // Use the custom hook to manage all data and state
@@ -96,7 +93,6 @@ export function AliJeVroce() {
             <a
                 href={`#${mainContentId()}`}
                 class="skip-link"
-                onFocus={() => setIsKeyboardUser(true)}
             >
                 Preskoči na glavno vsebino
             </a>
@@ -113,7 +109,6 @@ export function AliJeVroce() {
                         stationPrefix={stationPrefix()}
                         isLoading={isLoadingStations()}
                         onStationChange={onStationChange}
-                        isKeyboardUser={isKeyboardUser()}
                     />
                 </h1>
 
@@ -130,13 +125,6 @@ export function AliJeVroce() {
                     labels={percentile_labels}
                     values={vrednosti}
                     descriptions={opisi}
-                    isKeyboardUser={isKeyboardUser()}
-                />
-
-                <LoadingIndicator
-                    isLoading={isLoadingData() || isLoadingStations()}
-                    message={isLoadingStations() ? 'Nalaganje postaj...' : 'Nalaganje podatkov o temperaturi...'}
-                    class="mt-4"
                 />
 
                 <ErrorMessage

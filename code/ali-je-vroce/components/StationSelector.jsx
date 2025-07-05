@@ -12,7 +12,6 @@ import { createKeyboardHandler, announce } from "../utils/a11y.js";
  * @param {Function} props.onStationChange - Callback when station selection changes
  * @param {boolean} props.isLoading - Whether stations are currently loading
  * @param {string} props.stationPrefix - Prefix to display (e.g., "v" for "v Ljubljani")
- * @param {boolean} props.isKeyboardUser - Whether the user is navigating with keyboard
  * @returns {JSX.Element} The rendered component
  */
 export function StationSelector(props) {
@@ -104,7 +103,8 @@ export function StationSelector(props) {
                     }>
                         <Select.Value>{state => state.selectedOption().label}</Select.Value>
                     </Show>
-                </Select.Trigger>?
+                </Select.Trigger>
+                ?
                 <Select.Portal>
                     <Select.Content
                         class="bg-muted text-white px-2 py-2 max-w-fit high-contrast-border"
