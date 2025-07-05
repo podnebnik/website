@@ -1,10 +1,10 @@
-import { Show, onMount, createEffect, createSignal, onCleanup } from "solid-js";
+import { onMount, createSignal, onCleanup } from "solid-js";
 import { vrednosti, opisi, percentile_labels } from "./constants.mjs";
 
 // Import custom hooks
 import { useWeatherData } from "./hooks/useWeatherData.js";
 import { throttle } from "./utils/debounce.js";
-import { announce, focusElement } from "./utils/a11y.js";
+import { announce } from "./utils/a11y.js";
 
 // Import components
 import { StationSelector } from "./components/StationSelector.jsx";
@@ -63,27 +63,30 @@ export function AliJeVroce() {
     }, 300);
 
 
+    // Create named handler functions so we can properly remove them later
+    const handleOnline = () => {
+        announce('Povezava z internetom je vzpostavljena. Poskušam naložiti podatke.', 'polite');
+        retryLoadingData();
+        retryLoadingStations();
+    };
+
+    const handleOffline = () => {
+        announce('Povezava z internetom je prekinjena. Nekateri podatki morda niso na voljo.', 'assertive');
+    };
+
     // Initialize data when component mounts
     onMount(() => {
-
         initialize();
 
         // Handle offline status
-        window.addEventListener('online', () => {
-            announce('Povezava z internetom je vzpostavljena. Poskušam naložiti podatke.', 'polite');
-            retryLoadingData();
-            retryLoadingStations();
-        });
-
-        window.addEventListener('offline', () => {
-            announce('Povezava z internetom je prekinjena. Nekateri podatki morda niso na voljo.', 'assertive');
-        });
+        window.addEventListener('online', handleOnline);
+        window.addEventListener('offline', handleOffline);
     });
 
     onCleanup(() => {
-        // Cleanup event listeners
-        window.removeEventListener('online', retryLoadingData);
-        window.removeEventListener('offline', retryLoadingStations);
+        // Cleanup event listeners with the same function references
+        window.removeEventListener('online', handleOnline);
+        window.removeEventListener('offline', handleOffline);
     });
 
 
