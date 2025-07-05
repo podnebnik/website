@@ -1,8 +1,9 @@
-import { Show, onMount } from "solid-js";
+import { Show, onMount, createEffect } from "solid-js";
 import { vrednosti, opisi, percentile_labels } from "./constants.mjs";
 
 // Import custom hooks
 import { useWeatherData } from "./hooks/useWeatherData.js";
+import { throttle } from "./utils/debounce.js";
 
 // Import components
 import { StationSelector } from "./components/StationSelector.jsx";
@@ -20,8 +21,7 @@ import { LoadingIndicator } from "./components/LoadingIndicator.jsx";
  * @component
  * @returns {JSX.Element} The rendered component displaying temperature statistics and percentile comparison.
  */
-export function AliJeVroce() {
-    // Use the custom hook to manage all data and state
+export function AliJeVroce() {    // Use the custom hook to manage all data and state
     const {
         // Station data
         stations,
@@ -44,14 +44,36 @@ export function AliJeVroce() {
 
         // Functions
         initialize,
-        onStationChange,
+        onStationChange: rawOnStationChange,
         retryLoadingData,
         retryLoadingStations
     } = useWeatherData();
 
+    // Throttle the station change handler to prevent excessive API calls
+    const onStationChange = throttle((station) => {
+        rawOnStationChange(station);
+    }, 300);
+
+    // Performance tracking
+    createEffect(() => {
+        if (result()) {
+            const loadTime = performance.now();
+            console.log(`Data loaded and rendered in ${loadTime.toFixed(2)}ms`);
+        }
+    });
+
     // Initialize data when component mounts
     onMount(() => {
+        // Mark the start of loading
+        performance.mark('data-loading-start');
+
         initialize();
+
+        // Handle offline status
+        window.addEventListener('online', () => {
+            retryLoadingData();
+            retryLoadingStations();
+        });
     });
 
 
