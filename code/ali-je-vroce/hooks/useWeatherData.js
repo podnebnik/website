@@ -1,4 +1,5 @@
-import { createSignal, createResource, createMemo, createEffect } from "solid-js";
+import { createSignal, createResource, createEffect, batch } from "solid-js";
+import { createStore } from "solid-js/store";
 import { requestData, loadStations } from "../helpers.mjs";
 import { DEFAULT_STATION } from "../constants.mjs";
 
@@ -59,19 +60,29 @@ export function useWeatherData() {
     const cachedStation = getCachedData('selectedStation');
     const cachedStations = getCachedData('stations');
 
-    // Station data
-    const [selectedStation, setSelectedStation] = createSignal(cachedStation || DEFAULT_STATION);
-    const [stationPrefix, setStationPrefix] = createSignal(cachedStation?.prefix || 'v');
+    // Create a store for all state rather than individual signals
+    const [state, setState] = createStore({
+        // Station data
+        selectedStation: cachedStation || DEFAULT_STATION,
+        stationPrefix: cachedStation?.prefix || 'v',
+        stations: cachedStations || [{ 'station_id': 1495, 'name_locative': 'Ljubljani', 'prefix': 'v' }],
 
-    // Temperature display state
-    const [result, setResult] = createSignal('');
-    const [resultTemperature, setResultTemperature] = createSignal('');
-    const [tempMin, setTempMin] = createSignal('');
-    const [timeMin, setTimeMin] = createSignal('');
-    const [tempMax, setTempMax] = createSignal('');
-    const [timeMax, setTimeMax] = createSignal('');
-    const [tempAvg, setTempAvg] = createSignal('');
-    const [timeUpdated, setTimeUpdated] = createSignal('');
+        // Temperature display state
+        result: '',
+        resultTemperature: '',
+        tempMin: '',
+        timeMin: '',
+        tempMax: '',
+        timeMax: '',
+        tempAvg: '',
+        timeUpdated: '',
+
+        // Loading and error states
+        isLoadingStations: false,
+        stationsError: null,
+        isLoadingData: false,
+        dataError: null
+    });
 
     // Create a memoized fetcher function for stations that only runs once
     const fetchStations = async () => {
@@ -95,12 +106,15 @@ export function useWeatherData() {
     };
 
     // Create a resource for stations data
-    const [stationsData, { refetch: refetchStations, mutate: mutateStations }] = createResource(
-        fetchStations
+    const [stationsData, { refetch: refetchStations }] = createResource(
+        fetchStations,
+        { initialValue: { success: false, stations: state.stations } }
     );
 
     // Create a memoized fetcher function for weather data that depends on the selected station
     const fetchWeatherData = async (stationId) => {
+        if (!stationId) return null;
+
         // Use a cache key based on station ID
         const cacheKey = `weatherData_${stationId}`;
         const cachedData = getCachedData(cacheKey, 10); // 10 minute cache for weather data
@@ -124,53 +138,69 @@ export function useWeatherData() {
     };
 
     // Create a resource for weather data that responds to station changes
-    const [weatherData, { refetch: refetchWeather, mutate: mutateWeather }] = createResource(
-        () => selectedStation().value,
+    const [weatherData, { refetch: refetchWeather }] = createResource(
+        () => state.selectedStation.value,
         fetchWeatherData
     );
+
+    // Update loading states based on resource loading status
+    createEffect(() => {
+        setState('isLoadingStations', stationsData.loading);
+    });
+
+    createEffect(() => {
+        setState('isLoadingData', weatherData.loading);
+    });
+
+    // Process stations data when it changes
+    createEffect(() => {
+        const data = stationsData();
+        if (!data) return;
+
+        if (data.success) {
+            setState('stations', data.stations);
+            setState('stationsError', null);
+        } else {
+            setState('stationsError', data.error || 'Unknown error');
+        }
+    });
 
     // Process weather data when it changes
     createEffect(() => {
         const data = weatherData();
-        if (!data || !data.success) return;
+        if (!data || !data.success) {
+            if (data) {
+                setState('dataError', data.error || 'Unknown error');
+            }
+            return;
+        }
 
-        const {
-            resultValue,
-            resultTemperatureValue,
-            tempMin,
-            timeMin,
-            tempMax,
-            timeMax,
-            tempAvg,
-            timeUpdated,
-        } = data.data;
+        setState('dataError', null);
 
-        setResultTemperature(`${resultTemperatureValue} °C`);
-        setTempMin(tempMin);
-        setTimeMin(timeMin);
-        setTempMax(tempMax);
-        setTimeMax(timeMax);
-        setTempAvg(tempAvg);
-        setTimeUpdated(timeUpdated);
-        setResult(resultValue);
-    });
+        // Use batch to group multiple updates together for better performance
+        batch(() => {
+            const {
+                resultValue,
+                resultTemperatureValue,
+                tempMin,
+                timeMin,
+                tempMax,
+                timeMax,
+                tempAvg,
+                timeUpdated,
+            } = data.data;
 
-    // Derived values
-    const stations = createMemo(() => {
-        const data = stationsData();
-        return data && data.success ? data.stations : [{ 'station_id': 1495, 'name_locative': 'Ljubljani', 'prefix': 'v' }];
-    });
-
-    const isLoadingStations = createMemo(() => stationsData.loading);
-    const stationsError = createMemo(() => {
-        const data = stationsData();
-        return (data && !data.success) ? data.error : null;
-    });
-
-    const isLoadingData = createMemo(() => weatherData.loading);
-    const dataError = createMemo(() => {
-        const data = weatherData();
-        return (data && !data.success) ? data.error : null;
+            setState({
+                resultTemperature: `${resultTemperatureValue} °C`,
+                tempMin,
+                timeMin,
+                tempMax,
+                timeMax,
+                tempAvg,
+                timeUpdated,
+                result: resultValue
+            });
+        });
     });
 
     /**
@@ -178,8 +208,12 @@ export function useWeatherData() {
      * @param {Object} station - Selected station object
      */
     function onStationChange(station) {
-        setStationPrefix(station.prefix);
-        setSelectedStation(station);
+        batch(() => {
+            setState({
+                stationPrefix: station.prefix,
+                selectedStation: station
+            });
+        });
 
         // Save selected station to local storage
         setCachedData('selectedStation', station);
@@ -197,6 +231,7 @@ export function useWeatherData() {
      * Retries loading temperature data
      */
     function retryLoadingData() {
+        setState('dataError', null);
         refetchWeather();
     }
 
@@ -204,28 +239,30 @@ export function useWeatherData() {
      * Retries loading stations list
      */
     function retryLoadingStations() {
+        setState('stationsError', null);
         refetchStations();
     }
 
+    // Return derived values directly from the store for better reactivity
     return {
         // Station data
-        stations,
-        selectedStation,
-        stationPrefix,
-        isLoadingStations,
-        stationsError,
+        stations: () => state.stations,
+        selectedStation: () => state.selectedStation,
+        stationPrefix: () => state.stationPrefix,
+        isLoadingStations: () => state.isLoadingStations || stationsData.loading,
+        stationsError: () => state.stationsError,
 
         // Temperature data
-        isLoadingData,
-        dataError,
-        result,
-        resultTemperature,
-        tempMin,
-        timeMin,
-        tempMax,
-        timeMax,
-        tempAvg,
-        timeUpdated,
+        isLoadingData: () => state.isLoadingData || weatherData.loading,
+        dataError: () => state.dataError,
+        result: () => state.result,
+        resultTemperature: () => state.resultTemperature,
+        tempMin: () => state.tempMin,
+        timeMin: () => state.timeMin,
+        tempMax: () => state.tempMax,
+        timeMax: () => state.timeMax,
+        tempAvg: () => state.tempAvg,
+        timeUpdated: () => state.timeUpdated,
 
         // Functions
         initialize,
