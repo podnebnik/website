@@ -13,7 +13,7 @@ import { cn } from "../../utils.mjs";
 export function LoadingSkeleton({ type }) {
     // if you are using tailwindcss extension add  "className[A-Za-z0-9_]*" "tailwindCSS.classAttributes" property in vscode settings
     // to get tailwindcss intellisense
-    const classNameSkeletonColor = "bg-primary";
+    const classNameSkeletonColor = "bg-primary/30";
 
     switch (type) {
         case "main":
