@@ -103,9 +103,7 @@ export function AliJeVroce() {
 
             <main
                 class="text-center outline-none"
-                role="main"
-                aria-label="Ali je vroče - podatki o temperaturi"
-                id={mainContentId()}
+                aria-label="Ali je danes vroče – podatki o temperaturi"
                 tabIndex="-1"
             >
                 <h1 class="not-prose font-normal text-5xl font-sans text-balance">
@@ -119,7 +117,6 @@ export function AliJeVroce() {
                     />
                 </h1>
 
-                {/* Temperature Display */}
                 <TemperatureDisplay
                     result={result()}
                     resultTemperature={resultTemperature()}
@@ -136,14 +133,12 @@ export function AliJeVroce() {
                     isKeyboardUser={isKeyboardUser()}
                 />
 
-                {/* Global loading indicator */}
                 <LoadingIndicator
                     isLoading={isLoadingData() || isLoadingStations()}
                     message={isLoadingStations() ? 'Nalaganje postaj...' : 'Nalaganje podatkov o temperaturi...'}
                     class="mt-4"
                 />
 
-                {/* Error messages */}
                 <ErrorMessage
                     error={dataError()}
                     onRetry={retryLoadingData}
