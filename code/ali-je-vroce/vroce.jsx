@@ -1,9 +1,10 @@
-import { Show, onMount, createEffect } from "solid-js";
+import { Show, onMount, createEffect, createSignal, onCleanup } from "solid-js";
 import { vrednosti, opisi, percentile_labels } from "./constants.mjs";
 
 // Import custom hooks
 import { useWeatherData } from "./hooks/useWeatherData.js";
 import { throttle } from "./utils/debounce.js";
+import { announce, focusElement } from "./utils/a11y.js";
 
 // Import components
 import { StationSelector } from "./components/StationSelector.jsx";
@@ -21,7 +22,12 @@ import { LoadingIndicator } from "./components/LoadingIndicator.jsx";
  * @component
  * @returns {JSX.Element} The rendered component displaying temperature statistics and percentile comparison.
  */
-export function AliJeVroce() {    // Use the custom hook to manage all data and state
+export function AliJeVroce() {
+    // Track whether keyboard navigation is being used
+    const [isKeyboardUser, setIsKeyboardUser] = createSignal(false);
+    const [mainContentId] = createSignal('main-content');
+
+    // Use the custom hook to manage all data and state
     const {
         // Station data
         stations,
@@ -52,76 +58,99 @@ export function AliJeVroce() {    // Use the custom hook to manage all data and 
     // Throttle the station change handler to prevent excessive API calls
     const onStationChange = throttle((station) => {
         rawOnStationChange(station);
+        // Announce station change to screen readers
+        announce(`Izbrana lokacija ${station.label}`, 'polite');
     }, 300);
 
-    // Performance tracking
-    createEffect(() => {
-        if (result()) {
-            const loadTime = performance.now();
-            console.log(`Data loaded and rendered in ${loadTime.toFixed(2)}ms`);
-        }
-    });
 
     // Initialize data when component mounts
     onMount(() => {
-        // Mark the start of loading
-        performance.mark('data-loading-start');
 
         initialize();
 
         // Handle offline status
         window.addEventListener('online', () => {
+            announce('Povezava z internetom je vzpostavljena. Poskušam naložiti podatke.', 'polite');
             retryLoadingData();
             retryLoadingStations();
         });
+
+        window.addEventListener('offline', () => {
+            announce('Povezava z internetom je prekinjena. Nekateri podatki morda niso na voljo.', 'assertive');
+        });
+    });
+
+    onCleanup(() => {
+        // Cleanup event listeners
+        window.removeEventListener('online', retryLoadingData);
+        window.removeEventListener('offline', retryLoadingStations);
     });
 
 
     return (
-        <div class="text-center">
-            <p class="font-normal text-5xl font-sans text-balance">
-                Ali je danes vroče <StationSelector
-                    stations={stations()}
-                    selectedStation={selectedStation()}
-                    stationPrefix={stationPrefix()}
-                    isLoading={isLoadingStations()}
-                    onStationChange={onStationChange}
+        <>
+            {/* Skip link for keyboard users */}
+            <a
+                href={`#${mainContentId()}`}
+                class="skip-link"
+                onFocus={() => setIsKeyboardUser(true)}
+            >
+                Preskoči na glavno vsebino
+            </a>
+
+            <main
+                class="text-center outline-none"
+                role="main"
+                aria-label="Ali je vroče - podatki o temperaturi"
+                id={mainContentId()}
+                tabIndex="-1"
+            >
+                <h1 class="not-prose font-normal text-5xl font-sans text-balance">
+                    Ali je danes vroče <StationSelector
+                        stations={stations()}
+                        selectedStation={selectedStation()}
+                        stationPrefix={stationPrefix()}
+                        isLoading={isLoadingStations()}
+                        onStationChange={onStationChange}
+                        isKeyboardUser={isKeyboardUser()}
+                    />
+                </h1>
+
+                {/* Temperature Display */}
+                <TemperatureDisplay
+                    result={result()}
+                    resultTemperature={resultTemperature()}
+                    tempMin={tempMin()}
+                    timeMin={timeMin()}
+                    tempMax={tempMax()}
+                    timeMax={timeMax()}
+                    tempAvg={tempAvg()}
+                    timeUpdated={timeUpdated()}
+                    isLoading={isLoadingData() || dataError() !== null}
+                    labels={percentile_labels}
+                    values={vrednosti}
+                    descriptions={opisi}
+                    isKeyboardUser={isKeyboardUser()}
                 />
-            </p>
 
-            {/* Temperature Display */}
-            <TemperatureDisplay
-                result={result()}
-                resultTemperature={resultTemperature()}
-                tempMin={tempMin()}
-                timeMin={timeMin()}
-                tempMax={tempMax()}
-                timeMax={timeMax()}
-                tempAvg={tempAvg()}
-                timeUpdated={timeUpdated()}
-                isLoading={isLoadingData() || dataError() !== null}
-                labels={percentile_labels}
-                values={vrednosti}
-                descriptions={opisi}
-            />
+                {/* Global loading indicator */}
+                <LoadingIndicator
+                    isLoading={isLoadingData() || isLoadingStations()}
+                    message={isLoadingStations() ? 'Nalaganje postaj...' : 'Nalaganje podatkov o temperaturi...'}
+                    class="mt-4"
+                />
 
-            {/* Global loading indicator */}
-            <LoadingIndicator
-                isLoading={isLoadingData() || isLoadingStations()}
-                message={isLoadingStations() ? 'Nalaganje postaj...' : 'Nalaganje podatkov o temperaturi...'}
-                class="mt-4"
-            />
+                {/* Error messages */}
+                <ErrorMessage
+                    error={dataError()}
+                    onRetry={retryLoadingData}
+                />
 
-            {/* Error messages */}
-            <ErrorMessage
-                error={dataError()}
-                onRetry={retryLoadingData}
-            />
-
-            <ErrorMessage
-                error={stationsError()}
-                onRetry={retryLoadingStations}
-            />
-        </div>
+                <ErrorMessage
+                    error={stationsError()}
+                    onRetry={retryLoadingStations}
+                />
+            </main>
+        </>
     );
 }
