@@ -50,7 +50,7 @@ export function LoadingSkeleton({ type }) {
         case "stats":
             return (
                 <>
-                    <div class="flex flex-col items-center" role="listitem">
+                    <div class="flex items-center" role="listitem">
                         <span class="text-gray-400 text-sm leading-6">minimum</span>
                         <Skeleton as="span" width={60} height={28} class={cn(classNameSkeletonColor, "animate-pulse")} visible={true} animate radius={10} aria-hidden="true" />
                         <Skeleton as="span" width={90} height={18} class={cn(classNameSkeletonColor, "animate-pulse mt-1")} visible={true} animate radius={10} aria-hidden="true" />
