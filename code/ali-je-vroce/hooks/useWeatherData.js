@@ -44,20 +44,45 @@ function getPreference(key, defaultValue = null) {
  * 
  * @returns {Object} An object containing data, loading states, error states, and functions to manage them
  */
+/**
+ * Custom hook for managing weather data and station selection with SolidJS and TanStack Query.
+ *
+ * Provides reactive state and utility functions for:
+ * - Fetching and caching weather data for a selected station
+ * - Managing station selection and optimistic UI updates
+ * - Handling loading, error, and stale states for both stations and weather data
+ * - Retrying failed requests with exponential backoff
+ * - Monitoring network status to trigger automatic retries
+ *
+ * @returns {Object} An object containing:
+ *   @property {Function} stations - Returns the list of available stations.
+ *   @property {Function} selectedStation - Returns the currently selected station object.
+ *   @property {Function} stationPrefix - Returns the prefix of the selected station.
+ *   @property {Function} isLoadingStations - Returns true if stations are loading.
+ *   @property {Function} stationsError - Returns the error message for stations loading, if any.
+ *   @property {Function} isLoadingData - Returns true if weather data is loading or station is changing.
+ *   @property {Function} dataError - Returns the error message for weather data loading, if any.
+ *   @property {Function} result - Returns the main weather result value.
+ *   @property {Function} resultTemperature - Returns the formatted temperature string.
+ *   @property {Function} tempMin - Returns the minimum temperature.
+ *   @property {Function} timeMin - Returns the time of minimum temperature.
+ *   @property {Function} tempMax - Returns the maximum temperature.
+ *   @property {Function} timeMax - Returns the time of maximum temperature.
+ *   @property {Function} tempAvg - Returns the average temperature.
+ *   @property {Function} timeUpdated - Returns the last update time for the data.
+ *   @property {Function} isDataStale - Returns true if the weather data is stale.
+ *   @property {Function} initialize - Initializes the hook and prefetches stations data.
+ *   @property {Function} onStationChange - Handles station selection changes.
+ *   @property {Function} retryLoadingData - Retries loading weather data with backoff.
+ *   @property {Function} retryLoadingStations - Retries loading stations list with backoff.
+ */
 export function useWeatherData() {
-    // Get the QueryClient from context
     const queryClient = useQueryClient();
-
-    // Track if there's a station change in progress
     const [isChanging, setIsChanging] = createSignal(false);
 
-    // Try to load last selected station from local storage
     const cachedStation = getPreference('selectedStation', DEFAULT_STATION);
-
-    // Use a signal for reactive station ID
     const [stationId, setStationId] = createSignal(cachedStation.value);
 
-    // Create a store for UI state
     const [state, setState] = createStore({
         // Station data
         selectedStation: cachedStation,
@@ -74,10 +99,12 @@ export function useWeatherData() {
         timeUpdated: ''
     });
 
-    // Track current fetch controller for cancellation
+    /**
+     * Holds the current AbortController instance used to manage and cancel ongoing fetch requests.
+     * @type {AbortController|null}
+     */
     let currentController = null;
 
-    // Use TanStack Query hooks
     const stationsQuery = useStationsQuery();
     const weatherQuery = useWeatherQuery(stationId());
 
@@ -88,7 +115,6 @@ export function useWeatherData() {
 
         const data = weatherQuery.data;
 
-        // Use batch to group multiple updates together for better performance
         batch(() => {
             setState({
                 resultTemperature: `${data.resultTemperatureValue} °C`,
@@ -108,16 +134,28 @@ export function useWeatherData() {
      * and optimistic updates for better user experience
      * @param {Object} station - Selected station object
      */
+    /**
+     * Handles the logic for when a weather station is changed by the user.
+     * 
+     * - Prevents redundant requests if the selected station is already active.
+     * - Cancels any in-flight data fetch for a previous station.
+     * - Saves the selected station to local storage for persistence.
+     * - Generates and displays optimistic UI data based on cached or current data.
+     * - Updates relevant state variables in a batched manner for performance.
+     * - Fetches fresh weather data using the query client, ensuring consistency with hook-based data fetching.
+     * - Handles loading state and error reporting, including aborting requests on station change.
+     * 
+     * @param {Object} station - The newly selected station object.
+     * @param {string} station.value - The unique identifier for the station.
+     * @param {string} station.prefix - The prefix or code for the station.
+     */
     function onStationChange(station) {
-        // Early return if same station
         if (station.value === stationId()) return;
 
-        // Cancel any in-flight request
         if (currentController) {
             currentController.abort();
         }
 
-        // Create a new AbortController for this request
         currentController = new AbortController();
 
         // Save selected station to local storage

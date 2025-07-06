@@ -135,14 +135,10 @@ export function useWeatherQuery(stationId) {
                 }
             },
             enabled: !!stationId,
-
             // Use placeholderData for immediate rendering while fetching (key SWR feature)
             placeholderData: cachedData,
-
             // Always keep previous data visible while loading new data
             keepPreviousData: true,
-
-            // Using defaults from queryClient.setQueryDefaults for 'weatherData'
         };
     });
 }
