@@ -2,37 +2,27 @@
  * @typedef {'p00' | 'p05' | 'p20' | 'p40' | 'p60' | 'p80' | 'p95'} ValidPercentile
  * @typedef { ValidPercentile | ''} PercentileKey
  * 
- * @typedef {Object} DefaultStation
- * @property {DEFAULT_STATION_ID} value - The ID of the default weather station.
- * @property {DEFAULT_STATION_NAME} label - The name of the default weather station.
- * @property {DEFAULT_STATION_PREFIX} prefix - The prefix for the default weather station, used in the
  */
 
 /**
  * @constant {number} DEFAULT_STATION_ID
  * @description The default weather station ID for Ljubljana.
- * @default 1495
  */
 const DEFAULT_STATION_ID = 1495; // Ljubljana
 /**
  * @constant {string} DEFAULT_STATION_NAME
  * @description The default name of the weather station.
- * @default 'Ljubljana'
  */
 const DEFAULT_STATION_NAME = 'Ljubljana';
 /**
  * @constant {string} DEFAULT_STATION_PREFIX
  * @description The default prefix for the weather station, used in the UI.
- * @default 'v'
  */
 const DEFAULT_STATION_PREFIX = 'v'; // 'v' for "v Ljubljani"    
 
 /**
- * 
  * @constant DEFAULT_STATION
- * @type {DefaultStation}
  * @description The default weather station object containing ID, name, and prefix.
- * 
  */
 export const DEFAULT_STATION = {
     value: DEFAULT_STATION_ID,
@@ -41,8 +31,16 @@ export const DEFAULT_STATION = {
 }
 
 // URL
+/**
+ * @constant {string} BASE_URL
+ * @description The base URL for the API.
+ */
 export const BASE_URL = 'https://stage-data.podnebnik.org'
 // const baseUrl = 'http://localhost:8010'
+/**
+ * @constant {string} VREMENAR_BASE_URL
+ * @description The base URL for the Vremenar API.
+ */
 export const VREMENAR_BASE_URL = 'https://podnebnik.vremenar.app/staging'
 // const vremenarBaseUrl = 'http://localhost:8000'
 
