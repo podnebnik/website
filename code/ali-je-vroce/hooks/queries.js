@@ -1,5 +1,6 @@
 import { useQuery, QueryClient } from '@tanstack/solid-query';
 import { requestData, loadStations } from '../helpers.mjs';
+import { createLocalStoragePersistor } from '../utils/persistence';
 
 /**
  * Query key factory helps organize and structure query keys
@@ -42,20 +43,40 @@ function categorizeError(error, context = '') {
 
 /**
  * Custom hook for fetching stations data
+ * With improved persistence and offline support
  * 
  * @returns {Object} TanStack Query result for stations data
  */
 export function useStationsQuery() {
+    // Create a persistor to check for cached data
+    const persistor = createLocalStoragePersistor();
+
     return useQuery(() => ({
         queryKey: queryKeys.stations(),
         queryFn: async () => {
             try {
+                // Try to get stations from network
                 const result = await loadStations();
                 if (!result.success) {
+                    // If network request fails, try to get from persistence
+                    const persistedStations = persistor.getPersistedQuery(['stations']);
+                    if (persistedStations) {
+                        console.info('Using persisted stations data from cache');
+                        return persistedStations;
+                    }
+
+                    // If no persisted data, throw the original error
                     throw new Error(result.error || 'Failed to load stations');
                 }
                 return result.stations;
             } catch (error) {
+                // Check for persisted data if network request fails
+                const persistedStations = persistor.getPersistedQuery(['stations']);
+                if (persistedStations) {
+                    console.info('Using persisted stations data due to network error');
+                    return persistedStations;
+                }
+
                 throw categorizeError(error, 'stations');
             }
         },
@@ -143,6 +164,48 @@ export function getQueryClient() {
                 cacheTime: 1000 * 60 * 30, // Keep data in cache for 30 minutes
             }
         );
+
+        // Initialize storage persistor
+        const persistor = createLocalStoragePersistor();
+
+        // Clean up expired cache entries
+        persistor.cleanupCache();
+
+        // Set up event listeners to save queries to localStorage
+        _queryClient.getQueryCache().subscribe(event => {
+            if (event.type === 'success' && event.query.state.data) {
+                // Only persist certain queries
+                const queryKey = event.query.queryKey;
+
+                // Don't persist empty data
+                if (!event.query.state.data) return;
+
+                // Determine if query should be persisted
+                if (queryKey[0] === 'stations') {
+                    // Always persist stations list
+                    persistor.persistQuery(queryKey, event.query.state.data);
+                } else if (queryKey[0] === 'weatherData') {
+                    // Only persist weather data for popular stations or if explicit
+                    persistor.persistQuery(queryKey, event.query.state.data);
+                }
+            }
+        });
+
+        // Add hydration logic to restore queries from persistence
+        setTimeout(() => {
+            try {
+                // Restore stations data
+                const stationsData = persistor.getPersistedQuery(['stations']);
+                if (stationsData) {
+                    _queryClient.setQueryData(['stations'], stationsData);
+                }
+
+                // For weather data, we'd need to know the specific station IDs
+                // This could be expanded to handle more complex scenarios
+            } catch (err) {
+                console.warn('Error hydrating query client from persistence:', err);
+            }
+        }, 0);
     }
 
     return _queryClient;
