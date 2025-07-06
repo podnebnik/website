@@ -101,7 +101,7 @@ export function TemperatureDisplay(props) {
                     <Show
                         when={!props.isLoading}
                         fallback={
-                            <div aria-label="Nalaganje podrobnih podatkov o temperaturi">
+                            <div class="flex justify-center gap-12" aria-label="Nalaganje podrobnih podatkov o temperaturi">
                                 <LoadingSkeleton type="stats" />
                             </div>
                         }
