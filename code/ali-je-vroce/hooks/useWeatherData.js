@@ -1,10 +1,11 @@
-import { createSignal, createEffect, batch } from "solid-js";
+import { createSignal, createEffect, batch, onMount, onCleanup } from "solid-js";
 import { createStore } from "solid-js/store";
 import { DEFAULT_STATION } from "../constants.mjs";
 import { useStationsQuery, useWeatherQuery, queryKeys, getQueryClient } from './queries';
 import { useQueryClient } from '@tanstack/solid-query';
 import { requestData, loadStations } from '../helpers.mjs';
 import { generateOptimisticWeatherData } from '../utils/optimistic';
+import { retryLoadingWithBackoff, createNetworkMonitor } from '../utils/errorRecovery';
 
 /**
  * Simplified localStorage helper for user preferences
@@ -217,18 +218,53 @@ export function useWeatherData() {
     }
 
     /**
-     * Retries loading temperature data
+     * Retries loading temperature data with exponential backoff
      */
     function retryLoadingData() {
-        weatherQuery.refetch();
+        retryLoadingWithBackoff(weatherQuery.refetch, {
+            maxRetries: 3,
+            initialDelay: 1000,
+            maxDelay: 5000
+        }).catch(error => {
+            console.warn('All retries for weather data failed:', error);
+            // We could show a more specific error message here if needed
+        });
     }
 
     /**
-     * Retries loading stations list
+     * Retries loading stations list with exponential backoff
      */
     function retryLoadingStations() {
-        stationsQuery.refetch();
+        retryLoadingWithBackoff(stationsQuery.refetch, {
+            maxRetries: 3,
+            initialDelay: 1000,
+            maxDelay: 5000
+        }).catch(error => {
+            console.warn('All retries for stations data failed:', error);
+            // We could show a more specific error message here if needed
+        });
     }
+
+    // Set up network monitoring to automatically retry when connection is restored
+    const networkMonitor = createNetworkMonitor({
+        onOnline: () => {
+            // When connection is restored, retry both data sources
+            retryLoadingData();
+            retryLoadingStations();
+        },
+        onOffline: () => {
+            // We could show a notification about offline mode here
+        }
+    });
+
+    // Set up and clean up network monitoring
+    onMount(() => {
+        networkMonitor.setup();
+    });
+
+    onCleanup(() => {
+        networkMonitor.cleanup();
+    });
 
     // Return derived values and functions needed by components
     return {
