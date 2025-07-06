@@ -14,6 +14,8 @@
     "@kobalte/core": "^0.13.10",
     "@tailwindcss/typography": "^0.5.16",
     "@tailwindcss/vite": "^4.1.11",
+    "@tanstack/solid-query": "^5.81.5",
+    "@tanstack/solid-query-devtools": "^5.81.5",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "highcharts": "^12.3.0",

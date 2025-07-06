@@ -1774,6 +1774,43 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/query-core@npm:5.81.5":
+  version: 5.81.5
+  resolution: "@tanstack/query-core@npm:5.81.5"
+  checksum: 10c0/8d3af841f0e2f3fba1dfd100a8bbc2d07e7b1d5b8570d3d0d8bba5127601c2788e5f7c84839f93f3b0cbe54f14866c1fef8e3f9e745f02d27afaaeea33b7b755
+  languageName: node
+  linkType: hard
+
+"@tanstack/query-devtools@npm:5.81.2":
+  version: 5.81.2
+  resolution: "@tanstack/query-devtools@npm:5.81.2"
+  checksum: 10c0/f942cba7bd3ecb471063cd472eeebb2ec76005feeb7e0f357b191da5ab9f769aa767bc88d4da82b2b39c4fcbb16dfed38ce3c77b6eea4d4c30405368c1120207
+  languageName: node
+  linkType: hard
+
+"@tanstack/solid-query-devtools@npm:^5.81.5":
+  version: 5.81.5
+  resolution: "@tanstack/solid-query-devtools@npm:5.81.5"
+  dependencies:
+    "@tanstack/query-devtools": "npm:5.81.2"
+  peerDependencies:
+    "@tanstack/solid-query": ^5.81.5
+    solid-js: ^1.6.0
+  checksum: 10c0/47281e6eb920d8fd57b530a4dd333c02f25c54b76cd2908031b1e91ce068017d0cae3f28baf8e461a61db8c767f9a8f827a6a08b50c01eb9babb878f5efd0033
+  languageName: node
+  linkType: hard
+
+"@tanstack/solid-query@npm:^5.81.5":
+  version: 5.81.5
+  resolution: "@tanstack/solid-query@npm:5.81.5"
+  dependencies:
+    "@tanstack/query-core": "npm:5.81.5"
+  peerDependencies:
+    solid-js: ^1.6.0
+  checksum: 10c0/8bd9af96041df2fd303b2e6096f36aaaf775eef4217ce564334bcd0b4618422959ca491773f8c633a3b6f21ddc4ea082e97e8cb1cb56ed7842f50a4f0aff5d20
+  languageName: node
+  linkType: hard
+
 "@tybys/wasm-util@npm:^0.9.0":
   version: 0.9.0
   resolution: "@tybys/wasm-util@npm:0.9.0"
@@ -3964,6 +4001,8 @@ __metadata:
     "@kobalte/core": "npm:^0.13.10"
     "@tailwindcss/typography": "npm:^0.5.16"
     "@tailwindcss/vite": "npm:^4.1.11"
+    "@tanstack/solid-query": "npm:^5.81.5"
+    "@tanstack/solid-query-devtools": "npm:^5.81.5"
     class-variance-authority: "npm:^0.7.1"
     clsx: "npm:^2.1.1"
     highcharts: "npm:^12.3.0"
