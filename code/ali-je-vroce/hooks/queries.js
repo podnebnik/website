@@ -65,6 +65,7 @@ export function useStationsQuery() {
 
 /**
  * Custom hook for fetching weather data for a specific station
+ * With improved revalidation strategy for fresher data
  * 
  * @param {number} stationId - The ID of the station to fetch data for
  * @returns {Object} TanStack Query result for weather data
@@ -91,6 +92,9 @@ export function useWeatherQuery(stationId) {
             }
         },
         enabled: !!stationId,
+        // Automatic background refreshes for fresher data
+        refetchInterval: 1000 * 60 * 10, // Refresh every 10 minutes
+        refetchIntervalInBackground: true, // Continue refreshing even when tab is not focused
         // Using defaults from queryClient.setQueryDefaults for 'weatherData'
     }));
 }
@@ -128,13 +132,15 @@ export function getQueryClient() {
         _queryClient.setQueryDefaults(
             ['weatherData'],
             {
-                staleTime: 0,
+                staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
                 retry: 2,
                 refetchOnWindowFocus: "always",
                 refetchOnMount: "always",
                 refetchOnReconnect: "always",
                 refetchOnStale: true,
-                cacheTime: 1000 * 60 * 10,
+                refetchInterval: 1000 * 60 * 10, // Refresh every 10 minutes
+                refetchIntervalInBackground: true, // Continue refreshing even when tab is not focused
+                cacheTime: 1000 * 60 * 30, // Keep data in cache for 30 minutes
             }
         );
     }

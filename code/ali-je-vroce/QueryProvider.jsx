@@ -30,13 +30,15 @@ queryClient.setQueryDefaults(
 queryClient.setQueryDefaults(
     ['weatherData'],
     {
-        staleTime: 0, // Always fetch fresh weather data
+        staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
         retry: 2,
         refetchOnWindowFocus: "always",
         refetchOnMount: "always",
         refetchOnReconnect: "always",
         refetchOnStale: true,
-        cacheTime: 1000 * 60 * 10, // 10 minutes
+        refetchInterval: 1000 * 60 * 10, // Refresh every 10 minutes
+        refetchIntervalInBackground: true, // Continue refreshing even when tab is not focused
+        cacheTime: 1000 * 60 * 30, // Keep data in cache for 30 minutes
     }
 );
 
