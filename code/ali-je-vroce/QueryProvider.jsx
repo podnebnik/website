@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/solid-query';
 import { SolidQueryDevtools } from '@tanstack/solid-query-devtools';
-import { Show } from 'solid-js';
+import { Show, onMount } from 'solid-js';
+import { prefetchPopularStations, prefetchStationsData } from './utils/prefetching.js';
 
 // Create a client with specialized defaults for different query types
 const queryClient = new QueryClient({
@@ -41,6 +42,7 @@ queryClient.setQueryDefaults(
 
 /**
  * QueryProvider component that wraps children with TanStack Query's QueryClientProvider
+ * Also handles initial data prefetching for better user experience
  * 
  * @param {Object} props - Component props
  * @param {JSX.Element} props.children - Child components to be wrapped
@@ -49,6 +51,17 @@ queryClient.setQueryDefaults(
 export function QueryProvider(props) {
     // Check if we're in development mode
     const isDev = () => import.meta.env?.DEV === true;
+
+    // When the component mounts, start prefetching data
+    onMount(() => {
+        // Prefetch stations list data immediately
+        prefetchStationsData(queryClient);
+
+        // Prefetch popular stations data with a small delay to prioritize visible UI
+        setTimeout(() => {
+            prefetchPopularStations(queryClient);
+        }, 2000); // 2 second delay
+    });
 
     return (
         <QueryClientProvider client={queryClient}>
