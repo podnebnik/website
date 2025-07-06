@@ -1,7 +1,27 @@
-import { createSignal, createResource, createEffect, batch } from "solid-js";
+import { createSignal, createEffect, batch } from "solid-js";
 import { createStore } from "solid-js/store";
-import { requestData, loadStations } from "../helpers.mjs";
 import { DEFAULT_STATION } from "../constants.mjs";
+import { useStationsQuery, useWeatherQuery, queryKeys } from './queries';
+import { useQueryClient } from '@tanstack/solid-query';
+import { requestData } from '../helpers.mjs';
+
+/**
+ * Saves data to local storage with timestamp
+ * 
+ * @param {string} key - The key to store data under
+ * @param {any} data - The data to store
+ */
+function setCachedData(key, data) {
+    try {
+        const item = {
+            timestamp: new Date().getTime(),
+            data
+        };
+        localStorage.setItem(key, JSON.stringify(item));
+    } catch (error) {
+        console.warn('Error writing to cache:', error);
+    }
+}
 
 /**
  * Retrieves cached data from local storage
@@ -33,39 +53,25 @@ function getCachedData(key, maxAgeMinutes = 30) {
 }
 
 /**
- * Saves data to the cache
- * 
- * @param {string} key - The key to store data under
- * @param {any} data - The data to store
- */
-function setCachedData(key, data) {
-    try {
-        const item = {
-            timestamp: new Date().getTime(),
-            data
-        };
-        localStorage.setItem(key, JSON.stringify(item));
-    } catch (error) {
-        console.warn('Error writing to cache:', error);
-    }
-}
-
-/**
- * Custom hook for fetching and managing weather data and stations
+ * Custom hook for fetching and managing weather data and stations using TanStack Query
  * 
  * @returns {Object} An object containing data, loading states, error states, and functions to manage them
  */
 export function useWeatherData() {
+    // Get the QueryClient from context
+    const queryClient = useQueryClient();
+
     // Try to load last selected station from local storage
     const cachedStation = getCachedData('selectedStation');
-    const cachedStations = getCachedData('stations');
 
-    // Create a store for all state rather than individual signals
+    // Use a signal for reactive station ID
+    const [stationId, setStationId] = createSignal((cachedStation || DEFAULT_STATION).value);
+
+    // Create a store for UI state
     const [state, setState] = createStore({
         // Station data
         selectedStation: cachedStation || DEFAULT_STATION,
         stationPrefix: cachedStation?.prefix || 'v',
-        stations: cachedStations || [{ 'station_id': 1495, 'name_locative': 'Ljubljani', 'prefix': 'v' }],
 
         // Temperature display state
         result: '',
@@ -75,130 +81,31 @@ export function useWeatherData() {
         tempMax: '',
         timeMax: '',
         tempAvg: '',
-        timeUpdated: '',
-
-        // Loading and error states
-        isLoadingStations: false,
-        stationsError: null,
-        isLoadingData: false,
-        dataError: null
+        timeUpdated: ''
     });
 
-    // Create a memoized fetcher function for stations that only runs once
-    const fetchStations = async () => {
-        // Try to get from cache first
-        if (cachedStations) {
-            console.log('Using cached stations data');
-            return { stations: cachedStations, success: true };
-        }
-
-        try {
-            const result = await loadStations();
-            if (result.success) {
-                // Cache the successful result
-                setCachedData('stations', result.stations);
-            }
-            return result;
-        } catch (error) {
-            console.error('Error in fetchStations:', error);
-            return { success: false, error: 'Napaka pri nalaganju postaj.' };
-        }
-    };
-
-    // Create a resource for stations data
-    const [stationsData, { refetch: refetchStations }] = createResource(
-        fetchStations,
-        { initialValue: { success: false, stations: state.stations } }
-    );
-
-    // Create a memoized fetcher function for weather data that depends on the selected station
-    const fetchWeatherData = async (stationId) => {
-        if (!stationId) return null;
-
-        // Use a cache key based on station ID
-        const cacheKey = `weatherData_${stationId}`;
-        const cachedData = getCachedData(cacheKey, 10); // 10 minute cache for weather data
-
-        if (cachedData) {
-            console.log(`Using cached weather data for station ${stationId}`);
-            return cachedData;
-        }
-
-        try {
-            const result = await requestData(stationId);
-            if (result.success) {
-                // Cache the successful result
-                setCachedData(cacheKey, result);
-            }
-            return result;
-        } catch (error) {
-            console.error('Error in fetchWeatherData:', error);
-            return { success: false, error: 'Napaka pri nalaganju podatkov o temperaturi.' };
-        }
-    };
-
-    // Create a resource for weather data that responds to station changes
-    const [weatherData, { refetch: refetchWeather }] = createResource(
-        () => state.selectedStation.value,
-        fetchWeatherData
-    );
-
-    // Update loading states based on resource loading status
-    createEffect(() => {
-        setState('isLoadingStations', stationsData.loading);
-    });
-
-    createEffect(() => {
-        setState('isLoadingData', weatherData.loading);
-    });
-
-    // Process stations data when it changes
-    createEffect(() => {
-        const data = stationsData();
-        if (!data) return;
-
-        if (data.success) {
-            setState('stations', data.stations);
-            setState('stationsError', null);
-        } else {
-            setState('stationsError', data.error || 'Unknown error');
-        }
-    });
+    // Use TanStack Query hooks
+    const stationsQuery = useStationsQuery();
+    const weatherQuery = useWeatherQuery(stationId());
 
     // Process weather data when it changes
     createEffect(() => {
-        const data = weatherData();
-        if (!data || !data.success) {
-            if (data) {
-                setState('dataError', data.error || 'Unknown error');
-            }
-            return;
-        }
+        // Skip if data is loading or there's an error
+        if (weatherQuery.isPending || weatherQuery.isError || !weatherQuery.data) return;
 
-        setState('dataError', null);
+        const data = weatherQuery.data;
 
         // Use batch to group multiple updates together for better performance
         batch(() => {
-            const {
-                resultValue,
-                resultTemperatureValue,
-                tempMin,
-                timeMin,
-                tempMax,
-                timeMax,
-                tempAvg,
-                timeUpdated,
-            } = data.data;
-
             setState({
-                resultTemperature: `${resultTemperatureValue} °C`,
-                tempMin,
-                timeMin,
-                tempMax,
-                timeMax,
-                tempAvg,
-                timeUpdated,
-                result: resultValue
+                resultTemperature: `${data.resultTemperatureValue} °C`,
+                tempMin: data.tempMin,
+                timeMin: data.timeMin,
+                tempMax: data.tempMax,
+                timeMax: data.timeMax,
+                tempAvg: data.tempAvg,
+                timeUpdated: data.timeUpdated,
+                result: data.resultValue
             });
         });
     });
@@ -208,53 +115,74 @@ export function useWeatherData() {
      * @param {Object} station - Selected station object
      */
     function onStationChange(station) {
+        // Save selected station to local storage first
+        setCachedData('selectedStation', station);
+
+        // Update the state and signal
         batch(() => {
             setState({
                 stationPrefix: station.prefix,
                 selectedStation: station
             });
+
+            // Update the station ID signal
+            setStationId(station.value);
         });
 
-        // Save selected station to local storage
-        setCachedData('selectedStation', station);
+        // Directly fetch data for the new station and update state
+        // This is a backup approach in case the reactive query update doesn't work
+        requestData(station.value).then(result => {
+            if (result.success) {
+                const data = result.data;
+                batch(() => {
+                    setState({
+                        resultTemperature: `${data.resultTemperatureValue} °C`,
+                        tempMin: data.tempMin,
+                        timeMin: data.timeMin,
+                        tempMax: data.tempMax,
+                        timeMax: data.timeMax,
+                        tempAvg: data.tempAvg,
+                        timeUpdated: data.timeUpdated,
+                        result: data.resultValue
+                    });
+                });
+            }
+        });
     }
 
     /**
      * Initializes data by triggering resources to load
      */
     function initialize() {
-        // Resources will automatically load when created
-        // Nothing to do here as the createResource calls handle initialization
+        // TanStack Query handles initialization automatically
     }
 
     /**
      * Retries loading temperature data
      */
     function retryLoadingData() {
-        setState('dataError', null);
-        refetchWeather();
+        weatherQuery.refetch();
     }
 
     /**
      * Retries loading stations list
      */
     function retryLoadingStations() {
-        setState('stationsError', null);
-        refetchStations();
+        stationsQuery.refetch();
     }
 
-    // Return derived values directly from the store for better reactivity
+    // Return derived values and functions needed by components
     return {
         // Station data
-        stations: () => state.stations,
+        stations: () => stationsQuery.data || [],
         selectedStation: () => state.selectedStation,
         stationPrefix: () => state.stationPrefix,
-        isLoadingStations: () => state.isLoadingStations || stationsData.loading,
-        stationsError: () => state.stationsError,
+        isLoadingStations: () => stationsQuery.isPending,
+        stationsError: () => stationsQuery.isError ? stationsQuery.error?.message : null,
 
         // Temperature data
-        isLoadingData: () => state.isLoadingData || weatherData.loading,
-        dataError: () => state.dataError,
+        isLoadingData: () => weatherQuery.isPending,
+        dataError: () => weatherQuery.isError ? weatherQuery.error?.message : null,
         result: () => state.result,
         resultTemperature: () => state.resultTemperature,
         tempMin: () => state.tempMin,
