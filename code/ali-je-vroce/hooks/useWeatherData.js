@@ -4,6 +4,7 @@ import { DEFAULT_STATION } from "../constants.mjs";
 import { useStationsQuery, useWeatherQuery, queryKeys, getQueryClient } from './queries';
 import { useQueryClient } from '@tanstack/solid-query';
 import { requestData, loadStations } from '../helpers.mjs';
+import { generateOptimisticWeatherData } from '../utils/optimistic';
 
 /**
  * Simplified localStorage helper for user preferences
@@ -45,10 +46,10 @@ function getPreference(key, defaultValue = null) {
 export function useWeatherData() {
     // Get the QueryClient from context
     const queryClient = useQueryClient();
-    
+
     // Track if there's a station change in progress
     const [isChanging, setIsChanging] = createSignal(false);
-    
+
     // Try to load last selected station from local storage
     const cachedStation = getPreference('selectedStation', DEFAULT_STATION);
 
@@ -71,7 +72,7 @@ export function useWeatherData() {
         tempAvg: '',
         timeUpdated: ''
     });
-    
+
     // Track current fetch controller for cancellation
     let currentController = null;
 
@@ -102,38 +103,62 @@ export function useWeatherData() {
     });
 
     /**
-     * Handles station change selection with improved data fetching and cancellation
+     * Handles station change selection with improved data fetching, cancellation,
+     * and optimistic updates for better user experience
      * @param {Object} station - Selected station object
      */
     function onStationChange(station) {
         // Early return if same station
         if (station.value === stationId()) return;
-        
+
         // Cancel any in-flight request
         if (currentController) {
             currentController.abort();
         }
-        
+
         // Create a new AbortController for this request
         currentController = new AbortController();
-        
+
         // Save selected station to local storage
         setPreference('selectedStation', station);
-        
+
+        // Generate optimistic data based on current or cached data
+        const previousData = weatherQuery.data;
+        const optimisticData = generateOptimisticWeatherData(
+            station.value,
+            previousData,
+            queryClient,
+            queryKeys
+        );
+
         // Set loading state for UI feedback
         setIsChanging(true);
-        
-        // Update state in a batch
+
+        // Update state in a batch, including optimistic data if available
         batch(() => {
             setState({
                 stationPrefix: station.prefix,
                 selectedStation: station
             });
-            
+
+            // If we have optimistic data, show it immediately for better UX
+            if (optimisticData) {
+                setState({
+                    resultTemperature: optimisticData.resultTemperatureValue ? `${optimisticData.resultTemperatureValue} °C` : '...',
+                    tempMin: optimisticData.tempMin,
+                    timeMin: optimisticData.timeMin,
+                    tempMax: optimisticData.tempMax,
+                    timeMax: optimisticData.timeMax,
+                    tempAvg: optimisticData.tempAvg,
+                    timeUpdated: optimisticData.timeUpdated,
+                    result: optimisticData.resultValue
+                });
+            }
+
             // Update the station ID signal
             setStationId(station.value);
         });
-        
+
         // Instead of directly calling the API, use the query client
         // This ensures consistency with the hook-based approach
         queryClient.fetchQuery({
@@ -146,31 +171,31 @@ export function useWeatherData() {
                 return result.data;
             },
         })
-        .then((data) => {
-            // Update state with fetched data
-            batch(() => {
-                setState({
-                    resultTemperature: `${data.resultTemperatureValue} °C`,
-                    tempMin: data.tempMin,
-                    timeMin: data.timeMin,
-                    tempMax: data.tempMax,
-                    timeMax: data.timeMax,
-                    tempAvg: data.tempAvg,
-                    timeUpdated: data.timeUpdated,
-                    result: data.resultValue
+            .then((data) => {
+                // Update state with fetched data
+                batch(() => {
+                    setState({
+                        resultTemperature: `${data.resultTemperatureValue} °C`,
+                        tempMin: data.tempMin,
+                        timeMin: data.timeMin,
+                        tempMax: data.tempMax,
+                        timeMax: data.timeMax,
+                        tempAvg: data.tempAvg,
+                        timeUpdated: data.timeUpdated,
+                        result: data.resultValue
+                    });
                 });
+            })
+            .catch((error) => {
+                // Only handle errors that aren't from cancellation
+                if (error.name !== 'AbortError') {
+                    console.error('Error fetching data:', error);
+                }
+            })
+            .finally(() => {
+                setIsChanging(false);
+                currentController = null;
             });
-        })
-        .catch((error) => {
-            // Only handle errors that aren't from cancellation
-            if (error.name !== 'AbortError') {
-                console.error('Error fetching data:', error);
-            }
-        })
-        .finally(() => {
-            setIsChanging(false);
-            currentController = null;
-        });
     }
 
     /**

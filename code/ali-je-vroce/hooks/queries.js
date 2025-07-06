@@ -18,25 +18,25 @@ export const queryKeys = {
  */
 function categorizeError(error, context = '') {
     if (!navigator.onLine) {
-        return { 
-            type: 'network', 
-            message: 'Ni povezave z internetom', 
-            originalError: error 
+        return {
+            type: 'network',
+            message: 'Ni povezave z internetom',
+            originalError: error
         };
     }
-    
+
     if (error.message?.includes('Failed to fetch') || error instanceof TypeError) {
-        return { 
-            type: 'network', 
-            message: 'Napaka pri povezavi s strežnikom', 
-            originalError: error 
+        return {
+            type: 'network',
+            message: 'Napaka pri povezavi s strežnikom',
+            originalError: error
         };
     }
-    
-    return { 
-        type: 'unknown', 
-        message: `Napaka: ${error.message || 'Neznana napaka'}`, 
-        originalError: error 
+
+    return {
+        type: 'unknown',
+        message: `Napaka: ${error.message || 'Neznana napaka'}`,
+        originalError: error
     };
 }
 
@@ -78,7 +78,7 @@ export function useWeatherQuery(stationId) {
         queryFn: async ({ signal }) => {
             try {
                 if (!stationId) return null;
-                
+
                 const result = await requestData(stationId, { signal });
                 if (!result.success) {
                     throw new Error(result.error || `Failed to load data for station ${stationId}`);
@@ -118,7 +118,7 @@ export function getQueryClient() {
                 },
             },
         });
-        
+
         // Set up the same defaults as in QueryProvider
         _queryClient.setQueryDefaults(
             ['stations'],
@@ -128,7 +128,7 @@ export function getQueryClient() {
                 cacheTime: 1000 * 60 * 60,
             }
         );
-        
+
         _queryClient.setQueryDefaults(
             ['weatherData'],
             {
@@ -144,6 +144,6 @@ export function getQueryClient() {
             }
         );
     }
-    
+
     return _queryClient;
 }
