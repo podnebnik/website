@@ -44,6 +44,7 @@ export function AliJeVroce() {
         timeMax,
         tempAvg,
         timeUpdated,
+        isDataStale,
 
         // Functions
         initialize,
@@ -122,6 +123,7 @@ export function AliJeVroce() {
                     tempAvg={tempAvg()}
                     timeUpdated={timeUpdated()}
                     isLoading={isLoadingData() || dataError() !== null}
+                    isStale={isDataStale()}
                     labels={percentile_labels}
                     values={vrednosti}
                     descriptions={opisi}

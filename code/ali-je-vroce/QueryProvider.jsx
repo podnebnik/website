@@ -26,19 +26,30 @@ queryClient.setQueryDefaults(
     }
 );
 
-// Configure specific query defaults for weather data
+// Configure specific query defaults for weather data with more aggressive SWR pattern
 queryClient.setQueryDefaults(
     ['weatherData'],
     {
-        staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
+        // Significantly increase staleTime to reduce immediate refetches
+        staleTime: 1000 * 60 * 15, // 15 minutes - consider data fresh for longer
+
         retry: 2,
-        refetchOnWindowFocus: "always",
-        refetchOnMount: "always",
-        refetchOnReconnect: "always",
+
+        // Always return cached data first (stale-while-revalidate pattern)
+        refetchOnWindowFocus: true, // Changed from "always" to use the cached data first
+        refetchOnMount: true, // Changed from "always" to use the cached data first
+        refetchOnReconnect: true, // Changed from "always" to use the cached data first
         refetchOnStale: true,
-        refetchInterval: 1000 * 60 * 10, // Refresh every 10 minutes
+
+        // Keep background refreshes for up-to-date data
+        refetchInterval: 1000 * 60 * 15, // 15 minutes - less aggressive refreshing
         refetchIntervalInBackground: true, // Continue refreshing even when tab is not focused
-        cacheTime: 1000 * 60 * 30, // Keep data in cache for 30 minutes
+
+        // Dramatically increase cache time for better offline support
+        cacheTime: 1000 * 60 * 60 * 24, // 24 hours - keep data in cache much longer
+
+        // This is key for SWR pattern - always keep previous data visible while fetching
+        keepPreviousData: true,
     }
 );
 

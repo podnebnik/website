@@ -86,38 +86,65 @@ export function useStationsQuery() {
 
 /**
  * Custom hook for fetching weather data for a specific station
- * With improved revalidation strategy for fresher data
+ * With improved revalidation strategy and aggressive SWR pattern
  * 
  * @param {number} stationId - The ID of the station to fetch data for
  * @returns {Object} TanStack Query result for weather data
  */
 export function useWeatherQuery(stationId) {
+    // Create a persistor to check for cached data
+    const persistor = createLocalStoragePersistor();
+
     // Using this format with the callback to ensure reactive dependencies
     // are properly tracked
-    return useQuery(() => ({
-        queryKey: queryKeys.weatherData(stationId),
-        queryFn: async ({ signal }) => {
-            try {
-                if (!stationId) return null;
+    return useQuery(() => {
+        // Get cached data for use as placeholder
+        const cachedData = persistor.getPersistedQuery(queryKeys.weatherData(stationId));
 
-                const result = await requestData(stationId, { signal });
-                if (!result.success) {
-                    throw new Error(result.error || `Failed to load data for station ${stationId}`);
+        return {
+            queryKey: queryKeys.weatherData(stationId),
+            queryFn: async ({ signal }) => {
+                try {
+                    if (!stationId) return null;
+
+                    const result = await requestData(stationId, { signal });
+                    if (!result.success) {
+                        // If network request fails, try to get from persistence
+                        const persistedData = persistor.getPersistedQuery(queryKeys.weatherData(stationId));
+                        if (persistedData) {
+                            console.info(`Using persisted weather data for station ${stationId}`);
+                            return persistedData;
+                        }
+
+                        throw new Error(result.error || `Failed to load data for station ${stationId}`);
+                    }
+                    return result.data;
+                } catch (error) {
+                    if (error.name === 'AbortError') {
+                        throw { type: 'aborted', message: 'Request was cancelled' };
+                    }
+
+                    // Check for persisted data if network request fails
+                    const persistedData = persistor.getPersistedQuery(queryKeys.weatherData(stationId));
+                    if (persistedData) {
+                        console.info(`Using persisted weather data due to network error for station ${stationId}`);
+                        return persistedData;
+                    }
+
+                    throw categorizeError(error, `weather-${stationId}`);
                 }
-                return result.data;
-            } catch (error) {
-                if (error.name === 'AbortError') {
-                    throw { type: 'aborted', message: 'Request was cancelled' };
-                }
-                throw categorizeError(error, `weather-${stationId}`);
-            }
-        },
-        enabled: !!stationId,
-        // Automatic background refreshes for fresher data
-        refetchInterval: 1000 * 60 * 10, // Refresh every 10 minutes
-        refetchIntervalInBackground: true, // Continue refreshing even when tab is not focused
-        // Using defaults from queryClient.setQueryDefaults for 'weatherData'
-    }));
+            },
+            enabled: !!stationId,
+
+            // Use placeholderData for immediate rendering while fetching (key SWR feature)
+            placeholderData: cachedData,
+
+            // Always keep previous data visible while loading new data
+            keepPreviousData: true,
+
+            // Using defaults from queryClient.setQueryDefaults for 'weatherData'
+        };
+    });
 }
 
 /**
@@ -153,15 +180,26 @@ export function getQueryClient() {
         _queryClient.setQueryDefaults(
             ['weatherData'],
             {
-                staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
+                // Significantly increase staleTime to reduce immediate refetches
+                staleTime: 1000 * 60 * 15, // 15 minutes - consider data fresh for longer
+
                 retry: 2,
-                refetchOnWindowFocus: "always",
-                refetchOnMount: "always",
-                refetchOnReconnect: "always",
+
+                // Always return cached data first (stale-while-revalidate pattern)
+                refetchOnWindowFocus: true, // Changed from "always" to use the cached data first
+                refetchOnMount: true, // Changed from "always" to use the cached data first
+                refetchOnReconnect: true, // Changed from "always" to use the cached data first
                 refetchOnStale: true,
-                refetchInterval: 1000 * 60 * 10, // Refresh every 10 minutes
+
+                // Keep background refreshes for up-to-date data
+                refetchInterval: 1000 * 60 * 15, // 15 minutes - less aggressive refreshing
                 refetchIntervalInBackground: true, // Continue refreshing even when tab is not focused
-                cacheTime: 1000 * 60 * 30, // Keep data in cache for 30 minutes
+
+                // Dramatically increase cache time for better offline support
+                cacheTime: 1000 * 60 * 60 * 24, // 24 hours - keep data in cache much longer
+
+                // This is key for SWR pattern - always keep previous data visible while fetching
+                keepPreviousData: true,
             }
         );
 

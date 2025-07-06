@@ -2,6 +2,7 @@ import { Show, createUniqueId, createEffect } from "solid-js";
 import { IsItHotDot } from "../../components/is-it-hot-dot.jsx";
 import { announce } from "../utils/a11y.js";
 import { LoadingSkeleton } from "./Skeletons.jsx";
+import { StalenessIndicator } from "./StalenessIndicator.jsx";
 
 /**
  * TemperatureDisplay component shows the temperature data and related statistics.
@@ -18,6 +19,7 @@ import { LoadingSkeleton } from "./Skeletons.jsx";
  * @param {string} props.tempAvg - Average temperature value
  * @param {string} props.timeUpdated - Last update time (ISO string or formatted)
  * @param {boolean} props.isLoading - Whether data is currently loading
+ * @param {boolean} props.isStale - Whether data is stale and being refreshed
  * @param {Object} props.labels - Object containing textual labels for percentiles
  * @param {Object} props.values - Object containing main temperature result values
  * @param {Object} props.descriptions - Object containing descriptions for percentiles
@@ -157,12 +159,13 @@ export function TemperatureDisplay(props) {
             >
                 <p
                     id={lastUpdatedId}
-                    class="text-gray-400 text-sm leading-6 italic mt-2"
+                    class="text-gray-400 text-sm leading-6 italic mt-2 flex items-center justify-center gap-2"
                     role="contentinfo"
                     aria-label="Čas zadnje posodobitve"
                     aria-live="polite"
                 >
                     Zadnja posodobitev: <time dateTime={props.timeUpdated}>{props.timeUpdated}</time>
+                    <StalenessIndicator isStale={props.isStale} />
                 </p>
             </Show>
         </>

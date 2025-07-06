@@ -287,6 +287,9 @@ export function useWeatherData() {
         tempAvg: () => state.tempAvg,
         timeUpdated: () => state.timeUpdated,
 
+        // SWR-related status
+        isDataStale: () => weatherQuery.isStale && !weatherQuery.isPending && !weatherQuery.isError && weatherQuery.isFetching,
+
         // Functions
         initialize,
         onStationChange,
