@@ -2,11 +2,11 @@ import { QueryClient, QueryClientProvider } from '@tanstack/solid-query';
 import { SolidQueryDevtools } from '@tanstack/solid-query-devtools';
 import { Show } from 'solid-js';
 
-// Create a client with more aggressive refetch settings
+// Create a client with specialized defaults for different query types
 const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
-            staleTime: 1000 * 60 * 5, // 5 minutes
+            // Global defaults
             retry: 1,
             refetchOnMount: true,
             refetchOnWindowFocus: true,
@@ -14,6 +14,30 @@ const queryClient = new QueryClient({
         },
     },
 });
+
+// Configure specific query defaults for stations
+queryClient.setQueryDefaults(
+    ['stations'],
+    {
+        staleTime: 1000 * 60 * 30, // 30 minutes - stations don't change often
+        retry: 2,
+        cacheTime: 1000 * 60 * 60, // 1 hour
+    }
+);
+
+// Configure specific query defaults for weather data
+queryClient.setQueryDefaults(
+    ['weatherData'],
+    {
+        staleTime: 0, // Always fetch fresh weather data
+        retry: 2,
+        refetchOnWindowFocus: "always",
+        refetchOnMount: "always",
+        refetchOnReconnect: "always",
+        refetchOnStale: true,
+        cacheTime: 1000 * 60 * 10, // 10 minutes
+    }
+);
 
 /**
  * QueryProvider component that wraps children with TanStack Query's QueryClientProvider

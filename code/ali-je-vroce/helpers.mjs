@@ -100,11 +100,15 @@ export async function loadStations() {
  *
  * @async
  * @param {string} stationID - The ID of the weather station to fetch data for.
+ * @param {Object} options - Additional options for the request
+ * @param {AbortSignal} options.signal - AbortController signal for request cancellation
  * @returns {Promise<{success: true, data: RequestStationData} | {success: false, error: Error | string}>} An object containing temperature statistics and percentile results. If the request fails, returns empty strings for all fields.
  */
-export async function requestData(stationID) {
+export async function requestData(stationID, options = {}) {
     try {
-        const resultAverage = await fetch(`${VREMENAR_BASE_URL}/stations/details/METEO-${stationID}?country=si`);
+        const resultAverage = await fetch(`${VREMENAR_BASE_URL}/stations/details/METEO-${stationID}?country=si`, {
+            signal: options.signal
+        });
         if (resultAverage.ok) {
             const dataAverage = await resultAverage.json();
             const averageTemperature = dataAverage.statistics.temperature_average_24h;
@@ -116,7 +120,9 @@ export async function requestData(stationID) {
             let timeMinDate = new Date(Number(dataAverage.statistics.timestamp_temperature_min_24h))
             let timeMaxDate = new Date(Number(dataAverage.statistics.timestamp_temperature_max_24h))
 
-            const resultPercentile = await fetch(`${BASE_URL}/temperature/temperature~2Eslovenia_historical~2Edaily~2Eaverage_percentiles.json?date__exact=${date}&station_id__exact=${stationID}&_col=p05&_col=p20&_col=p40&_col=p60&_col=p80&_col=p95`);
+            const resultPercentile = await fetch(`${BASE_URL}/temperature/temperature~2Eslovenia_historical~2Edaily~2Eaverage_percentiles.json?date__exact=${date}&station_id__exact=${stationID}&_col=p05&_col=p20&_col=p40&_col=p60&_col=p80&_col=p95`, {
+                signal: options.signal
+            });
             if (resultPercentile.ok) {
                 const dataPercentile = await resultPercentile.json();
 
@@ -162,6 +168,11 @@ export async function requestData(stationID) {
             }
         }
     } catch (error) {
+        // If the request was aborted, propagate the abort error
+        if (error.name === 'AbortError') {
+            throw error;
+        }
+        
         console.error(`Error fetching data for station ${stationID}:`, error);
         return {
             success: false,
