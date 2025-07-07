@@ -1,5 +1,6 @@
 import { queryKeys } from "../hooks/queries.js";
 import { requestData } from "../helpers.mjs";
+import { QueryClient } from "@tanstack/solid-query";
 
 /**
  * Popular weather stations in Slovenia that are frequently accessed by users
@@ -16,7 +17,7 @@ export const POPULAR_STATION_IDS = [
  * Prefetches weather data for popular stations to improve user experience
  * This function can be called on initial load or during idle periods
  * 
- * @param {Object} queryClient - The TanStack Query client instance
+ * @param {QueryClient} queryClient - The TanStack Query client instance
  * @returns {Promise<Array>} - Promise that resolves when all prefetch operations complete
  */
 export function prefetchPopularStations(queryClient) {
@@ -41,7 +42,7 @@ export function prefetchPopularStations(queryClient) {
  * Prefetches all stations list data
  * This is useful to call during initialization to ensure stations are available quickly
  * 
- * @param {Object} queryClient - The TanStack Query client instance
+ * @param {QueryClient} queryClient - The TanStack Query client instance
  * @returns {Promise} - Promise that resolves when prefetch operation completes
  */
 export function prefetchStationsData(queryClient) {
