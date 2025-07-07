@@ -148,58 +148,15 @@ export function useWeatherQuery(stationId) {
  * This allows components to directly interact with the query cache
  * when needed outside of hooks
  */
-let _queryClient = null;
+import { queryClient as appQueryClient } from "../QueryProvider.jsx";
 
+/**
+ * Returns the singleton QueryClient instance from QueryProvider
+ * This ensures all components use the same instance with the same cache
+ * and the same persistence mechanisms
+ * 
+ * @returns {QueryClient} The application's singleton QueryClient instance
+ */
 export function getQueryClient() {
-    // In a real application, this should import the same instance from QueryProvider.jsx
-    if (!_queryClient) {
-        _queryClient = new QueryClient({
-            defaultOptions: {
-                queries: {
-                    retry: 1,
-                    refetchOnMount: true,
-                    refetchOnWindowFocus: true,
-                    refetchOnReconnect: true,
-                },
-            },
-        });
-
-        // Set up the same defaults as in QueryProvider
-        _queryClient.setQueryDefaults(
-            ['stations'],
-            {
-                staleTime: 1000 * 60 * 30,
-                retry: 2,
-                cacheTime: 1000 * 60 * 60,
-            }
-        );
-
-        _queryClient.setQueryDefaults(
-            ['weatherData'],
-            {
-                // Significantly increase staleTime to reduce immediate refetches
-                staleTime: 1000 * 60 * 15, // 15 minutes - consider data fresh for longer
-
-                retry: 2,
-
-                // Always return cached data first (stale-while-revalidate pattern)
-                refetchOnWindowFocus: true, // Changed from "always" to use the cached data first
-                refetchOnMount: true, // Changed from "always" to use the cached data first
-                refetchOnReconnect: true, // Changed from "always" to use the cached data first
-                refetchOnStale: true,
-
-                // Keep background refreshes for up-to-date data
-                refetchInterval: 1000 * 60 * 15, // 15 minutes - less aggressive refreshing
-                refetchIntervalInBackground: true, // Continue refreshing even when tab is not focused
-
-                // Dramatically increase cache time for better offline support
-                cacheTime: 1000 * 60 * 60 * 24, // 24 hours - keep data in cache much longer
-
-                // This is key for SWR pattern - always keep previous data visible while fetching
-                keepPreviousData: true,
-            }
-        );
-    }
-
-    return _queryClient;
+    return appQueryClient;
 }

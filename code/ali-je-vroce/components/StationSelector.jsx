@@ -1,6 +1,12 @@
 import { Show, createUniqueId, createEffect } from "solid-js";
 import { Select } from "@kobalte/core/select";
 import { createKeyboardHandler, announce } from "../utils/a11y.js";
+import { getQueryClient } from "../hooks/queries.js";
+import { prefetchStationData } from "../utils/prefetching.js";
+import { debounce } from "../utils/debounce.js";
+
+// Get the singleton QueryClient instance
+const queryClient = getQueryClient();
 
 /**
  * StationSelector component handles the UI for selecting a weather station.
@@ -19,6 +25,11 @@ export function StationSelector(props) {
     const selectId = createUniqueId();
     const labelId = `${selectId}-label`;
     const descriptionId = createUniqueId();
+
+    // Create a debounced version of prefetching to prevent excessive API calls
+    const debouncedPrefetch = debounce((stationId) => {
+        prefetchStationData(queryClient, stationId);
+    }, 200); // 200ms delay
 
     // Keyboard navigation handler
     const handleKeyDown = createKeyboardHandler({
@@ -65,6 +76,16 @@ export function StationSelector(props) {
                 aria-labelledby={labelId}
                 aria-describedby={descriptionId}
                 aria-busy={props.isLoading}
+                onOpenChange={(isOpen) => {
+                    if (isOpen) {
+                        // Prefetch the first few visible stations when dropdown opens
+                        const visibleStations = props.stations.slice(0, 5).map(station => station.station_id);
+                        visibleStations.forEach(stationId => {
+                            // Use a short timeout to stagger requests and not block rendering
+                            setTimeout(() => debouncedPrefetch(stationId), 50 * Math.random());
+                        });
+                    }
+                }}
                 itemComponent={props => (
                     <Select.Item
                         item={props.item}
@@ -73,6 +94,14 @@ export function StationSelector(props) {
                               data-[selected]:bg-blue-100 data-[selected]:text-blue-900 forced-colors:hc-interactive"
                         aria-label={`Izberi lokacijo ${props.item.rawValue.label}`}
                         tabIndex="0"
+                        onFocus={() => {
+                            const stationId = props.item.rawValue.value;
+                            debouncedPrefetch(stationId);
+                        }}
+                        onMouseEnter={() => {
+                            const stationId = props.item.rawValue.value;
+                            debouncedPrefetch(stationId);
+                        }}
                     >
                         <Select.ItemLabel>{props.item.rawValue.label}</Select.ItemLabel>
                         <Select.ItemIndicator>

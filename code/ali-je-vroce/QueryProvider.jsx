@@ -5,7 +5,8 @@ import { prefetchPopularStations, prefetchStationsData } from './utils/prefetchi
 import { createLocalStoragePersistor } from './utils/persistence.js';
 
 // Create a client with specialized defaults for different query types
-const queryClient = new QueryClient({
+// Export the queryClient so it can be imported directly by other modules
+export const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
             // Global defaults

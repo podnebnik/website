@@ -42,6 +42,38 @@ export function prefetchPopularStations(queryClient) {
 }
 
 /**
+ * Prefetches weather data for a specific station by its ID
+ * Enhanced with better error handling and debugging
+ * 
+ * @param {QueryClient} queryClient - The TanStack Query client instance
+ * @param {number} stationId - The ID of the station to prefetch data for
+ * @returns {Promise<Types.StationsResult|null>} - Promise that resolves when prefetch operation completes
+ */
+export function prefetchStationData(queryClient, stationId) {
+    console.log(`Prefetching data for station ${stationId}`);
+
+    // Don't prefetch if already in cache and not stale
+    const existingQuery = queryClient.getQueryState(queryKeys.weatherData(stationId));
+    if (existingQuery && !existingQuery.isStale) {
+        console.log(`Station ${stationId} data already in cache and fresh, skipping prefetch`);
+        return Promise.resolve(existingQuery.data);
+    }
+
+    return queryClient.prefetchQuery({
+        queryKey: queryKeys.weatherData(stationId),
+        queryFn: () => requestData(stationId).then(result => {
+            if (!result.success) {
+                console.warn(`Failed to prefetch data for station ${stationId}:`, result.error);
+                throw new Error(result.error || `Failed to prefetch data for station ${stationId}`);
+            }
+            console.log(`Successfully prefetched data for station ${stationId}`);
+            return result.data;
+        }),
+        staleTime: 1000 * 60 * 5, // 5 minutes
+    });
+}
+
+/**
  * Prefetches all stations list data
  * This is useful to call during initialization to ensure stations are available quickly
  * 
