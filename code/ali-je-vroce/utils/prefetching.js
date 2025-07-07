@@ -7,10 +7,9 @@ import { requestData } from "../helpers.mjs";
  */
 export const POPULAR_STATION_IDS = [
     1495, // Ljubljana
-    1222, // Maribor
-    1328, // Celje
-    1421, // Koper
-    1268  // Novo mesto
+    1491, // Maribor
+    1025, // Celje
+    1447  // Novo mesto
 ];
 
 /**
