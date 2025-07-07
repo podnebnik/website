@@ -1,3 +1,5 @@
+/** @import * as Types "../types.js" */
+
 import { queryKeys } from "../hooks/queries.js";
 import { requestData } from "../helpers.mjs";
 import { QueryClient } from "@tanstack/solid-query";
@@ -5,6 +7,7 @@ import { QueryClient } from "@tanstack/solid-query";
 /**
  * Popular weather stations in Slovenia that are frequently accessed by users
  * Using these IDs for prefetching to improve perceived performance
+ * @constant {number[]} POPULAR_STATION_IDS
  */
 export const POPULAR_STATION_IDS = [
     1495, // Ljubljana
@@ -18,7 +21,7 @@ export const POPULAR_STATION_IDS = [
  * This function can be called on initial load or during idle periods
  * 
  * @param {QueryClient} queryClient - The TanStack Query client instance
- * @returns {Promise<Array>} - Promise that resolves when all prefetch operations complete
+ * @returns {Promise<Array<Types.StationsResult>>} - Promise that resolves when all prefetch operations complete
  */
 export function prefetchPopularStations(queryClient) {
 
@@ -43,7 +46,7 @@ export function prefetchPopularStations(queryClient) {
  * This is useful to call during initialization to ensure stations are available quickly
  * 
  * @param {QueryClient} queryClient - The TanStack Query client instance
- * @returns {Promise} - Promise that resolves when prefetch operation completes
+ * @returns {Promise<Array<Types.ProcessedStation>>} - Promise that resolves when prefetch operation completes
  */
 export function prefetchStationsData(queryClient) {
     return queryClient.prefetchQuery({

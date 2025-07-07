@@ -1,18 +1,6 @@
+/** @import * as Types "./types" */
+
 import { BASE_URL, VREMENAR_BASE_URL } from "./constants.mjs"
-
-/**
- * @typedef {Object} RequestStationData
- * @property {string} resultValue - The percentile result of the current average temperature.
- * @property {number} resultTemperatureValue - The temperature value corresponding to the percentile result.
- * @property {number} tempMin - The minimum temperature recorded in the last 24 hours.
- * @property {string} timeMin - The time when the minimum temperature was recorded, formatted as "danes ob HH:MM" or "včeraj ob HH:MM".
- * @property {number} tempMax - The maximum temperature recorded in the last 24 hours.
- * @property {string} timeMax - The time when the maximum temperature was recorded, formatted as "danes ob HH:MM" or "včeraj ob HH:MM".
- * @property {number} tempAvg - The average temperature recorded in the last 24 hours.
- * @property {string} timeUpdated - The last update time of the temperature data,
- */
-
-
 
 /**
  * Returns a string representation of a number, prefixing it with a zero if it is less than 10.
@@ -63,7 +51,7 @@ function formatTime(date, updated) {
  *
  * @async
  * @function loadStations
- * @returns {Promise<{ success: true, stations: Array<{ station_id: number, name_locative: string, prefix: string }> } | { success: false, error: Error | string }>}
+ * @returns {Promise<{ success: true, stations: Array<Types.ProcessedStation> } | { success: false, error: Error | string }>}
  *   Resolves to an array of station objects, or an empty array if the fetch fails.
  */
 export async function loadStations() {
@@ -71,7 +59,10 @@ export async function loadStations() {
 
     if (resultStations.ok) {
         try {
+
+            /** @type {Array<Types.ProcessedStation>} */
             let stationsList = [];
+            /** @type {Types.StationsResponse} */
             const dataStations = await resultStations.json();
             for (let row of dataStations["rows"]) {
                 let name_list = row[3].split(' ')
@@ -102,7 +93,7 @@ export async function loadStations() {
  * @param {string} stationID - The ID of the weather station to fetch data for.
  * @param {Object} options - Additional options for the request
  * @param {AbortSignal} options.signal - AbortController signal for request cancellation
- * @returns {Promise<{success: true, data: RequestStationData} | {success: false, error: Error | string}>} An object containing temperature statistics and percentile results. If the request fails, returns empty strings for all fields.
+ * @returns {Promise<Types.RequestStationData | {success: false, error: Error | string}>} An object containing temperature statistics and percentile results. If the request fails, returns an error object.
  */
 export async function requestData(stationID, options = {}) {
     try {
@@ -172,7 +163,7 @@ export async function requestData(stationID, options = {}) {
         if (error.name === 'AbortError') {
             throw error;
         }
-        
+
         console.error(`Error fetching data for station ${stationID}:`, error);
         return {
             success: false,
