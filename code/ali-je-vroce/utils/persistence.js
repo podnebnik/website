@@ -2,6 +2,7 @@
  * Data persistence utilities for caching query data
  * This improves offline support and reduces unnecessary network requests
  */
+import { CACHE_KEY_PREFIX } from '../constants.mjs';
 
 /**
  * Creates a persistor that saves TanStack Query cache to localStorage
@@ -9,8 +10,6 @@
  * @returns {Object} A persistor object that can store and retrieve query cache
  */
 export function createLocalStoragePersistor() {
-    // Storage key for query cache data
-    const CACHE_KEY_PREFIX = 'ali-je-vroce-cache';
     // Maximum age of cached data (1 hour)
     const MAX_CACHE_AGE = 1000 * 60 * 60;
 

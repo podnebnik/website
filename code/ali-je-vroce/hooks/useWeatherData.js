@@ -1,6 +1,6 @@
 import { createSignal, createEffect, batch, onMount, onCleanup } from "solid-js";
 import { createStore } from "solid-js/store";
-import { DEFAULT_STATION } from "../constants.mjs";
+import { DEFAULT_STATION, CACHE_KEY_PREFIX } from "../constants.mjs";
 import { useStationsQuery, useWeatherQuery, queryKeys } from './queries';
 import { useQueryClient } from '@tanstack/solid-query';
 import { requestData, loadStations } from '../helpers.mjs';
@@ -9,14 +9,16 @@ import { retryLoadingWithBackoff, createNetworkMonitor } from '../utils/errorRec
 
 /**
  * Simplified localStorage helper for user preferences
- * Only used for storing user preferences, not data caching
+ * Uses the same prefix as the query cache for consistency
  * 
  * @param {string} key - The key to store preference under
  * @param {any} value - The preference value to store
  */
 function setPreference(key, value) {
     try {
-        localStorage.setItem(key, JSON.stringify(value));
+        // Use the same prefix for consistency with the query cache
+        const prefixedKey = `${CACHE_KEY_PREFIX}-${key}`;
+        localStorage.setItem(prefixedKey, JSON.stringify(value));
     } catch (error) {
         console.warn('Error saving preference:', error);
     }
@@ -24,6 +26,7 @@ function setPreference(key, value) {
 
 /**
  * Retrieves user preference from local storage
+ * Uses the same prefix as the query cache for consistency
  * 
  * @param {string} key - The key to retrieve preference for
  * @param {any} defaultValue - Default value if preference doesn't exist
@@ -31,7 +34,36 @@ function setPreference(key, value) {
  */
 function getPreference(key, defaultValue = null) {
     try {
-        const item = localStorage.getItem(key);
+        // First try with the new prefixed key
+        const prefixedKey = `${CACHE_KEY_PREFIX}-${key}`;
+        let item = localStorage.getItem(prefixedKey);
+
+        // If not found, try the old unprefixed key for backward compatibility
+        if (!item) {
+            // Try the legacy hardcoded prefix (if we changed the constant)
+            const legacyPrefixedKey = `ali-je-vroce-cache-${key}`;
+            item = localStorage.getItem(legacyPrefixedKey);
+
+            // If found with legacy prefixed key, migrate it
+            if (item) {
+                const parsedValue = JSON.parse(item);
+                setPreference(key, parsedValue);
+                localStorage.removeItem(legacyPrefixedKey);
+                return parsedValue;
+            }
+
+            // Last resort: try completely unprefixed key
+            item = localStorage.getItem(key);
+
+            // If found with old key, migrate it to new prefixed format
+            if (item) {
+                const parsedValue = JSON.parse(item);
+                setPreference(key, parsedValue);
+                localStorage.removeItem(key); // Remove old key
+                return parsedValue;
+            }
+        }
+
         return item ? JSON.parse(item) : defaultValue;
     } catch (error) {
         console.warn('Error reading preference:', error);

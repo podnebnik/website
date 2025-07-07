@@ -5,6 +5,12 @@
  */
 
 /**
+ * @constant {string} CACHE_KEY_PREFIX
+ * @description The prefix used for all localStorage cache keys in the application.
+ */
+export const CACHE_KEY_PREFIX = 'ali-je-vroce-cache';
+
+/**
  * @constant {number} DEFAULT_STATION_ID
  * @description The default weather station ID for Ljubljana.
  */
