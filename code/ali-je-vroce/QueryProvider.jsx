@@ -78,25 +78,11 @@ export function QueryProvider(props) {
 
         // Set up event listeners to save queries to localStorage
         queryClient.getQueryCache().subscribe(event => {
-            // Debug all query events
-            console.log('Query event:', event.type, event.query?.queryKey);
-
-            // Test localStorage directly
-            try {
-                localStorage.setItem('test-direct-storage', 'This is a test ' + Date.now());
-                console.log('Direct localStorage test successful');
-            } catch (e) {
-                console.error('Direct localStorage test failed:', e);
-            }
-
-            // Change: react to 'updated' events instead of 'success' events
-            // For TanStack Query, 'updated' is fired when fresh data is available
-            if ((event.type === 'updated' || event.type === 'success') && event.query?.state?.data) {
+            // In TanStack Query v5, we should respond to the 'updated' event
+            // which is fired when a query's data is updated with fresh data
+            if (event.type === 'updated' && event.query?.state?.data) {
                 // Only persist certain queries
                 const queryKey = event.query.queryKey;
-
-                // Debug successful query data
-                console.log('Successful query data available for:', queryKey);
 
                 // Don't persist empty data
                 if (!event.query.state.data) return;
@@ -104,40 +90,10 @@ export function QueryProvider(props) {
                 // Determine if query should be persisted
                 if (queryKey[0] === 'stations') {
                     // Always persist stations list
-                    console.log('Persisting stations data to localStorage', {
-                        data: event.query.state.data,
-                        dataType: typeof event.query.state.data,
-                        dataIsArray: Array.isArray(event.query.state.data)
-                    });
                     persistor.persistQuery(queryKey, event.query.state.data);
-
-                    // Verify storage immediately
-                    setTimeout(() => {
-                        try {
-                            const storedItem = localStorage.getItem('ali-je-vroce-cache-stations');
-                            console.log('Storage verification for stations:', storedItem ? 'Data stored successfully' : 'No data found');
-                        } catch (e) {
-                            console.error('Storage verification failed:', e);
-                        }
-                    }, 100);
                 } else if (queryKey[0] === 'weatherData') {
-                    // Only persist weather data
-                    console.log('Persisting weather data to localStorage for station:', queryKey[1], {
-                        data: event.query.state.data ? 'Data present' : 'No data',
-                        dataSize: JSON.stringify(event.query.state.data || {}).length
-                    });
+                    // Persist weather data for all stations
                     persistor.persistQuery(queryKey, event.query.state.data);
-
-                    // Verify storage immediately for this weather data
-                    setTimeout(() => {
-                        try {
-                            const storedItem = localStorage.getItem(`ali-je-vroce-cache-weatherData-${queryKey[1]}`);
-                            console.log(`Storage verification for weather station ${queryKey[1]}:`,
-                                storedItem ? 'Data stored successfully' : 'No data found');
-                        } catch (e) {
-                            console.error('Storage verification failed:', e);
-                        }
-                    }, 100);
                 }
             }
         });
