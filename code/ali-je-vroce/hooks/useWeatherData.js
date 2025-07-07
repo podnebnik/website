@@ -1,7 +1,7 @@
 import { createSignal, createEffect, batch, onMount, onCleanup } from "solid-js";
 import { createStore } from "solid-js/store";
 import { DEFAULT_STATION } from "../constants.mjs";
-import { useStationsQuery, useWeatherQuery, queryKeys, getQueryClient } from './queries';
+import { useStationsQuery, useWeatherQuery, queryKeys } from './queries';
 import { useQueryClient } from '@tanstack/solid-query';
 import { requestData, loadStations } from '../helpers.mjs';
 import { generateOptimisticWeatherData } from '../utils/optimistic';

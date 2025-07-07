@@ -20,7 +20,6 @@ export const POPULAR_STATION_IDS = [
  * @returns {Promise<Array>} - Promise that resolves when all prefetch operations complete
  */
 export function prefetchPopularStations(queryClient) {
-    console.info("Prefetching data for popular stations...");
 
     return Promise.all(
         POPULAR_STATION_IDS.map(id =>

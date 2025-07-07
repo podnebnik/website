@@ -8,11 +8,20 @@
  * 
  * @returns {Object} A persistor object that can store and retrieve query cache
  */
+// For debugging - can be called in browser console to test persistence
+export function testPersistor() {
+    const persistor = createLocalStoragePersistor();
+    // Test with sample data
+    persistor.persistQuery(['test-data'], { message: 'Test data persisted successfully' });
+    return "Test data saved to localStorage - check for key 'ali-je-vroce-cache-test-data'";
+}
+
 export function createLocalStoragePersistor() {
     // Storage key for query cache data
     const CACHE_KEY_PREFIX = 'ali-je-vroce-cache';
     // Maximum age of cached data (1 hour)
     const MAX_CACHE_AGE = 1000 * 60 * 60;
+    console.log('Creating localStorage persistor with prefix:', CACHE_KEY_PREFIX);
 
     return {
         /**
@@ -21,8 +30,12 @@ export function createLocalStoragePersistor() {
          * @param {Object} data - Query data to persist
          */
         persistQuery: (queryKey, data) => {
+            console.log('Persisting query data:', queryKey);
             try {
-                if (!data) return;
+                if (!data) {
+                    console.warn('No data provided for persistence');
+                    return;
+                }
 
                 // Convert queryKey to a string for storage
                 const key = Array.isArray(queryKey) ? queryKey.join('-') : String(queryKey);
@@ -34,8 +47,43 @@ export function createLocalStoragePersistor() {
                     timestamp: Date.now()
                 };
 
-                // Store in localStorage
-                localStorage.setItem(storageKey, JSON.stringify(persistData));
+                // Store in localStorage - with additional debug checks
+                try {
+                    // Try a simple localStorage test first
+                    localStorage.setItem('test-persistence', 'Test ' + Date.now());
+
+                    // Convert to JSON with error handling
+                    let jsonData;
+                    try {
+                        jsonData = JSON.stringify(persistData);
+                        console.log(`Data serialized successfully (${jsonData.length} bytes)`);
+                    } catch (jsonError) {
+                        console.error('Failed to serialize data to JSON:', jsonError);
+                        return;
+                    }
+
+                    // Now try to store the actual data
+                    localStorage.setItem(storageKey, jsonData);
+
+                    console.log('Successfully persisted data to localStorage key:', storageKey);
+
+                    // Verify it worked
+                    const verificationCheck = localStorage.getItem(storageKey);
+                    if (verificationCheck) {
+                        console.log('Verification successful - data is in localStorage');
+                    } else {
+                        console.warn('Verification failed - data not found in localStorage after saving');
+                    }
+                } catch (storageError) {
+                    console.error('LocalStorage operation failed:', storageError);
+                    // Try with a smaller payload to see if it's a quota issue
+                    try {
+                        localStorage.setItem(`${CACHE_KEY_PREFIX}-test-minimal`, JSON.stringify({ test: 'minimal data' }));
+                        console.log('Small test data stored successfully, might be a quota issue');
+                    } catch (e) {
+                        console.error('Even small data storage failed, localStorage might be disabled:', e);
+                    }
+                }
             } catch (error) {
                 console.warn('Failed to persist query data to localStorage:', error);
             }
@@ -48,6 +96,7 @@ export function createLocalStoragePersistor() {
          * @returns {Object|null} The stored data or null if not found/expired
          */
         getPersistedQuery: (queryKey) => {
+            console.log('Retrieving persisted query data for:', queryKey);
             try {
                 // Convert queryKey to a string for storage lookup
                 const key = Array.isArray(queryKey) ? queryKey.join('-') : String(queryKey);
@@ -79,6 +128,7 @@ export function createLocalStoragePersistor() {
          * Removes expired cache entries from localStorage
          */
         cleanupCache: () => {
+            console.log('Cleaning up expired cache entries from localStorage');
             try {
                 // Get all localStorage keys
                 const keys = Object.keys(localStorage);

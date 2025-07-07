@@ -151,6 +151,7 @@ export function useWeatherQuery(stationId) {
 let _queryClient = null;
 
 export function getQueryClient() {
+    // In a real application, this should import the same instance from QueryProvider.jsx
     if (!_queryClient) {
         _queryClient = new QueryClient({
             defaultOptions: {
@@ -198,48 +199,6 @@ export function getQueryClient() {
                 keepPreviousData: true,
             }
         );
-
-        // Initialize storage persistor
-        const persistor = createLocalStoragePersistor();
-
-        // Clean up expired cache entries
-        persistor.cleanupCache();
-
-        // Set up event listeners to save queries to localStorage
-        _queryClient.getQueryCache().subscribe(event => {
-            if (event.type === 'success' && event.query.state.data) {
-                // Only persist certain queries
-                const queryKey = event.query.queryKey;
-
-                // Don't persist empty data
-                if (!event.query.state.data) return;
-
-                // Determine if query should be persisted
-                if (queryKey[0] === 'stations') {
-                    // Always persist stations list
-                    persistor.persistQuery(queryKey, event.query.state.data);
-                } else if (queryKey[0] === 'weatherData') {
-                    // Only persist weather data for popular stations or if explicit
-                    persistor.persistQuery(queryKey, event.query.state.data);
-                }
-            }
-        });
-
-        // Add hydration logic to restore queries from persistence
-        setTimeout(() => {
-            try {
-                // Restore stations data
-                const stationsData = persistor.getPersistedQuery(['stations']);
-                if (stationsData) {
-                    _queryClient.setQueryData(['stations'], stationsData);
-                }
-
-                // For weather data, we'd need to know the specific station IDs
-                // This could be expanded to handle more complex scenarios
-            } catch (err) {
-                console.warn('Error hydrating query client from persistence:', err);
-            }
-        }, 0);
     }
 
     return _queryClient;
