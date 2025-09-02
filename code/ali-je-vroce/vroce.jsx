@@ -6,6 +6,10 @@ import { requestData, loadStations } from "./helpers.mjs";
 import { vrednosti, opisi, percentile_labels } from "./constants.mjs";
 import { DEFAULT_STATION } from "./constants.mjs";
 
+// ✅ INSERT: SeasonalScatter (Highcharts #1)
+import SeasonalScatter from "./charts/SeasonalScatter.jsx";
+import SeasonalHistogram from "./charts/SeasonalHistogram.jsx";
+
 /**
  * AliJeVroce is a Solid JS component that displays whether it is hot today in a selected location,
  * based on temperature statistics fetched from a remote API. It shows the minimum, average, and
@@ -38,6 +42,17 @@ export function AliJeVroce() {
     const [timeMax, setTimeMax] = createSignal('');
     const [tempAvg, setTempAvg] = createSignal('');
     const [timeUpdated, setTimeUpdated] = createSignal('');
+
+    // ✅ INSERT: test flag + today's label for the SeasonalScatter chart
+    const isTest = () =>
+        typeof window !== "undefined" &&
+        (new URLSearchParams(window.location.search).get("test") === "1");
+
+    const today = new Date();
+    const mm = String(today.getMonth() + 1).padStart(2, "0");
+    const dd = String(today.getDate()).padStart(2, "0");
+    const mmdd = `${mm}-${dd}`;
+    const prettyTitle = `Two weeks around ${dd} ${today.toLocaleString("en-US", { month: "long" })} — history`;
 
     function updateData({
         resultValue,
@@ -111,7 +126,7 @@ export function AliJeVroce() {
                 <Select.Label class="sr-only">Izberite lokacijo</Select.Label>
                 <Select.Trigger class="select font-bold appearance-none inline-block bg-transparent rounded-none focus:outline-hidden leading-[64px] hover:cursor-pointer transition-all duration-300">
                     <Select.Value>{state => state.selectedOption().label}</Select.Value>
-                </Select.Trigger>?
+                </Select.Trigger>
                 <Select.Portal>
                     <Select.Content class="bg-muted text-white px-2 py-2 max-w-fit">
                         <Select.Listbox class="max-h-80 overflow-auto p-2 max-w-fit" />
@@ -120,6 +135,27 @@ export function AliJeVroce() {
             </Select>
 
         </p>
+
+        {/* ✅ INSERT: test-only SeasonalScatter chart (uses current station + today's MM-DD) */}
+        <Show when={isTest()}>
+            <div class="mt-10">
+                <SeasonalHistogram
+                    stationId={selectedStation()?.value ?? DEFAULT_STATION}
+                    center_mmdd={mmdd}
+                    todayTemp={+tempAvg() || null}
+                    title={`Distribution around ${mmdd}`}
+                />
+            </div>
+            <div class="mt-6">
+                <SeasonalScatter
+                    stationId={selectedStation()?.value ?? DEFAULT_STATION}
+                    center_mmdd={mmdd}
+                    todayTemp={+tempAvg() || null}   // 🔥 pass current daily average from API
+                    title={prettyTitle}
+                />
+            </div>
+        </Show>
+
         <p class="font-black text-6xl">
             <Show when={result() !== ""} fallback="Ni podatkov">
                 <IsItHotDot color={result()} class="mr-8" />{" "}
