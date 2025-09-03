@@ -56,5 +56,8 @@ jobs:
           node-version: '22'
           cache: 'yarn'
 
+      - name: Install libvips
+        run: sudo apt-get install libvips-dev
+
       - run: yarn install
       - run: yarn build
