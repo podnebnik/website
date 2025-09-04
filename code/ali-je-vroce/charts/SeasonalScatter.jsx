@@ -1,7 +1,7 @@
 // code/ali-je-vroce/charts/SeasonalScatter.jsx
 import { onMount, createSignal, createEffect, Show } from "solid-js";
 import { Highchart } from "./Highchart.jsx";
-import { requestHistoricalWindow } from "../helpers.mjs";
+import { requestHistoricalWindow } from "../helpers";
 
 const WINDOW_DAYS = 14;               // server understands as ±7; we expect 15 points/year
 const TODAY_LABEL = "TODAY";

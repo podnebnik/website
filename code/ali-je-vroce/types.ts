@@ -1,5 +1,5 @@
 /**
- * @descrioption Represents a weather station's data.
+ * @description Represents a weather station's data.
  * @property rowid - The row ID of the station in the database.
  * @property station_id - The unique identifier for the weather station.
  * @property name - The name of the weather station.

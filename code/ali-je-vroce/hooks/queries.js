@@ -1,5 +1,5 @@
 import { useQuery, QueryClient } from '@tanstack/solid-query';
-import { requestData, loadStations } from '../helpers.mjs';
+import { requestData, loadStations } from '../helpers';
 import { createLocalStoragePersistor } from '../utils/persistence';
 
 /**

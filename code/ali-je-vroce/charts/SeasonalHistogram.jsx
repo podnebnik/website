@@ -1,7 +1,7 @@
 // code/ali-je-vroce/charts/SeasonalHistogram.jsx
 import { createSignal, createEffect, Show } from "solid-js";
 import { Highchart } from "./Highchart.jsx";
-import { requestHistoricalWindow } from "../helpers.mjs";
+import { requestHistoricalWindow } from "../helpers";
 
 /**
  * Non-Gaussian smoothed histogram (Epanechnikov KDE) for the 15-day window.

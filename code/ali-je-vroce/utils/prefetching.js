@@ -1,7 +1,7 @@
 /** @import * as Types "../types.js" */
 
 import { queryKeys } from "../hooks/queries.js";
-import { requestData } from "../helpers.mjs";
+import { requestData } from "../helpers";
 import { QueryClient } from "@tanstack/solid-query";
 
 /**
@@ -84,7 +84,7 @@ export function prefetchStationsData(queryClient) {
     return queryClient.prefetchQuery({
         queryKey: queryKeys.stations(),
         queryFn: async () => {
-            const { loadStations } = await import('../helpers.mjs');
+            const { loadStations } = await import('../helpers.js');
             const result = await loadStations();
             if (!result.success) {
                 throw new Error(result.error || 'Failed to prefetch stations list');

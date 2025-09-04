@@ -12,13 +12,13 @@
 export * from './common.js';
 
 // API response types
-export * from './api.js';
+export * from './api';
 
 // Weather-specific types
 export * from './weather.js';
 
 // Component prop interfaces
-export * from './components.js';
+export * from './components';
 
 // TanStack Query specific types
 export * from './queries.js';

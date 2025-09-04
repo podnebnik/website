@@ -161,6 +161,40 @@ export interface TemperaturePercentiles {
 // =============================================================================
 
 /**
+ * Complete station data response from Vremenar API
+ * Based on actual API response analysis
+ */
+export interface RequestStationData {
+  station: {
+    id: string;
+    name: string;
+    coordinate: {
+      latitude: number;
+      longitude: number;
+      altitude: number;
+    };
+    zoom_level: number;
+    forecast_only: boolean;
+    alerts_area: string;
+  };
+  condition: {
+    observation: string;
+    timestamp: string;
+    icon: string;
+    temperature: number;
+  };
+  statistics: {
+    timestamp: string;
+    temperature_average_24h: number;
+    temperature_average_48h: number;
+    temperature_min_24h: number;
+    temperature_max_24h: number;
+    timestamp_temperature_min_24h: string;
+    timestamp_temperature_max_24h: string;
+  };
+}
+
+/**
  * Station coordinate information from Vremenar API
  */
 export interface VremenarCoordinate {
@@ -212,6 +246,18 @@ export interface VremenarStationDetailsResponse {
   station: VremenarStation;
   condition: VremenarCondition;
   statistics: VremenarStatistics;
+}
+
+export interface HistoricalWindowResponseJson {
+  year: number;
+  tavg?: number;
+  temperature_average?: number;
+  avg?: number;
+  tempAvg?: number;
+  temp_mean?: number;
+  tmin?: number;
+  tmax?: number;
+  day_offset?: number;
 }
 
 // =============================================================================
