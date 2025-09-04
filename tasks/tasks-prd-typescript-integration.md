@@ -11,9 +11,12 @@
 - `code/types/components.ts` - SolidJS component prop interfaces
 - `code/types/index.ts` - Central export file for all type definitions
 - `code/types/api.ts` - API response types based on actual runtime analysis
+- `code/types/api-analysis.md` - Detailed comparison of actual vs JSDoc types, with critical bug findings (✅ Complete with critical station ID bug documented)
 - `code/types/components.ts` - Component prop interfaces for SolidJS components
 - `code/types/common.ts` - Shared utility types and common interfaces
-- `code/ali-je-vroce/types.ts` - Migrated weather app specific types (replacing types.js)
+- `code/types/weather.ts` - Weather station and temperature analysis types
+- `code/types/queries.ts` - Application-specific TanStack Query types (leverages built-in TQ types)
+- `code/types/guards.ts` - Runtime type validation and type guard functions
 - `code/ali-je-vroce/helpers.ts` - Convert helpers.mjs to TypeScript with proper typing
 - `code/ali-je-vroce/constants.ts` - Convert constants.mjs to TypeScript
 - `code/ali-je-vroce/hooks/queries.ts` - Convert TanStack Query hooks to TypeScript
@@ -41,17 +44,17 @@
   - [x] 1.6 Verify TypeScript compilation works with existing Vite + SolidJS setup
   - [x] 1.7 Test that F# + Fable workflow remains unaffected by TypeScript additions
 
-- [ ] 2.0 API Analysis and Type Design
+- [x] 2.0 API Analysis and Type Design (✅ COMPLETE - Commit: fd3f0eb)
 
-  - [ ] 2.1 Analyze actual Datasette API responses from temperature stations endpoint
-  - [ ] 2.2 Analyze actual Vremenar API responses for weather data
-  - [ ] 2.3 Document real data structures vs existing JSDoc types in types.js
-  - [ ] 2.4 Create code/types/api.ts with accurate API response interfaces
-  - [ ] 2.5 Create code/types/weather.ts with weather station and data types
-  - [ ] 2.6 Create code/types/common.ts with shared utility types (Result, Error, etc.)
-  - [ ] 2.7 Define TanStack Query-specific types for query keys and responses
-  - [ ] 2.8 Create type guards and validation utilities for runtime type checking
-  - [ ] 2.9 Document type differences and migration notes for existing JSDoc
+  - [x] 2.1 Analyze actual Datasette API responses from temperature stations endpoint
+  - [x] 2.2 Analyze actual Vremenar API responses for weather data
+  - [x] 2.3 Document real data structures vs existing JSDoc types in types.js
+  - [x] 2.4 Create code/types/api.ts with accurate API response interfaces
+  - [x] 2.5 Create code/types/weather.ts with weather station and data types
+  - [x] 2.6 Create code/types/common.ts with shared utility types (Result, Error, etc.)
+  - [x] 2.7 Define TanStack Query-specific types for query keys and responses
+  - [x] 2.8 Create type guards and validation utilities for runtime type checking
+  - [x] 2.9 Document type differences and migration notes for existing JSDoc
 
 - [ ] 3.0 Core Utilities Migration
 

@@ -4,7 +4,8 @@
 
 import { Component, JSX } from 'solid-js';
 import { AppError, LoadingState } from './common.js';
-import { TemperatureStation, TemperatureReading } from './api.js';
+import { TemperatureStation } from './api.js';
+import { WeatherReading } from './weather.js';
 
 // Base component props
 export interface BaseComponentProps {
@@ -26,7 +27,7 @@ export interface StationSelectorProps extends BaseComponentProps {
 export interface TemperatureDisplayProps extends BaseComponentProps {
   temperature: number | null;
   station: TemperatureStation | null;
-  reading: TemperatureReading | null;
+  reading: WeatherReading | null;
   loadingState: LoadingState;
   error?: AppError | null;
   lastUpdated?: Date;

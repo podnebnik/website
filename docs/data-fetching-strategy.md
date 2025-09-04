@@ -1,6 +1,7 @@
 # Data Fetching and Caching Strategy Guide
 
 ## Table of Contents
+
 1. [Overview](#overview)
 2. [Core Components](#core-components)
 3. [Query Keys Structure](#query-keys-structure)
@@ -13,7 +14,7 @@
 
 ## Overview
 
-This document outlines our approach to data fetching, caching, and state management in the Podnebnik weather application. We use TanStack Query (formerly React Query) with SolidJS to implement a robust data layer with offline support, aggressive prefetching, and optimized user experience.
+This document outlines our approach to data fetching, caching, and state management in the Podnebnik weather application. We use TanStack Query (formerly React Query) with SolidJS and **TypeScript** to implement a robust data layer with offline support, aggressive prefetching, and optimized user experience.
 
 Our strategy focuses on:
 
@@ -21,10 +22,40 @@ Our strategy focuses on:
 - **Offline resilience**: Maintaining functionality even with unstable connections
 - **Resource efficiency**: Minimizing unnecessary network requests
 - **Data freshness**: Balancing cache usage with up-to-date data
+- **Type safety**: Full TypeScript integration with runtime validation for API responses
 
 ## Core Components
 
-### 1. Query Client
+### 1. TypeScript Integration
+
+Our data fetching layer is fully typed with TypeScript, providing compile-time safety and excellent developer experience:
+
+```typescript
+// Type-safe API responses based on actual API analysis
+import {
+  TemperatureStationsResponse,
+  VremenarStationDetailsResponse,
+  ProcessedStation,
+} from "/code/types/index.js";
+
+// Runtime validation with type guards
+import { validateStationsResponse } from "/code/types/guards.js";
+
+const fetchStations = async (): Promise<ProcessedStation[]> => {
+  const response = await fetch("/api/stations");
+  const data = await response.json();
+
+  // Validate at runtime
+  const validation = validateStationsResponse(data);
+  if (!validation.success) {
+    throw new Error(`Invalid API response: ${validation.error}`);
+  }
+
+  return processStations(validation.data);
+};
+```
+
+### 2. Query Client
 
 The core of our data fetching strategy is a singleton `QueryClient` instance exported from `QueryProvider.jsx`. This ensures consistent cache across the application and prevents cache fragmentation.
 
@@ -44,16 +75,18 @@ export const queryClient = new QueryClient({
 
 ### 2. Query Hooks
 
-Custom hooks encapsulate specific data fetching logic while providing a consistent interface:
+Custom hooks encapsulate specific data fetching logic while providing a consistent interface with full TypeScript support:
 
-```jsx
-// queries.js
+```tsx
+// queries.ts (TypeScript)
 export function useWeatherQuery(stationId) {
   const persistor = createLocalStoragePersistor();
-  
+
   return useQuery(() => {
-    const cachedData = persistor.getPersistedQuery(queryKeys.weatherData(stationId));
-    
+    const cachedData = persistor.getPersistedQuery(
+      queryKeys.weatherData(stationId)
+    );
+
     return {
       queryKey: queryKeys.weatherData(stationId),
       queryFn: async ({ signal }) => {
@@ -76,7 +109,7 @@ export function prefetchStationData(queryClient, stationId) {
   // Check cache before fetching
   const existingQuery = queryClient.getQueryState(queryKeys.weatherData(stationId));
   if (existingQuery && !existingQuery.isStale) return Promise.resolve(existingQuery.data);
-  
+
   return queryClient.prefetchQuery({
     queryKey: queryKeys.weatherData(stationId),
     queryFn: () => requestData(stationId).then(result => {...}),
@@ -101,48 +134,52 @@ export function createLocalStoragePersistor() {
     },
     cleanupCache: () => {
       // Remove expired entries
-    }
+    },
   };
 }
 ```
 
 ## Query Keys Structure
 
-We use a factory pattern to create consistent query keys:
+We use a factory pattern to create consistent, type-safe query keys:
 
-```javascript
+```typescript
 export const queryKeys = {
-  stations: () => ['stations'],
-  weatherData: (stationId) => ['weatherData', stationId],
-};
+  stations: () => ["stations"] as const,
+  weatherData: (stationId: number) => ["weatherData", stationId] as const,
+} as const;
 ```
 
 This structure enables:
+
 - Precise cache invalidation
-- Type safety
+- **Full TypeScript type safety** with `as const` assertions
 - Consistent references across components
 - Clear debugging in Query DevTools
+- **Compile-time validation** of query key structure
 
 ## Caching Configuration
 
 We use different caching configurations for different types of data:
 
 ### Weather Data
+
 ```javascript
-queryClient.setQueryDefaults(['weatherData'], {
-  staleTime: 1000 * 60 * 15,        // 15 minutes - consider data fresh
-  cacheTime: 1000 * 60 * 60 * 24,   // 24 hours - keep in cache
-  refetchInterval: 1000 * 60 * 15,  // Background refresh every 15 minutes
+queryClient.setQueryDefaults(["weatherData"], {
+  staleTime: 1000 * 60 * 15, // 15 minutes - consider data fresh
+  cacheTime: 1000 * 60 * 60 * 24, // 24 hours - keep in cache
+  refetchInterval: 1000 * 60 * 15, // Background refresh every 15 minutes
   refetchIntervalInBackground: true, // Even when tab not focused
-  keepPreviousData: true,           // Key for SWR pattern
+  keepPreviousData: true, // Key for SWR pattern
 });
 ```
 
 ### Station List
+
 ```javascript
-queryClient.setQueryDefaults(['stations'], {
-  staleTime: 1000 * 60 * 30,  // 30 minutes - stations change rarely
-  cacheTime: 1000 * 60 * 60,  // 1 hour
+queryClient.setQueryDefaults(["stations"], {
+  staleTime: 1000 * 60 * 30, // 30 minutes - stations change rarely
+  cacheTime: 1000 * 60 * 60, // 1 hour
   retry: 2,
 });
 ```
@@ -157,13 +194,14 @@ Our persistence strategy involves:
 4. **Restoration on Load**: App hydrates from cache on startup
 
 Key persistence code:
+
 ```javascript
 // Set up event listeners to save queries to localStorage
-queryClient.getQueryCache().subscribe(event => {
-  if (event.type === 'updated' && event.query?.state?.data) {
+queryClient.getQueryCache().subscribe((event) => {
+  if (event.type === "updated" && event.query?.state?.data) {
     const queryKey = event.query.queryKey;
-    
-    if (queryKey[0] === 'stations' || queryKey[0] === 'weatherData') {
+
+    if (queryKey[0] === "stations" || queryKey[0] === "weatherData") {
       persistor.persistQuery(queryKey, event.query.state.data);
     }
   }
@@ -175,6 +213,7 @@ queryClient.getQueryCache().subscribe(event => {
 We implement multi-layered prefetching:
 
 ### 1. Initial Load Prefetching
+
 - Stations list loaded immediately
 - Popular weather stations prefetched with slight delay
 
@@ -182,7 +221,7 @@ We implement multi-layered prefetching:
 // In QueryProvider.jsx
 onMount(() => {
   prefetchStationsData(queryClient);
-  
+
   setTimeout(() => {
     prefetchPopularStations(queryClient);
   }, 2000);
@@ -190,6 +229,7 @@ onMount(() => {
 ```
 
 ### 2. Interaction-based Prefetching
+
 - Dropdown open triggers prefetch of first 5 visible stations
 - Item hover/focus triggers prefetch of specific station data
 - Debounced to prevent request flooding
@@ -220,19 +260,30 @@ Our error handling strategy includes:
 4. **User Feedback**: Error messages with appropriate context
 
 ```javascript
-function categorizeError(error, context = '') {
+function categorizeError(error, context = "") {
   if (!navigator.onLine) {
-    return { type: 'network', message: 'Ni povezave z internetom', originalError: error };
+    return {
+      type: "network",
+      message: "Ni povezave z internetom",
+      originalError: error,
+    };
   }
-  
-  if (error.message?.includes('Failed to fetch') || error instanceof TypeError) {
-    return { type: 'network', message: 'Napaka pri povezavi s strežnikom', originalError: error };
+
+  if (
+    error.message?.includes("Failed to fetch") ||
+    error instanceof TypeError
+  ) {
+    return {
+      type: "network",
+      message: "Napaka pri povezavi s strežnikom",
+      originalError: error,
+    };
   }
-  
+
   return {
-    type: 'unknown',
-    message: `Napaka: ${error.message || 'Neznana napaka'}`,
-    originalError: error
+    type: "unknown",
+    message: `Napaka: ${error.message || "Neznana napaka"}`,
+    originalError: error,
   };
 }
 ```
@@ -242,6 +293,7 @@ function categorizeError(error, context = '') {
 Key performance optimization techniques:
 
 1. **Debouncing**: Prevents excessive API calls during rapid user interactions
+
    ```javascript
    const debouncedPrefetch = debounce((stationId) => {
      prefetchStationData(queryClient, stationId);
@@ -249,12 +301,17 @@ Key performance optimization techniques:
    ```
 
 2. **Cache Checking**: Avoids redundant requests
+
    ```javascript
-   const existingQuery = queryClient.getQueryState(queryKeys.weatherData(stationId));
-   if (existingQuery && !existingQuery.isStale) return Promise.resolve(existingQuery.data);
+   const existingQuery = queryClient.getQueryState(
+     queryKeys.weatherData(stationId)
+   );
+   if (existingQuery && !existingQuery.isStale)
+     return Promise.resolve(existingQuery.data);
    ```
 
 3. **Request Staggering**: Prevents request flooding
+
    ```javascript
    setTimeout(() => debouncedPrefetch(stationId), 50 * Math.random());
    ```
@@ -276,7 +333,7 @@ While our localStorage persistence provides basic offline capabilities, a servic
 workbox.routing.registerRoute(
   /\/api\/weather/,
   new workbox.strategies.StaleWhileRevalidate({
-    cacheName: 'weather-data',
+    cacheName: "weather-data",
     plugins: [
       new workbox.expiration.ExpirationPlugin({
         maxEntries: 50,
@@ -297,12 +354,12 @@ function persistQuery(queryKey, data, priority = 'normal') {
   // Check available storage
   const storageEstimate = await navigator.storage.estimate();
   const availableSpace = storageEstimate.quota - storageEstimate.usage;
-  
+
   // If storage is limited, only keep high priority items
   if (availableSpace < LOW_STORAGE_THRESHOLD) {
     if (priority !== 'high') return;
   }
-  
+
   // Store with priority metadata
   localStorage.setItem(key, JSON.stringify({
     data,
@@ -318,13 +375,13 @@ Use the Background Sync API to update data when connectivity is restored:
 
 ```javascript
 // Register sync event
-navigator.serviceWorker.ready.then(registration => {
-  registration.sync.register('sync-weather-data');
+navigator.serviceWorker.ready.then((registration) => {
+  registration.sync.register("sync-weather-data");
 });
 
 // In service worker
-self.addEventListener('sync', event => {
-  if (event.tag === 'sync-weather-data') {
+self.addEventListener("sync", (event) => {
+  if (event.tag === "sync-weather-data") {
     event.waitUntil(syncWeatherData());
   }
 });
@@ -339,14 +396,14 @@ Currently, our app relies primarily on staleTime for refetching. We could implem
 function updateUserPreferences(preferences) {
   // Update preferences
   const result = await saveUserPreferences(preferences);
-  
+
   // Invalidate affected queries
   if (preferences.temperatureUnit !== previousUnit) {
     queryClient.invalidateQueries({
       predicate: query => query.queryKey[0] === 'weatherData',
     });
   }
-  
+
   return result;
 }
 ```
@@ -359,18 +416,18 @@ For more real-time weather updates, consider using WebSockets or Server-Sent Eve
 // Example of integrating SSE with TanStack Query
 function useRealtimeWeatherQuery(stationId) {
   const queryClient = useQueryClient();
-  
+
   useEffect(() => {
     const eventSource = new EventSource(`/api/weather-stream/${stationId}`);
-    
-    eventSource.onmessage = event => {
+
+    eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      queryClient.setQueryData(['weatherData', stationId], data);
+      queryClient.setQueryData(["weatherData", stationId], data);
     };
-    
+
     return () => eventSource.close();
   }, [stationId, queryClient]);
-  
+
   return useWeatherQuery(stationId);
 }
 ```
@@ -384,10 +441,10 @@ Monitor and optimize memory usage, especially for large datasets:
 const MEMORY_THRESHOLD = 50 * 1024 * 1024; // 50MB
 
 function monitorMemoryUsage() {
-  if ('memory' in performance) {
+  if ("memory" in performance) {
     const memoryInfo = performance.memory;
     if (memoryInfo.usedJSHeapSize > MEMORY_THRESHOLD) {
-      console.warn('Memory usage high, pruning cache...');
+      console.warn("Memory usage high, pruning cache...");
       queryClient.getQueryCache().clear();
     }
   }
@@ -406,17 +463,21 @@ For more complex data structures, consider normalizing data to avoid duplication
 const normalizedCache = {
   stations: {
     byId: {
-      '1495': { id: '1495', name: 'Ljubljana', /* other data */ },
-      '1491': { id: '1491', name: 'Maribor', /* other data */ },
+      1495: { id: "1495", name: "Ljubljana" /* other data */ },
+      1491: { id: "1491", name: "Maribor" /* other data */ },
     },
-    allIds: ['1495', '1491']
+    allIds: ["1495", "1491"],
   },
   weatherData: {
     byId: {
-      '1495': { /* weather data */ },
-      '1491': { /* weather data */ },
-    }
-  }
+      1495: {
+        /* weather data */
+      },
+      1491: {
+        /* weather data */
+      },
+    },
+  },
 };
 
 // Custom serialize/deserialize functions for query client
@@ -428,14 +489,18 @@ Track and analyze how effectively the cache is serving users:
 
 ```javascript
 function trackCacheEffectiveness() {
-  queryClient.getQueryCache().subscribe(event => {
-    if (event.type === 'updated') {
-      const fromCache = event.action.type === 'success' && event.action.dataUpdatedAt === event.query.state.dataUpdatedAt;
-      
-      analytics.track('query_result', {
+  queryClient.getQueryCache().subscribe((event) => {
+    if (event.type === "updated") {
+      const fromCache =
+        event.action.type === "success" &&
+        event.action.dataUpdatedAt === event.query.state.dataUpdatedAt;
+
+      analytics.track("query_result", {
         queryKey: JSON.stringify(event.query.queryKey),
         fromCache: fromCache,
-        loadTime: event.query.state.dataUpdatedAt - event.query.state.fetchMeta.fetchStart
+        loadTime:
+          event.query.state.dataUpdatedAt -
+          event.query.state.fetchMeta.fetchStart,
       });
     }
   });
@@ -453,16 +518,16 @@ class RateLimiter {
     this.timeWindow = timeWindow;
     this.requestTimestamps = [];
   }
-  
+
   canMakeRequest() {
     const now = Date.now();
     this.requestTimestamps = this.requestTimestamps.filter(
-      time => now - time < this.timeWindow
+      (time) => now - time < this.timeWindow
     );
-    
+
     return this.requestTimestamps.length < this.maxRequests;
   }
-  
+
   recordRequest() {
     this.requestTimestamps.push(Date.now());
   }
@@ -472,7 +537,7 @@ const rateLimiter = new RateLimiter(5, 1000); // 5 requests per second
 
 // In queryFn
 if (!rateLimiter.canMakeRequest()) {
-  await new Promise(resolve => setTimeout(resolve, 200));
+  await new Promise((resolve) => setTimeout(resolve, 200));
 }
 rateLimiter.recordRequest();
 ```
@@ -484,7 +549,7 @@ For handling large datasets:
 ```javascript
 function usePaginatedStationsQuery(page = 0, pageSize = 20) {
   return useQuery({
-    queryKey: ['stations', 'paginated', page, pageSize],
+    queryKey: ["stations", "paginated", page, pageSize],
     queryFn: () => fetchStations({ page, pageSize }),
     keepPreviousData: true,
   });

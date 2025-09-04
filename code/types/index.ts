@@ -14,11 +14,14 @@ export * from './common.js';
 // API response types
 export * from './api.js';
 
+// Weather-specific types
+export * from './weather.js';
+
 // Component prop interfaces
 export * from './components.js';
 
-// Type guards and validation utilities (to be added in later tasks)
-// export * from './guards.js';
+// TanStack Query specific types
+export * from './queries.js';
 
-// TanStack Query specific types (to be added in later tasks)  
-// export * from './queries.js';
+// Type guards and validation utilities
+export * from './guards.js';
