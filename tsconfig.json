@@ -1,0 +1,72 @@
+{
+    "compilerOptions": {
+        /* Language and Environment */
+        "target": "ES2022",
+        "lib": [
+            "ES2022",
+            "DOM",
+            "DOM.Iterable"
+        ],
+        "jsx": "preserve",
+        "jsxImportSource": "solid-js",
+        /* Modules */
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "allowImportingTsExtensions": true,
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "noEmit": true,
+        /* JavaScript Support */
+        "allowJs": true,
+        "checkJs": false,
+        /* Type Checking - Strict for new TypeScript files */
+        "strict": true,
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "strictBindCallApply": true,
+        "strictPropertyInitialization": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "noUncheckedIndexedAccess": true,
+        /* Type Checking - Lenient for converted files (can be overridden per file) */
+        "noImplicitThis": false,
+        "exactOptionalPropertyTypes": false,
+        /* Completeness */
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        /* Interop Constraints */
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        /* Additional Checks */
+        "noUnusedLocals": false,
+        "noUnusedParameters": false,
+        /* Path Mapping for Vite */
+        "baseUrl": ".",
+        "paths": {
+            "/code/*": ["./code/*"],
+            "/assets/*": ["./assets/*"],
+            "/data/*": ["./data/*"],
+            "/pages/*": ["./pages/*"],
+            "/*": ["./*"]
+        }
+    },
+    "include": [
+        "code/**/*.ts",
+        "code/**/*.tsx",
+        "code/**/*.js",
+        "code/**/*.jsx"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist",
+        "public",
+        "code/fable_modules",
+        "code/obj",
+        "code/bin",
+        "code/**/*.fs.jsx"
+    ],
+    "ts-node": {
+        "esm": true
+    }
+}
