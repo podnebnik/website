@@ -1,6 +1,6 @@
 /** @import * as Types "./types" */
 
-import { BASE_URL, VREMENAR_BASE_URL } from "./constants.mjs"
+import { BASE_URL, STAGING_VREMENAR_API_URL } from "./constants.mjs"
 
 /** Figure out if we’re running the local dev site (including LAN IP access). */
 function isDevLikeHost(h) {
@@ -123,7 +123,7 @@ export async function loadStations() {
  */
 export async function requestData(stationID, options = {}) {
     try {
-        const resultAverage = await fetch(`${VREMENAR_BASE_URL}/stations/details/METEO-${stationID}?country=si`, {
+        const resultAverage = await fetch(`${STAGING_VREMENAR_API_URL}/stations/details/METEO-${stationID}?country=si`, {
             signal: options.signal
         });
         if (resultAverage.ok) {

@@ -1,4 +1,4 @@
-import { VREMENAR_BASE_URL } from "../constants.mjs";
+import { STAGING_VREMENAR_API_URL } from "../constants.mjs";
 
 /**
  * A Map to track pending batch requests by batch ID
@@ -29,7 +29,7 @@ export async function batchFetchStationData(stationIds, options = {}) {
 
         // Format the query string for the request
         const queryString = stationIds.map(id => `id=METEO-${id}`).join('&');
-        const requestUrl = `${VREMENAR_BASE_URL}/stations/batch?${queryString}`;
+        const requestUrl = `${STAGING_VREMENAR_API_URL}/stations/batch?${queryString}`;
 
         // Make the API request with the given options
         const response = await fetch(requestUrl, {

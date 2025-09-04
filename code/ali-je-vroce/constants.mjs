@@ -43,11 +43,14 @@ export const DEFAULT_STATION = {
  */
 export const BASE_URL = 'https://stage-data.podnebnik.org'
 // const baseUrl = 'http://localhost:8010'
+
+export const VREMENAR_BASE_URL = 'https://podnebnik.vremenar.app'
+
 /**
- * @constant {string} VREMENAR_BASE_URL
+ * @constant {string} STAGING_VREMENAR_API_URL
  * @description The base URL for the Vremenar API.
  */
-export const VREMENAR_BASE_URL = 'https://podnebnik.vremenar.app/staging'
+export const STAGING_VREMENAR_API_URL = 'https://podnebnik.vremenar.app/staging'
 // const vremenarBaseUrl = 'http://localhost:8000'
 
 /**
