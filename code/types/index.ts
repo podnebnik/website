@@ -15,13 +15,13 @@ export * from './common.js';
 export * from './api';
 
 // Weather-specific types
-export * from './weather.js';
+export * from './weather';
 
 // Component prop interfaces
 export * from './components';
 
 // TanStack Query specific types
-export * from './queries.js';
-
+export * from './queries';
+    
 // Type guards and validation utilities
-export * from './guards.js';
+export * from './guards';

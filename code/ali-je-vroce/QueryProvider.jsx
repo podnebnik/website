@@ -75,7 +75,7 @@ export function QueryProvider(props) {
         console.log('QueryProvider mounted, setting up persistence');
 
         // Clean up expired cache entries
-        persistor.cleanupCache();
+        persistor.cleanupExpiredQueries();
 
         // Set up event listeners to save queries to localStorage
         queryClient.getQueryCache().subscribe(event => {

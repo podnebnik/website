@@ -6,7 +6,6 @@
 
 import { 
   QueryKey, 
-  QueryClient
 } from '@tanstack/solid-query';
 import { 
   ProcessedTemperatureData,
@@ -120,9 +119,10 @@ export function weatherDataQueryOptions(stationId: number) {
  */
 export interface LocalStoragePersistor {
   getPersistedQuery: <T>(queryKey: QueryKey) => T | null;
-  setPersistedQuery: <T>(queryKey: QueryKey, data: T) => void;
+  persistQuery: <T>(queryKey: QueryKey, data: T) => void;  // Keep original method name
   removePersistedQuery: (queryKey: QueryKey) => void;
   clearAllPersistedQueries: () => void;
+  cleanupExpiredQueries: () => void;  // Clean up only expired entries
 }
 
 /**

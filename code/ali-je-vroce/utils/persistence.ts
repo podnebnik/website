@@ -3,23 +3,23 @@
  * This improves offline support and reduces unnecessary network requests
  */
 import { CACHE_KEY_PREFIX } from '../constants';
+import type { QueryKey } from '@tanstack/solid-query';
+import type { LocalStoragePersistor, PersistedQueryData } from '../../types/';
 
 /**
  * Creates a persistor that saves TanStack Query cache to localStorage
  * 
- * @returns {Object} A persistor object that can store and retrieve query cache
+ * @returns A persistor object that can store and retrieve query cache with type safety
  */
-export function createLocalStoragePersistor() {
+export function createLocalStoragePersistor(): LocalStoragePersistor {
     // Maximum age of cached data (1 hour)
     const MAX_CACHE_AGE = 1000 * 60 * 60;
 
     return {
         /**
-         * Persists query data to localStorage
-         * 
-         * @param {Object} data - Query data to persist
+         * Persists query data to localStorage with generic type support
          */
-        persistQuery: (queryKey, data) => {
+        persistQuery: <T>(queryKey: QueryKey, data: T): void => {
             try {
                 if (!data) return;
 
@@ -27,10 +27,11 @@ export function createLocalStoragePersistor() {
                 const key = Array.isArray(queryKey) ? queryKey.join('-') : String(queryKey);
                 const storageKey = `${CACHE_KEY_PREFIX}-${key}`;
 
-                // Add timestamp for cache expiration
-                const persistData = {
+                // Create persisted data structure
+                const persistData: PersistedQueryData<T> = {
                     data,
-                    timestamp: Date.now()
+                    timestamp: Date.now(),
+                    queryKey
                 };
 
                 // Store in localStorage
@@ -46,12 +47,9 @@ export function createLocalStoragePersistor() {
         },
 
         /**
-         * Retrieves query data from localStorage if available and not expired
-         * 
-         * @param {Array|string} queryKey - The query key to retrieve data for
-         * @returns {Object|null} The stored data or null if not found/expired
+         * Retrieves query data from localStorage with generic type support
          */
-        getPersistedQuery: (queryKey) => {
+        getPersistedQuery: <T>(queryKey: QueryKey): T | null => {
             try {
                 // Convert queryKey to a string for storage lookup
                 const key = Array.isArray(queryKey) ? queryKey.join('-') : String(queryKey);
@@ -62,17 +60,17 @@ export function createLocalStoragePersistor() {
                 if (!storedItem) return null;
 
                 // Parse the stored data
-                const { data, timestamp } = JSON.parse(storedItem);
+                const persistedData: PersistedQueryData<T> = JSON.parse(storedItem);
 
                 // Check if data is expired
-                const isExpired = Date.now() - timestamp > MAX_CACHE_AGE;
+                const isExpired = Date.now() - persistedData.timestamp > MAX_CACHE_AGE;
                 if (isExpired) {
                     // Clean up expired data
                     localStorage.removeItem(storageKey);
                     return null;
                 }
 
-                return data;
+                return persistedData.data;
             } catch (error) {
                 console.warn('Failed to retrieve persisted query data:', error);
                 return null;
@@ -80,9 +78,42 @@ export function createLocalStoragePersistor() {
         },
 
         /**
-         * Removes expired cache entries from localStorage
+         * Removes a specific persisted query from localStorage
          */
-        cleanupCache: () => {
+        removePersistedQuery: (queryKey: QueryKey): void => {
+            try {
+                const key = Array.isArray(queryKey) ? queryKey.join('-') : String(queryKey);
+                const storageKey = `${CACHE_KEY_PREFIX}-${key}`;
+                localStorage.removeItem(storageKey);
+            } catch (error) {
+                console.warn('Failed to remove persisted query:', error);
+            }
+        },
+
+        /**
+         * Removes all persisted queries and cleans up expired cache entries
+         */
+        clearAllPersistedQueries: (): void => {
+            try {
+                // Get all localStorage keys
+                const keys = Object.keys(localStorage);
+
+                // Filter keys that match our cache prefix
+                const cacheKeys = keys.filter(key => key.startsWith(CACHE_KEY_PREFIX));
+
+                // Remove all cache entries
+                cacheKeys.forEach(key => {
+                    localStorage.removeItem(key);
+                });
+            } catch (error) {
+                console.warn('Error clearing persisted queries:', error);
+            }
+        },
+
+        /**
+         * Removes only expired cache entries from localStorage
+         */
+        cleanupExpiredQueries: (): void => {
             try {
                 // Get all localStorage keys
                 const keys = Object.keys(localStorage);
@@ -96,8 +127,8 @@ export function createLocalStoragePersistor() {
                     if (!storedItem) return;
 
                     try {
-                        const { timestamp } = JSON.parse(storedItem);
-                        const isExpired = Date.now() - timestamp > MAX_CACHE_AGE;
+                        const persistedData: PersistedQueryData = JSON.parse(storedItem);
+                        const isExpired = Date.now() - persistedData.timestamp > MAX_CACHE_AGE;
 
                         if (isExpired) {
                             localStorage.removeItem(key);
@@ -108,7 +139,7 @@ export function createLocalStoragePersistor() {
                     }
                 });
             } catch (error) {
-                console.warn('Error cleaning up cache:', error);
+                console.warn('Error cleaning up expired queries:', error);
             }
         }
     };

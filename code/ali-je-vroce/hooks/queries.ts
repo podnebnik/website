@@ -1,43 +1,46 @@
-import { useQuery, QueryClient } from '@tanstack/solid-query';
+import { useQuery, UseQueryResult } from '@tanstack/solid-query';
 import { requestData, loadStations } from '../helpers';
 import { createLocalStoragePersistor } from '../utils/persistence';
+import { ProcessedTemperatureData, type CategorizedError, type ProcessedStation } from '../../types/';
 
 /**
  * Query key factory helps organize and structure query keys
  */
 export const queryKeys = {
     stations: () => ['stations'],
-    weatherData: (stationId) => ['weatherData', stationId],
+    weatherData: (stationId: string) => ['weatherData', stationId],
 };
 
 /**
  * Categorize error by type for better error handling
- * 
- * @param {Error} error - The error to categorize
- * @param {string} context - Optional context for the error
- * @returns {Object} Categorized error object with type and message
  */
-function categorizeError(error, context = '') {
+function categorizeError(error: unknown, context: string = ''): CategorizedError {
+    // Type guard to ensure we have an Error object
+    const errorObj = error instanceof Error ? error : new Error(String(error));
+    
     if (!navigator.onLine) {
         return {
             type: 'network',
             message: 'Ni povezave z internetom',
-            originalError: error
+            originalError: errorObj,
+            context
         };
     }
 
-    if (error.message?.includes('Failed to fetch') || error instanceof TypeError) {
+    if (errorObj.message?.includes('Failed to fetch') || errorObj instanceof TypeError) {
         return {
             type: 'network',
             message: 'Napaka pri povezavi s strežnikom',
-            originalError: error
+            originalError: errorObj,
+            context
         };
     }
 
     return {
         type: 'unknown',
-        message: `Napaka: ${error.message || 'Neznana napaka'}`,
-        originalError: error
+        message: `Napaka: ${errorObj.message || 'Neznana napaka'}`,
+        originalError: errorObj,
+        context
     };
 }
 
@@ -45,9 +48,9 @@ function categorizeError(error, context = '') {
  * Custom hook for fetching stations data
  * With improved persistence and offline support
  * 
- * @returns {Object} TanStack Query result for stations data
+ * @returns TanStack Query result for stations data
  */
-export function useStationsQuery() {
+export function useStationsQuery(): UseQueryResult<ProcessedStation[], CategorizedError> {
     // Create a persistor to check for cached data
     const persistor = createLocalStoragePersistor();
 
@@ -66,7 +69,8 @@ export function useStationsQuery() {
                     }
 
                     // If no persisted data, throw the original error
-                    throw new Error(result.error || 'Failed to load stations');
+                    const errorMessage = result.error instanceof Error ? result.error.message : String(result.error || 'Failed to load stations');
+                    throw new Error(errorMessage);
                 }
                 return result.stations;
             } catch (error) {
@@ -87,11 +91,11 @@ export function useStationsQuery() {
 /**
  * Custom hook for fetching weather data for a specific station
  * With improved revalidation strategy and aggressive SWR pattern
- * 
- * @param {number} stationId - The ID of the station to fetch data for
- * @returns {Object} TanStack Query result for weather data
+ *
+ * @param stationId - The ID of the station to fetch data for
+ * @returns TanStack Query result for weather data
  */
-export function useWeatherQuery(stationId) {
+export function useWeatherQuery(stationId: string): UseQueryResult<ProcessedTemperatureData | null, CategorizedError> {
     // Create a persistor to check for cached data
     const persistor = createLocalStoragePersistor();
 
@@ -99,7 +103,7 @@ export function useWeatherQuery(stationId) {
     // are properly tracked
     return useQuery(() => {
         // Get cached data for use as placeholder
-        const cachedData = persistor.getPersistedQuery(queryKeys.weatherData(stationId));
+        const cachedData = persistor.getPersistedQuery<ProcessedTemperatureData>(queryKeys.weatherData(stationId));
 
         return {
             queryKey: queryKeys.weatherData(stationId),
@@ -110,22 +114,26 @@ export function useWeatherQuery(stationId) {
                     const result = await requestData(stationId, { signal });
                     if (!result.success) {
                         // If network request fails, try to get from persistence
-                        const persistedData = persistor.getPersistedQuery(queryKeys.weatherData(stationId));
+                        const persistedData = persistor.getPersistedQuery<ProcessedTemperatureData>(queryKeys.weatherData(stationId));
                         if (persistedData) {
                             console.info(`Using persisted weather data for station ${stationId}`);
                             return persistedData;
                         }
 
-                        throw new Error(result.error || `Failed to load data for station ${stationId}`);
+                        const errorMessage = result.error instanceof Error ? result.error.message : String(result.error || `Failed to load data for station ${stationId}`);
+                        throw new Error(errorMessage);
                     }
                     return result.data;
                 } catch (error) {
-                    if (error.name === 'AbortError') {
+                    // Type guard for error handling
+                    const errorObj = error instanceof Error ? error : new Error(String(error));
+                    
+                    if (errorObj.name === 'AbortError') {
                         throw { type: 'aborted', message: 'Request was cancelled' };
                     }
 
                     // Check for persisted data if network request fails
-                    const persistedData = persistor.getPersistedQuery(queryKeys.weatherData(stationId));
+                    const persistedData = persistor.getPersistedQuery<ProcessedTemperatureData>(queryKeys.weatherData(stationId));
                     if (persistedData) {
                         console.info(`Using persisted weather data due to network error for station ${stationId}`);
                         return persistedData;
