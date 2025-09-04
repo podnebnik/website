@@ -2,7 +2,7 @@ import { Accordion as AccordionPrimitive } from "@kobalte/core/accordion"
 import { cva, } from "class-variance-authority"
 import { splitProps } from "solid-js"
 
-import { cn } from "../../utils.mjs"
+import { cn } from "../../utils"
 
 
 const accordionVariants = cva("w-full font-sans",
