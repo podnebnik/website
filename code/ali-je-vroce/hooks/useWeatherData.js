@@ -1,6 +1,6 @@
 import { createSignal, createEffect, batch, onMount, onCleanup } from "solid-js";
 import { createStore } from "solid-js/store";
-import { DEFAULT_STATION, CACHE_KEY_PREFIX } from "../constants.mjs";
+import { DEFAULT_STATION, CACHE_KEY_PREFIX } from "../constants";
 import { useStationsQuery, useWeatherQuery, queryKeys } from './queries';
 import { useQueryClient } from '@tanstack/solid-query';
 import { requestData, loadStations } from '../helpers.mjs';

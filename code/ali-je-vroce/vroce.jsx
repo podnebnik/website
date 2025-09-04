@@ -1,5 +1,5 @@
 import { onMount, createSignal, onCleanup, Show } from "solid-js";
-import { vrednosti, opisi, percentile_labels } from "./constants.mjs";
+import { vrednosti, opisi, percentile_labels } from "./constants";
 
 // Import custom hooks
 import { useWeatherData } from "./hooks/useWeatherData.js";
@@ -27,7 +27,6 @@ import SeasonalHistogram from "./charts/SeasonalHistogram.jsx";
  */
 export function AliJeVroce() {
   const [mainContentId] = createSignal("main-content");
-  console.log("AliJeVroce component rendered");
 
   // ✅ INSERT: test flag + today's label for the SeasonalScatter chart
   const isTest = () =>

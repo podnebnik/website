@@ -1,6 +1,6 @@
 /** @import * as Types "./types" */
 
-import { BASE_URL, STAGING_VREMENAR_API_URL } from "./constants.mjs"
+import { BASE_URL, STAGING_VREMENAR_API_URL } from "./constants";
 
 /** Figure out if we’re running the local dev site (including LAN IP access). */
 function isDevLikeHost(h) {
@@ -25,7 +25,7 @@ const __port = __hasWindow ? window.location.port : "";
 const __devLike = __hasWindow && (isDevLikeHost(__host) || __port === "8080");
 
 /** In dev we route via our proxy (same host, :8090). In prod we hit vremenar directly. */
-export const API_BASE = __devLike
+const API_BASE = __devLike
   ? `http://${__host}:8090/api`
   : "https://podnebnik.vremenar.app";
 

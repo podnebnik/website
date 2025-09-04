@@ -2,7 +2,7 @@
  * Data persistence utilities for caching query data
  * This improves offline support and reduces unnecessary network requests
  */
-import { CACHE_KEY_PREFIX } from '../constants.mjs';
+import { CACHE_KEY_PREFIX } from '../constants';
 
 /**
  * Creates a persistor that saves TanStack Query cache to localStorage
