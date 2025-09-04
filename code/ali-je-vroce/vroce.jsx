@@ -1,4 +1,4 @@
-import { onMount, createSignal, onCleanup } from "solid-js";
+import { onMount, createSignal, onCleanup, Show } from "solid-js";
 import { vrednosti, opisi, percentile_labels } from "./constants.mjs";
 
 // Import custom hooks
@@ -29,22 +29,6 @@ export function AliJeVroce() {
   const [mainContentId] = createSignal("main-content");
   console.log("AliJeVroce component rendered");
 
-  /**
-   * Signal to hold the result of the temperature percentile comparison.
-   * It indicates how the current average temperature compares to historical data.
-   * Possible values are 'p00', 'p05', 'p20', 'p40', 'p60', 'p80', 'p95', or an empty string if no data is available.
-   * @type {import('solid-js').Signal<PercentileKey>}
-   * @see {@link https://solidjs.com/docs/api#createsignal}
-   */
-  const [result, setResult] = createSignal("");
-  const [resultTemperature, setResultTemperature] = createSignal("");
-  const [tempMin, setTempMin] = createSignal("");
-  const [timeMin, setTimeMin] = createSignal("");
-  const [tempMax, setTempMax] = createSignal("");
-  const [timeMax, setTimeMax] = createSignal("");
-  const [tempAvg, setTempAvg] = createSignal("");
-  const [timeUpdated, setTimeUpdated] = createSignal("");
-
   // ✅ INSERT: test flag + today's label for the SeasonalScatter chart
   const isTest = () =>
     typeof window !== "undefined" &&
@@ -58,119 +42,90 @@ export function AliJeVroce() {
     month: "long",
   })} — history`;
 
-  function updateData({ resultValue, resultTemperatureValue }) {
-    // Use the custom hook to manage all data and state
-    const {
-      // Station data
-      stations,
-      selectedStation,
-      stationPrefix,
-      isLoadingStations,
-      stationsError,
+  // Use the custom hook to manage all data and state
+  const {
+    // Station data
+    stations,
+    selectedStation,
+    stationPrefix,
+    isLoadingStations,
+    stationsError,
 
-      // Temperature data
-      isLoadingData,
-      dataError,
-      result,
-      resultTemperature,
-      tempMin,
-      timeMin,
-      tempMax,
-      timeMax,
-      tempAvg,
-      timeUpdated,
-    } = useWeatherData();
+    // Temperature data
+    isLoadingData,
+    dataError,
+    result,
+    resultTemperature,
+    tempMin,
+    timeMin,
+    tempMax,
+    timeMax,
+    tempAvg,
+    timeUpdated,
+    
+    // Functions
+    initialize,
+    retryLoadingData,
+    retryLoadingStations,
+    onStationChange,
+  } = useWeatherData();
 
-    const [isDataStale, setIsDataStale] = createSignal(false);
-    {
-      setResultTemperature(`${resultTemperatureValue} °C`);
-      setTempMin(tempMin);
-      setTimeMin(timeMin);
-      setTempMax(tempMax);
-      setTimeMax(timeMax);
-      setTempAvg(tempAvg);
-      setTimeUpdated(timeUpdated);
-      setResult(resultValue);
-    }
+  // Initialize the component on mount
+  onMount(() => {
+    initialize();
+  });
 
-    onMount(async () => {
-      const results = await requestData(selectedStation().value);
-      if (!results.success) {
-        console.error("Failed to load data for station:", results.error);
-        return;
-      }
-      updateData(results.data);
-      const stationsList = await loadStations();
-      if (!stationsList.success) {
-        console.error("Failed to load stations:", stationsList.error);
-        return;
-      }
-      setStations(stationsList.stations);
-    });
-
-    async function onStationChange(station) {
-      setStationPrefix(station.prefix);
-      setSelectedStation(station);
-      const results = await requestData(station.value);
-      if (!results.success) {
-        console.error("Failed to load data for station:", results.error);
-        return;
-      }
-      updateData(results.data);
-    }
-
-    return (
-      <div class="text-center">
-        <h1 class="not-prose font-normal text-5xl font-sans text-balance">
-          Ali je danes vroče{" "}
-          <StationSelector
-            stations={stations()}
-            selectedStation={selectedStation()}
-            stationPrefix={stationPrefix()}
-            isLoading={isLoadingStations()}
-            onStationChange={onStationChange}
-          />
-        </h1>
-
-        <TemperatureDisplay
-          result={result()}
-          resultTemperature={resultTemperature()}
-          tempMin={tempMin()}
-          timeMin={timeMin()}
-          tempMax={tempMax()}
-          timeMax={timeMax()}
-          tempAvg={tempAvg()}
-          timeUpdated={timeUpdated()}
-          isLoading={isLoadingData() || dataError() !== null}
-          isStale={isDataStale()}
-          labels={percentile_labels}
-          values={vrednosti}
-          descriptions={opisi}
+  return (
+    <div class="text-center">
+      <h1 class="not-prose font-normal text-5xl font-sans text-balance">
+        Ali je danes vroče{" "}
+        <StationSelector
+          stations={stations()}
+          selectedStation={selectedStation()}
+          stationPrefix={stationPrefix()}
+          isLoading={isLoadingStations()}
+          onStationChange={onStationChange}
         />
+      </h1>
 
-        <ErrorMessage error={dataError()} onRetry={retryLoadingData} />
+      <TemperatureDisplay
+        result={result()}
+        resultTemperature={resultTemperature()}
+        tempMin={tempMin()}
+        timeMin={timeMin()}
+        tempMax={tempMax()}
+        timeMax={timeMax()}
+        tempAvg={tempAvg()}
+        timeUpdated={timeUpdated()}
+        isLoading={isLoadingData()}
+        isStale={false}
+        labels={percentile_labels}
+        values={vrednosti}
+        descriptions={opisi}
+      />
 
-        <ErrorMessage error={stationsError()} onRetry={retryLoadingStations} />
-        {/* ✅ INSERT: test-only SeasonalScatter chart (uses current station + today's MM-DD) */}
-        <Show when={isTest()}>
-          <div class="mt-10">
-            <SeasonalHistogram
-              stationId={selectedStation()?.value ?? DEFAULT_STATION}
-              center_mmdd={mmdd}
-              todayTemp={+tempAvg() || null}
-              title={`Distribution around ${mmdd}`}
-            />
-          </div>
-          <div class="mt-6">
-            <SeasonalScatter
-              stationId={selectedStation()?.value ?? DEFAULT_STATION}
-              center_mmdd={mmdd}
-              todayTemp={+tempAvg() || null} // 🔥 pass current daily average from API
-              title={prettyTitle}
-            />
-          </div>
-        </Show>
-      </div>
-    );
-  }
+      <ErrorMessage error={dataError()} onRetry={retryLoadingData} />
+
+      <ErrorMessage error={stationsError()} onRetry={retryLoadingStations} />
+      {/* ✅ INSERT: test-only SeasonalScatter chart (uses current station + today's MM-DD) */}
+      <Show when={isTest()}>
+        <div class="mt-10">
+          <SeasonalHistogram
+            stationId={selectedStation()?.value ?? "LJUBL"}
+            center_mmdd={mmdd}
+            todayTemp={+tempAvg() || null}
+            title={`Distribution around ${mmdd}`}
+          />
+        </div>
+        <div class="mt-6">
+          <SeasonalScatter
+            stationId={selectedStation()?.value ?? "LJUBL"}
+            center_mmdd={mmdd}
+            todayTemp={+tempAvg() || null} // 🔥 pass current daily average from API
+            title={prettyTitle}
+          />
+        </div>
+      </Show>
+    </div>
+  );
 }
