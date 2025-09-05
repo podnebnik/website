@@ -69,8 +69,8 @@ export function useStationsQuery(): UseQueryResult<ProcessedStation[], Categoriz
                     }
 
                     // If no persisted data, throw the original error
-                    const errorMessage = result.error instanceof Error ? result.error.message : String(result.error || 'Failed to load stations');
-                    throw new Error(errorMessage);
+                    const errorMessage = 'error' in result && result.error instanceof Error ? result.error.message : String('error' in result ? result.error : 'Unknown error');
+                    throw new Error(errorMessage || 'Failed to load stations');
                 }
                 return result.stations;
             } catch (error) {
@@ -120,8 +120,8 @@ export function useWeatherQuery(stationId: string): UseQueryResult<ProcessedTemp
                             return persistedData;
                         }
 
-                        const errorMessage = result.error instanceof Error ? result.error.message : String(result.error || `Failed to load data for station ${stationId}`);
-                        throw new Error(errorMessage);
+                        const errorMessage = 'error' in result && result.error instanceof Error ? result.error.message : String('error' in result ? result.error : 'Unknown error');
+                        throw new Error(errorMessage || `Failed to load data for station ${stationId}`);
                     }
                     return result.data;
                 } catch (error) {
@@ -156,6 +156,7 @@ export function useWeatherQuery(stationId: string): UseQueryResult<ProcessedTemp
  * This allows components to directly interact with the query cache
  * when needed outside of hooks
  */
+// @ts-ignore - QueryProvider.jsx will be converted to TypeScript in task 4.4
 import { queryClient as appQueryClient } from "../QueryProvider.jsx";
 
 /**

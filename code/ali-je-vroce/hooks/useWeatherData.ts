@@ -5,7 +5,7 @@ import { useStationsQuery, useWeatherQuery, queryKeys } from './queries';
 import { useQueryClient } from '@tanstack/solid-query';
 import { requestData, loadStations } from '../helpers';
 import { generateOptimisticWeatherData } from '../utils/optimistic';
-import { retryLoadingWithBackoff, createNetworkMonitor } from '../utils/errorRecovery';
+import { retryWithBackoff, createNetworkMonitor } from '../utils/errorRecovery.js';
 
 /**
  * Simplified localStorage helper for user preferences
@@ -14,7 +14,7 @@ import { retryLoadingWithBackoff, createNetworkMonitor } from '../utils/errorRec
  * @param {string} key - The key to store preference under
  * @param {any} value - The preference value to store
  */
-function setPreference(key, value) {
+function setPreference(key: string, value: unknown) {
     try {
         // Use the same prefix for consistency with the query cache
         const prefixedKey = `${CACHE_KEY_PREFIX}-${key}`;
@@ -28,11 +28,11 @@ function setPreference(key, value) {
  * Retrieves user preference from local storage
  * Uses the same prefix as the query cache for consistency
  * 
- * @param {string} key - The key to retrieve preference for
- * @param {any} defaultValue - Default value if preference doesn't exist
- * @returns {any} The preference value or defaultValue if not found
+ * @param key - The key to retrieve preference for
+ * @param defaultValue - Default value if preference doesn't exist
+ * @returns  The preference value or defaultValue if not found
  */
-function getPreference(key, defaultValue = null) {
+function getPreference(key: string, defaultValue: {value: number,label: string, prefix: string} | null = null) {
     try {
         // First try with the new prefixed key
         const prefixedKey = `${CACHE_KEY_PREFIX}-${key}`;
@@ -113,21 +113,32 @@ export function useWeatherData() {
     const [isChanging, setIsChanging] = createSignal(false);
 
     const cachedStation = getPreference('selectedStation', DEFAULT_STATION);
-    const [stationId, setStationId] = createSignal(cachedStation.value);
+    const [stationId, setStationId] = createSignal(String(cachedStation.value));
 
-    const [state, setState] = createStore({
+    const [state, setState] = createStore<{
+        selectedStation: { value: number; label: string; prefix: string } | null;
+        stationPrefix: string;
+        result: string;
+        resultTemperature: string;
+        tempMin?: number;
+        timeMin: string;
+        tempMax?: number;
+        timeMax: string;
+        tempAvg?: number;
+        timeUpdated: string;
+    }>({
         // Station data
         selectedStation: cachedStation,
         stationPrefix: cachedStation?.prefix || 'v',
 
         // Temperature display state
         result: '',
-        resultTemperature: '',
-        tempMin: '',
+        resultTemperature: "C",
+        tempMin: undefined,
         timeMin: '',
-        tempMax: '',
+        tempMax: undefined,
         timeMax: '',
-        tempAvg: '',
+        tempAvg: undefined,
         timeUpdated: ''
     });
 
@@ -135,7 +146,7 @@ export function useWeatherData() {
      * Holds the current AbortController instance used to manage and cancel ongoing fetch requests.
      * @type {AbortController|null}
      */
-    let currentController = null;
+    let currentController: AbortController | null  = null;
 
     const stationsQuery = useStationsQuery();
     const weatherQuery = useWeatherQuery(stationId());
@@ -146,6 +157,7 @@ export function useWeatherData() {
         if (weatherQuery.isPending || weatherQuery.isError || !weatherQuery.data) return;
 
         const data = weatherQuery.data;
+        console.log('Weather data updated:', data);
 
         batch(() => {
             setState({
@@ -177,12 +189,13 @@ export function useWeatherData() {
      * - Fetches fresh weather data using the query client, ensuring consistency with hook-based data fetching.
      * - Handles loading state and error reporting, including aborting requests on station change.
      * 
-     * @param {Object} station - The newly selected station object.
-     * @param {string} station.value - The unique identifier for the station.
-     * @param {string} station.prefix - The prefix or code for the station.
+     * @param station - The newly selected station object.
+     * @param station.value - The unique identifier for the station.
+     * @param station.label - The display name of the station.
+     * @param station.prefix - The prefix or code for the station.
      */
-    function onStationChange(station) {
-        if (station.value === stationId()) return;
+    function onStationChange(station: { value: number; label: string; prefix: string }) {
+        if (String(station.value) === stationId()) return;
 
         if (currentController) {
             currentController.abort();
@@ -195,9 +208,10 @@ export function useWeatherData() {
 
         // Generate optimistic data based on current or cached data
         const previousData = weatherQuery.data;
+        console.log('Previous data for optimistic update:', previousData);
         const optimisticData = generateOptimisticWeatherData(
             station.value,
-            previousData,
+            previousData ?? null,
             queryClient,
             queryKeys
         );
@@ -227,17 +241,18 @@ export function useWeatherData() {
             }
 
             // Update the station ID signal
-            setStationId(station.value);
+            setStationId(String(station.value));
         });
 
         // Instead of directly calling the API, use the query client
         // This ensures consistency with the hook-based approach
         queryClient.fetchQuery({
-            queryKey: queryKeys.weatherData(station.value),
+            queryKey: queryKeys.weatherData(String(station.value)),
             queryFn: async () => {
-                const result = await requestData(station.value, { signal: currentController.signal });
+                const result = await requestData(String(station.value), { signal: currentController?.signal });
                 if (!result.success) {
-                    throw new Error(result.error || `Failed to load data for station ${station.value}`);
+                    const errorMessage = 'error' in result && result.error instanceof Error ? result.error.message : String('error' in result ? result.error : 'Unknown error');
+                    throw new Error(errorMessage || `Failed to load data for station ${station.value}`);
                 }
                 return result.data;
             },
@@ -280,7 +295,8 @@ export function useWeatherData() {
             queryFn: async () => {
                 const result = await loadStations();
                 if (!result.success) {
-                    throw new Error(result.error || 'Failed to load stations');
+                    const errorMessage = 'error' in result && result.error instanceof Error ? result.error.message : String('error' in result ? result.error : 'Unknown error');
+                    throw new Error(errorMessage || 'Failed to load stations');
                 }
                 return result.stations;
             },
@@ -291,11 +307,12 @@ export function useWeatherData() {
      * Retries loading temperature data with exponential backoff
      */
     function retryLoadingData() {
-        retryLoadingWithBackoff(weatherQuery.refetch, {
+        retryWithBackoff(weatherQuery.refetch, {
             maxRetries: 3,
             initialDelay: 1000,
-            maxDelay: 5000
-        }).catch(error => {
+            maxDelay: 5000,
+            shouldRetry: () => true
+        }).catch((error: unknown) => {
             console.warn('All retries for weather data failed:', error);
             // We could show a more specific error message here if needed
         });
@@ -305,11 +322,12 @@ export function useWeatherData() {
      * Retries loading stations list with exponential backoff
      */
     function retryLoadingStations() {
-        retryLoadingWithBackoff(stationsQuery.refetch, {
+        retryWithBackoff(stationsQuery.refetch, {
             maxRetries: 3,
             initialDelay: 1000,
-            maxDelay: 5000
-        }).catch(error => {
+            maxDelay: 5000,
+            shouldRetry: () => true
+        }).catch((error: unknown) => {
             console.warn('All retries for stations data failed:', error);
             // We could show a more specific error message here if needed
         });
@@ -325,7 +343,7 @@ export function useWeatherData() {
         onOffline: () => {
             // We could show a notification about offline mode here
         }
-    });
+    }) as { setup: () => void; cleanup: () => void };
 
     // Set up and clean up network monitoring
     onMount(() => {

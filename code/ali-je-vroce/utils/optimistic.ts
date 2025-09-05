@@ -3,17 +3,19 @@
  * These functions help predict data while actual requests are in progress
  */
 
+import { ProcessedTemperatureData } from "../../types/";
+
 /**
  * Generates an optimistic data object for a station change
  * This provides a placeholder while actual data is being fetched
  * 
- * @param {number} newStationId - The ID of the station being changed to
+ * @param newStationId - The ID of the station being changed to
  * @param {Object} previousData - Previous data for another station, used as baseline
  * @param {Object} queryClient - The TanStack Query client to check for cached data
  * @param {Function} queryKeys - The query keys factory function
  * @returns {Object} An optimistic data object that can be shown while loading
  */
-export function generateOptimisticWeatherData(newStationId, previousData, queryClient, queryKeys) {
+export function generateOptimisticWeatherData(newStationId: number, previousData: ProcessedTemperatureData | null, queryClient: any, queryKeys: any) {
     // First try to get data from cache if available
     const cachedData = queryClient.getQueryData(queryKeys.weatherData(newStationId));
 

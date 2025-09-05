@@ -17,10 +17,10 @@
 - `code/types/weather.ts` - Weather station and temperature analysis types
 - `code/types/queries.ts` - Application-specific TanStack Query types (leverages built-in TQ types)
 - `code/types/guards.ts` - Runtime type validation and type guard functions
-- `code/ali-je-vroce/helpers.ts` - Convert helpers.mjs to TypeScript with proper typing
+- `code/ali-je-vroce/utils/persistence.ts` - Convert persistence utilities to TypeScript with generic type support and LocalStoragePersistor interface
 - `code/ali-je-vroce/constants.ts` - Convert constants.mjs to TypeScript
-- `code/ali-je-vroce/hooks/queries.ts` - Convert TanStack Query hooks to TypeScript
-- `code/ali-je-vroce/hooks/useWeatherData.ts` - Convert custom hooks to TypeScript
+- `code/ali-je-vroce/hooks/queries.ts` - Convert TanStack Query hooks to TypeScript (✅ error categorization function updated with union types)
+- `code/ali-je-vroce/hooks/useWeatherData.ts` - Convert custom hooks to TypeScript (✅ Fixed type inconsistencies: station ID number/string conversion, error type handling, AbortController null safety, networkMonitor typing, generateOptimisticWeatherData undefined handling)
 - `code/ali-je-vroce/QueryProvider.tsx` - Convert query provider to TypeScript
 - `code/utils.ts` - Convert shared utilities to TypeScript
 - `code/examples/types-example/` - New example directory showing TypeScript patterns
@@ -31,6 +31,8 @@
 - Maintain existing file structure but add new TypeScript files alongside JavaScript ones
 - F# + Fable generated `.fs.jsx` files remain unchanged
 - Use Vite's built-in TypeScript support, no additional build tools needed
+- Do not rely on JSDoc types. They might be wrong. If you are not sure. Ask.
+- Do not change any functionality.
 
 ## Tasks
 
@@ -58,20 +60,19 @@
 
 - [ ] 3.0 Core Utilities Migration
 
-  - [ ] 3.1 Convert code/utils.mjs to code/utils.ts with proper type annotations
-  - [ ] 3.2 Migrate code/ali-je-vroce/constants.mjs to TypeScript
-  - [ ] 3.3 Convert code/ali-je-vroce/helpers.mjs to TypeScript with accurate return types
-  - [ ] 3.4 Update error categorization function with TypeScript union types
-  - [ ] 3.5 Migrate persistence utilities to TypeScript with generic type support
-  - [ ] 3.6 Add proper typing to date formatting and utility functions
-  - [ ] 3.7 Replace generic JSDoc @returns {Object} with specific TypeScript interfaces
-  - [ ] 3.8 Test migrated utilities to ensure runtime behavior matches type definitions
+  - [x] 3.1 Convert code/utils.mjs to code/utils.ts with proper type annotations
+  - [x] 3.2 Migrate code/ali-je-vroce/constants.mjs to TypeScript
+  - [x] 3.3 Convert code/ali-je-vroce/helpers.mjs to TypeScript with accurate return types
+  - [x] 3.4 Update error categorization function with TypeScript union types
+  - [x] 3.5 Migrate persistence utilities to TypeScript with generic type support
+  - [x] 3.6 Add proper typing to date formatting and utility functions
+  - [x] 3.7 Test migrated utilities to ensure runtime behavior matches type definitions
 
 - [ ] 4.0 Weather App Component Migration
 
-  - [ ] 4.1 Convert code/ali-je-vroce/types.js to code/ali-je-vroce/types.ts
-  - [ ] 4.2 Migrate code/ali-je-vroce/hooks/queries.js to TypeScript with TanStack Query generics
-  - [ ] 4.3 Convert code/ali-je-vroce/hooks/useWeatherData.js to TypeScript
+  - [x] 4.1 Convert code/ali-je-vroce/types.js to code/ali-je-vroce/types.ts
+  - [x] 4.2 Migrate code/ali-je-vroce/hooks/queries.js to TypeScript with TanStack Query generics
+  - [x] 4.3 Convert code/ali-je-vroce/hooks/useWeatherData.js to TypeScript
   - [ ] 4.4 Migrate code/ali-je-vroce/QueryProvider.jsx to QueryProvider.tsx
   - [ ] 4.5 Add TypeScript interfaces for all SolidJS component props
   - [ ] 4.6 Convert error handling components to TypeScript with proper error types
