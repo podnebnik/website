@@ -3,7 +3,7 @@ import { vrednosti, opisi, percentile_labels } from "./constants.ts";
 
 // Import custom hooks
 import { useWeatherData } from "./hooks/useWeatherData.ts";
-import { throttle } from "./utils/debounce.js";
+import { throttle } from "./utils/debounce.ts";
 import { announce } from "./utils/a11y.ts";
 
 // Import components
