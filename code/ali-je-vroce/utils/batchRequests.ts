@@ -1,9 +1,61 @@
 import { STAGING_VREMENAR_API_URL } from "../constants.ts";
 
 /**
+ * Interface for batch request options
+ */
+export interface BatchRequestOptions {
+    signal?: AbortSignal;
+    timeout?: number;
+}
+
+/**
+ * Interface for station data (based on what the API returns)
+ */
+export interface StationData {
+    [key: string]: any; // Flexible structure for station data
+}
+
+/**
+ * Interface for batch fetch result
+ */
+export interface BatchFetchResult {
+    success: boolean;
+    data?: Record<string, StationData>;
+    error?: string;
+}
+
+/**
+ * Interface for batch promise waiter
+ */
+interface BatchWaiter {
+    resolve: (value: StationData) => void;
+    reject: (reason: Error) => void;
+}
+
+/**
+ * Interface for batch data structure
+ */
+interface BatchData {
+    stationIds: Set<number>;
+    waiters: Map<number, BatchWaiter[]>;
+    controller: AbortController;
+    timeoutId: ReturnType<typeof setTimeout> | null;
+}
+
+/**
+ * Interface for batch API response
+ */
+interface BatchApiResponse {
+    stations: Array<{
+        id: string;
+        [key: string]: any;
+    }>;
+}
+
+/**
  * A Map to track pending batch requests by batch ID
  */
-const pendingBatches = new Map();
+const pendingBatches = new Map<string, BatchData>();
 
 /**
  * A utility for batching multiple station data requests together
@@ -12,13 +64,11 @@ const pendingBatches = new Map();
 
 /**
  * Fetch data for multiple stations in a single network request
- * 
- * @param {number[]} stationIds - Array of station IDs to fetch data for
- * @param {Object} options - Request options
- * @param {AbortSignal} options.signal - Optional AbortController signal
- * @returns {Promise<Object>} Object mapping station IDs to their data
  */
-export async function batchFetchStationData(stationIds, options = {}) {
+export async function batchFetchStationData(
+    stationIds: number[], 
+    options: BatchRequestOptions = {}
+): Promise<BatchFetchResult> {
     if (!stationIds || !stationIds.length) {
         return { success: false, error: "No station IDs provided" };
     }
@@ -45,14 +95,14 @@ export async function batchFetchStationData(stationIds, options = {}) {
         }
 
         // Parse and process the response
-        const batchData = await response.json();
+        const batchData: BatchApiResponse = await response.json();
 
         if (!batchData || !batchData.stations) {
             throw new Error("Invalid batch response format");
         }
 
         // Process the batch response into individual station data
-        const processedData = {};
+        const processedData: Record<string, StationData> = {};
 
         // Convert the response data into the expected format for each station
         for (const stationData of batchData.stations) {
@@ -62,6 +112,7 @@ export async function batchFetchStationData(stationIds, options = {}) {
             processedData[stationId] = {
                 // We'd map the batch response format to our expected data format here
                 // This would depend on the actual API response structure
+                ...stationData
             };
         }
 
@@ -71,37 +122,35 @@ export async function batchFetchStationData(stationIds, options = {}) {
         };
     } catch (error) {
         // If the request was aborted, propagate the abort error
-        if (error.name === 'AbortError') {
+        if (error instanceof Error && error.name === 'AbortError') {
             throw error;
         }
 
+        const errorMessage = error instanceof Error ? error.message : 'Failed to fetch batch data';
         console.error('Error in batch fetch:', error);
         return {
             success: false,
-            error: error.message || 'Failed to fetch batch data'
+            error: errorMessage
         };
     }
 }
 
 /**
  * Queue a station for the next batch request
- * 
- * @param {number} stationId - Station ID to queue
- * @param {Object} options - Batch options
- * @param {number} options.timeout - Timeout in ms before sending the batch (default: 50ms)
- * @param {AbortSignal} options.signal - AbortController signal
- * @returns {Promise<Object>} - Promise that resolves with the station data
  */
-export function queueBatchRequest(stationId, options = {}) {
+export function queueBatchRequest(
+    stationId: number, 
+    options: BatchRequestOptions = {}
+): Promise<StationData> {
     const timeout = options.timeout || 50; // Default 50ms batch window
 
     // Create a promise that will resolve with the station's data
-    return new Promise((resolve, reject) => {
+    return new Promise<StationData>((resolve, reject) => {
         // If no active batch exists, create one
         if (!pendingBatches.has('current')) {
-            const batchData = {
-                stationIds: new Set(),
-                waiters: new Map(),
+            const batchData: BatchData = {
+                stationIds: new Set<number>(),
+                waiters: new Map<number, BatchWaiter[]>(),
                 controller: new AbortController(),
                 timeoutId: null
             };
@@ -114,7 +163,7 @@ export function queueBatchRequest(stationId, options = {}) {
             pendingBatches.set('current', batchData);
         }
 
-        const batch = pendingBatches.get('current');
+        const batch = pendingBatches.get('current')!;
 
         // Add this station to the batch
         batch.stationIds.add(stationId);
@@ -123,7 +172,7 @@ export function queueBatchRequest(stationId, options = {}) {
         if (!batch.waiters.has(stationId)) {
             batch.waiters.set(stationId, []);
         }
-        batch.waiters.get(stationId).push({ resolve, reject });
+        batch.waiters.get(stationId)!.push({ resolve, reject });
 
         // If the request has an abort signal, listen for abort events
         if (options.signal) {
@@ -141,7 +190,7 @@ export function queueBatchRequest(stationId, options = {}) {
 /**
  * Execute the current batch request
  */
-async function executeBatch() {
+async function executeBatch(): Promise<void> {
     // Get the current batch
     const batch = pendingBatches.get('current');
     if (!batch) return;
@@ -150,7 +199,9 @@ async function executeBatch() {
     pendingBatches.delete('current');
 
     // Clear the timeout to prevent double-execution
-    clearTimeout(batch.timeoutId);
+    if (batch.timeoutId) {
+        clearTimeout(batch.timeoutId);
+    }
 
     try {
         // Convert the Set to an array for the request
@@ -164,22 +215,28 @@ async function executeBatch() {
             signal: batch.controller.signal
         });
 
-        if (result.success) {
+        if (result.success && result.data) {
             // Resolve each waiter with its station data
             for (const [stationId, waiters] of batch.waiters.entries()) {
-                const stationData = result.data[stationId];
-                waiters.forEach(({ resolve }) => resolve(stationData));
+                const stationData = result.data[stationId.toString()];
+                if (stationData) {
+                    waiters.forEach(({ resolve }) => resolve(stationData));
+                } else {
+                    waiters.forEach(({ reject }) => reject(new Error(`No data found for station ${stationId}`)));
+                }
             }
         } else {
             // Reject all waiters with the error
+            const errorMessage = result.error || 'Unknown batch request error';
             for (const waiters of batch.waiters.values()) {
-                waiters.forEach(({ reject }) => reject(new Error(result.error)));
+                waiters.forEach(({ reject }) => reject(new Error(errorMessage)));
             }
         }
     } catch (error) {
         // Reject all waiters with the error
+        const errorToReject = error instanceof Error ? error : new Error('Unknown batch execution error');
         for (const waiters of batch.waiters.values()) {
-            waiters.forEach(({ reject }) => reject(error));
+            waiters.forEach(({ reject }) => reject(errorToReject));
         }
     }
 }
