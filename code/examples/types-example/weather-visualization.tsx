@@ -1,39 +1,80 @@
 import { Component, createSignal, createEffect, onMount } from "solid-js";
 import Highcharts, { Chart, Options } from "highcharts";
 
+/**
+ * TypeScript Example: SolidJS + Highcharts Integration
+ *
+ * This component demonstrates:
+ * - Interface-based prop typing
+ * - Generic type constraints with union types
+ * - Optional parameters with defaults
+ * - Type-safe event handlers
+ * - External library type integration (Highcharts)
+ */
+
 // 1. Define props interface for weather visualization
 interface WeatherVisualizationProps {
+  /** Station name displayed in chart title */
   stationName: string;
+  /** Temperature data points to visualize */
   data: TemperatureDataPoint[];
+  /** Chart visualization type - defaults to 'line' */
   chartType?: "line" | "column" | "area";
+  /** Chart height in pixels - defaults to 400 */
   height?: number;
+  /** Whether to show interactive tooltips */
   showTooltips?: boolean;
+  /** Callback fired when chart is initialized */
   onChartReady?: (chart: Chart) => void;
 }
 
-// 2. Define data types
+// 2. Define data types with optional properties
 interface TemperatureDataPoint {
+  /** ISO date string */
   date: string;
+  /** Average temperature in Celsius */
   temperature: number;
+  /** Minimum temperature (optional) */
   min?: number;
+  /** Maximum temperature (optional) */
   max?: number;
 }
 
+/**
+ * TypeScript Example: Type-Safe Chart Configuration Builder
+ *
+ * Demonstrates:
+ * - Explicit return type (Highcharts.Options)
+ * - Default parameters with type annotations
+ * - Array transformation with type safety
+ * - Conditional type mapping for series data
+ */
 // 3. Chart configuration type-safe builders
 const createChartOptions = (
   data: TemperatureDataPoint[],
   stationName: string,
-  chartType: "line" | "column" | "area" = "line"
+  chartType: "line" | "column" | "area" = "line",
+  showTooltips: boolean = true
 ): Options => {
-  // Transform data for Highcharts
-  const chartData = data.map((point) => [
-    new Date(point.date).getTime(),
-    point.temperature,
-  ]);
+  // Transform data for Highcharts - explicit typing for clarity
+  const chartData: [number, number][] = data.map(
+    (point: TemperatureDataPoint): [number, number] => [
+      new Date(point.date).getTime(),
+      point.temperature,
+    ]
+  );
 
-  const minMaxData = data
-    .filter((point) => point.min !== undefined && point.max !== undefined)
-    .map((point) => [new Date(point.date).getTime(), point.min!, point.max!]);
+  // Filter and transform min/max data with proper type guards
+  const minMaxData: [number, number, number][] = data
+    .filter(
+      (point): point is TemperatureDataPoint & { min: number; max: number } =>
+        point.min !== undefined && point.max !== undefined
+    )
+    .map((point): [number, number, number] => [
+      new Date(point.date).getTime(),
+      point.min,
+      point.max,
+    ]);
 
   return {
     chart: {
@@ -72,6 +113,7 @@ const createChartOptions = (
       gridLineColor: "#f3f4f6",
     },
     tooltip: {
+      enabled: showTooltips,
       backgroundColor: "rgba(255, 255, 255, 0.95)",
       borderColor: "#e5e7eb",
       borderRadius: 8,
@@ -113,7 +155,7 @@ const createChartOptions = (
             {
               name: "Min/Max razpon",
               data: minMaxData,
-              type: "arearange" as const,
+              type: "arearange" as const, // TypeScript: 'as const' ensures literal type instead of string
               color: "#60a5fa",
               fillOpacity: 0.2,
               lineWidth: 0,
@@ -122,7 +164,7 @@ const createChartOptions = (
               },
             },
           ]
-        : []),
+        : []), // TypeScript: Conditional spread demonstrates array type inference
     ],
     credits: {
       enabled: false,
@@ -134,31 +176,47 @@ const createChartOptions = (
   };
 };
 
+/**
+ * TypeScript Example: SolidJS Component with External Library Integration
+ *
+ * Demonstrates:
+ * - Component generic type constraints (Component<Props>)
+ * - Signal typing with explicit generics (createSignal<T>)
+ * - Ref element typing (HTMLDivElement | undefined)
+ * - Optional chaining with type-safe event callbacks
+ * - Error boundary patterns with try-catch blocks
+ */
 // 4. Main weather visualization component
 const WeatherVisualization: Component<WeatherVisualizationProps> = (props) => {
+  // TypeScript: HTMLDivElement union with undefined for uninitialized refs
   let chartContainer: HTMLDivElement | undefined;
-  const [chart, setChart] = createSignal<Chart | null>(null);
-  const [isLoading, setIsLoading] = createSignal(true);
 
-  // Create chart on mount
+  // TypeScript: Explicit generic typing for signals - Chart comes from Highcharts
+  const [chart, setChart] = createSignal<Chart | null>(null);
+  const [isLoading, setIsLoading] = createSignal<boolean>(true);
+
+  // TypeScript: SolidJS lifecycle hook with type-safe DOM manipulation
   onMount(() => {
     if (chartContainer && props.data.length > 0) {
       try {
         const options = createChartOptions(
           props.data,
           props.stationName,
-          props.chartType
+          props.chartType,
+          props.showTooltips
         );
 
+        // TypeScript: Highcharts.chart returns Chart type, ensuring type safety
         const chartInstance = Highcharts.chart(chartContainer, {
-          ...options,
+          ...options, // TypeScript: Spread operator with Options type
           chart: {
             ...options.chart,
-            height: props.height || 400,
+            height: props.height || 400, // TypeScript: Nullish coalescing with number fallback
           },
         });
 
         setChart(chartInstance);
+        // TypeScript: Optional chaining prevents runtime errors if callback undefined
         props.onChartReady?.(chartInstance);
         setIsLoading(false);
       } catch (error) {
@@ -168,17 +226,18 @@ const WeatherVisualization: Component<WeatherVisualizationProps> = (props) => {
     }
   });
 
-  // Update chart when data changes
+  // TypeScript: Reactive effect with signal dependency tracking
   createEffect(() => {
     const currentChart = chart();
     if (currentChart && props.data.length > 0) {
       const options = createChartOptions(
         props.data,
         props.stationName,
-        props.chartType
+        props.chartType,
+        props.showTooltips
       );
 
-      // Update chart options and series data
+      // TypeScript: External library method call with Options type validation
       currentChart.update(options);
     }
   });
@@ -204,13 +263,24 @@ const WeatherVisualization: Component<WeatherVisualizationProps> = (props) => {
   );
 };
 
+/**
+ * TypeScript Example: Complete Usage Component
+ *
+ * Demonstrates:
+ * - Union type constraints for signal state
+ * - Typed array literals with interface compliance
+ * - Event handler typing with proper parameters
+ * - Template literal types in conditional class names
+ * - Module export patterns with type exports
+ */
 // 5. Usage example component
 const WeatherVisualizationExample: Component = () => {
+  // TypeScript: Signal with explicit union type constraint
   const [chartType, setChartType] = createSignal<"line" | "column" | "area">(
     "line"
   );
 
-  // Mock data for example
+  // TypeScript: Typed array literal ensuring interface compliance
   const mockData: TemperatureDataPoint[] = [
     { date: "2025-08-30", temperature: 23.5, min: 18.2, max: 28.1 },
     { date: "2025-08-31", temperature: 25.1, min: 19.5, max: 29.3 },
@@ -221,7 +291,8 @@ const WeatherVisualizationExample: Component = () => {
     { date: "2025-09-05", temperature: 27.4, min: 22.8, max: 31.8 },
   ];
 
-  const handleChartReady = (chart: Chart) => {
+  // TypeScript: Event handler with explicit parameter typing
+  const handleChartReady = (chart: Chart): void => {
     console.log("Chart ready:", chart);
   };
 

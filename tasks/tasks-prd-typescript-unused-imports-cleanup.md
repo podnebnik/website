@@ -41,12 +41,12 @@
   - [x] 3.3 Fix unused `options` variable in `code/examples/types-example/weather-visualization.tsx`
   - [x] 3.4 Address unused `data` parameter in `code/examples/types-example/query-patterns.ts` onSuccess callback
 
-- [ ] 4.0 Review and Clean Up Example Files
+- [x] 4.0 Review and Clean Up Example Files
 
-  - [ ] 4.1 Remove or properly use unused generic type parameters `T` in `query-patterns.ts` utility functions
-  - [ ] 4.2 Clean up `weather-visualization.tsx` to demonstrate proper TypeScript patterns without unused variables
-  - [ ] 4.3 Ensure example files serve as good TypeScript reference implementations
-  - [ ] 4.4 Update example file comments to explain TypeScript-specific patterns and best practices
+  - [x] 4.1 Remove or properly use unused generic type parameters `T` in `query-patterns.ts` utility functions
+  - [x] 4.2 Clean up `weather-visualization.tsx` to demonstrate proper TypeScript patterns without unused variables
+  - [x] 4.3 Ensure example files serve as good TypeScript reference implementations
+  - [x] 4.4 Update example file comments to explain TypeScript-specific patterns and best practices
 
 - [ ] 5.0 Validate TypeScript Compilation and Functionality
   - [ ] 5.1 Run `npx tsc --noEmit` to verify zero compilation errors after cleanup
