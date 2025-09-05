@@ -110,6 +110,36 @@ Probably the easiest way to start authoring content is to look at the existing p
 
 ## Developing visualizations
 
+### TypeScript Support
+
+This project now includes comprehensive TypeScript support alongside JavaScript. You can:
+
+- **Use TypeScript** for new components and utilities (`.ts`, `.tsx` files)
+- **Keep JavaScript** for existing code (`.js`, `.jsx` files continue working)
+- **Mix both** - TypeScript and JavaScript files work together seamlessly
+
+**Key Benefits:**
+
+- Enhanced IDE support with autocomplete and error detection
+- Type safety for API responses and component props
+- Better refactoring support and code documentation
+- Gradual adoption - no need to convert everything at once
+
+**Getting Started:**
+
+- **New components**: Use `.tsx` extension for SolidJS components with TypeScript
+- **Utilities**: Use `.ts` extension for helper functions and data processing
+- **Examples**: Check `code/examples/types-example/` for comprehensive patterns
+- **Types**: Import shared types from `code/types/` directory
+
+**Resources:**
+
+- Examples: `code/examples/types-example/`
+- Project types: `code/types/`
+- Performance analysis: `docs/typescript-performance-analysis.md`
+
+### Creating Visualizations
+
 Technically and for the purpose of this project, a visualization is a JavaScript function that renders the content of the visualization in the provided DOM element. You can in principle use any JavaScript library or language that compiles to JavaScript. However, we recommend using [Fable](https://fable.io/) and/or JavaScript together with [Solid JS](https://www.solidjs.com/) as we have found these to be the most productive and performant for most cases. See `code/examples` for examples of visualizations.
 
 This is an example how to include the visualization in the page (the visualization uses Solid JS):
