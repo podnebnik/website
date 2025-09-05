@@ -151,6 +151,65 @@ volumes:
   - .:/build # Live code changes reflected immediately
 ```
 
+## Docker Development with TypeScript
+
+### Compatibility Verification
+
+**✅ Full TypeScript Support Confirmed**
+
+The Docker development environment provides seamless TypeScript integration with the following verified capabilities:
+
+#### Base Image Configuration
+
+**`deployment/Dockerfile.dev.base`**:
+
+- **Node.js 22**: Full TypeScript compilation support via Vite
+- **.NET SDK 8**: Maintains Fable F# compilation for existing workflows
+- **Yarn + Corepack**: Modern package manager with proper dependency resolution
+- **Development Dependencies**: All TypeScript packages installed via `yarn install`
+
+#### Development Workflow
+
+**Container Command**: `yarn install && yarn run start`
+
+- **Identical Process**: Same command sequence as local development
+- **Live Compilation**: TypeScript files compiled in real-time via Vite
+- **Hot Module Replacement**: File changes trigger automatic browser updates
+- **Volume Mounting**: `.:/build` enables immediate TypeScript file changes
+
+#### Build Process Integration
+
+1. **Dependency Installation**: Container runs `yarn install` → installs TypeScript 5.7.3
+2. **Development Server**: `yarn run start` → Fable + Eleventy + Vite with TypeScript
+3. **File Watching**: Volume mount enables live TypeScript editing without rebuild
+4. **Port Mapping**: `8003:8080` provides external access to development server
+
+#### TypeScript-Specific Benefits
+
+- **No Additional Configuration**: Existing Vite + SolidJS plugin handles TypeScript automatically
+- **Mixed File Support**: F# (`.fs.jsx`), TypeScript (`.ts/.tsx`), and JavaScript (`.js/.jsx`) coexist
+- **Source Maps**: Full debugging support maintained in containerized environment
+- **Performance**: No observable performance degradation with TypeScript compilation
+
+#### Production Alignment
+
+- **Consistent Environment**: Development container mirrors production build dependencies
+- **CI/CD Compatibility**: Same Docker base image used in GitHub Actions builds
+- **Deployment Ready**: Production builds successfully process TypeScript via same toolchain
+
+### Quick Start Commands
+
+```bash
+# Build development environment
+docker-compose -f compose.yaml build base
+
+# Start development with TypeScript support
+docker-compose -f compose.yaml up website
+
+# Access development server
+open http://localhost:8003
+```
+
 ## TypeScript Integration Status
 
 ### ✅ What's Already Working
