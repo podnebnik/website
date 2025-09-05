@@ -1,7 +1,7 @@
 /** @import * as Types "../types.js" */
 
-import { queryKeys } from "../hooks/queries.js";
-import { requestData } from "../helpers";
+import { queryKeys } from "../hooks/queries.ts";
+import { requestData } from "../helpers.ts";
 import { QueryClient } from "@tanstack/solid-query";
 
 /**

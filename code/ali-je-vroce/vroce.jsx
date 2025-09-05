@@ -1,19 +1,19 @@
 import { onMount, createSignal, onCleanup, Show } from "solid-js";
-import { vrednosti, opisi, percentile_labels } from "./constants";
+import { vrednosti, opisi, percentile_labels } from "./constants.ts";
 
 // Import custom hooks
-import { useWeatherData } from "./hooks/useWeatherData.js";
+import { useWeatherData } from "./hooks/useWeatherData.ts";
 import { throttle } from "./utils/debounce.js";
 import { announce } from "./utils/a11y.js";
 
 // Import components
 import { StationSelector } from "./components/StationSelector.tsx";
 import { TemperatureDisplay } from "./components/TemperatureDisplay.tsx";
-import { ErrorMessage } from "./components/ErrorMessage.js";
+import { ErrorMessage } from "./components/ErrorMessage.tsx";
 
 // ✅ INSERT: SeasonalScatter (Highcharts #1)
-import SeasonalScatter from "./charts/SeasonalScatter.jsx";
-import SeasonalHistogram from "./charts/SeasonalHistogram.jsx";
+import SeasonalScatter from "./charts/SeasonalScatter.tsx";
+import SeasonalHistogram from "./charts/SeasonalHistogram.tsx";
 
 /**
  * AliJeVroce is a Solid JS component that displays whether it is hot today in a selected location,

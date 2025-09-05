@@ -1,5 +1,5 @@
 import { Skeleton } from "@kobalte/core/skeleton";
-import { cn } from "../../utils.js";
+import { cn } from "../../utils.ts";
 
 /**
  * LoadingSkeleton component renders skeleton placeholders for loading states.

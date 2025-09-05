@@ -28,6 +28,10 @@
 - `code/ali-je-vroce/charts/Highchart.tsx` - TypeScript version of Highcharts SolidJS wrapper with proper Highcharts.Options typing
 - `code/ali-je-vroce/charts/SeasonalHistogram.tsx` - TypeScript version of seasonal histogram with complete type safety for Highcharts configuration
 - `code/ali-je-vroce/charts/SeasonalScatter.tsx` - TypeScript version of seasonal scatter plot with proper type annotations
+- `code/ali-je-vroce/vroce.jsx` - Updated imports to use TypeScript versions of components and utilities
+- `code/ali-je-vroce/components/Skeletons.jsx` - Updated utils import to use TypeScript version
+- `code/ali-je-vroce/utils/prefetching.js` - Updated imports to use TypeScript versions of queries and helpers
+- `code/ali-je-vroce/utils/batchRequests.js` - Updated constants import to use TypeScript version
 
 ### Notes
 
@@ -82,7 +86,7 @@
   - [x] 4.6 Convert error handling components to TypeScript with proper error types
   - [x] 4.7 Migrate station selector and weather display components to TypeScript
   - [x] 4.8 Add Highcharts configuration typing for weather visualizations (TypeScript conversion complete with proper type safety)
-  - [ ] 4.9 Update component imports to use new TypeScript modules
+  - [x] 4.9 Update component imports to use new TypeScript modules
   - [ ] 4.10 Test weather app functionality with TypeScript conversion
 
 - [ ] 5.0 Build System Integration and Testing

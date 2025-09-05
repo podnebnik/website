@@ -1,4 +1,4 @@
-import { STAGING_VREMENAR_API_URL } from "../constants";
+import { STAGING_VREMENAR_API_URL } from "../constants.ts";
 
 /**
  * A Map to track pending batch requests by batch ID
