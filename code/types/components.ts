@@ -3,9 +3,8 @@
  */
 
 import { Component, JSX } from 'solid-js';
-import { AppError, LoadingState } from './common.js';
+import { AppError } from './common.js';
 import { ProcessedStation } from './api.js';
-import { WeatherReading } from './weather.js';
 import * as Highcharts from 'highcharts';
 
 // Base component props

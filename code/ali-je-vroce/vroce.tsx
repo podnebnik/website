@@ -1,10 +1,8 @@
-import { onMount, createSignal, onCleanup, Show } from "solid-js";
+import { onMount, Show } from "solid-js";
 import { vrednosti, opisi, percentile_labels } from "./constants.ts";
 
 // Import custom hooks
 import { useWeatherData } from "./hooks/useWeatherData.ts";
-import { throttle } from "./utils/debounce.ts";
-import { announce } from "./utils/a11y.ts";
 
 // Import components
 import { StationSelector } from "./components/StationSelector.tsx";
@@ -26,7 +24,6 @@ import SeasonalHistogram from "./charts/SeasonalHistogram.tsx";
  * @returns The rendered component displaying temperature statistics and percentile comparison.
  */
 export function AliJeVroce() {
-
   // ✅ INSERT: test flag + today's label for the SeasonalScatter chart
   const isTest = () =>
     typeof window !== "undefined" &&
@@ -60,7 +57,7 @@ export function AliJeVroce() {
     timeMax,
     tempAvg,
     timeUpdated,
-    
+
     // Functions
     initialize,
     retryLoadingData,
@@ -89,11 +86,11 @@ export function AliJeVroce() {
       <TemperatureDisplay
         result={result()}
         resultTemperature={resultTemperature()}
-        tempMin={String(tempMin() ?? '')}
+        tempMin={String(tempMin() ?? "")}
         timeMin={timeMin()}
-        tempMax={String(tempMax() ?? '')}
+        tempMax={String(tempMax() ?? "")}
         timeMax={timeMax()}
-        tempAvg={String(tempAvg() ?? '')}
+        tempAvg={String(tempAvg() ?? "")}
         timeUpdated={timeUpdated()}
         isLoading={isLoadingData()}
         isStale={false}
@@ -102,16 +99,19 @@ export function AliJeVroce() {
         descriptions={opisi}
       />
 
-      <ErrorMessage error={dataError() || ''} onRetry={retryLoadingData} />
+      <ErrorMessage error={dataError() || ""} onRetry={retryLoadingData} />
 
-      <ErrorMessage error={stationsError() || ''} onRetry={retryLoadingStations} />
+      <ErrorMessage
+        error={stationsError() || ""}
+        onRetry={retryLoadingStations}
+      />
       {/* ✅ INSERT: test-only SeasonalScatter chart (uses current station + today's MM-DD) */}
       <Show when={isTest()}>
         <div class="mt-10">
           <SeasonalHistogram
             stationId={selectedStation()?.station_id ?? 14}
             center_mmdd={mmdd}
-            todayTemp={(tempAvg() ? +tempAvg()! : null)}
+            todayTemp={tempAvg() ? +tempAvg()! : null}
             title={`Distribution around ${mmdd}`}
           />
         </div>
@@ -119,7 +119,7 @@ export function AliJeVroce() {
           <SeasonalScatter
             stationId={selectedStation()?.station_id ?? 14}
             center_mmdd={mmdd}
-            todayTemp={(tempAvg() ? +tempAvg()! : 0)} // 🔥 pass current daily average from API, fallback to 0 for TypeScript
+            todayTemp={tempAvg() ? +tempAvg()! : 0} // 🔥 pass current daily average from API, fallback to 0 for TypeScript
             title={prettyTitle}
           />
         </div>

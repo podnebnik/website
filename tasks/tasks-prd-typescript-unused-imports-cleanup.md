@@ -42,12 +42,17 @@
   - [x] 1.3 Review `types/components.ts` unused imports (`LoadingState`, `WeatherReading`) to verify they're not needed in type definitions
   - [x] 1.4 Document findings in comments for imports that indicate missing functionality vs genuinely unused imports
 
-- [ ] 2.0 Clean Up Genuine Unused Imports and Type Definitions
+  - [x] 2.3 Remove unused utility imports (`throttle`, `announce`) from `vroce.tsx` if no UX features are missing
+  - [x] 2.4 Verify all remaining imports in cleaned files are actually used
 
-  - [ ] 2.1 Remove unused `LoadingState` and `WeatherReading` imports from `code/types/components.ts`
-  - [ ] 2.2 Clean up unused SolidJS imports from `vroce.tsx` if no reactive state management is needed
-  - [ ] 2.3 Remove unused utility imports (`throttle`, `announce`) from `vroce.tsx` if no UX features are missing
-  - [ ] 2.4 Verify all remaining imports in cleaned files are actually used
+- [x] 2.0 Clean Up Genuine Unused Imports and Type Definitions
+
+  - [x] 2.1 Remove unused `LoadingState` and `WeatherReading` imports from `code/types/components.ts`
+  - [x] 2.2 Clean up unused SolidJS imports from `vroce.tsx` if no reactive state management is needed
+  - [x] 2.3 Remove unused utility imports (`throttle`, `announce`) from `vroce.tsx` if no UX features are missing
+  - [x] 2.4 Verify all remaining imports in cleaned files are actually used
+
+- [ ] 3.0 Handle Unused Variables and Parameters
 
 - [ ] 3.0 Handle Unused Variables and Parameters
 
