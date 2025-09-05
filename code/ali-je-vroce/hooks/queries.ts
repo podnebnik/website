@@ -156,8 +156,8 @@ export function useWeatherQuery(stationId: string): UseQueryResult<ProcessedTemp
  * This allows components to directly interact with the query cache
  * when needed outside of hooks
  */
-// @ts-ignore - QueryProvider.jsx will be converted to TypeScript in task 4.4
-import { queryClient as appQueryClient } from "../QueryProvider.jsx";
+// @ts-ignore - QueryProvider.tsx is the TypeScript version
+import { queryClient as appQueryClient } from "../QueryProvider.tsx";
 
 /**
  * Returns the singleton QueryClient instance from QueryProvider

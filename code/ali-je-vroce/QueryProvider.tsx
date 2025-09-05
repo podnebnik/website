@@ -1,8 +1,9 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/solid-query';
+import { QueryClient, QueryClientProvider, QueryCache } from '@tanstack/solid-query';
 import { SolidQueryDevtools } from '@tanstack/solid-query-devtools';
-import { Show, onMount } from 'solid-js';
+import { Show, onMount, Component, JSX } from 'solid-js';
 import { prefetchPopularStations, prefetchStationsData } from './utils/prefetching.js';
-import { createLocalStoragePersistor } from './utils/persistence.js';
+import { createLocalStoragePersistor } from './utils/persistence';
+import { QueryProviderProps } from '../types/components';
 
 // Create a client with specialized defaults for different query types
 // Export the queryClient so it can be imported directly by other modules
@@ -24,7 +25,7 @@ queryClient.setQueryDefaults(
     {
         staleTime: 1000 * 60 * 30, // 30 minutes - stations don't change often
         retry: 2,
-        cacheTime: 1000 * 60 * 60, // 1 hour
+        gcTime: 1000 * 60 * 60, // 1 hour (renamed from cacheTime in TanStack Query v5)
     }
 );
 
@@ -41,34 +42,40 @@ queryClient.setQueryDefaults(
         refetchOnWindowFocus: true, // Changed from "always" to use the cached data first
         refetchOnMount: true, // Changed from "always" to use the cached data first
         refetchOnReconnect: true, // Changed from "always" to use the cached data first
-        refetchOnStale: true,
 
         // Keep background refreshes for up-to-date data
         refetchInterval: 1000 * 60 * 15, // 15 minutes - less aggressive refreshing
         refetchIntervalInBackground: true, // Continue refreshing even when tab is not focused
 
         // Dramatically increase cache time for better offline support
-        cacheTime: 1000 * 60 * 60 * 24, // 24 hours - keep data in cache much longer
+        gcTime: 1000 * 60 * 60 * 24, // 24 hours - keep data in cache much longer (renamed from cacheTime)
 
         // This is key for SWR pattern - always keep previous data visible while fetching
-        keepPreviousData: true,
+        placeholderData: (previousData) => previousData, // Updated from keepPreviousData in v5
     }
 );
 
 /**
  * QueryProvider component that wraps children with TanStack Query's QueryClientProvider
  * Also handles initial data prefetching for better user experience
- * 
- * @param {Object} props - Component props
- * @param {JSX.Element} props.children - Child components to be wrapped
- * @returns {JSX.Element} The wrapped component
  */
 // Create a persistor instance outside the component to ensure it's created only once
 const persistor = createLocalStoragePersistor();
 
-export function QueryProvider(props) {
+export const QueryProvider: Component<QueryProviderProps> = (props) => {
     // Check if we're in development mode
-    const isDev = () => import.meta.env?.DEV === true;
+    const isDev = (): boolean => {
+        try {
+            // Use a safer way to check for development mode
+            return typeof window !== 'undefined' && 
+                   window.location && 
+                   (window.location.hostname === 'localhost' || 
+                    window.location.hostname === '127.0.0.1' ||
+                    window.location.port === '8080');
+        } catch {
+            return false;
+        }
+    };
 
     // When the component mounts, set up persistence and start prefetching data
     onMount(() => {
@@ -78,7 +85,8 @@ export function QueryProvider(props) {
         persistor.cleanupExpiredQueries();
 
         // Set up event listeners to save queries to localStorage
-        queryClient.getQueryCache().subscribe(event => {
+        const queryCache: QueryCache = queryClient.getQueryCache();
+        queryCache.subscribe((event) => {
             // In TanStack Query v5, we should respond to the 'updated' event
             // which is fired when a query's data is updated with fresh data
             if (event.type === 'updated' && event.query?.state?.data) {
@@ -127,9 +135,9 @@ export function QueryProvider(props) {
     return (
         <QueryClientProvider client={queryClient}>
             {props.children}
-            <Show when={isDev()}>
+            <Show when={props.enableDevtools !== false && isDev()}>
                 <SolidQueryDevtools initialIsOpen={false} />
             </Show>
         </QueryClientProvider>
-    );
-}
+    ) as JSX.Element;
+};
