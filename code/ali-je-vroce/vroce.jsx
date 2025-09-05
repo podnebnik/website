@@ -9,7 +9,7 @@ import { announce } from "./utils/a11y.js";
 // Import components
 import { StationSelector } from "./components/StationSelector.jsx";
 import { TemperatureDisplay } from "./components/TemperatureDisplay.jsx";
-import { ErrorMessage } from "./components/ErrorMessage.jsx";
+import { ErrorMessage } from "./components/ErrorMessage.js";
 
 // ✅ INSERT: SeasonalScatter (Highcharts #1)
 import SeasonalScatter from "./charts/SeasonalScatter.jsx";
