@@ -26,7 +26,6 @@ import SeasonalHistogram from "./charts/SeasonalHistogram.tsx";
  * @returns The rendered component displaying temperature statistics and percentile comparison.
  */
 export function AliJeVroce() {
-  const [mainContentId] = createSignal("main-content");
 
   // ✅ INSERT: test flag + today's label for the SeasonalScatter chart
   const isTest = () =>
