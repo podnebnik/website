@@ -113,7 +113,7 @@
     - [x] 4.13.5 Test responsive behavior and accessibility features
 
 - [ ] 5.0 Build System Integration and Testing
-  - [ ] 5.1 Update eleventy.config.mjs to include TypeScript files in passthrough copy
+  - [x] 5.1 Update eleventy.config.mjs to include TypeScript files in passthrough copy
   - [ ] 5.2 Verify Vite handles TypeScript compilation without additional configuration
   - [ ] 5.3 Test Docker development environment compatibility with TypeScript
   - [ ] 5.4 Ensure yarn start command works with mixed JS/TS files
