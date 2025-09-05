@@ -60,10 +60,19 @@ export const StationSelector: Component<StationSelectorProps> = (props) => {
                 }))}
                 optionValue={(option: any) => option.value}
                 optionTextValue={(option: any) => option.label}
-                value={props.selectedStation}
+                value={props.selectedStation ? {
+                    value: props.selectedStation.station_id,
+                    label: props.selectedStation.name_locative,
+                    prefix: props.selectedStation.prefix
+                } : null}
                 onChange={(value) => {
                     if (value) {
-                        props.onStationChange(value);
+                        // Convert back to ProcessedStation format for the callback
+                        props.onStationChange({
+                            station_id: value.value,
+                            name_locative: value.label,
+                            prefix: value.prefix
+                        });
                     }
                 }}
                 disabled={props.isLoading}

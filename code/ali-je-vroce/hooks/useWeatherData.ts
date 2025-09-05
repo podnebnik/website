@@ -6,6 +6,7 @@ import { useQueryClient } from '@tanstack/solid-query';
 import { requestData, loadStations } from '../helpers';
 import { generateOptimisticWeatherData } from '../utils/optimistic';
 import { retryWithBackoff, createNetworkMonitor } from '../utils/errorRecovery.js';
+import type { ProcessedStation } from '../../types/api.js';
 
 /**
  * Simplified localStorage helper for user preferences
@@ -189,13 +190,20 @@ export function useWeatherData() {
      * - Fetches fresh weather data using the query client, ensuring consistency with hook-based data fetching.
      * - Handles loading state and error reporting, including aborting requests on station change.
      * 
-     * @param station - The newly selected station object.
-     * @param station.value - The unique identifier for the station.
-     * @param station.label - The display name of the station.
+     * @param station - The newly selected station object in ProcessedStation format.
+     * @param station.station_id - The unique identifier for the station.
+     * @param station.name_locative - The display name of the station.
      * @param station.prefix - The prefix or code for the station.
      */
-    function onStationChange(station: { value: number; label: string; prefix: string }) {
-        if (String(station.value) === stationId()) return;
+    function onStationChange(station: ProcessedStation) {
+        if (String(station.station_id) === stationId()) return;
+
+        // Transform ProcessedStation format to cached format for internal use
+        const cachedFormat = {
+            value: station.station_id,
+            label: station.name_locative,
+            prefix: station.prefix
+        };
 
         if (currentController) {
             currentController.abort();
@@ -203,14 +211,14 @@ export function useWeatherData() {
 
         currentController = new AbortController();
 
-        // Save selected station to local storage
-        setPreference('selectedStation', station);
+        // Save selected station to local storage (in cached format)
+        setPreference('selectedStation', cachedFormat);
 
         // Generate optimistic data based on current or cached data
         const previousData = weatherQuery.data;
         console.log('Previous data for optimistic update:', previousData);
         const optimisticData = generateOptimisticWeatherData(
-            station.value,
+            station.station_id,
             previousData ?? null,
             queryClient,
             queryKeys
@@ -223,7 +231,7 @@ export function useWeatherData() {
         batch(() => {
             setState({
                 stationPrefix: station.prefix,
-                selectedStation: station
+                selectedStation: cachedFormat
             });
 
             // If we have optimistic data, show it immediately for better UX
@@ -241,18 +249,18 @@ export function useWeatherData() {
             }
 
             // Update the station ID signal
-            setStationId(String(station.value));
+            setStationId(String(station.station_id));
         });
 
         // Instead of directly calling the API, use the query client
         // This ensures consistency with the hook-based approach
         queryClient.fetchQuery({
-            queryKey: queryKeys.weatherData(String(station.value)),
+            queryKey: queryKeys.weatherData(String(station.station_id)),
             queryFn: async () => {
-                const result = await requestData(String(station.value), { signal: currentController?.signal });
+                const result = await requestData(String(station.station_id), { signal: currentController?.signal });
                 if (!result.success) {
                     const errorMessage = 'error' in result && result.error instanceof Error ? result.error.message : String('error' in result ? result.error : 'Unknown error');
-                    throw new Error(errorMessage || `Failed to load data for station ${station.value}`);
+                    throw new Error(errorMessage || `Failed to load data for station ${station.station_id}`);
                 }
                 return result.data;
             },
@@ -354,11 +362,24 @@ export function useWeatherData() {
         networkMonitor.cleanup();
     });
 
+    // Transform cached station format to ProcessedStation format for components
+    const transformedSelectedStation = () => {
+        const cachedStation = state.selectedStation;
+        if (!cachedStation) return null;
+        
+        // Convert from cached format {value, label, prefix} to ProcessedStation format
+        return {
+            station_id: cachedStation.value,
+            name_locative: cachedStation.label,
+            prefix: cachedStation.prefix
+        };
+    };
+
     // Return derived values and functions needed by components
     return {
         // Station data
         stations: () => stationsQuery.data || [],
-        selectedStation: () => state.selectedStation,
+        selectedStation: transformedSelectedStation,
         stationPrefix: () => state.stationPrefix,
         isLoadingStations: () => stationsQuery.isPending,
         stationsError: () => stationsQuery.isError ? stationsQuery.error?.message : null,
