@@ -4,23 +4,20 @@
 
 /**
  * Generates a unique ID for accessibility attributes
- * 
- * @param {string} prefix - The prefix for the ID
- * @returns {string} A unique ID
  */
-export function generateId(prefix = 'id') {
+export function generateId(prefix: string = 'id'): string {
     return `${prefix}-${Math.random().toString(36).substring(2, 9)}`;
 }
 
 /**
  * Creates an announcement for screen readers
  * Uses our custom announce utility that leverages Tailwind
- * 
- * @param {string} message - The message to announce
- * @param {string} [ariaLive='polite'] - The aria-live attribute value ('polite' or 'assertive')
- * @param {number} [timeout=3000] - Time in milliseconds before removing the announcement
  */
-export function announce(message, ariaLive = 'polite', timeout = 3000) {
+export function announce(
+    message: string, 
+    ariaLive: 'polite' | 'assertive' = 'polite', 
+    timeout: number = 3000
+): void {
     const announcer = document.createElement('div');
     announcer.setAttribute('aria-live', ariaLive);
     announcer.setAttribute('aria-atomic', 'true');
@@ -33,12 +30,14 @@ export function announce(message, ariaLive = 'polite', timeout = 3000) {
 
     // Remove after announcement is made
     setTimeout(() => {
-        document.body.removeChild(announcer);
+        if (document.body.contains(announcer)) {
+            document.body.removeChild(announcer);
+        }
     }, timeout);
 }
 
 /**
- * Helper class for handling keyboard events
+ * Helper object for handling keyboard events
  */
 export const Keys = {
     ENTER: 'Enter',
@@ -51,35 +50,45 @@ export const Keys = {
     ARROW_RIGHT: 'ArrowRight',
     HOME: 'Home',
     END: 'End',
-};
+} as const;
+
+/**
+ * Type for keyboard handler function
+ */
+type KeyboardEventHandler = (event: KeyboardEvent) => void;
+
+/**
+ * Keyboard handler options interface
+ */
+export interface KeyboardHandlerOptions {
+    onEnter?: KeyboardEventHandler;
+    onSpace?: KeyboardEventHandler;
+    onEscape?: KeyboardEventHandler;
+    onArrowUp?: KeyboardEventHandler;
+    onArrowDown?: KeyboardEventHandler;
+    onArrowLeft?: KeyboardEventHandler;
+    onArrowRight?: KeyboardEventHandler;
+    onHome?: KeyboardEventHandler;
+    onEnd?: KeyboardEventHandler;
+}
 
 /**
  * Creates a keyboard handler for interactive elements
- * 
- * @param {Object} options - Keyboard handler options
- * @param {Function} [options.onEnter] - Handler for Enter key
- * @param {Function} [options.onSpace] - Handler for Space key
- * @param {Function} [options.onEscape] - Handler for Escape key
- * @param {Function} [options.onArrowUp] - Handler for Arrow Up key
- * @param {Function} [options.onArrowDown] - Handler for Arrow Down key
- * @param {Function} [options.onArrowLeft] - Handler for Arrow Left key
- * @param {Function} [options.onArrowRight] - Handler for Arrow Right key
- * @param {Function} [options.onHome] - Handler for Home key
- * @param {Function} [options.onEnd] - Handler for End key
- * @returns {Function} A keyboard event handler function
  */
-export function createKeyboardHandler({
-    onEnter,
-    onSpace,
-    onEscape,
-    onArrowUp,
-    onArrowDown,
-    onArrowLeft,
-    onArrowRight,
-    onHome,
-    onEnd,
-}) {
-    return (event) => {
+export function createKeyboardHandler(options: KeyboardHandlerOptions): KeyboardEventHandler {
+    const {
+        onEnter,
+        onSpace,
+        onEscape,
+        onArrowUp,
+        onArrowDown,
+        onArrowLeft,
+        onArrowRight,
+        onHome,
+        onEnd,
+    } = options;
+
+    return (event: KeyboardEvent): void => {
         switch (event.key) {
             case Keys.ENTER:
                 if (onEnter) {
@@ -142,18 +151,26 @@ export function createKeyboardHandler({
 }
 
 /**
- * Manages focus for a given element
- * 
- * @param {string|HTMLElement} element - The element to focus (selector or DOM element)
- * @param {Object} options - Focus options
- * @param {boolean} [options.preventScroll=false] - Whether to prevent scrolling to the element
- * @param {boolean} [options.announce=false] - Whether to announce the focus change to screen readers
- * @param {string} [options.message=''] - Message to announce to screen readers
+ * Focus element options interface
  */
-export function focusElement(element, { preventScroll = false, announce = false, message = '' } = {}) {
+export interface FocusElementOptions {
+    preventScroll?: boolean;
+    announce?: boolean;
+    message?: string;
+}
+
+/**
+ * Manages focus for a given element
+ */
+export function focusElement(
+    element: string | HTMLElement, 
+    options: FocusElementOptions = {}
+): void {
+    const { preventScroll = false, announce: shouldAnnounce = false, message = '' } = options;
+
     // Get the DOM element if a selector was provided
     const domElement = typeof element === 'string'
-        ? document.querySelector(element)
+        ? document.querySelector(element) as HTMLElement | null
         : element;
 
     // If the element exists, focus it
@@ -168,9 +185,9 @@ export function focusElement(element, { preventScroll = false, announce = false,
             domElement.focus({ preventScroll });
 
             // Announce the focus change if requested
-            if (announce && message) {
-                window.setTimeout(() => {
-                    window.announce(message, 'polite');
+            if (shouldAnnounce && message) {
+                setTimeout(() => {
+                    announce(message, 'polite');
                 }, 100);
             }
         }, 50);
@@ -178,41 +195,49 @@ export function focusElement(element, { preventScroll = false, announce = false,
 }
 
 /**
- * Creates a trap for keyboard focus within an element
- * 
- * @param {string|HTMLElement} container - The container to trap focus in
- * @returns {Object} Functions to activate and deactivate the focus trap
+ * Focus trap interface
  */
-export function createFocusTrap(container) {
+export interface FocusTrap {
+    activate: () => void;
+    deactivate: () => void;
+}
+
+/**
+ * Creates a trap for keyboard focus within an element
+ */
+export function createFocusTrap(container: string | HTMLElement): FocusTrap {
     const domContainer = typeof container === 'string'
-        ? document.querySelector(container)
+        ? document.querySelector(container) as HTMLElement | null
         : container;
 
     if (!domContainer) {
         console.error('Container element not found for focus trap');
-        return { activate: () => { }, deactivate: () => { } };
+        return { 
+            activate: () => { }, 
+            deactivate: () => { } 
+        };
     }
 
     // Store the element that had focus before activating the trap
-    let previouslyFocusedElement = null;
+    let previouslyFocusedElement: HTMLElement | null = null;
 
     // Get all focusable elements within the container
-    const getFocusableElements = () => {
+    const getFocusableElements = (): HTMLElement[] => {
         return Array.from(domContainer.querySelectorAll(
             'a[href], button:not([disabled]), input:not([disabled]), ' +
             'select:not([disabled]), textarea:not([disabled]), ' +
             '[tabindex]:not([tabindex="-1"])'
-        ));
+        )) as HTMLElement[];
     };
 
     // Handle keydown events within the container
-    const handleKeyDown = (event) => {
+    const handleKeyDown = (event: KeyboardEvent): void => {
         if (event.key === 'Tab') {
             const focusableElements = getFocusableElements();
             if (!focusableElements.length) return;
 
-            const firstElement = focusableElements[0];
-            const lastElement = focusableElements[focusableElements.length - 1];
+            const firstElement = focusableElements[0]!;
+            const lastElement = focusableElements[focusableElements.length - 1]!;
 
             // If Shift+Tab on the first element, move to the last element
             if (event.shiftKey && document.activeElement === firstElement) {
@@ -231,22 +256,22 @@ export function createFocusTrap(container) {
         /**
          * Activates the focus trap
          */
-        activate: () => {
-            previouslyFocusedElement = document.activeElement;
+        activate: (): void => {
+            previouslyFocusedElement = document.activeElement as HTMLElement | null;
 
             domContainer.addEventListener('keydown', handleKeyDown);
 
             // Focus the first focusable element in the container
             const focusableElements = getFocusableElements();
             if (focusableElements.length) {
-                focusableElements[0].focus();
+                focusableElements[0]!.focus();
             }
         },
 
         /**
          * Deactivates the focus trap
          */
-        deactivate: () => {
+        deactivate: (): void => {
             domContainer.removeEventListener('keydown', handleKeyDown);
 
             // Restore focus to the previously focused element

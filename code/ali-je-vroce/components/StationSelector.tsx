@@ -1,6 +1,6 @@
 import { Show, createUniqueId, createEffect, Component } from "solid-js";
 import { Select } from "@kobalte/core/select";
-import { createKeyboardHandler, announce } from "../utils/a11y.js";
+import { createKeyboardHandler, announce } from "../utils/a11y.ts";
 import { getQueryClient } from "../hooks/queries.js";
 import { prefetchStationData } from "../utils/prefetching.js";
 import { debounce } from "../utils/debounce.js";

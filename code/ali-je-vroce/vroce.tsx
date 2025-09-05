@@ -4,7 +4,7 @@ import { vrednosti, opisi, percentile_labels } from "./constants.ts";
 // Import custom hooks
 import { useWeatherData } from "./hooks/useWeatherData.ts";
 import { throttle } from "./utils/debounce.js";
-import { announce } from "./utils/a11y.js";
+import { announce } from "./utils/a11y.ts";
 
 // Import components
 import { StationSelector } from "./components/StationSelector.tsx";

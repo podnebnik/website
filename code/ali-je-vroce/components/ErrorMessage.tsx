@@ -1,5 +1,5 @@
 import { Show, createUniqueId, onMount, Component } from "solid-js";
-import { announce } from "../utils/a11y.js";
+import { announce } from "../utils/a11y.ts";
 import { ErrorMessageProps } from "../../types/components.js";
 
 /**

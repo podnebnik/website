@@ -1,6 +1,6 @@
 import { Show, createUniqueId, createEffect, Component } from "solid-js";
 import { IsItHotDot } from "../../components/is-it-hot-dot.jsx";
-import { announce } from "../utils/a11y.js";
+import { announce } from "../utils/a11y.ts";
 import { LoadingSkeleton } from "./Skeletons.tsx";
 import { StalenessIndicator } from "./StalenessIndicator.tsx";
 import type { TemperatureDisplayProps } from "../../types/components.js";

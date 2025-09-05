@@ -28,16 +28,17 @@
 - `code/ali-je-vroce/charts/Highchart.tsx` - TypeScript version of Highcharts SolidJS wrapper with proper Highcharts.Options typing
 - `code/ali-je-vroce/charts/SeasonalHistogram.tsx` - TypeScript version of seasonal histogram with complete type safety for Highcharts configuration
 - `code/ali-je-vroce/charts/SeasonalScatter.tsx` - TypeScript version of seasonal scatter plot with proper type annotations
-- `code/ali-je-vroce/vroce.jsx` - Updated imports to use TypeScript versions of components and utilities (pending conversion to TypeScript)
+- `code/ali-je-vroce/vroce.tsx` - TypeScript version of main weather app component with proper type safety (converted from vroce.jsx)
+- `code/ali-je-vroce/entry.tsx` - TypeScript version of weather app entry point with null safety (converted from entry.jsx)
 - `code/ali-je-vroce/components/Skeletons.tsx` - TypeScript version of loading skeleton components with proper prop typing (converted from Skeletons.jsx)
 - `code/ali-je-vroce/components/StalenessIndicator.tsx` - TypeScript version of staleness indicator with proper prop typing (converted from StalenessIndicator.jsx)
 - `code/ali-je-vroce/components/TemperatureDisplay.tsx` - Updated imports to use TypeScript versions of Skeletons and StalenessIndicator
-- `code/ali-je-vroce/utils/prefetching.js` - Updated imports to use TypeScript versions of queries and helpers (pending conversion to TypeScript)
-- `code/ali-je-vroce/utils/batchRequests.js` - Updated constants import to use TypeScript version (pending conversion to TypeScript)
-- `code/ali-je-vroce/components/StalenessIndicator.jsx` - Pending conversion to TypeScript
-- `code/ali-je-vroce/entry.jsx` - Weather app entry point, pending conversion to TypeScript
+- `code/ali-je-vroce/hooks/useWeatherData.ts` - Updated to return ProcessedStation format for component compatibility
+- `pages/ali-je-vroce/index.md` - Updated to import entry.tsx instead of entry.jsx
 - `code/ali-je-vroce/utils/a11y.js` - Accessibility utilities, pending conversion to TypeScript
 - `code/ali-je-vroce/utils/debounce.js` - Debouncing utilities, pending conversion to TypeScript
+- `code/ali-je-vroce/utils/prefetching.js` - Updated imports to use TypeScript versions of queries and helpers (pending conversion to TypeScript)
+- `code/ali-je-vroce/utils/batchRequests.js` - Updated constants import to use TypeScript version (pending conversion to TypeScript)
 
 ### Notes
 
@@ -93,13 +94,13 @@
   - [x] 4.7 Migrate station selector and weather display components to TypeScript
   - [x] 4.8 Add Highcharts configuration typing for weather visualizations (TypeScript conversion complete with proper type safety)
   - [x] 4.9 Update component imports to use new TypeScript modules
-  - [ ] 4.10 Convert remaining weather app components to TypeScript
+  - [x] 4.10 Convert remaining weather app components to TypeScript
     - [x] 4.10.1 Convert code/ali-je-vroce/components/Skeletons.jsx to TypeScript
     - [x] 4.10.2 Convert code/ali-je-vroce/components/StalenessIndicator.jsx to TypeScript
-    - [ ] 4.10.3 Convert code/ali-je-vroce/vroce.jsx to TypeScript (main weather app component)
-    - [ ] 4.10.4 Convert code/ali-je-vroce/entry.jsx to TypeScript
+    - [x] 4.10.3 Convert code/ali-je-vroce/vroce.jsx to TypeScript (main weather app component)
+    - [x] 4.10.4 Convert code/ali-je-vroce/entry.jsx to TypeScript
   - [ ] 4.11 Convert remaining weather app utilities to TypeScript
-    - [ ] 4.11.1 Convert code/ali-je-vroce/utils/a11y.js to TypeScript
+    - [x] 4.11.1 Convert code/ali-je-vroce/utils/a11y.js to TypeScript
     - [ ] 4.11.2 Convert code/ali-je-vroce/utils/batchRequests.js to TypeScript
     - [ ] 4.11.3 Convert code/ali-je-vroce/utils/debounce.js to TypeScript
     - [ ] 4.11.4 Convert code/ali-je-vroce/utils/prefetching.js to TypeScript
