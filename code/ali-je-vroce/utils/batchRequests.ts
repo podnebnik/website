@@ -74,9 +74,6 @@ export async function batchFetchStationData(
     }
 
     try {
-        // Create a unique batch ID for this request
-        const batchId = `batch-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-
         // Format the query string for the request
         const queryString = stationIds.map(id => `id=METEO-${id}`).join('&');
         const requestUrl = `${STAGING_VREMENAR_API_URL}/stations/batch?${queryString}`;

@@ -30,7 +30,7 @@ export async function retryWithBackoff<T>(
   const maxRetries = options.maxRetries || 3;
   const initialDelay = options.initialDelay || 1000;
   const maxDelay = options.maxDelay || 10000;
-  const shouldRetry = options.shouldRetry || ((error: Error) => true); // Default to retry all errors
+  const shouldRetry = options.shouldRetry || ((_error: Error) => true); // Default to retry all errors
 
   let retryCount = 0;
   let lastError: Error | null = null;

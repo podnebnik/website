@@ -101,7 +101,7 @@ export function useUpdateStationPreference() {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 500));
     },
-    onSuccess: (data: void, variables: string) => {
+    onSuccess: (_data: void, variables: string) => {
       console.log(`Updated preferred station to: ${variables}`);
     },
     onError: (error: Error) => {
