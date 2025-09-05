@@ -7,8 +7,8 @@ import { throttle } from "./utils/debounce.js";
 import { announce } from "./utils/a11y.js";
 
 // Import components
-import { StationSelector } from "./components/StationSelector.jsx";
-import { TemperatureDisplay } from "./components/TemperatureDisplay.jsx";
+import { StationSelector } from "./components/StationSelector.tsx";
+import { TemperatureDisplay } from "./components/TemperatureDisplay.tsx";
 import { ErrorMessage } from "./components/ErrorMessage.js";
 
 // ✅ INSERT: SeasonalScatter (Highcharts #1)

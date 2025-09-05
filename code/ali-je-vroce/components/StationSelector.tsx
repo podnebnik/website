@@ -1,9 +1,10 @@
-import { Show, createUniqueId, createEffect } from "solid-js";
+import { Show, createUniqueId, createEffect, Component } from "solid-js";
 import { Select } from "@kobalte/core/select";
 import { createKeyboardHandler, announce } from "../utils/a11y.js";
 import { getQueryClient } from "../hooks/queries.js";
 import { prefetchStationData } from "../utils/prefetching.js";
 import { debounce } from "../utils/debounce.js";
+import type { StationSelectorProps } from "../../types/components.js";
 
 // Get the singleton QueryClient instance
 const queryClient = getQueryClient();
@@ -11,23 +12,16 @@ const queryClient = getQueryClient();
 /**
  * StationSelector component handles the UI for selecting a weather station.
  * It displays a dropdown with available stations and handles loading and error states.
- * 
- * @param {Object} props - Component props
- * @param {Array} props.stations - Array of station objects
- * @param {Object} props.selectedStation - Currently selected station
- * @param {Function} props.onStationChange - Callback when station selection changes
- * @param {boolean} props.isLoading - Whether stations are currently loading
- * @param {string} props.stationPrefix - Prefix to display (e.g., "v" for "v Ljubljani")
- * @returns {JSX.Element} The rendered component
+ * Provides full accessibility support and automatic data prefetching.
  */
-export function StationSelector(props) {
+export const StationSelector: Component<StationSelectorProps> = (props) => {
     // Create unique IDs for accessibility
     const selectId = createUniqueId();
     const labelId = `${selectId}-label`;
     const descriptionId = createUniqueId();
 
     // Create a debounced version of prefetching to prevent excessive API calls
-    const debouncedPrefetch = debounce((stationId) => {
+    const debouncedPrefetch = debounce((stationId: number) => {
         prefetchStationData(queryClient, stationId);
     }, 200); // 200ms delay
 
@@ -46,8 +40,9 @@ export function StationSelector(props) {
     });
 
     // Announce when stations are loaded
-    createEffect((prevLoading) => {
+    createEffect((prevLoading?: boolean) => {
         const isLoading = props.isLoading;
+        
         if (prevLoading && !isLoading) {
             announce('Seznam postaj je naložen', 'polite');
         }
@@ -63,11 +58,13 @@ export function StationSelector(props) {
                     label: station.name_locative,
                     prefix: station.prefix,
                 }))}
-                optionValue="value"
-                optionTextValue="label"
+                optionValue={(option: any) => option.value}
+                optionTextValue={(option: any) => option.label}
                 value={props.selectedStation}
                 onChange={(value) => {
-                    props.onStationChange(value);
+                    if (value) {
+                        props.onStationChange(value);
+                    }
                 }}
                 disabled={props.isLoading}
                 disallowEmptySelection={true}
@@ -76,7 +73,7 @@ export function StationSelector(props) {
                 aria-labelledby={labelId}
                 aria-describedby={descriptionId}
                 aria-busy={props.isLoading}
-                onOpenChange={(isOpen) => {
+                onOpenChange={(isOpen: boolean) => {
                     if (isOpen) {
                         // Prefetch the first few visible stations when dropdown opens
                         const visibleStations = props.stations.slice(0, 5).map(station => station.station_id);
@@ -86,24 +83,24 @@ export function StationSelector(props) {
                         });
                     }
                 }}
-                itemComponent={props => (
+                itemComponent={(itemProps: any) => (
                     <Select.Item
-                        item={props.item}
+                        item={itemProps.item}
                         class="flex items-center justify-between py-2 relative select-none outline-none 
                               hover:bg-gray-100 hover:text-black focus-visible:outline-2 focus-visible:outline-blue-600 focus-visible:outline-offset-2
-                              data-[selected]:bg-blue-100 data-[selected]:text-blue-900 forced-colors:hc-interactive"
-                        aria-label={`Izberi lokacijo ${props.item.rawValue.label}`}
+                              data-[highlighted]:bg-blue-50 data-[highlighted]:text-gray-900 data-[selected]:bg-blue-100 data-[selected]:text-blue-900 forced-colors:hc-interactive"
+                        aria-label={`Izberi lokacijo ${itemProps.item.rawValue.label}`}
                         tabIndex="0"
                         onFocus={() => {
-                            const stationId = props.item.rawValue.value;
+                            const stationId = itemProps.item.rawValue.value;
                             debouncedPrefetch(stationId);
                         }}
                         onMouseEnter={() => {
-                            const stationId = props.item.rawValue.value;
+                            const stationId = itemProps.item.rawValue.value;
                             debouncedPrefetch(stationId);
                         }}
                     >
-                        <Select.ItemLabel>{props.item.rawValue.label}</Select.ItemLabel>
+                        <Select.ItemLabel>{itemProps.item.rawValue.label}</Select.ItemLabel>
                         <Select.ItemIndicator>
                             <span aria-hidden="true">✓</span>
                             <span class="sr-only">izbrano</span>
@@ -121,7 +118,7 @@ export function StationSelector(props) {
                            leading-[64px] hover:cursor-pointer transition-all duration-300
                            focus-visible:outline-2 focus-visible:outline-blue-600 focus-visible:outline-offset-2"
                     aria-live="polite"
-                    onKeyDown={handleKeyDown}
+                    onKeyDown={handleKeyDown as any}
                 >
                     <Show when={!props.isLoading} fallback={
                         <span class="flex items-center" aria-live="polite">
@@ -130,10 +127,9 @@ export function StationSelector(props) {
                             <span class="sr-only">Prosimo počakajte, nalagamo seznam lokacij</span>
                         </span>
                     }>
-                        <Select.Value>{state => state.selectedOption().label}</Select.Value>
+                        <Select.Value>{(state: any) => state.selectedOption().label}</Select.Value>
                     </Show>
                 </Select.Trigger>
-                ?
                 <Select.Portal>
                     <Select.Content
                         class="bg-muted text-white px-2 py-2 max-w-fit high-contrast-border"
@@ -158,4 +154,6 @@ export function StationSelector(props) {
             </Select>
         </span>
     );
-}
+};
+
+export default StationSelector;

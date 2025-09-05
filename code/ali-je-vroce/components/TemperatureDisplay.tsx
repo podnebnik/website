@@ -1,31 +1,16 @@
-import { Show, createUniqueId, createEffect } from "solid-js";
+import { Show, createUniqueId, createEffect, Component } from "solid-js";
 import { IsItHotDot } from "../../components/is-it-hot-dot.jsx";
 import { announce } from "../utils/a11y.js";
 import { LoadingSkeleton } from "./Skeletons.jsx";
 import { StalenessIndicator } from "./StalenessIndicator.jsx";
+import type { TemperatureDisplayProps } from "../../types/components.js";
 
 /**
  * TemperatureDisplay component shows the temperature data and related statistics.
  * It displays minimum, average, and maximum temperatures along with their timestamps,
  * and provides a visual and textual representation of how hot it is based on percentile data.
- *
- * @param {Object} props - Component props
- * @param {string} props.result - The percentile result key (e.g., 'p00', 'p05', etc.)
- * @param {string} props.resultTemperature - The formatted temperature string with unit
- * @param {string} props.tempMin - Minimum temperature value
- * @param {string} props.timeMin - Time when minimum temperature was recorded
- * @param {string} props.tempMax - Maximum temperature value
- * @param {string} props.timeMax - Time when maximum temperature was recorded
- * @param {string} props.tempAvg - Average temperature value
- * @param {string} props.timeUpdated - Last update time (ISO string or formatted)
- * @param {boolean} props.isLoading - Whether data is currently loading
- * @param {boolean} props.isStale - Whether data is stale and being refreshed
- * @param {Object} props.labels - Object containing textual labels for percentiles
- * @param {Object} props.values - Object containing main temperature result values
- * @param {Object} props.descriptions - Object containing descriptions for percentiles
- * @returns {JSX.Element} The rendered component
  */
-export function TemperatureDisplay(props) {
+export const TemperatureDisplay: Component<TemperatureDisplayProps> = (props) => {
     // Generate unique IDs for accessibility
     const temperatureRegionId = createUniqueId();
     const resultId = createUniqueId();
@@ -35,7 +20,7 @@ export function TemperatureDisplay(props) {
     const lastUpdatedId = createUniqueId();
 
     // Announce temperature results when data is loaded
-    createEffect((prevLoading) => {
+    createEffect((prevLoading?: boolean) => {
         const isLoading = props.isLoading;
         const result = props.result;
 
@@ -49,7 +34,6 @@ export function TemperatureDisplay(props) {
 
         return isLoading;
     }, props.isLoading);
-
 
     return (
         <>
@@ -70,10 +54,8 @@ export function TemperatureDisplay(props) {
                     >
                         <p id={resultId} class="font-black text-6xl flex items-center justify-center gap-8" aria-label={`Rezultat: ${props.values[props.result]}`}>
                             <IsItHotDot
-                                color={props.result}
+                                color={props.result as "p00" | "p05" | "p20" | "p40" | "p60" | "p80" | "p95"}
                                 class="size-[72px] inline-block"
-                                aria-hidden="true"
-                                role="presentation"
                             />
                             {" "}
                             <span>{props.values[props.result]}</span>
@@ -85,7 +67,6 @@ export function TemperatureDisplay(props) {
                             <LoadingSkeleton type="description" />
                         </div>
                     } >
-
                         <p id={descriptionId} class="text-4xl font-semibold" aria-live="polite">
                             {props.descriptions[props.result]}
                         </p>
@@ -170,5 +151,6 @@ export function TemperatureDisplay(props) {
             </Show>
         </>
     );
-}
+};
 
+export default TemperatureDisplay;

@@ -78,7 +78,7 @@
   - [x] 4.4 Migrate code/ali-je-vroce/QueryProvider.jsx to QueryProvider.tsx
   - [x] 4.5 Add TypeScript interfaces for all SolidJS component props
   - [x] 4.6 Convert error handling components to TypeScript with proper error types
-  - [ ] 4.7 Migrate station selector and weather display components to TypeScript
+  - [x] 4.7 Migrate station selector and weather display components to TypeScript
   - [ ] 4.8 Add Highcharts configuration typing for weather visualizations
   - [ ] 4.9 Update component imports to use new TypeScript modules
   - [ ] 4.10 Test weather app functionality with TypeScript conversion

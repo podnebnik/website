@@ -4,7 +4,7 @@
 
 import { Component, JSX } from 'solid-js';
 import { AppError, LoadingState } from './common.js';
-import { TemperatureStation } from './api.js';
+import { ProcessedStation } from './api.js';
 import { WeatherReading } from './weather.js';
 
 // Base component props
@@ -17,9 +17,9 @@ export interface BaseComponentProps {
 
 // Weather App Component Props
 export interface StationSelectorProps extends BaseComponentProps {
-  stations: TemperatureStation[];
-  selectedStation: TemperatureStation | null;
-  onStationChange: (station: TemperatureStation) => void;
+  stations: ProcessedStation[];
+  selectedStation: ProcessedStation | null;
+  onStationChange: (station: ProcessedStation) => void;
   isLoading: boolean;
   stationPrefix?: string;
 }
