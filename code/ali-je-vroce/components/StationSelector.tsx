@@ -127,7 +127,7 @@ export const StationSelector: Component<StationSelectorProps> = (props) => {
                            leading-[64px] hover:cursor-pointer transition-all duration-300
                            focus-visible:outline-2 focus-visible:outline-blue-600 focus-visible:outline-offset-2"
                     aria-live="polite"
-                    onKeyDown={handleKeyDown as any}
+                    onKeyDown={handleKeyDown}
                 >
                     <Show when={!props.isLoading} fallback={
                         <span class="flex items-center" aria-live="polite">
@@ -136,7 +136,7 @@ export const StationSelector: Component<StationSelectorProps> = (props) => {
                             <span class="sr-only">Prosimo počakajte, nalagamo seznam lokacij</span>
                         </span>
                     }>
-                        <Select.Value>{(state: any) => state.selectedOption().label}</Select.Value>
+                        <Select.Value>{(state: any) => state.selectedOption().label}</Select.Value>&quest;
                     </Show>
                 </Select.Trigger>
                 <Select.Portal>
