@@ -6,6 +6,7 @@ import { Component, JSX } from 'solid-js';
 import { AppError, LoadingState } from './common.js';
 import { ProcessedStation } from './api.js';
 import { WeatherReading } from './weather.js';
+import * as Highcharts from 'highcharts';
 
 // Base component props
 export interface BaseComponentProps {
@@ -56,7 +57,7 @@ export interface StalenessIndicatorProps extends BaseComponentProps {
 
 // Chart Component Props (for Highcharts visualizations)
 export interface HighchartProps extends BaseComponentProps {
-  options: any; // Highcharts.Options (we avoid direct import to prevent bundling)
+  options: Highcharts.Options; // Now properly typed with imported Highcharts types
   height?: string;
 }
 
@@ -70,7 +71,7 @@ export interface SeasonalHistogramProps extends BaseComponentProps {
 export interface SeasonalScatterProps extends BaseComponentProps {
   stationId: number | string;
   center_mmdd: string; // Format: "MM-DD" 
-  todayTemp?: number | null;
+  todayTemp: number; // Required for SeasonalScatter, different from histogram
   title?: string;
 }
 
