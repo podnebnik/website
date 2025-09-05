@@ -99,12 +99,12 @@
     - [x] 4.10.2 Convert code/ali-je-vroce/components/StalenessIndicator.jsx to TypeScript
     - [x] 4.10.3 Convert code/ali-je-vroce/vroce.jsx to TypeScript (main weather app component)
     - [x] 4.10.4 Convert code/ali-je-vroce/entry.jsx to TypeScript
-  - [ ] 4.11 Convert remaining weather app utilities to TypeScript
+  - [x] 4.11 Convert remaining weather app utilities to TypeScript
     - [x] 4.11.1 Convert code/ali-je-vroce/utils/a11y.js to TypeScript
     - [x] 4.11.2 Convert code/ali-je-vroce/utils/batchRequests.js to TypeScript
     - [x] 4.11.3 Convert code/ali-je-vroce/utils/debounce.js to TypeScript
-    - [ ] 4.11.4 Convert code/ali-je-vroce/utils/prefetching.js to TypeScript
-  - [ ] 4.12 Clean up old JavaScript chart files and verify TypeScript versions work
+    - [x] 4.11.4 Convert code/ali-je-vroce/utils/prefetching.js to TypeScript
+  - [x] 4.12 Clean up old JavaScript chart files and verify TypeScript versions work
   - [ ] 4.13 Test weather app functionality with complete TypeScript conversion
 
 - [ ] 5.0 Build System Integration and Testing
