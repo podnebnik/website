@@ -33,7 +33,6 @@ Our data fetching layer is fully typed with TypeScript, providing compile-time s
 ```typescript
 // Type-safe API responses based on actual API analysis
 import {
-  TemperatureStationsResponse,
   VremenarStationDetailsResponse,
   ProcessedStation,
 } from "/code/types/index.js";

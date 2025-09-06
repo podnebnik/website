@@ -81,16 +81,6 @@ export interface ProcessedStation {
 }
 
 /**
- * @description Represents the result of a stations API request.
- * @property success - Whether the stations were successfully loaded.
- * @property data - Array of processed station objects (only present if success is true).
- */
-export interface StationsResult {
-    success: boolean;
-    data?: ProcessedStation[];
-}
-
-/**
  * @description Represents the data for a specific weather station request.
  * @property resultValue - The percentile result of the current average temperature.
  * @property resultTemperatureValue - The temperature value corresponding to the percentile result.

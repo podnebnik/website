@@ -5,7 +5,7 @@
  * for convenient importing throughout the application.
  * 
  * Usage:
- * import { TemperatureStation, AppError, StationSelectorProps } from '/code/types/index.js';
+ * import { AppError, StationSelectorProps } from '/code/types/index.js';
  */
 
 // Common utility types

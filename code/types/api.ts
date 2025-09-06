@@ -5,22 +5,11 @@
  * See: code/types/api-analysis.md for detailed comparison with previous JSDoc types
  */
 
-import { ISODateString, Coordinates, BaseEntity } from './common.js';
+import { ISODateString } from './common.js';
 
 // =============================================================================
 // DATASETTE API TYPES (Climate Data Service)
 // =============================================================================
-
-/**
- * Metadata about a Datasette query execution
- */
-export interface DatasetteMeta {
-  database: string;
-  table: string;
-  is_view: boolean;
-  human_description_en: string;
-  query_ms: number;
-}
 
 /**
  * Information about the executed SQL query
@@ -82,20 +71,6 @@ export type TemperatureStationRow = [
 ];
 
 /**
- * Processed temperature station data (converted from raw row)
- */
-export interface TemperatureStation extends BaseEntity {
-  id: string;              // Converted from station_id
-  stationId: number;       // Original station_id from API
-  officialName: string;    // official_name from API
-  name: string;            // Short name
-  nameLocative: string;    // Locative case name
-  xmlId: string;           // XML identifier
-  coordinates: Coordinates; // lat/lng from API
-  elevation: number;       // Elevation in meters
-}
-
-/**
  * Processed station data for UI components (extracted from name_locative)
  */
 export interface ProcessedStation {
@@ -103,11 +78,6 @@ export interface ProcessedStation {
   name_locative: string;   // Processed locative name (without prefix)
   prefix: string;          // Extracted prefix (e.g., "v", "na")
 }
-
-/**
- * Temperature stations API response
- */
-export type TemperatureStationsResponse = DatasetteResponse<TemperatureStationRow>;
 
 // =============================================================================
 // TEMPERATURE PERCENTILE TYPES 
@@ -131,11 +101,6 @@ export type TemperaturePercentileRow = [
   number,    // p95 - 95th percentile
   number     // p100 - 100th percentile (max)
 ];
-
-/**
- * Temperature percentiles response from Datasette
- */
-export type TemperaturePercentilesResponse = DatasetteResponse<TemperaturePercentileRow>;
 
 /**
  * Processed percentile data for easier access
@@ -283,43 +248,8 @@ export interface ProcessedTemperatureData {
 // API ERROR TYPES
 // =============================================================================
 
-/**
- * Standard API error response
- */
-export interface ApiErrorResponse {
-  error: string;
-  message?: string;
-  details?: Record<string, any>;
-  status?: number;
-}
-
 // =============================================================================
 // QUERY PARAMETER TYPES
 // =============================================================================
 
-/**
- * Parameters for Datasette station queries
- */
-export interface StationQueryParams {
-  _col?: string[];     // Column selection
-  _sort?: string;      // Sort field
-  _size?: number;      // Result limit
-  region?: string;     // Filter by region
-  active?: boolean;    // Filter by active status
-}
 
-/**
- * Parameters for temperature percentile queries
- */
-export interface PercentileQueryParams {
-  date__exact: string;      // Exact date match
-  station_id__exact: number; // Exact station ID match
-  _col?: string[];         // Column selection
-}
-
-/**
- * Parameters for Vremenar station detail queries
- */
-export interface VremenarQueryParams {
-  country: string;         // Country code (e.g., "si")
-}

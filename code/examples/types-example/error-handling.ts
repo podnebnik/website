@@ -30,11 +30,6 @@ export function handleApiError(error: unknown): AppError {
 }
 
 // 2. Error boundary helper for SolidJS
-export interface ErrorInfo {
-  error: Error;
-  componentStack?: string;
-}
-
 export function createErrorHandler(
   fallback: (error: AppError, reset: () => void) => any
 ) {
