@@ -1,6 +1,8 @@
 ## Relevant Files
 
-- `code/types/api.ts` - Target for API response types (StationsResponse, StationRow)
+- `code/type- [x] 5.1 Check if new types are exported through index.ts
+- [x] 5.2 Add exports for StationsResponse and StationRow if not already covered
+- [x] 5.3 Add export for StationData if moved to weather.tspi.ts` - Target for API response types (StationsResponse, StationRow)
 - `code/types/weather.ts` - Target for weather data types (StationData)
 - `code/types/index.ts` - Central export file that may need updates
 - `code/ali-je-vroce/helpers.ts` - File with import that needs updating
@@ -28,10 +30,10 @@
 - [x] 4.0 Update import in code/ali-je-vroce/helpers.ts
   - [x] 4.1 Change import from "./types" to "../types/api"
   - [x] 4.2 Verify the import works after the move
-- [ ] 5.0 Update exports in code/types/index.ts if needed
-  - [ ] 5.1 Check if new types are exported through index.ts
-  - [ ] 5.2 Add exports for StationsResponse and StationRow if not already covered
-  - [ ] 5.3 Add export for StationData if moved to weather.ts
+- [x] 5.0 Update exports in code/types/index.ts if needed
+  - [x] 5.1 Check if new types are exported through index.ts
+  - [x] 5.2 Add exports for StationsResponse and StationRow if not already covered
+  - [x] 5.3 Add export for StationData if moved to weather.ts
 - [ ] 6.0 Remove original code/ali-je-vroce/types.ts file
   - [ ] 6.1 Confirm all types have been successfully moved
   - [ ] 6.2 Delete the types.ts file
