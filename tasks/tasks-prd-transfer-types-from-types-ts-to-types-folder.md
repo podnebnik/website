@@ -1,6 +1,7 @@
 ## Relevant Files
 
-- `code/type- [x] 5.1 Check if new types are exported through index.ts
+- `code/type- [x] - [x] 6.1 Confirm all types have been successfully moved
+- [x] 6.2 Delete the types.ts file1 Check if new types are exported through index.ts
 - [x] 5.2 Add exports for StationsResponse and StationRow if not already covered
 - [x] 5.3 Add export for StationData if moved to weather.tspi.ts` - Target for API response types (StationsResponse, StationRow)
 - `code/types/weather.ts` - Target for weather data types (StationData)
@@ -34,11 +35,10 @@
   - [x] 5.1 Check if new types are exported through index.ts
   - [x] 5.2 Add exports for StationsResponse and StationRow if not already covered
   - [x] 5.3 Add export for StationData if moved to weather.ts
-- [ ] 6.0 Remove original code/ali-je-vroce/types.ts file
-  - [ ] 6.1 Confirm all types have been successfully moved
-  - [ ] 6.2 Delete the types.ts file
+- [x] 6.0 Remove original code/ali-je-vroce/types.ts file
+  - [x] 6.1 Confirm all types have been successfully moved
+  - [x] 6.2 Delete the types.ts file
 - [ ] 7.0 Verify no TypeScript or lint errors
   - [ ] 7.1 Run TypeScript compiler to check for errors
   - [ ] 7.2 Run linter to check for issues
-  - [ ] 7.3 Test application functionality to ensure no runtime errors</content>
-        <parameter name="filePath">/Volumes/SSD-Satechi/Projects/open-source/active-projects/podnebnik/website/tasks/tasks-prd-transfer-types-from-types-ts-to-types-folder.md
+  - [ ] 7.3 Test application functionality to ensure no runtime errors
