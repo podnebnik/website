@@ -1,6 +1,6 @@
 /** @import * as Types "./types" */
 
-import { BASE_URL, STAGING_VREMENAR_API_URL } from "./constants";
+import { STAGE_DATA_BASE_URL, STAGING_VREMENAR_API_URL } from "./constants";
 import {
   HistoricalWindowResponseJson,
   ProcessedStation,
@@ -92,7 +92,7 @@ export async function loadStations(): Promise<
 > {
   // Fetch stations from Datasette (CORS-friendly)
   const resultStations = await fetch(
-    `${BASE_URL}/temperature/temperature~2Eslovenia_stations.json?&_col=station_id&_col=name&_col=name_locative&_sort=name`
+    `${STAGE_DATA_BASE_URL}/temperature/temperature~2Eslovenia_stations.json?&_col=station_id&_col=name&_col=name_locative&_sort=name`
   );
 
   if (resultStations.ok) {
@@ -161,7 +161,7 @@ export async function requestData(
 
       // Historical percentiles from Datasette
       const resultPercentile = await fetch(
-        `${BASE_URL}/temperature/temperature~2Eslovenia_historical~2Edaily~2Eaverage_percentiles.json?date__exact=${date}&station_id__exact=${stationID}&_col=p05&_col=p20&_col=p40&_col=p60&_col=p80&_col=p95`,
+        `${STAGE_DATA_BASE_URL}/temperature/temperature~2Eslovenia_historical~2Edaily~2Eaverage_percentiles.json?date__exact=${date}&station_id__exact=${stationID}&_col=p05&_col=p20&_col=p40&_col=p60&_col=p80&_col=p95`,
         {
           signal: options.signal,
         }

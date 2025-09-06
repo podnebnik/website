@@ -30,8 +30,10 @@ export const DEFAULT_STATION = {
 
 /**
 The base URL for the API.
+
+I believe this URL is like local dataset server.
  */
-export const BASE_URL = 'https://stage-data.podnebnik.org' as const
+export const STAGE_DATA_BASE_URL = 'https://stage-data.podnebnik.org' as const
 // const baseUrl = 'http://localhost:8010'
 
 /**
@@ -41,6 +43,10 @@ export const VREMENAR_BASE_URL = 'https://podnebnik.vremenar.app' as const
 
 /**
  * The base URL for the Vremenar API.
+ * 
+ * I believe this works only for stations details
+ * example url: https://podnebnik.vremenar.app/staging/stations/details/METEO-1402?country=si
+ * 
  */
 export const STAGING_VREMENAR_API_URL = 'https://podnebnik.vremenar.app/staging' as const
 // const vremenarBaseUrl = 'http://localhost:8000'
