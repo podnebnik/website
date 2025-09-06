@@ -1,13 +1,8 @@
 /** @import * as Types "./types" */
 
 import { STAGE_DATA_BASE_URL, STAGING_VREMENAR_API_URL } from "./constants";
-import {
-  HistoricalWindowResponseJson,
-  ProcessedStation,
-  ProcessedTemperatureData,
-  RequestStationData,
-} from "../types/";
-import { StationsResponse } from "../types/api";
+import { HistoricalWindowResponseJson, RequestStationData, StationsResponse } from '../types/api-raw.js';
+import type { ProcessedStation, ProcessedTemperatureData } from '../types/models.js';
 
 /** Figure out if we’re running the local dev site (including LAN IP access). */
 function isDevLikeHost(h: string) {

@@ -4,13 +4,8 @@
 // PERSISTENCE TYPES (Application-specific)
 // ============================================================================= */
 
-import { 
-  QueryKey, 
-} from '@tanstack/solid-query';
-import { 
-  ProcessedTemperatureData,
-  ProcessedStation 
-} from './api.js';
+import { QueryKey } from '@tanstack/solid-query';
+import { ProcessedTemperatureData, ProcessedStation } from './models.js';
 
 // =============================================================================
 // APPLICATION QUERY KEY FACTORY

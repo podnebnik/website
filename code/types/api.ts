@@ -1,4 +1,15 @@
 /**
+ * Compatibility wrapper: re-export raw API shapes from `api-raw.ts` and
+ * UI models from `models.ts`. This keeps older imports working while
+ * encouraging consumers to import directly from `api-raw` or `models`.
+ */
+
+export * from './api-raw.js';
+export * from './models.js';
+
+// Legacy type aliases (type-only re-exports)
+// Aliases removed: types are re-exported via export *; keep imports targeting `api` working.
+/**
  * API response types for external services used by the Podnebnik website
  * These types are based on actual API response analysis and should be validated at runtime
  * 

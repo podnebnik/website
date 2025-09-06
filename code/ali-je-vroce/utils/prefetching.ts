@@ -1,7 +1,7 @@
 import { queryKeys } from "../hooks/queries.ts";
 import { requestData } from "../helpers.ts";
 import { QueryClient } from "@tanstack/solid-query";
-import type { ProcessedStation, ProcessedTemperatureData } from '../../types/index.js';
+import type { ProcessedStation, ProcessedTemperatureData } from '../../types/models.js';
 
 /**
  * Popular weather stations in Slovenia that are frequently accessed by users

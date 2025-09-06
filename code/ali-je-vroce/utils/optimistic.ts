@@ -3,7 +3,7 @@
  * These functions help predict data while actual requests are in progress
  */
 
-import { ProcessedTemperatureData } from "../../types/";
+import type { ProcessedTemperatureData } from '../../types/models.js';
 
 /**
  * Generates an optimistic data object for a station change

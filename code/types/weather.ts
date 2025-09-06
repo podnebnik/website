@@ -4,11 +4,12 @@
  */
 
 import { ISODateString, Coordinates, BaseEntity } from './common.js';
-import { 
-  VremenarStationDetailsResponse, 
+import { VremenarStationDetailsResponse } from './api-raw.js';
+import {
   ProcessedTemperatureData,
-  TemperaturePercentiles 
-} from './api.js';
+  TemperaturePercentiles,
+  StationSelectOption as StationSelectOptionModel,
+} from './models.js';
 
 // =============================================================================
 // WEATHER STATION TYPES
@@ -123,11 +124,8 @@ export interface WeatherObservation {
 /**
  * Station selector option for UI components
  */
-export interface StationSelectOption {
-  value: number;        // station_id
-  label: string;        // display name
-  prefix: string;       // locative prefix ("v", "na")
-}
+// Use canonical processed/UI types from models.ts (internal alias)
+type StationSelectOption = StationSelectOptionModel;
 
 /**
  * Complete weather app state data
@@ -174,22 +172,7 @@ export interface FormattedTime {
 /**
  * Temperature chart data point
  */
-export interface TemperatureDataPoint {
-  timestamp: number;      // Unix timestamp
-  temperature: number;
-  label?: string;
-}
-
-/**
- * Temperature chart configuration
- */
-export interface TemperatureChartData {
-  series: TemperatureDataPoint[];
-  title: string;
-  subtitle?: string;
-  yAxisLabel: string;
-  color?: string;
-}
+// Temperature chart types come from `models.ts` when needed by components
 
 // =============================================================================
 // VALIDATION TYPES

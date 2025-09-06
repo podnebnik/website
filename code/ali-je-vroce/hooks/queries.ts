@@ -1,7 +1,8 @@
 import { useQuery, UseQueryResult } from '@tanstack/solid-query';
 import { requestData, loadStations } from '../helpers';
 import { createLocalStoragePersistor } from '../utils/persistence';
-import { ProcessedTemperatureData, type CategorizedError, type ProcessedStation } from '../../types/';
+import type { ProcessedTemperatureData, ProcessedStation } from '../../types/models.js';
+import type { CategorizedError } from '../../types/queries.js';
 
 /**
  * Query key factory helps organize and structure query keys

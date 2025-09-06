@@ -6,7 +6,7 @@ import { useQueryClient } from '@tanstack/solid-query';
 import { requestData, loadStations } from '../helpers';
 import { generateOptimisticWeatherData } from '../utils/optimistic';
 import { retryWithBackoff, createNetworkMonitor } from '../utils/errorRecovery.js';
-import type { ProcessedStation } from '../../types/api.js';
+import type { ProcessedStation } from '../../types/models.js';
 
 /**
  * Simplified localStorage helper for user preferences
