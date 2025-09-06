@@ -38,7 +38,7 @@
 - [x] 6.0 Remove original code/ali-je-vroce/types.ts file
   - [x] 6.1 Confirm all types have been successfully moved
   - [x] 6.2 Delete the types.ts file
-- [ ] 7.0 Verify no TypeScript or lint errors
-  - [ ] 7.1 Run TypeScript compiler to check for errors
-  - [ ] 7.2 Run linter to check for issues
-  - [ ] 7.3 Test application functionality to ensure no runtime errors
+- [x] 7.0 Verify no TypeScript or lint errors
+  - [x] 7.1 Run TypeScript compiler to check for errors
+  - [x] 7.2 Run linter to check for issues
+  - [x] 7.3 Test application functionality to ensure no runtime errors
