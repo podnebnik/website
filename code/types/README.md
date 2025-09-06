@@ -6,14 +6,17 @@ This folder now separates two concerns:
 - `models.ts` — processed / UI-friendly types derived from the raw shapes. Use these for component props, query results and app logic.
 
 Why this change
+
 - Previously `code/types/api.ts` mixed raw API rows and processed UI types, which caused duplication and confusing imports.
 - Splitting raw vs processed types clarifies intent and reduces duplicate declarations.
 
 Files added
+
 - `code/types/api-raw.ts` — raw Datasette / Vremenar response types
 - `code/types/models.ts` — processed / UI types (stations, percentiles, chart types)
 
 Files updated
+
 - `code/types/api.ts` — now a lightweight compatibility wrapper re-exporting `api-raw` and `models`
 - `code/types/index.ts` — re-exports `api-raw` and `models` explicitly (prefer direct imports)
 - `code/types/guards.ts` — validates raw shapes from `api-raw.ts` and references processed types from `models.ts`
@@ -21,6 +24,7 @@ Files updated
 - `code/ali-je-vroce/*` (helpers, hooks, utils) — migrated imports to the canonical modules
 
 Migration guidance
+
 - Import raw API responses from: `/code/types/api-raw.js`
   - e.g. `import type { DatasetteResponse, TemperatureStationRow } from '/code/types/api-raw.js'`
 - Import processed/UI types from: `/code/types/models.js`
@@ -28,6 +32,7 @@ Migration guidance
 - Prefer explicit imports rather than `import { ... } from '/code/types'` when the semantic layer matters.
 
 Validation
+
 - Run the TypeScript check after edits:
 
 ```bash
@@ -35,6 +40,7 @@ yarn tsc --noEmit
 ```
 
 Next steps (suggested)
+
 1. Run a repo-wide sweep to replace remaining barrel imports with canonical imports (optional codemod).
 2. When the sweep is complete, remove compatibility aliases from `code/types/api.ts` and `code/types/index.ts`.
 3. Add small unit tests for guards and transformation helpers (low-risk improvements).

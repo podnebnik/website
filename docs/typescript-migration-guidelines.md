@@ -154,7 +154,7 @@ export function categorizeError(
 
 // components.ts
 import type { Component } from "solid-js";
-import type { Station } from "../types/weather.js"; // ← Note .js extension
+import type { ProcessedStation as Station } from "../types/models.js"; // Use canonical processed/UI types
 
 interface StationSelectorProps {
   defaultStation?: Station;
@@ -174,7 +174,8 @@ export const StationSelector: Component<StationSelectorProps> = (props) => {
 #### API Integration with Type Safety
 
 ```typescript
-import type { DatassetteResponse, WeatherStation } from "../types/api.js";
+import type { DatassetteResponse } from "../types/api.js";
+import type { ProcessedStation as WeatherStation } from "../types/models.js";
 import type { Result } from "../types/common.js";
 
 async function fetchStations(): Promise<Result<WeatherStation[], string>> {
@@ -195,7 +196,7 @@ async function fetchStations(): Promise<Result<WeatherStation[], string>> {
 
 ```typescript
 import { createQuery } from "@tanstack/solid-query";
-import type { WeatherData } from "../types/weather.js";
+import type { ProcessedTemperatureData as WeatherData } from "../types/models.js";
 import { queryKeys } from "./queryKeys.js";
 
 export const useWeatherData = (stationId: number) => {
@@ -357,10 +358,10 @@ The project provides comprehensive type definitions in `code/types/`:
 - Form and input component types
 - Visualization component props
 
-### Weather Types (`weather.ts`)
+### Weather Types (migrated to `models.ts`)
 
-- `WeatherStation` - Weather station metadata
-- `WeatherData` - Temperature and measurement data
+- `ProcessedStation` (formerly WeatherStation) - Weather station metadata for UI
+- `ProcessedTemperatureData` (formerly WeatherData) - Temperature and measurement data
 - `TemperatureAnalysis` - Statistical analysis types
 
 ### Query Types (`queries.ts`)
@@ -376,12 +377,12 @@ The project provides comprehensive type definitions in `code/types/`:
 When converting files, **always use `.js` extensions** in import paths, even when importing TypeScript files:
 
 ```typescript
-// ✅ Correct - use .js extension
-import type { WeatherData } from "../types/weather.js";
+// ✅ Correct - use .js extension and canonical modules
+import type { ProcessedTemperatureData as WeatherData } from "../types/models.js";
 import { fetchData } from "../utils/api.js";
 
 // ❌ Wrong - TypeScript extensions don't work with our bundler config
-import type { WeatherData } from "../types/weather.ts"; // Will fail!
+import type { ProcessedTemperatureData as WeatherData } from "../types/models.ts"; // Will fail!
 import { fetchData } from "../utils/api.ts"; // Will fail!
 ```
 
@@ -421,7 +422,7 @@ export const WeatherChart = (props) => {
 
 // After
 import type { Component } from "solid-js";
-import type { WeatherData } from "../types/weather.js";
+import type { ProcessedTemperatureData as WeatherData } from "../types/models.js";
 
 interface WeatherChartProps {
   data: WeatherData[];

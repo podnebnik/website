@@ -1,5 +1,5 @@
 import { useQuery, useMutation, QueryClient } from "@tanstack/solid-query";
-import { WeatherStation } from "../../types/weather";
+import { WeatherStation } from "./types";
 import { apiClient } from "./api-integration";
 
 /**

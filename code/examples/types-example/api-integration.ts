@@ -1,6 +1,5 @@
 import { DatasetteResponse } from "../../types/api";
-import { WeatherStation } from "../../types/weather";
-import { Result, AppError } from "../../types/common";
+import { WeatherStation, Result, AppError } from "./types";
 
 // 1. Type-safe API client class
 class WeatherApiClient {

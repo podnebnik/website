@@ -19,7 +19,7 @@ export * from './api-raw.js';
 export * from './models.js';
 
 // Weather-specific types
-export * from './weather';
+// `weather` types were moved out of the main barrel; examples use a local types file.
 
 // Component prop interfaces
 export * from './components';
