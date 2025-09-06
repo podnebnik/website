@@ -249,6 +249,46 @@ export interface ProcessedTemperatureData {
 // =============================================================================
 
 // =============================================================================
+// STATIONS API TYPES (Specific to stations endpoint)
+// =============================================================================
+
+/**
+ * Raw station row from Datasette API
+ * Based on actual response: [rowid, station_id, name, name_locative]
+ */
+export type StationRow = [number, number, string, string];
+
+/**
+ * Stations API response from Datasette
+ * Based on actual API response analysis
+ */
+export interface StationsResponse {
+    database: string;
+    table: string;
+    is_view: boolean;
+    human_description_en: string;
+    rows: StationRow[];
+    truncated: boolean;
+    filtered_table_rows_count: number;
+    expanded_columns: string[];
+    expandable_columns: string[];
+    columns: string[];
+    primary_keys: string[];
+    units: Record<string, string>;
+    query: {
+        sql: string;
+        params: Record<string, unknown>;
+    };
+    facet_results: Record<string, unknown>;
+    suggested_facets: Record<string, unknown>[];
+    next: null | string;
+    next_url: null | string;
+    private: boolean;
+    allow_execute_sql: boolean;
+    query_ms: number;
+}
+
+// =============================================================================
 // QUERY PARAMETER TYPES
 // =============================================================================
 
