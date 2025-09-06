@@ -1,6 +1,9 @@
 ## Relevant Files
 
-- `code/ali-je-vroce/types.ts` - Source file containing types to transfer
+- `cod- [x] - [x] 4.1 Change import from "./types" to "../types/api"
+- [ ] 4.2 Verify the import works after the move1 Copy StationData interface to code/types/weather.ts
+- [x] 3.2 Check for overlaps with existing WeatherStation interface
+- [x] 3.3 Merge or keep separate based on analysisli-je-vroce/types.ts` - Source file containing types to transfer
 - `code/types/api.ts` - Target for API response types (StationsResponse, StationRow)
 - `code/types/weather.ts` - Target for weather data types (StationData)
 - `code/types/index.ts` - Central export file that may need updates
@@ -22,10 +25,10 @@
   - [x] 2.1 Copy StationsResponse interface to code/types/api.ts
   - [x] 2.2 Copy StationRow type to code/types/api.ts
   - [x] 2.3 Ensure proper imports in api.ts (e.g., ISODateString from common.js)
-- [ ] 3.0 Move StationData to code/types/weather.ts
-  - [ ] 3.1 Copy StationData interface to code/types/weather.ts
-  - [ ] 3.2 Check for overlaps with existing WeatherStation interface
-  - [ ] 3.3 Merge or keep separate based on analysis
+- [x] 3.0 Move StationData to code/types/weather.ts
+  - [x] 3.1 Copy StationData interface to code/types/weather.ts
+  - [x] 3.2 Check for overlaps with existing WeatherStation interface
+  - [x] 3.3 Merge or keep separate based on analysis
 - [ ] 4.0 Update import in code/ali-je-vroce/helpers.ts
   - [ ] 4.1 Change import from "./types" to "../types/api"
   - [ ] 4.2 Verify the import works after the move
@@ -40,4 +43,4 @@
   - [ ] 7.1 Run TypeScript compiler to check for errors
   - [ ] 7.2 Run linter to check for issues
   - [ ] 7.3 Test application functionality to ensure no runtime errors</content>
-<parameter name="filePath">/Volumes/SSD-Satechi/Projects/open-source/active-projects/podnebnik/website/tasks/tasks-prd-transfer-types-from-types-ts-to-types-folder.md
+        <parameter name="filePath">/Volumes/SSD-Satechi/Projects/open-source/active-projects/podnebnik/website/tasks/tasks-prd-transfer-types-from-types-ts-to-types-folder.md

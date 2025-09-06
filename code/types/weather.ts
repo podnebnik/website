@@ -28,6 +28,17 @@ export interface WeatherStation extends BaseEntity {
 }
 
 /**
+ * Station data from Datasette API
+ * Based on actual response: [rowid, station_id, name, name_locative]
+ */
+export interface StationData {
+  rowid: number;
+  station_id: number;
+  name: string;
+  name_locative: string;
+}
+
+/**
  * Weather reading/measurement data
  */
 export interface WeatherReading {
