@@ -1,9 +1,5 @@
 ## Relevant Files
 
-- `cod- [x] - [x] 4.1 Change import from "./types" to "../types/api"
-- [ ] 4.2 Verify the import works after the move1 Copy StationData interface to code/types/weather.ts
-- [x] 3.2 Check for overlaps with existing WeatherStation interface
-- [x] 3.3 Merge or keep separate based on analysisli-je-vroce/types.ts` - Source file containing types to transfer
 - `code/types/api.ts` - Target for API response types (StationsResponse, StationRow)
 - `code/types/weather.ts` - Target for weather data types (StationData)
 - `code/types/index.ts` - Central export file that may need updates
@@ -29,9 +25,9 @@
   - [x] 3.1 Copy StationData interface to code/types/weather.ts
   - [x] 3.2 Check for overlaps with existing WeatherStation interface
   - [x] 3.3 Merge or keep separate based on analysis
-- [ ] 4.0 Update import in code/ali-je-vroce/helpers.ts
-  - [ ] 4.1 Change import from "./types" to "../types/api"
-  - [ ] 4.2 Verify the import works after the move
+- [x] 4.0 Update import in code/ali-je-vroce/helpers.ts
+  - [x] 4.1 Change import from "./types" to "../types/api"
+  - [x] 4.2 Verify the import works after the move
 - [ ] 5.0 Update exports in code/types/index.ts if needed
   - [ ] 5.1 Check if new types are exported through index.ts
   - [ ] 5.2 Add exports for StationsResponse and StationRow if not already covered

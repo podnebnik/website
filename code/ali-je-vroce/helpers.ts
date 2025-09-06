@@ -7,7 +7,7 @@ import {
   ProcessedTemperatureData,
   RequestStationData,
 } from "../types/";
-import { StationsResponse } from "./types";
+import { StationsResponse } from "../types/api";
 
 /** Figure out if we’re running the local dev site (including LAN IP access). */
 function isDevLikeHost(h: string) {
