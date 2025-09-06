@@ -1,5 +1,7 @@
 import { STAGING_VREMENAR_API_URL } from "../constants.ts";
 
+// TODO: Did we forgot to remove this file or we plan to use it and forgot about it?
+
 /**
  * Interface for batch request options
  */
