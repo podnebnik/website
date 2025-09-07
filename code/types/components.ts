@@ -70,7 +70,7 @@ export interface SeasonalHistogramProps extends BaseComponentProps {
 export interface SeasonalScatterProps extends BaseComponentProps {
   stationId: number | string;
   center_mmdd: string; // Format: "MM-DD" 
-  todayTemp: number; // Required for SeasonalScatter, different from histogram
+  todayTemp?: number | null; // Make optional like histogram
   title?: string;
 }
 

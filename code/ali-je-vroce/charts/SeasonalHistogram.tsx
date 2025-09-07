@@ -20,18 +20,39 @@ import * as Highcharts from "highcharts";
  *  - title?: string
  */
 export default function SeasonalHistogram(props: SeasonalHistogramProps) {
-  // Use TanStack Query hook for historical data
-  const queryResult = useHistoricalDataQuery({
+  // Create reactive parameters for the query
+  const queryParams = createMemo(() => ({
     station_id: Number(props.stationId),
     center_mmdd: props.center_mmdd,
     window_days: CHART_DATA.WINDOW_DAYS,
-  });
+  }));
+  console.log(
+    "Histogram todayTemp:",
+    props.todayTemp,
+    "station:",
+    props.stationId
+  );
+
+  // Use TanStack Query hook for historical data
+  const queryResult = useHistoricalDataQuery(queryParams());
 
   // Memoized histogram-specific processing
   const chartOptions = createMemo<Highcharts.Options | null>(() => {
     const rawData = queryResult.data;
+    const isLoading = queryResult.isLoading;
 
-    if (!rawData || queryResult.isLoading) {
+    if (!rawData || isLoading) {
+      return null;
+    }
+
+    // Only generate new chart options when todayTemp is valid to prevent race condition
+    const hasValidTodayTemp =
+      props.todayTemp == null || Number.isFinite(Number(props.todayTemp));
+    if (!hasValidTodayTemp) {
+      console.log(
+        "Histogram skipping chart config due to invalid todayTemp:",
+        props.todayTemp
+      );
       return null;
     }
 
@@ -100,7 +121,7 @@ export default function SeasonalHistogram(props: SeasonalHistogramProps) {
           ? Number(props.todayTemp)
           : null;
 
-      return createHistogramChartConfig({
+      const config = createHistogramChartConfig({
         left,
         mid,
         right,
@@ -111,6 +132,10 @@ export default function SeasonalHistogram(props: SeasonalHistogramProps) {
         yMax,
         title: props.title || `Distribution around ${props.center_mmdd}`,
       });
+
+      console.log("Generated histogram config: ", config);
+
+      return config;
     } catch (e) {
       console.error("Error processing histogram data:", e);
       return null;

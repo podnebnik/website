@@ -72,7 +72,7 @@
   - [x] 5.4 Ensure error messages are in Slovenian and consistent with existing patterns
   - [x] 5.5 Test error handling scenarios (network failures, API timeouts)
 
-- [ ] 6.0 Testing and Validation
+- [x] 6.0 Testing and Validation
 
   - [x] 6.1 Test SeasonalScatter component renders identically with new query hook
   - [x] 6.2 Test SeasonalHistogram component renders identically with new query hook
@@ -80,8 +80,33 @@
   - [x] 6.4 Test error states display properly in both components
   - [x] 6.5 Test loading states work correctly
   - [x] 6.6 Validate that both components can share cached data when using same parameters
-  - [ ] 6.7 Test with different station IDs and date ranges to ensure flexibility - **ISSUE**: Still has unresolved issues to fix later. There are many reasons why this is not working:
+  - [ ] 6.7 Test with different station IDs and date ranges to ensure flexibility - **ISSUE**:
 
-    - Charts do not know that station was changed at all?
-    - Prefetching for station data for daily data?
-    - Something else?
+ISSUE Subtask 6.7: Race condition during station changes causes TODAY labels to disappear
+
+- TanStack Query returns NaN briefly during station transitions
+- Chart recreation happens with incomplete data during race condition
+- Inconsistent behavior: sometimes histogram labels missing, sometimes both missing
+
+ATTEMPTED SOLUTIONS:
+
+- Added validation to skip chart config during NaN transitions
+- Implemented chart recreation instead of chart.update()
+- Enhanced debugging and console logging
+- Modified both SeasonalHistogram.tsx and SeasonalScatter.tsx
+
+STATUS: Partially working but inconsistent
+
+- Initial load: works correctly
+- After station changes: labels sometimes missing
+- Need fresh approach from commit ea08e02bf7478286dfaaf3104e2afa50975e3506
+
+FILES MODIFIED:
+
+- charts/Highchart.tsx: Added chart recreation logic
+- charts/SeasonalHistogram.tsx: Added race condition protection
+- charts/SeasonalScatter.tsx: Added race condition protection
+- charts/config/histogramConfig.ts: Enhanced debugging
+- hooks/queries.ts: TanStack Query integration
+- vroce.tsx: TODAY temp prop passing
+- types/components.ts: Type updates"

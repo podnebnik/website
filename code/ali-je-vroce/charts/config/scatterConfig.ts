@@ -36,7 +36,7 @@ export interface ScatterConfigParams {
   p95: number;
   scatter: ScatterPoint[];
   trendLine: Array<{ x: number; y: number }>;
-  todayPoint: TodayPoint;
+  todayPoint: TodayPoint | null; // Make optional
   trendPerCentury: number;
   todayLabel: string;
 }
@@ -146,7 +146,7 @@ export function createScatterChartConfig({
     series: [
       createHistorySeries(scatter),
       createTrendSeries(trendLine),
-      createTodaySeries(todayPoint, todayLabel),
+      ...(todayPoint ? [createTodaySeries(todayPoint, todayLabel)] : []),
     ],
     credits: { enabled: CHART_DEFAULTS.CREDITS_ENABLED },
   };

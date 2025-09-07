@@ -111,7 +111,16 @@ export function AliJeVroce() {
           <SeasonalHistogram
             stationId={selectedStation()?.station_id ?? 14}
             center_mmdd={mmdd}
-            todayTemp={tempAvg() ? +tempAvg()! : null}
+            todayTemp={(() => {
+              const temp = tempAvg() ? +tempAvg()! : null;
+              console.log(
+                "Histogram todayTemp:",
+                temp,
+                "station:",
+                selectedStation()?.station_id
+              );
+              return temp;
+            })()}
             title={`Distribution around ${mmdd}`}
           />
         </div>
@@ -119,7 +128,16 @@ export function AliJeVroce() {
           <SeasonalScatter
             stationId={selectedStation()?.station_id ?? 14}
             center_mmdd={mmdd}
-            todayTemp={tempAvg() ? +tempAvg()! : 0} // 🔥 pass current daily average from API, fallback to 0 for TypeScript
+            todayTemp={(() => {
+              const temp = tempAvg() ? +tempAvg()! : null;
+              console.log(
+                "Scatter todayTemp:",
+                temp,
+                "station:",
+                selectedStation()?.station_id
+              );
+              return temp;
+            })()}
             title={prettyTitle}
           />
         </div>

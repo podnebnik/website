@@ -174,46 +174,56 @@ export function useWeatherQuery(stationId: string): UseQueryResult<ProcessedTemp
  * ```
  */
 export function useHistoricalDataQuery(params: HistoricalDataQueryParams): UseQueryResult<HistoricalTemperatureData, CategorizedError> {
-    const { station_id, center_mmdd, window_days } = params;
+    return useQuery(() => {
+        // Ensure we track all parameter changes by accessing them explicitly
+        const stationId = params.station_id;
+        const centerMmdd = params.center_mmdd;
+        const windowDays = params.window_days;
 
-    return useQuery(() => ({
-        queryKey: queryKeys.historicalData(station_id, center_mmdd, window_days),
-        queryFn: async ({ signal }) => {
-            try {
-                // Validate parameters
-                if (!station_id || !center_mmdd || window_days <= 0) {
-                    throw new Error('Neveljavni parametri za zgodovinske podatke');
+        return {
+            queryKey: queryKeys.historicalData(stationId, centerMmdd, windowDays),
+            queryFn: async ({ signal }) => {
+                try {
+                    // Validate parameters
+                    if (!stationId || !centerMmdd || windowDays <= 0) {
+                        throw new Error('Neveljavni parametri za zgodovinske podatke');
+                    }
+
+                    // Call the existing requestHistoricalWindow function
+                    const result = await requestHistoricalWindow({
+                        station_id: stationId,
+                        center_mmdd: centerMmdd,
+                        window_days: windowDays
+                    });
+
+                    return result;
+                } catch (error) {
+                    // Type guard for error handling  
+                    const errorObj = error instanceof Error ? error : new Error(String(error));
+                    
+                    if (errorObj.name === 'AbortError' || signal?.aborted) {
+                        throw { type: 'aborted', message: 'Zahteva je bila prekinjeta' };
+                    }
+
+                    throw categorizeError(error, `historical-${stationId}-${centerMmdd}-${windowDays}`);
                 }
+            },
+            enabled: !!stationId && !!centerMmdd && windowDays > 0,
+            // Historical data rarely changes, so we can use longer stale time
+            staleTime: 1000 * 60 * 15, // 15 minutes as specified in task requirements
+            // Keep cached data longer since historical data doesn't change often
+            gcTime: 1000 * 60 * 60 * 4, // 4 hours
+            // Don't refetch on mount/focus since historical data is stable
+            refetchOnMount: false,
+            refetchOnWindowFocus: false,
+            refetchOnReconnect: true, // Still refetch on reconnect for reliability
+            notifyOnChangeProps() {
+                return ['data', 'error', 'isLoading'];
+            },
+            refetchIntervalInBackground: true
+        };
 
-                // Call the existing requestHistoricalWindow function
-                const result = await requestHistoricalWindow({
-                    station_id,
-                    center_mmdd,
-                    window_days
-                });
-
-                return result;
-            } catch (error) {
-                // Type guard for error handling  
-                const errorObj = error instanceof Error ? error : new Error(String(error));
-                
-                if (errorObj.name === 'AbortError' || signal?.aborted) {
-                    throw { type: 'aborted', message: 'Zahteva je bila prekinjeta' };
-                }
-
-                throw categorizeError(error, `historical-${station_id}-${center_mmdd}-${window_days}`);
-            }
-        },
-        enabled: !!station_id && !!center_mmdd && window_days > 0,
-        // Historical data rarely changes, so we can use longer stale time
-        staleTime: 1000 * 60 * 15, // 15 minutes as specified in task requirements
-        // Keep cached data longer since historical data doesn't change often
-        gcTime: 1000 * 60 * 60 * 4, // 4 hours
-        // Don't refetch on mount/focus since historical data is stable
-        refetchOnMount: false,
-        refetchOnWindowFocus: false,
-        refetchOnReconnect: true, // Still refetch on reconnect for reliability
-    }));
+    });
 }
 
 /**

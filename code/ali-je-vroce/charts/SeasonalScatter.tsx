@@ -17,24 +17,45 @@ import * as Highcharts from "highcharts";
 
 /**
  * Props:
- *  - stationId: number|string (required)
- *  - center_mmdd: "MM-DD" string (required)
- *  - todayTemp: number (required, live from API)
+ *  - stationId: number|string
+ *  - center_mmdd: "MM-DD"
+ *  - todayTemp?: number | null (optional, for today point)
  *  - title?: string
  */
 export default function SeasonalScatter(props: SeasonalScatterProps) {
-  // Use TanStack Query hook for historical data
-  const queryResult = useHistoricalDataQuery({
+  // Create reactive parameters for the query
+  const queryParams = createMemo(() => ({
     station_id: Number(props.stationId),
     center_mmdd: props.center_mmdd,
     window_days: CHART_DATA.WINDOW_DAYS,
-  });
+  }));
+  console.log(
+    "Scatter todayTemp:",
+    props.todayTemp,
+    "station:",
+    props.stationId
+  );
+
+  // Use TanStack Query hook for historical data
+  const queryResult = useHistoricalDataQuery(queryParams());
 
   // Memoized chart options calculation
   const chartOptions = createMemo<Highcharts.Options | null>(() => {
     const rawData = queryResult.data;
+    const isLoading = queryResult.isLoading;
 
-    if (!rawData || queryResult.isLoading) {
+    if (!rawData || isLoading) {
+      return null;
+    }
+
+    // Only generate new chart options when todayTemp is valid to prevent race condition
+    const hasValidTodayTemp =
+      props.todayTemp == null || Number.isFinite(Number(props.todayTemp));
+    if (!hasValidTodayTemp) {
+      console.log(
+        "Scatter skipping chart config due to invalid todayTemp:",
+        props.todayTemp
+      );
       return null;
     }
 
@@ -73,14 +94,21 @@ export default function SeasonalScatter(props: SeasonalScatterProps) {
 
       // "Today" label plotted slightly to the right of the newest year
       const todayX = x1 + 2;
-      const todayPoint: TodayPoint = {
-        x: todayX,
-        y: props.todayTemp!,
-        marker: { radius: 7, lineWidth: 2, lineColor: "#333" },
-      };
+      const todayPoint: TodayPoint | null =
+        props.todayTemp != null && Number.isFinite(Number(props.todayTemp))
+          ? {
+              x: todayX,
+              y: Number(props.todayTemp),
+              marker: { radius: 7, lineWidth: 2, lineColor: "#333" },
+            }
+          : null;
 
-      const yMin = Math.floor(Math.min(...temps, props.todayTemp!) - 1);
-      const yMax = Math.ceil(Math.max(...temps, props.todayTemp!) + 1);
+      const yMin = Math.floor(
+        Math.min(...temps, todayPoint?.y ?? Math.min(...temps)) - 1
+      );
+      const yMax = Math.ceil(
+        Math.max(...temps, todayPoint?.y ?? Math.max(...temps)) + 1
+      );
 
       // Create trend line data
       const trendLine = [
@@ -88,8 +116,7 @@ export default function SeasonalScatter(props: SeasonalScatterProps) {
         { x: x1, y: y1 },
       ];
 
-      // Use configuration builder instead of inline configuration
-      return createScatterChartConfig({
+      const config = createScatterChartConfig({
         title: props.title || "Daily average temperatures — two weeks window",
         xMin: x0,
         xMax: x1,
@@ -104,11 +131,18 @@ export default function SeasonalScatter(props: SeasonalScatterProps) {
         trendPerCentury,
         todayLabel: CHART_DATA.TODAY_LABEL,
       });
+
+      console.log("Generated scatter config: ", config);
+
+      // Use configuration builder instead of inline configuration
+      return config;
     } catch (e) {
       console.error("Failed to generate chart options:", e);
       return null;
     }
   });
+
+  console.log("Scatter chart options:", chartOptions());
 
   return (
     <ChartContainer

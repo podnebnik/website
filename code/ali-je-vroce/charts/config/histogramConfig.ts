@@ -40,6 +40,7 @@ export function createHistogramChartConfig({
   title,
 }: HistogramConfigParams): Highcharts.Options {
   const labelSeries = createLabelSeries(p05, p50, p95, today, yMax);
+  console.log("Histogram label series:", labelSeries);
 
   return {
     chart: {
@@ -156,27 +157,36 @@ export function createLabelSeries(
   today: number | null,
   yMax: number
 ): Highcharts.SeriesOptionsType {
-  return {
+  console.log("createLabelSeries: ", {today})
+  
+  const labelPoints = [
+    createLabelPoint(p05, "5th percentile", yMax, { dx: -10 }),
+    createLabelPoint(p50, "50th percentile", yMax),
+    createLabelPoint(p95, "95th percentile", yMax, { dx: 10 }),
+  ];
+
+  // Add TODAY label if valid
+  if (Number.isFinite(today)) {
+    const todayLabel = createLabelPoint(today!, `TODAY: ${today!.toFixed(1)}°C`, yMax, {
+      dx: 12,
+      color: COLORS.BLACK,
+      bold: true,
+      size: CHART_STYLES.FONT_SIZE_MEDIUM,
+    });
+    labelPoints.push(todayLabel);
+    console.log("Added TODAY label:", todayLabel);
+  }
+
+  const labelSeries: Highcharts.SeriesOptionsType = {
     name: "labels",
     type: "scatter",
-    data: [
-      createLabelPoint(p05, "5th percentile", yMax, { dx: -10 }),
-      createLabelPoint(p50, "50th percentile", yMax),
-      createLabelPoint(p95, "95th percentile", yMax, { dx: 10 }),
-      ...(Number.isFinite(today)
-        ? [
-            createLabelPoint(today!, `TODAY: ${today!.toFixed(1)}°C`, yMax, {
-              dx: 12,
-              color: COLORS.BLACK,
-              bold: true,
-              size: CHART_STYLES.FONT_SIZE_MEDIUM,
-            }),
-          ]
-        : []),
-    ],
+    data: labelPoints,
     enableMouseTracking: false,
     showInLegend: false,
   };
+  
+  console.log("Histogram label series data:", labelSeries.data);
+  return labelSeries;
 }
 
 /**
