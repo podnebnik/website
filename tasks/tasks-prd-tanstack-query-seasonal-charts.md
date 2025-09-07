@@ -21,6 +21,7 @@
 - **Commit**: Commit after each sub-task if it makes sense (large change).
 - **Commit Message**: Create good commit message as senior developer would and follow commitlint style.
 - **Exclude from Commit** Never commit `.github/copilot-instructions.md` and `.github/instructions` folder!
+  **Package Manager**: Yarn.
 - **Dev Server**: Before trying to run dev server, **check if dev server is already running**.
 - **Documentation**: When creating additional documentation for this task, add metadata at the the top, so that not developers easier finds when the document was changed.
 - **Issues During Task(Subtask) implementation**: Any special issue that we encounter during implementation, make a not with Task number
