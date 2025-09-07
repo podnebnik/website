@@ -38,14 +38,14 @@
   - [x] 1.3 Add historical data query result type to `code/types/queries.ts`
   - [x] 1.4 Update `code/types/components.ts` to ensure seasonal chart props are properly typed
 
-- [ ] 2.0 Create Historical Data Query Hook
+- [x] 2.0 Create Historical Data Query Hook
 
-  - [ ] 2.1 Add `useHistoricalDataQuery` hook to `code/ali-je-vroce/hooks/queries.ts`
-  - [ ] 2.2 Implement query function that wraps `requestHistoricalWindow` from helpers.ts
-  - [ ] 2.3 Add proper error categorization using existing `categorizeError` function
-  - [ ] 2.4 Configure query with appropriate cache and staleTime settings
-  - [ ] 2.5 Add TypeScript types for hook parameters and return values
-  - [ ] 2.6 Add JSDoc documentation following existing patterns
+  - [x] 2.1 Add `useHistoricalDataQuery` hook to `code/ali-je-vroce/hooks/queries.ts`
+  - [x] 2.2 Implement query function that wraps `requestHistoricalWindow` from helpers.ts
+  - [x] 2.3 Add proper error categorization using existing `categorizeError` function
+  - [x] 2.4 Configure query with appropriate cache and staleTime settings
+  - [x] 2.5 Add TypeScript types for hook parameters and return values
+  - [x] 2.6 Add JSDoc documentation following existing patterns
 
 - [ ] 3.0 Update SeasonalScatter Component to Use TanStack Query
 

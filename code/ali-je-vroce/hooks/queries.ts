@@ -1,7 +1,7 @@
 import { useQuery, UseQueryResult } from '@tanstack/solid-query';
-import { requestData, loadStations } from '../helpers';
+import { requestData, loadStations, requestHistoricalWindow } from '../helpers';
 import { createLocalStoragePersistor } from '../utils/persistence';
-import type { ProcessedTemperatureData, ProcessedStation } from '../../types/models.js';
+import type { ProcessedTemperatureData, ProcessedStation, HistoricalTemperatureData, HistoricalDataQueryParams } from '../../types/models.js';
 import type { CategorizedError } from '../../types/queries.js';
 
 /**
@@ -10,6 +10,8 @@ import type { CategorizedError } from '../../types/queries.js';
 export const queryKeys = {
     stations: () => ['stations'],
     weatherData: (stationId: string) => ['weatherData', stationId],
+    historicalData: (stationId: number, centerMmdd: string, windowDays: number) => 
+        ['historicalData', stationId, centerMmdd, windowDays],
 };
 
 /**
@@ -150,6 +152,68 @@ export function useWeatherQuery(stationId: string): UseQueryResult<ProcessedTemp
             keepPreviousData: true,
         };
     });
+}
+
+/**
+ * Custom hook for fetching historical temperature data for seasonal charts
+ * Wraps the requestHistoricalWindow function with TanStack Query for caching and error handling
+ *
+ * @param params - Historical data query parameters
+ * @param params.station_id - The ID of the station to fetch data for
+ * @param params.center_mmdd - Center date in MM-DD format (e.g., "07-15" for July 15th)
+ * @param params.window_days - Number of days to include in the window around the center date
+ * @returns TanStack Query result for historical temperature data
+ * 
+ * @example
+ * ```typescript
+ * const { data, isLoading, error } = useHistoricalDataQuery({
+ *   station_id: 123,
+ *   center_mmdd: "07-15",
+ *   window_days: 30
+ * });
+ * ```
+ */
+export function useHistoricalDataQuery(params: HistoricalDataQueryParams): UseQueryResult<HistoricalTemperatureData, CategorizedError> {
+    const { station_id, center_mmdd, window_days } = params;
+
+    return useQuery(() => ({
+        queryKey: queryKeys.historicalData(station_id, center_mmdd, window_days),
+        queryFn: async ({ signal }) => {
+            try {
+                // Validate parameters
+                if (!station_id || !center_mmdd || window_days <= 0) {
+                    throw new Error('Invalid parameters for historical data query');
+                }
+
+                // Call the existing requestHistoricalWindow function
+                const result = await requestHistoricalWindow({
+                    station_id,
+                    center_mmdd,
+                    window_days
+                });
+
+                return result;
+            } catch (error) {
+                // Type guard for error handling  
+                const errorObj = error instanceof Error ? error : new Error(String(error));
+                
+                if (errorObj.name === 'AbortError' || signal?.aborted) {
+                    throw { type: 'aborted', message: 'Zahteva je bila prekinjeta' };
+                }
+
+                throw categorizeError(error, `historical-${station_id}-${center_mmdd}-${window_days}`);
+            }
+        },
+        enabled: !!station_id && !!center_mmdd && window_days > 0,
+        // Historical data rarely changes, so we can use longer stale time
+        staleTime: 1000 * 60 * 15, // 15 minutes as specified in task requirements
+        // Keep cached data longer since historical data doesn't change often
+        gcTime: 1000 * 60 * 60 * 4, // 4 hours
+        // Don't refetch on mount/focus since historical data is stable
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: true, // Still refetch on reconnect for reliability
+    }));
 }
 
 /**
