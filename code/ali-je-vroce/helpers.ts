@@ -1,7 +1,7 @@
 /** @import * as Types "./types" */
 
 import { STAGE_DATA_BASE_URL, STAGING_VREMENAR_API_URL } from "./constants";
-import {  HistoricalWindowResponseJson, RequestStationData, StationsResponse } from '../types/api-raw.js';
+import { RequestStationData, StationsResponse } from '../types/api-raw.js';
 import type { ProcessedStation, ProcessedTemperatureData } from '../types/models.js';
 
 /** Figure out if we're running the local dev site (including LAN IP access). */
@@ -530,6 +530,7 @@ async function fetchFromApi(
   window_days: number,
   timeoutMs: number = 8000
 ) {
+  // not sure if this is correct @kesma01
   const apiUrl = `${API_BASE}/staging/ali-je-vroce/historical_window?station_id=${encodeURIComponent(
     station_id
   )}&center_mmdd=${encodeURIComponent(center_mmdd)}&window_days=${encodeURIComponent(window_days)}`;
