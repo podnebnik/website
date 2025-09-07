@@ -27,12 +27,12 @@
 
 ## Tasks
 
-- [ ] 1.0 Extend Query Infrastructure for Historical Data
+- [x] 1.0 Extend Query Infrastructure for Historical Data
 
-  - [ ] 1.1 Add historical data query key factory to `code/types/queries.ts`
-  - [ ] 1.2 Create historical data types in `code/types/models.ts` if needed
-  - [ ] 1.3 Add historical data query result type to `code/types/queries.ts`
-  - [ ] 1.4 Update `code/types/components.ts` to ensure seasonal chart props are properly typed
+  - [x] 1.1 Add historical data query key factory to `code/types/queries.ts`
+  - [x] 1.2 Create historical data types in `code/types/models.ts` if needed
+  - [x] 1.3 Add historical data query result type to `code/types/queries.ts`
+  - [x] 1.4 Update `code/types/components.ts` to ensure seasonal chart props are properly typed
 
 - [ ] 2.0 Create Historical Data Query Hook
 

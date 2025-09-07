@@ -5,7 +5,7 @@
 // ============================================================================= */
 
 import { QueryKey } from '@tanstack/solid-query';
-import { ProcessedTemperatureData, ProcessedStation } from './models.js';
+import { ProcessedTemperatureData, ProcessedStation, HistoricalTemperatureData } from './models.js';
 
 // =============================================================================
 // APPLICATION QUERY KEY FACTORY
@@ -21,6 +21,10 @@ export const queryKeys = {
   
   // Weather data queries  
   weatherData: (stationId: number) => ['weatherData', stationId] as const,
+  
+  // Historical data queries
+  historicalData: (stationId: number, centerMmdd: string, windowDays: number) => 
+    ['historicalData', stationId, centerMmdd, windowDays] as const,
   
   // Add more query types as needed
   // percentiles: (stationId: number, date: string) => ['percentiles', stationId, date] as const,
@@ -44,6 +48,11 @@ export type StationsQueryData = ProcessedStation[];
  * Weather data query result type (what our weather query returns)
  */
 export type WeatherDataQueryData = ProcessedTemperatureData;
+
+/**
+ * Historical data query result type (what our historical data query returns)
+ */
+export type HistoricalDataQueryData = HistoricalTemperatureData;
 
 // =============================================================================
 // ERROR CATEGORIZATION (Application-specific)
@@ -102,6 +111,23 @@ export function weatherDataQueryOptions(stationId: number) {
     refetchInterval: 1000 * 60 * 15, // 15 minutes background refresh
     refetchIntervalInBackground: true,
     enabled: !!stationId,            // Only run if stationId exists
+  } as const;
+}
+
+/**
+ * Pre-configured query options for historical data
+ * Historical data rarely changes, so longer stale time is appropriate
+ */
+export function historicalDataQueryOptions(stationId: number, centerMmdd: string, windowDays: number) {
+  return {
+    queryKey: queryKeys.historicalData(stationId, centerMmdd, windowDays),
+    staleTime: 1000 * 60 * 15,     // 15 minutes (as specified in task requirements)
+    gcTime: 1000 * 60 * 60 * 4,    // 4 hours (longer since historical data doesn't change often)
+    retry: 2,
+    refetchOnMount: false,         // Don't refetch on mount since data is stable
+    refetchOnWindowFocus: false,   // Don't refetch on focus since data doesn't change
+    refetchOnReconnect: true,      // Still refetch on reconnect for reliability
+    enabled: !!stationId && !!centerMmdd && windowDays > 0, // Only run with valid params
   } as const;
 }
 

@@ -4,7 +4,7 @@
 
 import { Component, JSX } from 'solid-js';
 import { AppError } from './common.js';
-import { ProcessedStation } from './models.js';
+import { ProcessedStation, HistoricalTemperatureData, HistoricalDataQueryParams } from './models.js';
 import * as Highcharts from 'highcharts';
 
 // Base component props
@@ -72,6 +72,31 @@ export interface SeasonalScatterProps extends BaseComponentProps {
   center_mmdd: string; // Format: "MM-DD" 
   todayTemp: number; // Required for SeasonalScatter, different from histogram
   title?: string;
+}
+
+// Historical data query hook parameters (for TanStack Query integration)
+export interface HistoricalDataHookParams {
+  stationId: number;
+  center_mmdd: string;
+  windowDays: number;
+}
+
+// Query state props for components using TanStack Query
+export interface QueryStateProps {
+  isLoading?: boolean;
+  isError?: boolean;
+  error?: Error | null;
+  isStale?: boolean;
+  isFetching?: boolean;
+}
+
+// Extended seasonal chart props with query state (for TanStack Query migration)
+export interface SeasonalChartWithQueryStateProps extends BaseComponentProps, QueryStateProps {
+  stationId: number | string;
+  center_mmdd: string;
+  title?: string;
+  data?: HistoricalTemperatureData; // Optional direct data prop
+  queryParams?: HistoricalDataQueryParams; // Optional query parameters
 }
 
 // Query Provider Props

@@ -55,3 +55,18 @@ export interface TemperatureChartData {
   yAxisLabel: string;
   color?: string;
 }
+
+// Historical temperature data types
+export interface HistoricalTemperatureRecord {
+  year: number;
+  tavg: number;
+  day_offset?: number;
+}
+
+export interface HistoricalDataQueryParams {
+  station_id: number;
+  center_mmdd: string;
+  window_days: number;
+}
+
+export type HistoricalTemperatureData = HistoricalTemperatureRecord[];
