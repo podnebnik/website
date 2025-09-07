@@ -8,6 +8,7 @@ import { clamp } from "../utils/mathHelpers.ts";
 import { createHistogramChartConfig } from "./config/histogramConfig.ts";
 import { useChartData } from "../hooks/useChartData.ts";
 import { LOADING_MESSAGES } from "../utils/uiConstants.ts";
+import { CHART_DATA } from "../utils/chartConstants.ts";
 import * as Highcharts from "highcharts";
 
 /**
@@ -24,7 +25,7 @@ export default function SeasonalHistogram(props: SeasonalHistogramProps) {
     stationId: props.stationId,
     center_mmdd: props.center_mmdd,
     todayTemp: props.todayTemp ?? null,
-    windowDays: 14,
+    windowDays: CHART_DATA.WINDOW_DAYS,
   });
 
   // Memoized histogram-specific processing

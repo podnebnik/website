@@ -56,5 +56,5 @@
   - [x] 4.5 Replace inline chart configuration in SeasonalHistogram with configuration builders
   - [x] 4.6 Update SeasonalHistogram to use the custom data loading hook
   - [x] 4.7 Standardize error handling and loading states across both components
-  - [ ] 4.8 Remove duplicate utility functions from both component files
+  - [x] 4.8 Remove duplicate utility functions from both component files
   - [ ] 4.9 Update imports and ensure TypeScript compatibility across all files

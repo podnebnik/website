@@ -87,3 +87,10 @@ export const CHART_DEFAULTS = {
   TICK_AMOUNT: 6,
   HISTOGRAM_TICK_AMOUNT: 8,
 } as const;
+
+// Chart data constants
+export const CHART_DATA = {
+  // Server understands as ±7; we expect 15 points/year
+  WINDOW_DAYS: 14,
+  TODAY_LABEL: "TODAY",
+} as const;

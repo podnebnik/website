@@ -12,10 +12,8 @@ import {
 } from "./config/scatterConfig.ts";
 import { useChartData } from "../hooks/useChartData.ts";
 import { LOADING_MESSAGES } from "../utils/uiConstants.ts";
+import { CHART_DATA } from "../utils/chartConstants.ts";
 import * as Highcharts from "highcharts";
-
-const WINDOW_DAYS = 14; // server understands as ±7; we expect 15 points/year
-const TODAY_LABEL = "TODAY";
 
 /**
  * Props:
@@ -30,7 +28,7 @@ export default function SeasonalScatter(props: SeasonalScatterProps) {
     stationId: props.stationId,
     center_mmdd: props.center_mmdd,
     todayTemp: props.todayTemp,
-    windowDays: WINDOW_DAYS,
+    windowDays: CHART_DATA.WINDOW_DAYS,
   });
 
   // Memoized chart options calculation
@@ -105,7 +103,7 @@ export default function SeasonalScatter(props: SeasonalScatterProps) {
         trendLine,
         todayPoint,
         trendPerCentury,
-        todayLabel: TODAY_LABEL,
+        todayLabel: CHART_DATA.TODAY_LABEL,
       });
     } catch (e) {
       console.error("Failed to generate chart options:", e);
