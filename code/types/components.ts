@@ -46,7 +46,7 @@ export interface ErrorMessageProps extends BaseComponentProps {
 }
 
 export interface LoadingSkeletonProps extends BaseComponentProps {
-  type: 'main' | 'description' | 'stats' | 'context' | 'lastUpdated';
+  type: 'main' | 'description' | 'stats' | 'context' | 'lastUpdated' | 'chart' | 'scatter' | 'histogram';
 }
 
 export interface StalenessIndicatorProps extends BaseComponentProps {

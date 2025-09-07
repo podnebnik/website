@@ -3,11 +3,15 @@
 - `code/ali-je-vroce/utils/statistics.ts` - Shared statistical functions (percentile, mean, stddev, linear regression)
 - `code/ali-je-vroce/utils/chartHelpers.ts` - Common chart utilities (color generation, data transformation helpers)
 - `code/ali-je-vroce/utils/chartConstants.ts` - Shared constants for chart configuration (colors, dimensions, labels)
+- `code/ali-je-vroce/utils/uiConstants.ts` - Shared UI constants for loading and error messages
 - `code/ali-je-vroce/hooks/useChartData.ts` - Custom hook for data loading with error handling and caching
 - `code/ali-je-vroce/charts/config/scatterConfig.ts` - Highcharts configuration builder for scatter charts
 - `code/ali-je-vroce/charts/config/histogramConfig.ts` - Highcharts configuration builder for histogram charts
+- `code/ali-je-vroce/components/ChartContainer.tsx` - Standardized chart wrapper with consistent loading/error states
+- `code/ali-je-vroce/components/Skeletons.tsx` - Extended loading skeleton component with chart types
 - `code/ali-je-vroce/charts/SeasonalScatter.tsx` - Refactored scatter chart component (existing file)
 - `code/ali-je-vroce/charts/SeasonalHistogram.tsx` - Refactored histogram chart component (existing file)
+- `code/types/components.ts` - Extended types for new chart loading skeletons
 
 ### Notes
 
@@ -51,6 +55,6 @@
   - [x] 4.4 Refactor `SeasonalHistogram.tsx` to use extracted statistical utilities
   - [x] 4.5 Replace inline chart configuration in SeasonalHistogram with configuration builders
   - [x] 4.6 Update SeasonalHistogram to use the custom data loading hook
-  - [ ] 4.7 Standardize error handling and loading states across both components
+  - [x] 4.7 Standardize error handling and loading states across both components
   - [ ] 4.8 Remove duplicate utility functions from both component files
   - [ ] 4.9 Update imports and ensure TypeScript compatibility across all files

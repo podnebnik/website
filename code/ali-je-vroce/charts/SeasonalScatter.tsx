@@ -1,6 +1,7 @@
 // code/ali-je-vroce/charts/SeasonalScatter.tsx
-import { createMemo, Show } from "solid-js";
+import { createMemo } from "solid-js";
 import { Highchart } from "./Highchart.tsx";
+import { ChartContainer } from "../components/ChartContainer.tsx";
 import { SeasonalScatterProps } from "../../types/components.ts";
 import { percentile, linreg } from "../utils/statistics.ts";
 import { colorFor } from "../utils/mathHelpers.ts";
@@ -10,6 +11,7 @@ import {
   TodayPoint,
 } from "./config/scatterConfig.ts";
 import { useChartData } from "../hooks/useChartData.ts";
+import { LOADING_MESSAGES } from "../utils/uiConstants.ts";
 import * as Highcharts from "highcharts";
 
 const WINDOW_DAYS = 14; // server understands as ±7; we expect 15 points/year
@@ -112,22 +114,14 @@ export default function SeasonalScatter(props: SeasonalScatterProps) {
   });
 
   return (
-    <Show when={!loading()} fallback={<div>Nalaganje…</div>}>
-      <Show
-        when={!error()}
-        fallback={
-          <div style="color:#b00;background:#fee;padding:8px;border-radius:8px;">
-            Napaka: {String(error())}
-          </div>
-        }
-      >
-        <Show
-          when={chartOptions()}
-          fallback={<div>No chart data available</div>}
-        >
-          <Highchart options={chartOptions()!} height="360px" />
-        </Show>
-      </Show>
-    </Show>
+    <ChartContainer
+      loading={loading()}
+      error={error()}
+      hasData={!!chartOptions()}
+      chartType="scatter"
+      loadingMessage={LOADING_MESSAGES.CHART}
+    >
+      <Highchart options={chartOptions()!} height="360px" />
+    </ChartContainer>
   );
 }

@@ -1,11 +1,13 @@
 // code/ali-je-vroce/charts/SeasonalHistogram.tsx
-import { createMemo, Show } from "solid-js";
+import { createMemo } from "solid-js";
 import { Highchart } from "./Highchart.tsx";
+import { ChartContainer } from "../components/ChartContainer.tsx";
 import { SeasonalHistogramProps } from "../../types/components.js";
 import { percentile, stddev, epanechnikovKernel } from "../utils/statistics.ts";
 import { clamp } from "../utils/mathHelpers.ts";
 import { createHistogramChartConfig } from "./config/histogramConfig.ts";
 import { useChartData } from "../hooks/useChartData.ts";
+import { LOADING_MESSAGES } from "../utils/uiConstants.ts";
 import * as Highcharts from "highcharts";
 
 /**
@@ -112,22 +114,14 @@ export default function SeasonalHistogram(props: SeasonalHistogramProps) {
   });
 
   return (
-    <Show
-      when={!loading()}
-      fallback={
-        <div class="flex justify-center items-center h-64 text-gray-600">
-          Nalagam histogram...
-        </div>
-      }
+    <ChartContainer
+      loading={loading()}
+      error={error()}
+      hasData={!!chartOptions()}
+      chartType="histogram"
+      loadingMessage={LOADING_MESSAGES.HISTOGRAM}
     >
-      <Show
-        when={!error()}
-        fallback={<div class="text-red-600 text-sm">Napaka: {error()}</div>}
-      >
-        <Show when={chartOptions()}>
-          <Highchart options={chartOptions()!} />
-        </Show>
-      </Show>
-    </Show>
+      <Highchart options={chartOptions()!} />
+    </ChartContainer>
   );
 }
