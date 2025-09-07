@@ -16,7 +16,7 @@
 - The migration follows a gradual approach, creating new hooks alongside existing ones for backward compatibility.
 - Historical data queries use the same error handling patterns as existing weather queries.
 
-### Additional instructions to AI:
+### Additional instructions to AI
 
 - **Commit**: Commit after each sub-task if it makes sense (large change).
 - **Commit Message**: Create good commit message as senior developer would and follow commitlint style.
@@ -24,6 +24,10 @@
 - **Dev Server**: Before trying to run dev server, **check if dev server is already running**.
 - **Documentation**: When creating additional documentation for this task, add metadata at the the top, so that not developers easier finds when the document was changed.
 - **Issues During Task(Subtask) implementation**: Any special issue that we encounter during implementation, make a not with Task number
+- **Updating this file**:
+
+  - Check for duplicate task. Sometimes the file is corrupted.
+  - Always check the integrity of the file.
 
 ## Tasks
 
