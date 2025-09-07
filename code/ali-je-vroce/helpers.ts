@@ -8,19 +8,16 @@ import type { ProcessedStation, ProcessedTemperatureData } from '../types/models
 function isDevLikeHost(h: string) {
   if (!h) return false;
   if (h === "localhost" || h === "127.0.0.1" || h === "::1") return true;
-  // Private IPv4 ranges: 10/8, 172.16–31/12, 192.168/16
   if (h.startsWith("10.") || h.startsWith("192.168.")) return true;
   const m = h.match(/^172\.(\d+)\./);
   if (m) {
     const n = Number(m[1]);
     if (n >= 16 && n <= 31) return true;
   }
-  // Common mDNS names
   if (h.endsWith(".local")) return true;
   return false;
 }
 
-/** Decide local vs prod API base for the vremenar host (proxied in dev). */
 const __hasWindow = typeof window !== "undefined";
 const __host = __hasWindow ? window.location.hostname : "";
 const __port = __hasWindow ? window.location.port : "";
@@ -154,7 +151,6 @@ export async function requestData(
         Number(dataAverage.statistics.timestamp_temperature_max_24h)
       );
 
-      // Historical percentiles from Datasette
       const resultPercentile = await fetch(
         `${STAGE_DATA_BASE_URL}/temperature/temperature~2Eslovenia_historical~2Edaily~2Eaverage_percentiles.json?date__exact=${date}&station_id__exact=${stationID}&_col=p05&_col=p20&_col=p40&_col=p60&_col=p80&_col=p95`,
         {
@@ -167,9 +163,7 @@ export async function requestData(
 
         let columns = dataPercentile["columns"];
         let values = dataPercentile["rows"][0];
-        if (!values) {
-          throw new Error("Percentiles not found");
-        }
+        if (!values) throw new Error("Percentiles not found");
 
         // first column is rowid
         columns.shift();
@@ -243,67 +237,61 @@ export async function requestData(
   };
 }
 
-function isDefined<T>(value: T | null | undefined): value is NonNullable<T> {
-  return value !== null && value !== undefined;
+/* -------------------- Historical window (dev → Datasette; prod → API then fallback) -------------------- */
+
+function buildWindow(centerMMDD, windowDays) {
+  const half = Math.floor(windowDays / 2);
+  const [mm, dd] = centerMMDD.split("-").map((s) => Number(s));
+  const base = new Date(Date.UTC(2001, mm - 1, dd)); // non-leap baseline
+  const out = [];
+  for (let k = -half; k <= half; k++) {
+    const d = new Date(base);
+    d.setUTCDate(base.getUTCDate() + k);
+    const m = String(d.getUTCMonth() + 1).padStart(2, "0");
+    const day = String(d.getUTCDate()).padStart(2, "0");
+    out.push(`${m}-${day}`);
+  }
+  return out;
 }
 
-type HistoricalWindowParams = {
-  station_id: string | number;
-  center_mmdd: string; // "MM-DD"
-  window_days: number; // typically 15
-};
+function numOrNull(x) {
+  if (x == null) return null;
+  const y = Number(x);
+  return Number.isFinite(y) ? y : null;
+}
 
-type HistoricalWindowData = {
-  year: number;
-  tavg: number;
-  day_offset?: number;
-};
-/**
- * Historical window (±7 days → 15 days total) normalized to `{year, tavg, day_offset?}`.
- * Uses proxy in dev; real origin in prod.
- * @param options
- * @param options.station_id - Station ID (number or string)
- * @param options.center_mmdd - Center date as "MM-DD" (e.g. "06-15")
- * @param options.window_days - Total window size in days (e.g. 15 for ±7 days)
- * @returns
- */
-export async function requestHistoricalWindow({
-  station_id,
-  center_mmdd,
-  window_days,
-}: HistoricalWindowParams): Promise<Array<HistoricalWindowData>> {
-  if (!station_id || !center_mmdd || !window_days) {
-    throw new Error("Missing required parameters for historical window");
-  }
-  const url = `${API_BASE}/staging/ali-je-vroce/historical_window?station_id=${encodeURIComponent(
-    station_id
-  )}&center_mmdd=${encodeURIComponent(
-    center_mmdd
-  )}&window_days=${encodeURIComponent(window_days)}`;
+const DATASETTE_TABLE_PATH =
+  "temperature/temperature~2Eslovenia_historical~2Edaily.json";
 
-  try {
-    const resp = await fetch(url);
-    if (!resp.ok) {
-      console.error("[requestHistoricalWindow]", resp.status, url);
-      throw new Error(`HTTP ${resp.status} for historical_window`);
-    }
+function buildDatasetteUrl({ sid, inList, withCols = true }) {
+  const baseUrl = `${BASE_URL}/${DATASETTE_TABLE_PATH}`;
+  const common =
+    `${baseUrl}` +
+    `?_shape=array&_size=max` +
+    `&station_id__exact=${encodeURIComponent(String(sid))}` +
+    `&_where=${encodeURIComponent(`substr(date,6,5) IN (${inList})`)}` +
+    `&_order_by=date`;
 
-    const rows = (await resp.json()) as Array<HistoricalWindowResponseJson>;
-    if (!Array.isArray(rows)) {
-      console.error("[requestHistoricalWindow] not array", url, rows);
-      throw new Error("Invalid response format for historical_window");
-    }
+  return withCols ? common + `&_col=station_id&_col=date&_col=temperature_average_2m` : common;
+}
 
-    if (rows.length === 0) {
-      return [];
-    }
+export async function requestHistoricalWindow({ station_id, center_mmdd, window_days }) {
+  const sid = Number(station_id);
+  const mmddList = buildWindow(center_mmdd, window_days);
+  const inList = mmddList.map((d) => `'${d}'`).join(", ");
 
-    // Normalize to "average" temperature
-    const data = rows
+  // Normalizer works for both API and Datasette shapes
+  const normalize = (rows) =>
+    rows
       .map((r) => {
-        const y = Number(r.year);
+        const y = Number(
+          r.year ??
+            (typeof r.date === "string" ? r.date.slice(0, 4) : undefined)
+        );
         const avg =
           r.tavg ??
+          r.temperature_average_2m ??
+          r.temperature_avg ??
           r.temperature_average ??
           r.avg ??
           r.tempAvg ??
@@ -311,20 +299,79 @@ export async function requestHistoricalWindow({
           (r.tmin != null && r.tmax != null
             ? (Number(r.tmin) + Number(r.tmax)) / 2
             : null);
-
         if (!Number.isFinite(y) || !Number.isFinite(Number(avg))) return null;
-
         return {
           year: y,
           tavg: Number(avg),
           day_offset: r.day_offset != null ? Number(r.day_offset) : undefined,
         };
       })
-      .filter(isDefined); // unfortunately Boolean function doesn't work here as type guard
+      .filter(Boolean);
 
-    return data;
-  } catch (err) {
-    console.error("[requestHistoricalWindow]", err);
-    throw err;
+  // DEV: go straight to Datasette (avoid 504 noise)
+  if (__devLike) {
+    let url = buildDatasetteUrl({ sid, inList, withCols: true });
+    let r = await fetchWithTimeout(url);
+    if (!r.ok) {
+      const text = await r.text().catch(() => "");
+      if (r.status === 400 && /invalid columns/i.test(text)) {
+        url = buildDatasetteUrl({ sid, inList, withCols: false });
+        r = await fetchWithTimeout(url);
+      } else {
+        throw new Error(`Datasette failed (${r.status})`);
+      }
+    }
+    const rows = await r.json();
+    const filtered = rows.filter((row) => String(row.station_id) === String(sid));
+    const mapped = filtered
+      .map((row) => {
+        const date = String(row.date);
+        const year = Number(date.slice(0, 4));
+        const tavg =
+          numOrNull(row.temperature_average_2m) ??
+          numOrNull(row.temperature_avg) ??
+          numOrNull(row.temperature_average);
+        return { year, tavg };
+      })
+      .filter((p) => Number.isFinite(p.year) && Number.isFinite(p.tavg));
+    return normalize(mapped);
+  }
+
+  // PROD: try API → fallback to Datasette
+  const apiUrl = `${API_BASE}/staging/ali-je-vroce/historical_window?station_id=${encodeURIComponent(
+    station_id
+  )}&center_mmdd=${encodeURIComponent(center_mmdd)}&window_days=${encodeURIComponent(window_days)}`;
+
+  try {
+    const viaApi = await fetchWithTimeout(apiUrl, { timeoutMs: 8000 });
+    if (!viaApi.ok) throw new Error(`HTTP ${viaApi.status}`);
+    const rows = await viaApi.json();
+    return normalize(rows);
+  } catch {
+    let url = buildDatasetteUrl({ sid, inList, withCols: true });
+    let r = await fetchWithTimeout(url, { timeoutMs: 8000 });
+    if (!r.ok) {
+      const text = await r.text().catch(() => "");
+      if (r.status === 400 && /invalid columns/i.test(text)) {
+        url = buildDatasetteUrl({ sid, inList, withCols: false });
+        r = await fetchWithTimeout(url, { timeoutMs: 8000 });
+      } else {
+        throw new Error(`Datasette failed (${r.status})`);
+      }
+    }
+    const rows = await r.json();
+    const filtered = rows.filter((row) => String(row.station_id) === String(sid));
+    const mapped = filtered
+      .map((row) => {
+        const date = String(row.date);
+        const year = Number(date.slice(0, 4));
+        const tavg =
+          numOrNull(row.temperature_average_2m) ??
+          numOrNull(row.temperature_avg) ??
+          numOrNull(row.temperature_average);
+        return { year, tavg };
+      })
+      .filter((p) => Number.isFinite(p.year) && Number.isFinite(p.tavg));
+    return normalize(mapped);
   }
 }
