@@ -39,16 +39,26 @@
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
         /* Additional Checks */
-        "noUnusedLocals": false,
-        "noUnusedParameters": false,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
         /* Path Mapping for Vite */
         "baseUrl": ".",
         "paths": {
-            "/code/*": ["./code/*"],
-            "/assets/*": ["./assets/*"],
-            "/data/*": ["./data/*"],
-            "/pages/*": ["./pages/*"],
-            "/*": ["./*"]
+            "/code/*": [
+                "./code/*"
+            ],
+            "/assets/*": [
+                "./assets/*"
+            ],
+            "/data/*": [
+                "./data/*"
+            ],
+            "/pages/*": [
+                "./pages/*"
+            ],
+            "/*": [
+                "./*"
+            ]
         }
     },
     "include": [
