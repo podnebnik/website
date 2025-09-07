@@ -1,8 +1,11 @@
 // code/ali-je-vroce/charts/SeasonalHistogram.tsx
-import { createSignal, createEffect, Show } from "solid-js";
+import { createMemo, Show } from "solid-js";
 import { Highchart } from "./Highchart.tsx";
-import { requestHistoricalWindow } from "../helpers.js";
 import { SeasonalHistogramProps } from "../../types/components.js";
+import { percentile, stddev, epanechnikovKernel } from "../utils/statistics.ts";
+import { clamp } from "../utils/mathHelpers.ts";
+import { createHistogramChartConfig } from "./config/histogramConfig.ts";
+import { useChartData } from "../hooks/useChartData.ts";
 import * as Highcharts from "highcharts";
 
 /**
@@ -14,88 +17,66 @@ import * as Highcharts from "highcharts";
  *  - title?: string
  */
 export default function SeasonalHistogram(props: SeasonalHistogramProps) {
-  const [loading, setLoading] = createSignal(true);
-  const [err, setErr] = createSignal("");
-  const [options, setOptions] = createSignal<Highcharts.Options | null>(null);
-
-  let lastKey: string | null = null;
-
-  createEffect(() => {
-    const sid = props.stationId;
-    const mmdd = props.center_mmdd;
-    const today = props.todayTemp ?? "";
-    if (!sid || !mmdd) return;
-    const key = `${sid}|${mmdd}|${today}`;
-    if (key !== lastKey) {
-      lastKey = key;
-      load();
-    }
+  // Use the custom data loading hook
+  const { loading, error, processedData, calculations } = useChartData({
+    stationId: props.stationId,
+    center_mmdd: props.center_mmdd,
+    todayTemp: props.todayTemp ?? null,
+    windowDays: 14,
   });
 
-  async function load() {
-    // ✅ Capture reactive props before async operations to avoid SolidJS warnings
-    const stationId = props.stationId;
-    const centerMmdd = props.center_mmdd;
-    const todayTemp = props.todayTemp;
+  // Memoized histogram-specific processing
+  const chartOptions = createMemo<Highcharts.Options | null>(() => {
+    const processed = processedData();
+    const calc = calculations();
+
+    if (!processed || !calc || loading()) {
+      return null;
+    }
 
     try {
-      setLoading(true);
-      setErr("");
+      const { sortedTemperatures, temperatures } = processed;
+      const { temperatureRange } = calc;
 
-      const rows = await requestHistoricalWindow({
-        station_id: stationId,
-        center_mmdd: centerMmdd,
-        window_days: 14,
-      });
+      // Calculate specific percentiles needed for histogram (5%, 50%, 95%)
+      const p05 = percentile(sortedTemperatures, 5);
+      const p50 = percentile(sortedTemperatures, 50);
+      const p95 = percentile(sortedTemperatures, 95);
 
-      if (!rows || !Array.isArray(rows) || rows.length === 0) {
-        throw new Error("Ni podatkov za krivuljo.");
-      }
-
-      const temps = rows.map((r) => Number(r.tavg)).filter(Number.isFinite);
-      if (temps.length === 0)
-        throw new Error("Ni veljavnih vrednosti temperature.");
-
-      // percentiles from the raw data
-      const sorted = [...temps].sort((a, b) => a - b);
-      const p05 = percentile(sorted, 5);
-      const p50 = percentile(sorted, 50);
-      const p95 = percentile(sorted, 95);
-
-      // ---- Epanechnikov KDE (non-Gaussian) ----
-      const minT = Math.min(...temps);
-      const maxT = Math.max(...temps);
+      // Extend range for better visualization
       const padding = 0.5; // °C
-      const xMin = Math.floor(minT - padding);
-      const xMax = Math.ceil(maxT + padding);
+      const xMin = Math.floor(temperatureRange.min - padding);
+      const xMax = Math.ceil(temperatureRange.max + padding);
 
-      // Robust bandwidth
-      const IQR = percentile(sorted, 75) - percentile(sorted, 25);
-      const robustBW =
-        IQR > 0
-          ? (2 * IQR) / Math.cbrt(temps.length)
-          : (stddev(temps) * 1.06) / Math.cbrt(temps.length);
-      const h = clamp(robustBW, 0.2, 2.5);
-
-      const step = 0.1; // °C resolution of the curve
+      // Generate denser grid for histogram display (every 0.1°C)
+      const step = 0.1; // °C resolution
       const xs = [];
       for (let x = xMin; x <= xMax + 1e-9; x += step) xs.push(x);
 
-      const K = (u: number) => (Math.abs(u) >= 1 ? 0 : 0.75 * (1 - u * u));
+      // Use robust bandwidth calculation (SeasonalHistogram's approach)
+      const IQR =
+        percentile(sortedTemperatures, 75) - percentile(sortedTemperatures, 25);
+      const robustBW =
+        IQR > 0
+          ? (2 * IQR) / Math.cbrt(temperatures.length)
+          : (stddev(temperatures) * 1.06) / Math.cbrt(temperatures.length);
+      const h = clamp(robustBW, 0.2, 2.5);
 
-      const N = temps.length;
+      // Recalculate KDE with denser grid and robust bandwidth
+      const N = temperatures.length;
       const density = xs.map((x) => {
         let s = 0;
-        for (let i = 0; i < N; i++) s += K((x - temps[i]!) / h);
+        for (let i = 0; i < N; i++)
+          s += epanechnikovKernel((x - temperatures[i]!) / h);
         return s / (N * h);
       });
 
-      // scale density to approximate counts
+      // Scale density to approximate counts
       const areaApprox = density.reduce((a, b) => a + b, 0) * step;
       const scale = areaApprox > 0 ? N / areaApprox : 1;
       const ys = density.map((d) => d * scale);
 
-      // split by percentile ranges for fill styling
+      // Split by percentile ranges for fill styling
       const left: [number, number | null][] = [];
       const mid: [number, number | null][] = [];
       const right: [number, number | null][] = [];
@@ -109,231 +90,44 @@ export default function SeasonalHistogram(props: SeasonalHistogramProps) {
 
       const yMax = Math.max(...ys) * 1.12; // a bit of headroom
       const todayVal =
-        todayTemp != null && Number.isFinite(Number(todayTemp))
-          ? Number(todayTemp)
+        props.todayTemp != null && Number.isFinite(Number(props.todayTemp))
+          ? Number(props.todayTemp)
           : null;
 
-      setOptions(
-        makeOptions({
-          left,
-          mid,
-          right,
-          p05,
-          p50,
-          p95,
-          today: todayVal,
-          yMax,
-          title: props.title || `Distribution around ${centerMmdd}`,
-        })
-      );
+      return createHistogramChartConfig({
+        left,
+        mid,
+        right,
+        p05,
+        p50,
+        p95,
+        today: todayVal,
+        yMax,
+        title: props.title || `Distribution around ${props.center_mmdd}`,
+      });
     } catch (e) {
-      console.error(e);
-      setErr(e instanceof Error ? e.message : String(e));
-    } finally {
-      setLoading(false);
+      console.error("Error processing histogram data:", e);
+      return null;
     }
-  }
+  });
 
   return (
     <Show
       when={!loading()}
-      fallback={<div class="text-sm text-gray-500">Nalagam …</div>}
+      fallback={
+        <div class="flex justify-center items-center h-64 text-gray-600">
+          Nalagam histogram...
+        </div>
+      }
     >
       <Show
-        when={!err()}
-        fallback={<div class="text-red-600 text-sm">Napaka: {err()}</div>}
+        when={!error()}
+        fallback={<div class="text-red-600 text-sm">Napaka: {error()}</div>}
       >
-        <Highchart options={options()!} />
+        <Show when={chartOptions()}>
+          <Highchart options={chartOptions()!} />
+        </Show>
       </Show>
     </Show>
   );
-}
-
-/* ---------------- helpers ---------------- */
-
-function percentile(sortedAsc: number[], p: number): number {
-  if (!sortedAsc.length) return NaN;
-  const idx = (sortedAsc.length - 1) * (p / 100);
-  const lo = Math.floor(idx),
-    hi = Math.ceil(idx);
-  if (lo === hi) return sortedAsc[lo]!;
-  const w = idx - lo;
-  return sortedAsc[lo]! * (1 - w) + sortedAsc[hi]! * w;
-}
-
-function mean(a: number[]): number {
-  return a.reduce((s, v) => s + v, 0) / a.length;
-}
-
-function stddev(a: number[]): number {
-  const m = mean(a);
-  const v = a.reduce((s, v) => s + (v - m) ** 2, 0) / (a.length || 1);
-  return Math.sqrt(v);
-}
-
-function clamp(v: number, lo: number, hi: number): number {
-  return Math.max(lo, Math.min(hi, v));
-}
-
-/* --------------- chart options --------------- */
-
-interface MakeOptionsParams {
-  left: [number, number | null][];
-  mid: [number, number | null][];
-  right: [number, number | null][];
-  p05: number;
-  p50: number;
-  p95: number;
-  today: number | null;
-  yMax: number;
-  title: string;
-}
-
-function makeOptions({
-  left,
-  mid,
-  right,
-  p05,
-  p50,
-  p95,
-  today,
-  yMax,
-  title,
-}: MakeOptionsParams): Highcharts.Options {
-  // Build label-only scatter "points" (works without annotations module)
-  const labelPoint = (
-    x: number,
-    text: string,
-    cfg: {
-      topFrac?: number;
-      dx?: number;
-      color?: string;
-      bold?: boolean;
-      size?: string;
-    } = {}
-  ) => ({
-    x,
-    y: yMax * (cfg.topFrac ?? 0.96),
-    marker: { enabled: false },
-    dataLabels: {
-      enabled: true,
-      rotation: -90,
-      align: "center" as const,
-      verticalAlign: "top" as const,
-      y: 0,
-      x: cfg.dx ?? 0, // small horizontal nudge
-      style: {
-        color: cfg.color ?? "#666",
-        fontWeight: cfg.bold ? "700" : "500",
-        fontSize: cfg.size ?? "12px",
-        textOutline: "none",
-      },
-      crop: false,
-      overflow: "allow" as const,
-      formatter() {
-        return text;
-      },
-    },
-  });
-
-  const labelSeries: Highcharts.SeriesOptionsType = {
-    name: "labels",
-    type: "scatter",
-    data: [
-      labelPoint(p05, "5th percentile", { dx: -10 }),
-      labelPoint(p50, "50th percentile"),
-      labelPoint(p95, "95th percentile", { dx: 10 }),
-      ...(Number.isFinite(today)
-        ? [
-            labelPoint(today!, `TODAY: ${today!.toFixed(1)}°C`, {
-              dx: 12,
-              color: "#111",
-              bold: true,
-              size: "13px",
-            }),
-          ]
-        : []),
-    ],
-    enableMouseTracking: false,
-    showInLegend: false,
-  };
-
-  return {
-    chart: {
-      type: "areaspline",
-      backgroundColor: "transparent",
-      spacingTop: 52, // room for title
-      spacingRight: 20,
-      spacingLeft: 10,
-    },
-    title: { text: title, y: 10 },
-    xAxis: {
-      title: { text: "Povprečna dnevna temperatura (°C)" },
-      lineColor: "#ccc",
-      tickAmount: 8,
-      plotLines: [
-        { color: "#666", width: 1, value: p05, dashStyle: "Dash", zIndex: 4 },
-        { color: "#666", width: 1, value: p50, dashStyle: "Dash", zIndex: 4 },
-        { color: "#666", width: 1, value: p95, dashStyle: "Dash", zIndex: 4 },
-        ...(Number.isFinite(today)
-          ? [
-              {
-                color: "#111",
-                width: 3,
-                value: today!,
-                dashStyle: "Solid" as const,
-                zIndex: 5,
-              },
-            ]
-          : []),
-      ],
-    },
-    yAxis: {
-      title: { text: "Frekvenca (štetje)" },
-      min: 0,
-      max: yMax,
-      gridLineColor: "rgba(0,0,0,0.06)",
-    },
-    legend: { enabled: false },
-    tooltip: {
-      shared: false,
-      headerFormat: "",
-      pointFormat: "<b>{point.x:.1f}°C</b><br/>Ocena frekvence: {point.y:.0f}",
-    },
-    series: [
-      {
-        name: "≤ 5th",
-        type: "areaspline",
-        data: left,
-        color: "rgba(40, 120, 220, 0.65)",
-        fillOpacity: 0.35,
-        lineWidth: 2,
-        marker: { enabled: false },
-        enableMouseTracking: true,
-      },
-      {
-        name: "5th–95th",
-        type: "areaspline",
-        data: mid,
-        color: "rgba(255, 140, 80, 0.85)",
-        fillOpacity: 0.25,
-        lineWidth: 2,
-        marker: { enabled: false },
-        enableMouseTracking: true,
-      },
-      {
-        name: "≥ 95th",
-        type: "areaspline",
-        data: right,
-        color: "rgba(180, 30, 40, 0.75)",
-        fillOpacity: 0.25,
-        lineWidth: 2,
-        marker: { enabled: false },
-        enableMouseTracking: true,
-      },
-      // label-only series (always on top)
-      labelSeries,
-    ],
-    credits: { enabled: false },
-  };
 }

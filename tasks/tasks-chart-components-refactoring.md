@@ -48,9 +48,9 @@
   - [x] 4.1 Refactor `SeasonalScatter.tsx` to use extracted statistical utilities
   - [x] 4.2 Replace inline chart configuration in SeasonalScatter with configuration builders
   - [x] 4.3 Update SeasonalScatter to use the custom data loading hook
-  - [ ] 4.4 Refactor `SeasonalHistogram.tsx` to use extracted statistical utilities
-  - [ ] 4.5 Replace inline chart configuration in SeasonalHistogram with configuration builders
-  - [ ] 4.6 Update SeasonalHistogram to use the custom data loading hook
+  - [x] 4.4 Refactor `SeasonalHistogram.tsx` to use extracted statistical utilities
+  - [x] 4.5 Replace inline chart configuration in SeasonalHistogram with configuration builders
+  - [x] 4.6 Update SeasonalHistogram to use the custom data loading hook
   - [ ] 4.7 Standardize error handling and loading states across both components
   - [ ] 4.8 Remove duplicate utility functions from both component files
   - [ ] 4.9 Update imports and ensure TypeScript compatibility across all files
