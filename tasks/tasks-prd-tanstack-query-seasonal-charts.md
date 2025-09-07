@@ -22,7 +22,7 @@
 - **Commit Message**: Create good commit message as senior developer would and follow commitlint style.
 - **Exclude from Commit** Never commit `.github/copilot-instructions.md` and `.github/instructions` folder!
   **Package Manager**: Yarn.
-- **Dev Server**: Before trying to run dev server, **check if dev server is already running**.
+- **Dev Server**: Before trying to run dev server, **check if dev server is already running**. IMPORTANT: Dev Server has hot-reload. **On every change in code, the server reacts**.
 - **Documentation**: When creating additional documentation for this task, add metadata at the the top, so that not developers easier finds when the document was changed.
 - **Issues During Task(Subtask) implementation**: Any special issue that we encounter during implementation, make a not with Task number
 - **Updating this file**:
@@ -73,10 +73,15 @@
   - [x] 5.5 Test error handling scenarios (network failures, API timeouts)
 
 - [ ] 6.0 Testing and Validation
+
   - [x] 6.1 Test SeasonalScatter component renders identically with new query hook
   - [x] 6.2 Test SeasonalHistogram component renders identically with new query hook
   - [x] 6.3 Verify query caching works correctly (check network tab for reduced API calls)
   - [x] 6.4 Test error states display properly in both components
   - [x] 6.5 Test loading states work correctly
   - [x] 6.6 Validate that both components can share cached data when using same parameters
-  - [ ] 6.7 Test with different station IDs and date ranges to ensure flexibility - **ISSUE**: Still has unresolved issues to fix later
+  - [ ] 6.7 Test with different station IDs and date ranges to ensure flexibility - **ISSUE**: Still has unresolved issues to fix later. There are many reasons why this is not working:
+
+    - Charts do not know that station was changed at all?
+    - Prefetching for station data for daily data?
+    - Something else?
