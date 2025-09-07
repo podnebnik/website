@@ -7,7 +7,7 @@ export function handleApiError(error: unknown): AppError {
       return {
         category: "network",
         message: error.message,
-        details: error.stack,
+        ...(error.stack && { details: error.stack }),
         timestamp: new Date()
       };
     }
@@ -16,7 +16,7 @@ export function handleApiError(error: unknown): AppError {
       return {
         category: "validation",
         message: error.message,
-        details: error.stack,
+        ...(error.stack && { details: error.stack }),
         timestamp: new Date()
       };
     }

@@ -139,17 +139,43 @@ const createChartOptions = (
       },
     },
     series: [
-      {
-        name: "Temperatura",
-        data: chartData,
-        type: chartType,
-        color: "#3b82f6",
-        fillOpacity: chartType === "area" ? 0.3 : undefined,
-        marker: {
-          enabled: data.length <= 50,
-          radius: 3,
-        },
-      },
+      // TypeScript: Create type-specific series objects to satisfy Highcharts type constraints
+      ...(chartType === "line"
+        ? [
+            {
+              name: "Temperatura",
+              data: chartData,
+              type: "line" as const,
+              color: "#3b82f6",
+              marker: {
+                enabled: data.length <= 50,
+                radius: 3,
+              },
+            },
+          ]
+        : chartType === "area"
+        ? [
+            {
+              name: "Temperatura",
+              data: chartData,
+              type: "area" as const,
+              color: "#3b82f6",
+              fillOpacity: 0.3,
+              marker: {
+                enabled: data.length <= 50,
+                radius: 3,
+              },
+            },
+          ]
+        : [
+            {
+              name: "Temperatura",
+              data: chartData,
+              type: "column" as const,
+              color: "#3b82f6",
+              // Note: marker property not available on column series
+            },
+          ]),
       ...(minMaxData.length > 0
         ? [
             {
@@ -165,7 +191,7 @@ const createChartOptions = (
             },
           ]
         : []), // TypeScript: Conditional spread demonstrates array type inference
-    ],
+    ] as Highcharts.SeriesOptionsType[],
     credits: {
       enabled: false,
     },

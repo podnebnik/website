@@ -3,7 +3,7 @@ import { Component, createSignal } from "solid-js";
 // 1. Define props interface
 interface WeatherCardProps {
   stationName: string;
-  temperature?: number;
+  temperature?: number | undefined;
   isLoading?: boolean;
   onRefresh?: () => void;
 }
@@ -19,16 +19,16 @@ const WeatherCard: Component<WeatherCardProps> = (props) => {
   // Typed signals
   const [state, setState] = createSignal<WeatherState>({
     lastUpdated: null,
-    refreshCount: 0
+    refreshCount: 0,
   });
 
   // Event handler with proper typing
   const handleRefresh = () => {
     props.onRefresh?.();
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       lastUpdated: new Date(),
-      refreshCount: prev.refreshCount + 1
+      refreshCount: prev.refreshCount + 1,
     }));
   };
 
@@ -41,10 +41,8 @@ const WeatherCard: Component<WeatherCardProps> = (props) => {
 
   return (
     <div class="weather-card bg-white rounded-lg shadow-md p-4">
-      <h3 class="text-lg font-semibold text-gray-800">
-        {props.stationName}
-      </h3>
-      
+      <h3 class="text-lg font-semibold text-gray-800">{props.stationName}</h3>
+
       <div class="temperature text-2xl font-bold text-blue-600 mt-2">
         {displayTemperature()}
       </div>
@@ -56,7 +54,7 @@ const WeatherCard: Component<WeatherCardProps> = (props) => {
         </p>
       )}
 
-      <button 
+      <button
         type="button"
         onClick={handleRefresh}
         disabled={props.isLoading}
@@ -85,8 +83,8 @@ const WeatherCardExample: Component = () => {
   return (
     <div class="p-4">
       <h2 class="text-xl font-bold mb-4">TypeScript Component Example</h2>
-      
-      <WeatherCard 
+
+      <WeatherCard
         stationName="Ljubljana"
         temperature={temp()}
         isLoading={loading()}

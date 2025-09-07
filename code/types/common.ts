@@ -24,8 +24,8 @@ export type ErrorCategory = 'network' | 'validation' | 'unknown';
 export interface AppError {
   category: ErrorCategory;
   message: string;
-  details?: string;
-  timestamp?: Date;
+  details?: string | undefined;
+  timestamp?: Date | undefined;
 }
 
 // =============================================================================
