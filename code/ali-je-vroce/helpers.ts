@@ -250,10 +250,41 @@ export async function requestData(
 
 /* -------------------- Historical window (dev → Datasette; prod → API then fallback) -------------------- */
 
+/**
+ * Type guard that checks if a value is defined (not null or undefined).
+ * 
+ * @template T - The type of the value to check
+ * @param x - The value to check for null or undefined
+ * @returns True if the value is defined (not null or undefined), false otherwise
+ * 
+ * @example
+ * ```typescript
+ * const value: string | null = getValue();
+ * if (isDefined(value)) {
+ *   // TypeScript now knows that value is string, not string | null
+ *   console.log(value.length);
+ * }
+ * ```
+ */
 function isDefined<T>(x: T | null | undefined): x is T {
   return x != null;
 }
 
+/**
+ * Builds a window of dates centered around a given date, returning MM-DD formatted strings.
+ * 
+ * @param centerMMDD - The center date in "MM-DD" format (e.g., "03-15" for March 15th)
+ * @param windowDays - The total number of days in the window (should be odd for symmetric results)
+ * @returns An array of date strings in "MM-DD" format representing the date window
+ * 
+ * @throws {Error} When month or day are invalid or out of range
+ * 
+ * @example
+ * ```typescript
+ * buildWindow("03-15", 5); // Returns ["03-13", "03-14", "03-15", "03-16", "03-17"]
+ * buildWindow("12-31", 3); // Returns ["12-30", "12-31", "01-01"] (crosses year boundary)
+ * ```
+ */
 function buildWindow(centerMMDD: string, windowDays: number): string[] {
   const half = Math.floor(windowDays / 2);
   const [mm, dd] = centerMMDD.split("-").map((s) => Number(s));
@@ -274,7 +305,23 @@ function buildWindow(centerMMDD: string, windowDays: number): string[] {
   return out;
 }
 
-function numOrNull(x: string | number | null | undefined): number | null {
+/**
+ * Converts a value to a number or returns null if the conversion is not possible.
+ * 
+ * @param x - The value to convert to a number. Can be a string, number, null, or undefined.
+ * @returns The converted number if the input is a valid finite number, otherwise null.
+ * 
+ * @example
+ * ```typescript
+ * numOrNull("123") // returns 123
+ * numOrNull(456) // returns 456
+ * numOrNull("abc") // returns null
+ * numOrNull(null) // returns null
+ * numOrNull(undefined) // returns null
+ * numOrNull(Infinity) // returns null
+ * ```
+ */
+function convertToNumberOrNull(x: string | number | null | undefined): number | null {
   if (x == null) return null;
   const y = Number(x);
   return Number.isFinite(y) ? y : null;
@@ -283,6 +330,26 @@ function numOrNull(x: string | number | null | undefined): number | null {
 const DATASETTE_TABLE_PATH =
   "temperature/temperature~2Eslovenia_historical~2Edaily.json";
 
+/**
+ * Builds a URL for querying the Datasette API to retrieve temperature data for a specific station.
+ * 
+ * @param options - Configuration object for building the URL
+ * @param options.sid - Station ID to filter results by
+ * @param options.inList - Comma-separated list of date patterns (MM-DD format) to filter by
+ * @param options.withCols - Whether to include specific column selection in the URL (defaults to true)
+ * 
+ * @returns A formatted Datasette API URL with query parameters for retrieving station temperature data
+ * 
+ * @example
+ * ```typescript
+ * const url = buildDatasetteUrl({
+ *   sid: 123,
+ *   inList: "'07-15','08-20'",
+ *   withCols: true
+ * });
+ * // Returns URL with station filter, date range, and specific columns
+ * ```
+ */
 function buildDatasetteUrl({ sid, inList, withCols = true }: {
   sid: number;
   inList: string;
@@ -309,6 +376,36 @@ type HistoricalRow = {
   temperature_average?: number;
 };
 
+/**
+ * Requests historical temperature data for a specific weather station within a time window.
+ * 
+ * This function retrieves historical temperature data for a given station, centered around
+ * a specific date (MM-DD format) with a configurable window of days. It attempts to fetch
+ * data from an API first, then falls back to a Datasette source if the API fails.
+ * 
+ * The function normalizes data from different sources, handling various temperature field
+ * names and formats. It filters out invalid data points and returns standardized temperature
+ * records with year, average temperature, and optional day offset.
+ * 
+ * @param params - Configuration object for the historical data request
+ * @param params.station_id - The weather station identifier (string or number)
+ * @param params.center_mmdd - Center date in MM-DD format (e.g., "07-15" for July 15th)
+ * @param params.window_days - Number of days to include in the window around the center date
+ * 
+ * @returns Promise that resolves to an array of normalized temperature records containing
+ *          year, average temperature, and optional day offset
+ * 
+ * @throws {Error} When both API and Datasette sources fail to provide valid data
+ * 
+ * @example
+ * ```typescript
+ * const data = await requestHistoricalWindow({
+ *   station_id: "12345",
+ *   center_mmdd: "07-15",
+ *   window_days: 30
+ * });
+ * ```
+ */
 export async function requestHistoricalWindow({ station_id, center_mmdd, window_days }: {
   station_id: string | number;
   center_mmdd: string;
@@ -366,9 +463,9 @@ export async function requestHistoricalWindow({ station_id, center_mmdd, window_
         const date = String(row.date);
         const year = Number(date.slice(0, 4));
         const tavg =
-          numOrNull(row.temperature_average_2m) ??
-          numOrNull(row.temperature_avg) ??
-          numOrNull(row.temperature_average);
+          convertToNumberOrNull(row.temperature_average_2m) ??
+          convertToNumberOrNull(row.temperature_avg) ??
+          convertToNumberOrNull(row.temperature_average);
         return { year, tavg };
       })
       .filter((p) => Number.isFinite(p.year) && Number.isFinite(p.tavg));
@@ -404,9 +501,9 @@ export async function requestHistoricalWindow({ station_id, center_mmdd, window_
         const date = String(row.date);
         const year = Number(date.slice(0, 4));
         const tavg =
-          numOrNull(row.temperature_average_2m) ??
-          numOrNull(row.temperature_avg) ??
-          numOrNull(row.temperature_average);
+          convertToNumberOrNull(row.temperature_average_2m) ??
+          convertToNumberOrNull(row.temperature_avg) ??
+          convertToNumberOrNull(row.temperature_average);
         return { year, tavg };
       })
       .filter((p) => Number.isFinite(p.year) && Number.isFinite(p.tavg));
