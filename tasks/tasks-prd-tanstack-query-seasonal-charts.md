@@ -64,13 +64,13 @@
   - [x] 4.4 Ensure ChartContainer integration remains unchanged
   - [x] 4.5 Verify all existing props and functionality work correctly
 
-- [ ] 5.0 Configure Query Defaults and Error Handling
+- [x] 5.0 Configure Query Defaults and Error Handling
 
-  - [ ] 5.1 Add historical data query defaults to QueryProvider.tsx with 15-minute staleTime
-  - [ ] 5.2 Add comment noting that historical data rarely changes (future optimization opportunity)
-  - [ ] 5.3 Configure appropriate gcTime (cache time) for historical data
-  - [ ] 5.4 Ensure error messages are in Slovenian and consistent with existing patterns
-  - [ ] 5.5 Test error handling scenarios (network failures, API timeouts)
+  - [x] 5.1 Add historical data query defaults to QueryProvider.tsx with 15-minute staleTime
+  - [x] 5.2 Add comment noting that historical data rarely changes (future optimization opportunity)
+  - [x] 5.3 Configure appropriate gcTime (cache time) for historical data
+  - [x] 5.4 Ensure error messages are in Slovenian and consistent with existing patterns
+  - [x] 5.5 Test error handling scenarios (network failures, API timeouts)
 
 - [ ] 6.0 Testing and Validation
   - [ ] 6.1 Test SeasonalScatter component renders identically with new query hook

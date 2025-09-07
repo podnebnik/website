@@ -182,7 +182,7 @@ export function useHistoricalDataQuery(params: HistoricalDataQueryParams): UseQu
             try {
                 // Validate parameters
                 if (!station_id || !center_mmdd || window_days <= 0) {
-                    throw new Error('Invalid parameters for historical data query');
+                    throw new Error('Neveljavni parametri za zgodovinske podatke');
                 }
 
                 // Call the existing requestHistoricalWindow function

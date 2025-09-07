@@ -56,6 +56,19 @@ queryClient.setQueryDefaults(["weatherData"], {
   placeholderData: (previousData) => previousData, // Updated from keepPreviousData in v5
 });
 
+// Configure specific query defaults for historical data
+// Note: Historical data rarely changes since it represents past weather measurements.
+// Future optimization opportunity: Consider increasing staleTime to several hours or even days
+// for truly historical data (e.g., data older than current year).
+queryClient.setQueryDefaults(["historicalData"], {
+  staleTime: 1000 * 60 * 15, // 15 minutes - historical data rarely changes
+  retry: 2,
+  gcTime: 1000 * 60 * 60 * 4, // 4 hours - keep cached data longer since historical data is stable
+  refetchOnMount: false, // Historical data is stable, no need to refetch on mount
+  refetchOnWindowFocus: false, // Historical data is stable, no need to refetch on focus
+  refetchOnReconnect: true, // Still refetch on reconnect for reliability
+});
+
 /**
  * QueryProvider component that wraps children with TanStack Query's QueryClientProvider
  * Also handles initial data prefetching for better user experience
