@@ -37,13 +37,13 @@
   - [x] 2.6 Extract histogram chart series builders (percentile areas, label points) to histogramConfig
   - [x] 2.7 Create shared axis configuration builders for temperature charts
   - [x] 2.8 Extract tooltip and legend configuration builders to shared utilities
-- [ ] 3.0 Extract Data Loading Logic into Custom Hook
-  - [ ] 3.1 Create `code/ali-je-vroce/hooks/useChartData.ts` custom hook for data loading
-  - [ ] 3.2 Implement reactive data loading with prop change detection in the hook
-  - [ ] 3.3 Add error handling and loading states management to the hook
-  - [ ] 3.4 Create data validation and processing logic in the hook
-  - [ ] 3.5 Add memoization for expensive calculations (percentiles, KDE) in the hook
-  - [ ] 3.6 Implement proper SolidJS reactive prop capture to avoid warnings
+- [x] 3.0 Extract Data Loading Logic into Custom Hook
+  - [x] 3.1 [Create useChartData custom hook with reactive prop change detection]
+  - [x] 3.2 [Implement loading state management with SolidJS signals]
+  - [x] 3.3 [Add error handling and retry logic for failed API requests]
+  - [x] 3.4 [Create data validation and processing logic in the hook]
+  - [x] 3.5 [Add memoization for expensive calculations (percentiles, KDE) in the hook]
+  - [x] 3.6 [Implement proper SolidJS reactive prop capture to avoid warnings]
 - [ ] 4.0 Refactor Chart Components to Use Shared Utilities
   - [ ] 4.1 Refactor `SeasonalScatter.tsx` to use extracted statistical utilities
   - [ ] 4.2 Replace inline chart configuration in SeasonalScatter with configuration builders
