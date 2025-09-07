@@ -43,12 +43,13 @@ export default function SeasonalHistogram(props: SeasonalHistogramProps) {
         window_days: 14,
       });
 
-      if (!Array.isArray(rows) || rows.length === 0) {
+      if (!rows || !Array.isArray(rows) || rows.length === 0) {
         throw new Error("Ni podatkov za krivuljo.");
       }
 
-      const temps = rows.map(r => Number(r.tavg)).filter(Number.isFinite);
-      if (temps.length === 0) throw new Error("Ni veljavnih vrednosti temperature.");
+      const temps = rows.map((r) => Number(r.tavg)).filter(Number.isFinite);
+      if (temps.length === 0)
+        throw new Error("Ni veljavnih vrednosti temperature.");
 
       // percentiles from the raw data
       const sorted = [...temps].sort((a, b) => a - b);
@@ -65,9 +66,10 @@ export default function SeasonalHistogram(props: SeasonalHistogramProps) {
 
       // Robust bandwidth
       const IQR = percentile(sorted, 75) - percentile(sorted, 25);
-      const robustBW = IQR > 0
-        ? (2 * IQR) / Math.cbrt(temps.length)
-        : (stddev(temps) * 1.06) / Math.cbrt(temps.length);
+      const robustBW =
+        IQR > 0
+          ? (2 * IQR) / Math.cbrt(temps.length)
+          : (stddev(temps) * 1.06) / Math.cbrt(temps.length);
       const h = clamp(robustBW, 0.2, 2.5);
 
       const step = 0.1; // °C resolution of the curve
@@ -77,7 +79,7 @@ export default function SeasonalHistogram(props: SeasonalHistogramProps) {
       const K = (u: number) => (Math.abs(u) >= 1 ? 0 : 0.75 * (1 - u * u));
 
       const N = temps.length;
-      const density = xs.map(x => {
+      const density = xs.map((x) => {
         let s = 0;
         for (let i = 0; i < N; i++) s += K((x - temps[i]!) / h);
         return s / (N * h);
@@ -85,30 +87,40 @@ export default function SeasonalHistogram(props: SeasonalHistogramProps) {
 
       // scale density to approximate counts
       const areaApprox = density.reduce((a, b) => a + b, 0) * step;
-      const scale = areaApprox > 0 ? (N / areaApprox) : 1;
-      const ys = density.map(d => d * scale);
+      const scale = areaApprox > 0 ? N / areaApprox : 1;
+      const ys = density.map((d) => d * scale);
 
       // split by percentile ranges for fill styling
       const left: [number, number | null][] = [];
       const mid: [number, number | null][] = [];
       const right: [number, number | null][] = [];
       for (let i = 0; i < xs.length; i++) {
-        const x = xs[i]!, y = ys[i]!;
+        const x = xs[i]!,
+          y = ys[i]!;
         left.push(x <= p05 ? [x, y] : [x, null]);
         mid.push(x >= p05 && x <= p95 ? [x, y] : [x, null]);
         right.push(x >= p95 ? [x, y] : [x, null]);
       }
 
       const yMax = Math.max(...ys) * 1.12; // a bit of headroom
-      const todayVal = (props.todayTemp != null && Number.isFinite(Number(props.todayTemp))) ? Number(props.todayTemp) : null;
+      const todayVal =
+        props.todayTemp != null && Number.isFinite(Number(props.todayTemp))
+          ? Number(props.todayTemp)
+          : null;
 
-      setOptions(makeOptions({
-        left, mid, right,
-        p05, p50, p95,
-        today: todayVal,
-        yMax,
-        title: props.title || `Distribution around ${props.center_mmdd}`,
-      }));
+      setOptions(
+        makeOptions({
+          left,
+          mid,
+          right,
+          p05,
+          p50,
+          p95,
+          today: todayVal,
+          yMax,
+          title: props.title || `Distribution around ${props.center_mmdd}`,
+        })
+      );
     } catch (e) {
       console.error(e);
       setErr(e instanceof Error ? e.message : String(e));
@@ -118,8 +130,14 @@ export default function SeasonalHistogram(props: SeasonalHistogramProps) {
   }
 
   return (
-    <Show when={!loading()} fallback={<div class="text-sm text-gray-500">Nalagam …</div>}>
-      <Show when={!err()} fallback={<div class="text-red-600 text-sm">Napaka: {err()}</div>}>
+    <Show
+      when={!loading()}
+      fallback={<div class="text-sm text-gray-500">Nalagam …</div>}
+    >
+      <Show
+        when={!err()}
+        fallback={<div class="text-red-600 text-sm">Napaka: {err()}</div>}
+      >
         <Highchart options={options()!} />
       </Show>
     </Show>
@@ -131,14 +149,15 @@ export default function SeasonalHistogram(props: SeasonalHistogramProps) {
 function percentile(sortedAsc: number[], p: number): number {
   if (!sortedAsc.length) return NaN;
   const idx = (sortedAsc.length - 1) * (p / 100);
-  const lo = Math.floor(idx), hi = Math.ceil(idx);
+  const lo = Math.floor(idx),
+    hi = Math.ceil(idx);
   if (lo === hi) return sortedAsc[lo]!;
   const w = idx - lo;
   return sortedAsc[lo]! * (1 - w) + sortedAsc[hi]! * w;
 }
 
-function mean(a: number[]): number { 
-  return a.reduce((s, v) => s + v, 0) / a.length; 
+function mean(a: number[]): number {
+  return a.reduce((s, v) => s + v, 0) / a.length;
 }
 
 function stddev(a: number[]): number {
@@ -147,8 +166,8 @@ function stddev(a: number[]): number {
   return Math.sqrt(v);
 }
 
-function clamp(v: number, lo: number, hi: number): number { 
-  return Math.max(lo, Math.min(hi, v)); 
+function clamp(v: number, lo: number, hi: number): number {
+  return Math.max(lo, Math.min(hi, v));
 }
 
 /* --------------- chart options --------------- */
@@ -165,9 +184,29 @@ interface MakeOptionsParams {
   title: string;
 }
 
-function makeOptions({ left, mid, right, p05, p50, p95, today, yMax, title }: MakeOptionsParams): Highcharts.Options {
+function makeOptions({
+  left,
+  mid,
+  right,
+  p05,
+  p50,
+  p95,
+  today,
+  yMax,
+  title,
+}: MakeOptionsParams): Highcharts.Options {
   // Build label-only scatter "points" (works without annotations module)
-  const labelPoint = (x: number, text: string, cfg: { topFrac?: number; dx?: number; color?: string; bold?: boolean; size?: string; } = {}) => ({
+  const labelPoint = (
+    x: number,
+    text: string,
+    cfg: {
+      topFrac?: number;
+      dx?: number;
+      color?: string;
+      bold?: boolean;
+      size?: string;
+    } = {}
+  ) => ({
     x,
     y: yMax * (cfg.topFrac ?? 0.96),
     marker: { enabled: false },
@@ -177,7 +216,7 @@ function makeOptions({ left, mid, right, p05, p50, p95, today, yMax, title }: Ma
       align: "center" as const,
       verticalAlign: "top" as const,
       y: 0,
-      x: cfg.dx ?? 0,        // small horizontal nudge
+      x: cfg.dx ?? 0, // small horizontal nudge
       style: {
         color: cfg.color ?? "#666",
         fontWeight: cfg.bold ? "700" : "500",
@@ -186,8 +225,10 @@ function makeOptions({ left, mid, right, p05, p50, p95, today, yMax, title }: Ma
       },
       crop: false,
       overflow: "allow" as const,
-      formatter() { return text; },
-    }
+      formatter() {
+        return text;
+      },
+    },
   });
 
   const labelSeries: Highcharts.SeriesOptionsType = {
@@ -198,20 +239,27 @@ function makeOptions({ left, mid, right, p05, p50, p95, today, yMax, title }: Ma
       labelPoint(p50, "50th percentile"),
       labelPoint(p95, "95th percentile", { dx: 10 }),
       ...(Number.isFinite(today)
-        ? [labelPoint(today!, `TODAY: ${today!.toFixed(1)}°C`, { dx: 12, color: "#111", bold: true, size: "13px" })]
-        : [])
+        ? [
+            labelPoint(today!, `TODAY: ${today!.toFixed(1)}°C`, {
+              dx: 12,
+              color: "#111",
+              bold: true,
+              size: "13px",
+            }),
+          ]
+        : []),
     ],
     enableMouseTracking: false,
-    showInLegend: false
+    showInLegend: false,
   };
 
   return {
     chart: {
       type: "areaspline",
       backgroundColor: "transparent",
-      spacingTop: 52,   // room for title
+      spacingTop: 52, // room for title
       spacingRight: 20,
-      spacingLeft: 10
+      spacingLeft: 10,
     },
     title: { text: title, y: 10 },
     xAxis: {
@@ -222,20 +270,30 @@ function makeOptions({ left, mid, right, p05, p50, p95, today, yMax, title }: Ma
         { color: "#666", width: 1, value: p05, dashStyle: "Dash", zIndex: 4 },
         { color: "#666", width: 1, value: p50, dashStyle: "Dash", zIndex: 4 },
         { color: "#666", width: 1, value: p95, dashStyle: "Dash", zIndex: 4 },
-        ...(Number.isFinite(today) ? [{ color: "#111", width: 3, value: today!, dashStyle: "Solid" as const, zIndex: 5 }] : [])
+        ...(Number.isFinite(today)
+          ? [
+              {
+                color: "#111",
+                width: 3,
+                value: today!,
+                dashStyle: "Solid" as const,
+                zIndex: 5,
+              },
+            ]
+          : []),
       ],
     },
     yAxis: {
       title: { text: "Frekvenca (štetje)" },
       min: 0,
       max: yMax,
-      gridLineColor: "rgba(0,0,0,0.06)"
+      gridLineColor: "rgba(0,0,0,0.06)",
     },
     legend: { enabled: false },
     tooltip: {
       shared: false,
       headerFormat: "",
-      pointFormat: "<b>{point.x:.1f}°C</b><br/>Ocena frekvence: {point.y:.0f}"
+      pointFormat: "<b>{point.x:.1f}°C</b><br/>Ocena frekvence: {point.y:.0f}",
     },
     series: [
       {
@@ -246,17 +304,17 @@ function makeOptions({ left, mid, right, p05, p50, p95, today, yMax, title }: Ma
         fillOpacity: 0.35,
         lineWidth: 2,
         marker: { enabled: false },
-        enableMouseTracking: true
+        enableMouseTracking: true,
       },
       {
         name: "5th–95th",
-        type: "areaspline", 
+        type: "areaspline",
         data: mid,
         color: "rgba(255, 140, 80, 0.85)",
         fillOpacity: 0.25,
         lineWidth: 2,
         marker: { enabled: false },
-        enableMouseTracking: true
+        enableMouseTracking: true,
       },
       {
         name: "≥ 95th",
@@ -266,11 +324,11 @@ function makeOptions({ left, mid, right, p05, p50, p95, today, yMax, title }: Ma
         fillOpacity: 0.25,
         lineWidth: 2,
         marker: { enabled: false },
-        enableMouseTracking: true
+        enableMouseTracking: true,
       },
       // label-only series (always on top)
-      labelSeries
+      labelSeries,
     ],
-    credits: { enabled: false }
+    credits: { enabled: false },
   };
 }

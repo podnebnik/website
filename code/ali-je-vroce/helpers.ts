@@ -1,7 +1,7 @@
 /** @import * as Types "./types" */
 
 import { STAGE_DATA_BASE_URL, STAGING_VREMENAR_API_URL } from "./constants";
-import { HistoricalWindowResponseJson, RequestStationData, StationsResponse } from '../types/api-raw.js';
+import {  RequestStationData, StationsResponse } from '../types/api-raw.js';
 import type { ProcessedStation, ProcessedTemperatureData } from '../types/models.js';
 
 /** Figure out if we’re running the local dev site (including LAN IP access). */
@@ -63,6 +63,17 @@ function formatTime(date: Date, updated: Date): string {
   let day = date.getDate() == updated.getDate() ? "danes" : "včeraj";
   let time = `${zeroPrefix(date.getHours())}:${zeroPrefix(date.getMinutes())}`;
   return `${day} ob ${time}`;
+}
+
+/** Small fetch helper with abort timeout. */
+async function fetchWithTimeout(url: string, { timeoutMs = 10000 } = {}) {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, { signal: controller.signal });
+  } finally {
+    clearTimeout(id);
+  }
 }
 
 /**
@@ -239,9 +250,18 @@ export async function requestData(
 
 /* -------------------- Historical window (dev → Datasette; prod → API then fallback) -------------------- */
 
-function buildWindow(centerMMDD, windowDays) {
+function isDefined<T>(x: T | null | undefined): x is T {
+  return x != null;
+}
+
+function buildWindow(centerMMDD: string, windowDays: number): string[] {
   const half = Math.floor(windowDays / 2);
   const [mm, dd] = centerMMDD.split("-").map((s) => Number(s));
+  if (!mm) throw new Error("Invalid month");
+  if (!dd) throw new Error("Invalid day");
+  if (mm < 1 || mm > 12) throw new Error("Month out of range");
+  if (dd < 1 || dd > 31) throw new Error("Day out of range");
+
   const base = new Date(Date.UTC(2001, mm - 1, dd)); // non-leap baseline
   const out = [];
   for (let k = -half; k <= half; k++) {
@@ -254,7 +274,7 @@ function buildWindow(centerMMDD, windowDays) {
   return out;
 }
 
-function numOrNull(x) {
+function numOrNull(x: string | number | null | undefined): number | null {
   if (x == null) return null;
   const y = Number(x);
   return Number.isFinite(y) ? y : null;
@@ -263,7 +283,12 @@ function numOrNull(x) {
 const DATASETTE_TABLE_PATH =
   "temperature/temperature~2Eslovenia_historical~2Edaily.json";
 
-function buildDatasetteUrl({ sid, inList, withCols = true }) {
+function buildDatasetteUrl({ sid, inList, withCols = true }: {
+  sid: number;
+  inList: string;
+  withCols?: boolean;
+}): string {
+  const BASE_URL = STAGE_DATA_BASE_URL;
   const baseUrl = `${BASE_URL}/${DATASETTE_TABLE_PATH}`;
   const common =
     `${baseUrl}` +
@@ -275,13 +300,26 @@ function buildDatasetteUrl({ sid, inList, withCols = true }) {
   return withCols ? common + `&_col=station_id&_col=date&_col=temperature_average_2m` : common;
 }
 
-export async function requestHistoricalWindow({ station_id, center_mmdd, window_days }) {
+type HistoricalRow = {
+  rowid: number;
+  station_id: number;
+  date: string;
+  temperature_average_2m?: number;
+  temperature_avg?: number;
+  temperature_average?: number;
+};
+
+export async function requestHistoricalWindow({ station_id, center_mmdd, window_days }: {
+  station_id: string | number;
+  center_mmdd: string;
+  window_days: number;
+}) {
   const sid = Number(station_id);
   const mmddList = buildWindow(center_mmdd, window_days);
   const inList = mmddList.map((d) => `'${d}'`).join(", ");
 
   // Normalizer works for both API and Datasette shapes
-  const normalize = (rows) =>
+  const normalize = (rows: any[]) =>
     rows
       .map((r) => {
         const y = Number(
@@ -306,7 +344,7 @@ export async function requestHistoricalWindow({ station_id, center_mmdd, window_
           day_offset: r.day_offset != null ? Number(r.day_offset) : undefined,
         };
       })
-      .filter(Boolean);
+      .filter(isDefined); // Boolean function doesn’t narrow types (typescript quirk)
 
   // DEV: go straight to Datasette (avoid 504 noise)
   if (__devLike) {
@@ -321,7 +359,7 @@ export async function requestHistoricalWindow({ station_id, center_mmdd, window_
         throw new Error(`Datasette failed (${r.status})`);
       }
     }
-    const rows = await r.json();
+    const rows = await r.json() as HistoricalRow[];
     const filtered = rows.filter((row) => String(row.station_id) === String(sid));
     const mapped = filtered
       .map((row) => {
@@ -345,7 +383,7 @@ export async function requestHistoricalWindow({ station_id, center_mmdd, window_
   try {
     const viaApi = await fetchWithTimeout(apiUrl, { timeoutMs: 8000 });
     if (!viaApi.ok) throw new Error(`HTTP ${viaApi.status}`);
-    const rows = await viaApi.json();
+    const rows = await viaApi.json() as HistoricalRow[];
     return normalize(rows);
   } catch {
     let url = buildDatasetteUrl({ sid, inList, withCols: true });
@@ -359,7 +397,7 @@ export async function requestHistoricalWindow({ station_id, center_mmdd, window_
         throw new Error(`Datasette failed (${r.status})`);
       }
     }
-    const rows = await r.json();
+    const rows = await r.json() as HistoricalRow[];
     const filtered = rows.filter((row) => String(row.station_id) === String(sid));
     const mapped = filtered
       .map((row) => {
