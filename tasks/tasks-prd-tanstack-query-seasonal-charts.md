@@ -56,13 +56,13 @@
   - [x] 3.4 Ensure ChartContainer integration remains unchanged
   - [x] 3.5 Verify all existing props and functionality work correctly
 
-- [ ] 4.0 Update SeasonalHistogram Component to Use TanStack Query
+- [x] 4.0 Update SeasonalHistogram Component to Use TanStack Query
 
-  - [ ] 4.1 Replace `useChartData` import with `useHistoricalDataQuery` in SeasonalHistogram.tsx
-  - [ ] 4.2 Update component to use TanStack Query loading and error states
-  - [ ] 4.3 Maintain existing data processing logic in `chartOptions` memo
-  - [ ] 4.4 Ensure ChartContainer integration remains unchanged
-  - [ ] 4.5 Verify all existing props and functionality work correctly
+  - [x] 4.1 Replace `useChartData` import with `useHistoricalDataQuery` in SeasonalHistogram.tsx
+  - [x] 4.2 Update component to use TanStack Query loading and error states
+  - [x] 4.3 Maintain existing data processing logic in `chartOptions` memo
+  - [x] 4.4 Ensure ChartContainer integration remains unchanged
+  - [x] 4.5 Verify all existing props and functionality work correctly
 
 - [ ] 5.0 Configure Query Defaults and Error Handling
 

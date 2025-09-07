@@ -6,7 +6,7 @@ import { SeasonalHistogramProps } from "../../types/components.ts";
 import { percentile, stddev, epanechnikovKernel } from "../utils/statistics.ts";
 import { clamp } from "../utils/mathHelpers.ts";
 import { createHistogramChartConfig } from "./config/histogramConfig.ts";
-import { useChartData } from "../hooks/useChartData.ts";
+import { useHistoricalDataQuery } from "../hooks/queries.ts";
 import { LOADING_MESSAGES } from "../utils/uiConstants.ts";
 import { CHART_DATA } from "../utils/chartConstants.ts";
 import * as Highcharts from "highcharts";
@@ -20,26 +20,29 @@ import * as Highcharts from "highcharts";
  *  - title?: string
  */
 export default function SeasonalHistogram(props: SeasonalHistogramProps) {
-  // Use the custom data loading hook
-  const { loading, error, processedData, calculations } = useChartData({
-    stationId: props.stationId,
+  // Use TanStack Query hook for historical data
+  const queryResult = useHistoricalDataQuery({
+    station_id: Number(props.stationId),
     center_mmdd: props.center_mmdd,
-    todayTemp: props.todayTemp ?? null,
-    windowDays: CHART_DATA.WINDOW_DAYS,
+    window_days: CHART_DATA.WINDOW_DAYS,
   });
 
   // Memoized histogram-specific processing
   const chartOptions = createMemo<Highcharts.Options | null>(() => {
-    const processed = processedData();
-    const calc = calculations();
+    const rawData = queryResult.data;
 
-    if (!processed || !calc || loading()) {
+    if (!rawData || queryResult.isLoading) {
       return null;
     }
 
     try {
-      const { sortedTemperatures, temperatures } = processed;
-      const { temperatureRange } = calc;
+      // Process the raw historical data inline
+      const temperatures = rawData.map((d: any) => +d.tavg);
+      const sortedTemperatures = [...temperatures].sort((a, b) => a - b);
+      const temperatureRange = {
+        min: Math.min(...temperatures),
+        max: Math.max(...temperatures),
+      };
 
       // Calculate specific percentiles needed for histogram (5%, 50%, 95%)
       const p05 = percentile(sortedTemperatures, 5);
@@ -116,8 +119,8 @@ export default function SeasonalHistogram(props: SeasonalHistogramProps) {
 
   return (
     <ChartContainer
-      loading={loading()}
-      error={error()}
+      loading={queryResult.isLoading}
+      error={queryResult.error?.message || null}
       hasData={!!chartOptions()}
       chartType="histogram"
       loadingMessage={LOADING_MESSAGES.HISTOGRAM}
