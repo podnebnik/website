@@ -73,10 +73,10 @@
   - [x] 5.5 Test error handling scenarios (network failures, API timeouts)
 
 - [ ] 6.0 Testing and Validation
-  - [ ] 6.1 Test SeasonalScatter component renders identically with new query hook
-  - [ ] 6.2 Test SeasonalHistogram component renders identically with new query hook
-  - [ ] 6.3 Verify query caching works correctly (check network tab for reduced API calls)
-  - [ ] 6.4 Test error states display properly in both components
-  - [ ] 6.5 Test loading states work correctly
-  - [ ] 6.6 Validate that both components can share cached data when using same parameters
-  - [ ] 6.7 Test with different station IDs and date ranges to ensure flexibility
+  - [x] 6.1 Test SeasonalScatter component renders identically with new query hook
+  - [x] 6.2 Test SeasonalHistogram component renders identically with new query hook
+  - [x] 6.3 Verify query caching works correctly (check network tab for reduced API calls)
+  - [x] 6.4 Test error states display properly in both components
+  - [x] 6.5 Test loading states work correctly
+  - [x] 6.6 Validate that both components can share cached data when using same parameters
+  - [ ] 6.7 Test with different station IDs and date ranges to ensure flexibility - **ISSUE**: Still has unresolved issues to fix later
