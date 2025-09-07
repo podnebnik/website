@@ -33,13 +33,18 @@ export default function SeasonalHistogram(props: SeasonalHistogramProps) {
   });
 
   async function load() {
+    // ✅ Capture reactive props before async operations to avoid SolidJS warnings
+    const stationId = props.stationId;
+    const centerMmdd = props.center_mmdd;
+    const todayTemp = props.todayTemp;
+
     try {
       setLoading(true);
       setErr("");
 
       const rows = await requestHistoricalWindow({
-        station_id: props.stationId,
-        center_mmdd: props.center_mmdd,
+        station_id: stationId,
+        center_mmdd: centerMmdd,
         window_days: 14,
       });
 
@@ -104,8 +109,8 @@ export default function SeasonalHistogram(props: SeasonalHistogramProps) {
 
       const yMax = Math.max(...ys) * 1.12; // a bit of headroom
       const todayVal =
-        props.todayTemp != null && Number.isFinite(Number(props.todayTemp))
-          ? Number(props.todayTemp)
+        todayTemp != null && Number.isFinite(Number(todayTemp))
+          ? Number(todayTemp)
           : null;
 
       setOptions(
@@ -118,7 +123,7 @@ export default function SeasonalHistogram(props: SeasonalHistogramProps) {
           p95,
           today: todayVal,
           yMax,
-          title: props.title || `Distribution around ${props.center_mmdd}`,
+          title: props.title || `Distribution around ${centerMmdd}`,
         })
       );
     } catch (e) {

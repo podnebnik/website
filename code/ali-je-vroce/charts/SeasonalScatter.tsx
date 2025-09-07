@@ -69,10 +69,16 @@ export default function SeasonalScatter(props: SeasonalScatterProps) {
   async function load() {
     setLoading(true);
     setErr(null);
+
+    // ✅ Capture reactive props before async operations to avoid SolidJS warnings
+    const stationId = props.stationId;
+    const centerMmdd = props.center_mmdd;
+    const todayTemp = props.todayTemp;
+
     try {
       const data = await requestHistoricalWindow({
-        station_id: props.stationId,
-        center_mmdd: props.center_mmdd,
+        station_id: stationId,
+        center_mmdd: centerMmdd,
         window_days: WINDOW_DAYS,
       });
 
@@ -125,12 +131,12 @@ export default function SeasonalScatter(props: SeasonalScatterProps) {
       const todayX = x1 + 2;
       const todayPoint = {
         x: todayX,
-        y: props.todayTemp,
+        y: todayTemp,
         marker: { radius: 7, lineWidth: 2, lineColor: "#333" },
       };
 
-      const yMin = Math.floor(Math.min(...temps, props.todayTemp) - 1);
-      const yMax = Math.ceil(Math.max(...temps, props.todayTemp) + 1);
+      const yMin = Math.floor(Math.min(...temps, todayTemp) - 1);
+      const yMax = Math.ceil(Math.max(...temps, todayTemp) + 1);
 
       setOpts({
         chart: {
