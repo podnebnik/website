@@ -28,15 +28,15 @@
   - [x] 1.4 Create `code/ali-je-vroce/utils/mathHelpers.ts` with clamp function and other math utilities
   - [x] 1.5 Add color interpolation function (`colorFor`) from SeasonalScatter to mathHelpers
   - [x] 1.6 Add Epanechnikov kernel function for KDE calculations to statistics utility
-- [ ] 2.0 Create Chart Configuration Builders
-  - [ ] 2.1 Create `code/ali-je-vroce/utils/chartConstants.ts` with shared styling constants
-  - [ ] 2.2 Define color schemes, spacing values, and common chart dimensions in constants
-  - [ ] 2.3 Create `code/ali-je-vroce/charts/config/scatterConfig.ts` for scatter chart configuration
-  - [ ] 2.4 Extract scatter chart series builders (history, trend line, today point) to scatterConfig
-  - [ ] 2.5 Create `code/ali-je-vroce/charts/config/histogramConfig.ts` for histogram chart configuration
-  - [ ] 2.6 Extract histogram chart series builders (percentile areas, label points) to histogramConfig
-  - [ ] 2.7 Create shared axis configuration builders for temperature charts
-  - [ ] 2.8 Extract tooltip and legend configuration builders to shared utilities
+- [x] 2.0 Create Chart Configuration Builders
+  - [x] 2.1 Create `code/ali-je-vroce/utils/chartConstants.ts` with shared styling constants
+  - [x] 2.2 Define color schemes, spacing values, and common chart dimensions in constants
+  - [x] 2.3 Create `code/ali-je-vroce/charts/config/scatterConfig.ts` for scatter chart configuration
+  - [x] 2.4 Extract scatter chart series builders (history, trend line, today point) to scatterConfig
+  - [x] 2.5 Create `code/ali-je-vroce/charts/config/histogramConfig.ts` for histogram chart configuration
+  - [x] 2.6 Extract histogram chart series builders (percentile areas, label points) to histogramConfig
+  - [x] 2.7 Create shared axis configuration builders for temperature charts
+  - [x] 2.8 Extract tooltip and legend configuration builders to shared utilities
 - [ ] 3.0 Extract Data Loading Logic into Custom Hook
   - [ ] 3.1 Create `code/ali-je-vroce/hooks/useChartData.ts` custom hook for data loading
   - [ ] 3.2 Implement reactive data loading with prop change detection in the hook
