@@ -30,8 +30,8 @@
         "noFallthroughCasesInSwitch": true,
         "noUncheckedIndexedAccess": true,
         /* Type Checking - Lenient for converted files (can be overridden per file) */
-        "noImplicitThis": false,
-        "exactOptionalPropertyTypes": false,
+        "noImplicitThis": true,
+        "exactOptionalPropertyTypes": true,
         /* Completeness */
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,

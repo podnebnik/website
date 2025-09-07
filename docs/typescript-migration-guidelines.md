@@ -37,10 +37,10 @@ The project uses a **mixed approach** configuration designed to support both str
     "noUncheckedIndexedAccess": true,
 
     // Lenient settings for CONVERTED files
-    "noImplicitThis": false,
-    "exactOptionalPropertyTypes": false,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false
+    "noImplicitThis": true,
+    "exactOptionalPropertyTypes": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
   }
 }
 ```
@@ -62,7 +62,7 @@ The project uses a **mixed approach** configuration designed to support both str
 - Weather app fully converted ✅
 - Essential utilities migrated ✅
 
-### Phase 2: Intermediate Strictness (Future)
+### Phase 2: Intermediate Strictness ✅
 
 When most files are converted, consider enabling:
 
