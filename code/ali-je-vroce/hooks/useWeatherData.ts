@@ -135,11 +135,8 @@ export function useWeatherData() {
         // Temperature display state
         result: '',
         resultTemperature: "C",
-        tempMin: undefined,
         timeMin: '',
-        tempMax: undefined,
         timeMax: '',
-        tempAvg: undefined,
         timeUpdated: ''
     });
 
@@ -254,10 +251,11 @@ export function useWeatherData() {
 
         // Instead of directly calling the API, use the query client
         // This ensures consistency with the hook-based approach
+        const {signal} = currentController;
         queryClient.fetchQuery({
             queryKey: queryKeys.weatherData(String(station.station_id)),
             queryFn: async () => {
-                const result = await requestData(String(station.station_id), { signal: currentController?.signal });
+                const result = await requestData(String(station.station_id), { signal });
                 if (!result.success) {
                     const errorMessage = 'error' in result && result.error instanceof Error ? result.error.message : String('error' in result ? result.error : 'Unknown error');
                     throw new Error(errorMessage || `Failed to load data for station ${station.station_id}`);

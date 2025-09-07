@@ -2,17 +2,18 @@
 import { onMount, createSignal, createEffect, Show } from "solid-js";
 import { Highchart } from "./Highchart.tsx";
 import { requestHistoricalWindow } from "../helpers.js";
-import { SeasonalScatterProps } from "../../types/components.js";
+import { SeasonalScatterProps } from "../../types/components.ts";
 import * as Highcharts from "highcharts";
 
-const WINDOW_DAYS = 14;               // server understands as ±7; we expect 15 points/year
+const WINDOW_DAYS = 14; // server understands as ±7; we expect 15 points/year
 const TODAY_LABEL = "TODAY";
 
 // ---------- utils ----------
 function percentile(sorted: number[], p: number): number {
   if (!sorted.length) return NaN;
   const idx = (sorted.length - 1) * (p / 100);
-  const lo = Math.floor(idx), hi = Math.ceil(idx);
+  const lo = Math.floor(idx),
+    hi = Math.ceil(idx);
   if (lo === hi) return sorted[lo]!;
   const w = idx - lo;
   return sorted[lo]! * (1 - w) + sorted[hi]! * w;
@@ -40,10 +41,14 @@ function colorFor(z: number, zmin: number, zmax: number): string {
   let r: number, g: number, b: number;
   if (u <= mid) {
     const k = u / mid;
-    r = 0 + (240 - 0) * k; g = 70 + (240 - 70) * k; b = 170 + (240 - 170) * k;
+    r = 0 + (240 - 0) * k;
+    g = 70 + (240 - 70) * k;
+    b = 170 + (240 - 170) * k;
   } else {
     const k = (u - mid) / (1 - mid);
-    r = 240 + (200 - 240) * k; g = 240 + (50 - 240) * k; b = 240 + (50 - 240) * k;
+    r = 240 + (200 - 240) * k;
+    g = 240 + (50 - 240) * k;
+    b = 240 + (50 - 240) * k;
   }
   const c = (x: number) => Math.round(x).toString(16).padStart(2, "0");
   return `#${c(r)}${c(g)}${c(b)}`;
@@ -62,13 +67,13 @@ export default function SeasonalScatter(props: SeasonalScatterProps) {
   const [err, setErr] = createSignal<string | null>(null);
 
   async function load() {
-    setLoading(true); 
+    setLoading(true);
     setErr(null);
     try {
       const data = await requestHistoricalWindow({
         station_id: props.stationId,
         center_mmdd: props.center_mmdd,
-        window_days: WINDOW_DAYS
+        window_days: WINDOW_DAYS,
       });
 
       if (!Array.isArray(data) || data.length === 0) {
@@ -76,8 +81,8 @@ export default function SeasonalScatter(props: SeasonalScatterProps) {
       }
 
       // Expect 15 points per year: {year, day_offset, tavg}
-      const years = data.map(d => +d.year);
-      const temps = data.map(d => +d.tavg);
+      const years = data.map((d) => +d.year);
+      const temps = data.map((d) => +d.tavg);
 
       // Percentiles across *all* points in the window (all years * 15 days)
       const sorted = [...temps].sort((a, b) => a - b);
@@ -86,8 +91,9 @@ export default function SeasonalScatter(props: SeasonalScatterProps) {
       const med = percentile(sorted, 50);
 
       // Color by anomaly vs overall median
-      const anomalies = temps.map(v => v - med);
-      const zmin = Math.min(...anomalies), zmax = Math.max(...anomalies);
+      const anomalies = temps.map((v) => v - med);
+      const zmin = Math.min(...anomalies),
+        zmax = Math.max(...anomalies);
 
       interface ScatterPoint {
         x: number;
@@ -100,17 +106,19 @@ export default function SeasonalScatter(props: SeasonalScatterProps) {
       }
 
       const scatter: ScatterPoint[] = data.map((d, i) => ({
-        x: +d.year,                   // stack by year on x-axis
+        x: +d.year, // stack by year on x-axis
         y: +d.tavg,
         // optional: keep offset if we later want to jitter or show tooltip
         day_offset: d.day_offset ?? null,
-        marker: { radius: 4, fillColor: colorFor(anomalies[i]!, zmin, zmax) }
+        marker: { radius: 4, fillColor: colorFor(anomalies[i]!, zmin, zmax) },
       }));
 
       // Linear regression across ALL points (years * 15)
       const { a, b } = linreg(years, temps);
-      const x0 = Math.min(...years), x1 = Math.max(...years);
-      const y0 = a + b * x0, y1 = a + b * x1;
+      const x0 = Math.min(...years),
+        x1 = Math.max(...years);
+      const y0 = a + b * x0,
+        y1 = a + b * x1;
       const trendPerCentury = b * 100;
 
       // "Today" label plotted slightly to the right of the newest year
@@ -118,119 +126,148 @@ export default function SeasonalScatter(props: SeasonalScatterProps) {
       const todayPoint = {
         x: todayX,
         y: props.todayTemp,
-        marker: { radius: 7, lineWidth: 2, lineColor: "#333" }
+        marker: { radius: 7, lineWidth: 2, lineColor: "#333" },
       };
 
       const yMin = Math.floor(Math.min(...temps, props.todayTemp) - 1);
       const yMax = Math.ceil(Math.max(...temps, props.todayTemp) + 1);
 
       setOpts({
-        chart: { type: "scatter", spacingRight: 80, backgroundColor: "transparent" },
-        title: { text: props.title || "Daily average temperatures — two weeks window" },
+        chart: {
+          type: "scatter",
+          spacingRight: 80,
+          backgroundColor: "transparent",
+        },
+        title: {
+          text: props.title || "Daily average temperatures — two weeks window",
+        },
         xAxis: {
-          title: { text: undefined },
+          title: { text: null },
           tickInterval: 20,
           min: x0 - 1,
           max: todayX + 1,
-          labels: { 
-            formatter: function() { return String(this.value); }
-          }
+          labels: {
+            formatter: function (
+              this: Highcharts.AxisLabelsFormatterContextObject
+            ) {
+              return String(this.value);
+            },
+          },
         },
         yAxis: {
-          min: yMin, 
+          min: yMin,
           max: yMax,
           title: { text: "Daily average temperature (°C)" },
           tickAmount: 6,
           plotLines: [
-            { 
-              value: p95, 
-              color: "#666", 
-              dashStyle: "Dash", 
-              width: 1, 
+            {
+              value: p95,
+              color: "#666",
+              dashStyle: "Dash",
+              width: 1,
               zIndex: 3,
-              label: { 
-                text: `95th percentile: ${p95.toFixed(1)}°C`, 
-                align: "right" as const, 
-                x: 60 
-              } 
+              label: {
+                text: `95th percentile: ${p95.toFixed(1)}°C`,
+                align: "right" as const,
+                x: 60,
+              },
             },
-            { 
-              value: p05, 
-              color: "#666", 
-              dashStyle: "Dash", 
-              width: 1, 
+            {
+              value: p05,
+              color: "#666",
+              dashStyle: "Dash",
+              width: 1,
               zIndex: 3,
-              label: { 
-                text: `5th percentile: ${p05.toFixed(1)}°C`, 
-                align: "right" as const, 
-                x: 60 
-              } 
+              label: {
+                text: `5th percentile: ${p05.toFixed(1)}°C`,
+                align: "right" as const,
+                x: 60,
+              },
             },
-          ]
+          ],
         },
         legend: { enabled: false },
         tooltip: {
           useHTML: true,
-          formatter: function() {
+          formatter: function () {
             if ((this as any).series.name === "Trend") return false;
             if ((this as any).series.name === TODAY_LABEL) {
               return `<b>${TODAY_LABEL}</b>: ${(this as any).y!.toFixed(1)}°C`;
             }
             const point = (this as any).point;
             const off = point?.day_offset;
-            const offTxt = (off || off === 0) ? ` (offset ${off >= 0 ? "+" : ""}${off}d)` : "";
-            return `Year: <b>${(this as any).x}</b>${offTxt}<br/>Tavg: <b>${(this as any).y!.toFixed(1)}°C</b>`;
-          }
+            const offTxt =
+              off || off === 0 ? ` (offset ${off >= 0 ? "+" : ""}${off}d)` : "";
+            return `Year: <b>${(this as any).x}</b>${offTxt}<br/>Tavg: <b>${(
+              this as any
+            ).y!.toFixed(1)}°C</b>`;
+          },
         },
-        annotations: [{
-          labels: [{
-            point: { x: (x0 + x1) / 2, y: (y0 + y1) / 2, xAxis: 0, yAxis: 0 },
-            text: `Trend: ${(trendPerCentury >= 0 ? "+" : "")}${trendPerCentury.toFixed(1)}°C / century`,
-            backgroundColor: "rgba(255,255,255,0.7)",
-            borderColor: "#333",
-            style: { fontSize: "12px" }
-          }]
-        }],
-        series: [
-          { 
-            name: "History", 
-            type: "scatter", 
-            data: scatter,
-            marker: { 
-              symbol: "circle", 
-              states: { 
-                hover: { enabled: true } 
-              } 
-            } 
+        annotations: [
+          {
+            labels: [
+              {
+                point: {
+                  x: (x0 + x1) / 2,
+                  y: (y0 + y1) / 2,
+                  xAxis: 0,
+                  yAxis: 0,
+                },
+                text: `Trend: ${
+                  trendPerCentury >= 0 ? "+" : ""
+                }${trendPerCentury.toFixed(1)}°C / century`,
+                backgroundColor: "rgba(255,255,255,0.7)",
+                borderColor: "#333",
+                style: { fontSize: "12px" },
+              },
+            ],
           },
-          { 
-            name: "Trend", 
-            type: "line", 
-            data: [{ x: x0, y: y0 }, { x: x1, y: y1 }],
-            color: "#333", 
-            enableMouseTracking: false 
-          },
-          { 
-            name: TODAY_LABEL, 
-            type: "scatter", 
-            data: [todayPoint],
-            marker: { 
-              symbol: "circle", 
-              fillColor: "#fff", 
-              lineWidth: 2, 
-              lineColor: "#333" 
-            },
-            dataLabels: [{
-              enabled: true, 
-              align: "left" as const, 
-              format: `${TODAY_LABEL}<br/>{point.y:.1f}°C`, 
-              x: 8, 
-              y: 4, 
-              style: { fontWeight: "600" } 
-            }] 
-          }
         ],
-        credits: { enabled: false }
+        series: [
+          {
+            name: "History",
+            type: "scatter",
+            data: scatter,
+            marker: {
+              symbol: "circle",
+              states: {
+                hover: { enabled: true },
+              },
+            },
+          },
+          {
+            name: "Trend",
+            type: "line",
+            data: [
+              { x: x0, y: y0 },
+              { x: x1, y: y1 },
+            ],
+            color: "#333",
+            enableMouseTracking: false,
+          },
+          {
+            name: TODAY_LABEL,
+            type: "scatter",
+            data: [todayPoint],
+            marker: {
+              symbol: "circle",
+              fillColor: "#fff",
+              lineWidth: 2,
+              lineColor: "#333",
+            },
+            dataLabels: [
+              {
+                enabled: true,
+                align: "left" as const,
+                format: `${TODAY_LABEL}<br/>{point.y:.1f}°C`,
+                x: 8,
+                y: 4,
+                style: { fontWeight: "600" },
+              },
+            ],
+          },
+        ],
+        credits: { enabled: false },
       });
     } catch (e) {
       console.error(e);
@@ -258,11 +295,15 @@ export default function SeasonalScatter(props: SeasonalScatterProps) {
 
   return (
     <Show when={!loading()} fallback={<div>Nalaganje…</div>}>
-      <Show when={!err()} fallback={<div style="color:#b00;background:#fee;padding:8px;border-radius:8px;">Napaka: {String(err())}</div>}>
-        <Highchart
-          options={opts()!}
-          height="360px"
-        />
+      <Show
+        when={!err()}
+        fallback={
+          <div style="color:#b00;background:#fee;padding:8px;border-radius:8px;">
+            Napaka: {String(err())}
+          </div>
+        }
+      >
+        <Highchart options={opts()!} height="360px" />
       </Show>
     </Show>
   );

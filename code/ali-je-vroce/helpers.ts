@@ -136,7 +136,7 @@ export async function loadStations(): Promise<
  */
 export async function requestData(
   stationID: string,
-  options: { signal?: AbortSignal } = {}
+  options: {signal?: AbortSignal} = {}
 ): Promise<
   | { success: true; data: ProcessedTemperatureData }
   | { success: false; error: Error | string }
@@ -144,9 +144,7 @@ export async function requestData(
   try {
     const resultAverage = await fetch(
       `${STAGING_VREMENAR_API_URL}/stations/details/METEO-${stationID}?country=si`,
-      {
-        signal: options?.signal,
-      }
+      options.signal ? { signal: options?.signal } : undefined
     );
     if (resultAverage.ok) {
       const dataAverage = (await resultAverage.json()) as RequestStationData;
@@ -164,12 +162,8 @@ export async function requestData(
 
       const resultPercentile = await fetch(
         `${STAGE_DATA_BASE_URL}/temperature/temperature~2Eslovenia_historical~2Edaily~2Eaverage_percentiles.json?date__exact=${date}&station_id__exact=${stationID}&_col=p05&_col=p20&_col=p40&_col=p60&_col=p80&_col=p95`,
-        {
-          signal: options.signal,
-        }
+         options.signal ? { signal: options?.signal } : undefined
       );
-
-      if (resultPercentile.ok) {
         const dataPercentile = await resultPercentile.json();
 
         let columns = dataPercentile["columns"];
@@ -220,7 +214,7 @@ export async function requestData(
           },
         };
       }
-    }
+    
   } catch (error) {
     if (!(error instanceof Error)) {
       console.error("Unknown error type:", error);
@@ -405,12 +399,6 @@ type NormalizedTemperatureRecord = {
   day_offset?: number;
 };
 
-type HistoricalChartRecord = {
-  year: number;
-  tavg: number;
-  day_offset: number;
-};
-
 /**
  * Extracts temperature value from various possible field names
  */
@@ -451,7 +439,7 @@ function extractYear(record: { year?: number | string; date?: string }): number 
  * Normalizes temperature records from different data sources
  */
 function normalizeTemperatureRecords(
-  rows: {year?: number, tavg?: number, day_offset?: number}[]): NormalizedTemperatureRecord[] {
+  rows: {year?: number, tavg?: number}[]): NormalizedTemperatureRecord[] {
     console.log('rows to normalize:', rows);
   return rows
     .map((record) => {
@@ -463,7 +451,6 @@ function normalizeTemperatureRecords(
       return {
         year,
         tavg,
-        day_offset: record.day_offset,
       };
     })
     .filter(isDefined);
