@@ -48,13 +48,10 @@ export function prefetchStationData(
     queryClient: QueryClient, 
     stationId: number
 ): Promise<ProcessedTemperatureData | void> {
-    console.log(`Prefetching data for station ${stationId}`);
-
     // Don't prefetch if already in cache and fresh (not stale)
     const existingQuery = queryClient.getQueryState(queryKeys.weatherData(String(stationId)));
     if (existingQuery && existingQuery.dataUpdatedAt && 
         Date.now() - existingQuery.dataUpdatedAt < 15 * 60 * 1000) { // 15 minutes stale time
-        console.log(`Station ${stationId} data already in cache and fresh, skipping prefetch`);
         return Promise.resolve(existingQuery.data as ProcessedTemperatureData | undefined);
     }
 
@@ -67,7 +64,6 @@ export function prefetchStationData(
                 const errorMessage = result.error instanceof Error ? result.error.message : String(result.error);
                 throw new Error(errorMessage || `Failed to prefetch data for station ${stationId}`);
             }
-            console.log(`Successfully prefetched data for station ${stationId}`);
             return result.data;
         },
         staleTime: 1000 * 60 * 5, // 5 minutes

@@ -145,17 +145,9 @@ export function useTemperatureDataRange(
 export function useUpdateStationPreference() {
   return useMutation(() => ({
     mutationFn: async (stationId: string): Promise<void> => {
-      // TypeScript: Runtime type checking for browser APIs
       if (typeof localStorage !== "undefined") {
         localStorage.setItem("preferred-station", stationId);
-      }
-      
-      // Could also send to API endpoint here
-      // await apiClient.updatePreference(stationId);
-    },
-    // TypeScript: Callback parameter typing with explicit types
-    onSuccess: (_data: void, stationId: string) => {
-      console.log(`Station preference updated to: ${stationId}`);
+      }      
     },
     onError: (error: Error) => {
       console.error("Failed to update station preference:", error.message);

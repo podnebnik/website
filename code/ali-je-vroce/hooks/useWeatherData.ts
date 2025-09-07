@@ -155,8 +155,6 @@ export function useWeatherData() {
         if (weatherQuery.isPending || weatherQuery.isError || !weatherQuery.data) return;
 
         const data = weatherQuery.data;
-        console.log('Weather data updated:', data);
-
         batch(() => {
             setState({
                 resultTemperature: `${data.resultTemperatureValue} °C`,
@@ -213,7 +211,6 @@ export function useWeatherData() {
 
         // Generate optimistic data based on current or cached data
         const previousData = weatherQuery.data;
-        console.log('Previous data for optimistic update:', previousData);
         const optimisticData = generateOptimisticWeatherData(
             station.station_id,
             previousData ?? null,

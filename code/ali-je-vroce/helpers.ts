@@ -440,7 +440,6 @@ function extractYear(record: { year?: number | string; date?: string }): number 
  */
 function normalizeTemperatureRecords(
   rows: {year?: number, tavg?: number}[]): NormalizedTemperatureRecord[] {
-    console.log('rows to normalize:', rows);
   return rows
     .map((record) => {
       const year = extractYear(record);
@@ -500,7 +499,6 @@ async function fetchFromDatasette(
   }
 
   const responseData = await response.json() as HistoricalRowFromDatasette[];
-  console.log('Datasette response data:', responseData);
   if (!Array.isArray(responseData)) {
     throw new Error('Datasette response is not an array as expected');
   }
@@ -529,7 +527,6 @@ async function fetchFromApi(
   }
 
   const responseData = await response.json() as { year: number; tavg: number }[] ;
-  console.log('API response data:', responseData);    
   if (!Array.isArray(responseData)) {
     throw new Error('API response is not an array as expected');
   }
