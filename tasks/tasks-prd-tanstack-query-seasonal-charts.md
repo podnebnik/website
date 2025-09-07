@@ -48,13 +48,13 @@
   - [x] 2.5 Add TypeScript types for hook parameters and return values
   - [x] 2.6 Add JSDoc documentation following existing patterns
 
-- [ ] 3.0 Update SeasonalScatter Component to Use TanStack Query
+- [x] 3.0 Update SeasonalScatter Component to Use TanStack Query
 
-  - [ ] 3.1 Replace `useChartData` import with `useHistoricalDataQuery` in SeasonalScatter.tsx
-  - [ ] 3.2 Update component to use TanStack Query loading and error states
-  - [ ] 3.3 Maintain existing data processing logic in `chartOptions` memo
-  - [ ] 3.4 Ensure ChartContainer integration remains unchanged
-  - [ ] 3.5 Verify all existing props and functionality work correctly
+  - [x] 3.1 Replace `useChartData` import with `useHistoricalDataQuery` in SeasonalScatter.tsx
+  - [x] 3.2 Update component to use TanStack Query loading and error states
+  - [x] 3.3 Maintain existing data processing logic in `chartOptions` memo
+  - [x] 3.4 Ensure ChartContainer integration remains unchanged
+  - [x] 3.5 Verify all existing props and functionality work correctly
 
 - [ ] 4.0 Update SeasonalHistogram Component to Use TanStack Query
 

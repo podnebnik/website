@@ -10,7 +10,7 @@ import {
   ScatterPoint,
   TodayPoint,
 } from "./config/scatterConfig.ts";
-import { useChartData } from "../hooks/useChartData.ts";
+import { useHistoricalDataQuery } from "../hooks/queries.ts";
 import { LOADING_MESSAGES } from "../utils/uiConstants.ts";
 import { CHART_DATA } from "../utils/chartConstants.ts";
 import * as Highcharts from "highcharts";
@@ -23,40 +23,39 @@ import * as Highcharts from "highcharts";
  *  - title?: string
  */
 export default function SeasonalScatter(props: SeasonalScatterProps) {
-  // Use the custom data loading hook
-  const { loading, error, data, processedData } = useChartData({
-    stationId: props.stationId,
+  // Use TanStack Query hook for historical data
+  const queryResult = useHistoricalDataQuery({
+    station_id: Number(props.stationId),
     center_mmdd: props.center_mmdd,
-    todayTemp: props.todayTemp,
-    windowDays: CHART_DATA.WINDOW_DAYS,
+    window_days: CHART_DATA.WINDOW_DAYS,
   });
 
   // Memoized chart options calculation
   const chartOptions = createMemo<Highcharts.Options | null>(() => {
-    const rawData = data();
-    const processed = processedData();
+    const rawData = queryResult.data;
 
-    if (!rawData || !processed || loading()) {
+    if (!rawData || queryResult.isLoading) {
       return null;
     }
 
     try {
-      // Expect 15 points per year: {year, day_offset, tavg}
-      const years = rawData.map((d) => +d.year);
-      const temps = processed.temperatures;
+      // Process the raw historical data to extract temperatures and years
+      // Expect format: {year, day_offset, tavg}
+      const years = rawData.map((d: any) => +d.year);
+      const temps = rawData.map((d: any) => +d.tavg);
 
-      // Percentiles across *all* points in the window (all years * 15 days)
-      const sorted = processed.sortedTemperatures;
+      // Calculate percentiles across all temperature points
+      const sorted = [...temps].sort((a, b) => a - b);
       const p05 = percentile(sorted, 5);
       const p95 = percentile(sorted, 95);
       const med = percentile(sorted, 50);
 
       // Color by anomaly vs overall median
-      const anomalies = temps.map((v) => v - med);
+      const anomalies = temps.map((v: number) => v - med);
       const zmin = Math.min(...anomalies),
         zmax = Math.max(...anomalies);
 
-      const scatter: ScatterPoint[] = rawData.map((d, i) => ({
+      const scatter: ScatterPoint[] = rawData.map((d: any, i: number) => ({
         x: +d.year, // stack by year on x-axis
         y: +d.tavg,
         // optional: keep offset if we later want to jitter or show tooltip
@@ -113,8 +112,8 @@ export default function SeasonalScatter(props: SeasonalScatterProps) {
 
   return (
     <ChartContainer
-      loading={loading()}
-      error={error()}
+      loading={queryResult.isLoading}
+      error={queryResult.error?.message || null}
       hasData={!!chartOptions()}
       chartType="scatter"
       loadingMessage={LOADING_MESSAGES.CHART}
