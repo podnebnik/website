@@ -3,8 +3,8 @@
  */
 
 import { createSignal, createEffect, createMemo } from "solid-js";
-import { requestHistoricalWindow } from "../helpers.js";
-import { percentile, epanechnikovKernel } from "../utils/statistics.js";
+import { requestHistoricalWindow } from "../helpers.ts";
+import { percentile, epanechnikovKernel } from "../utils/statistics.ts";
 
 export interface ChartDataHookParams {
   stationId: string | number;

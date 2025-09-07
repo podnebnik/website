@@ -1,7 +1,7 @@
 // code/ali-je-vroce/charts/Highchart.tsx
 import { onCleanup, onMount } from "solid-js";
 import Highcharts from "highcharts";
-import { HighchartProps } from "../../types/components.js";
+import { HighchartProps } from "../../types/components.ts";
 
 /**
  * Minimal Solid wrapper for Highcharts

@@ -2,7 +2,7 @@
 import { createMemo } from "solid-js";
 import { Highchart } from "./Highchart.tsx";
 import { ChartContainer } from "../components/ChartContainer.tsx";
-import { SeasonalHistogramProps } from "../../types/components.js";
+import { SeasonalHistogramProps } from "../../types/components.ts";
 import { percentile, stddev, epanechnikovKernel } from "../utils/statistics.ts";
 import { clamp } from "../utils/mathHelpers.ts";
 import { createHistogramChartConfig } from "./config/histogramConfig.ts";

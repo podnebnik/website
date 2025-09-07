@@ -3,7 +3,7 @@
  */
 
 import * as Highcharts from "highcharts";
-import { COLORS, DIMENSIONS, CHART_STYLES, CHART_DEFAULTS } from "../../utils/chartConstants.js";
+import { COLORS, DIMENSIONS, CHART_STYLES, CHART_DEFAULTS } from "../../utils/chartConstants.ts";
 
 export interface ScatterPoint {
   x: number;

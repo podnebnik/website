@@ -48,7 +48,7 @@
   - [x] 3.4 [Create data validation and processing logic in the hook]
   - [x] 3.5 [Add memoization for expensive calculations (percentiles, KDE) in the hook]
   - [x] 3.6 [Implement proper SolidJS reactive prop capture to avoid warnings]
-- [ ] 4.0 Refactor Chart Components to Use Shared Utilities
+- [x] 4.0 Refactor Chart Components to Use Shared Utilities
   - [x] 4.1 Refactor `SeasonalScatter.tsx` to use extracted statistical utilities
   - [x] 4.2 Replace inline chart configuration in SeasonalScatter with configuration builders
   - [x] 4.3 Update SeasonalScatter to use the custom data loading hook
@@ -57,4 +57,4 @@
   - [x] 4.6 Update SeasonalHistogram to use the custom data loading hook
   - [x] 4.7 Standardize error handling and loading states across both components
   - [x] 4.8 Remove duplicate utility functions from both component files
-  - [ ] 4.9 Update imports and ensure TypeScript compatibility across all files
+  - [x] 4.9 Update imports and ensure TypeScript compatibility across all files
