@@ -89,6 +89,14 @@ export type Nullable<T> = {
   [P in keyof T]: T[P] | null;
 };
 
+/**
+ * Prettify a type by flattening its structure. This is useful for improving
+ * readability in IDEs and error messages.
+ */
+export type Prettify<T> = {
+  [K in keyof T]: T[K];
+} & {};
+
 // =============================================================================
 // GEOGRAPHICAL TYPES
 // =============================================================================
