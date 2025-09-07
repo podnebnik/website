@@ -1,10 +1,10 @@
 /** @import * as Types "./types" */
 
 import { STAGE_DATA_BASE_URL, STAGING_VREMENAR_API_URL } from "./constants";
-import {  RequestStationData, StationsResponse } from '../types/api-raw.js';
+import {  HistoricalWindowResponseJson, RequestStationData, StationsResponse } from '../types/api-raw.js';
 import type { ProcessedStation, ProcessedTemperatureData } from '../types/models.js';
 
-/** Figure out if we’re running the local dev site (including LAN IP access). */
+/** Figure out if we're running the local dev site (including LAN IP access). */
 function isDevLikeHost(h: string) {
   if (!h) return false;
   if (h === "localhost" || h === "127.0.0.1" || h === "::1") return true;
@@ -270,6 +270,16 @@ function isDefined<T>(x: T | null | undefined): x is T {
   return x != null;
 }
 
+function isFiniteNumber(x: number | null | undefined): boolean {
+  return Number.isFinite(x);
+}
+
+function isValidRecord(
+  record: { year: number; tavg: number | null | undefined }
+): record is { year: number; tavg: number } {
+  return isFiniteNumber(record.year) && isFiniteNumber(record.tavg);
+}
+
 /**
  * Builds a window of dates centered around a given date, returning MM-DD formatted strings.
  * 
@@ -367,7 +377,19 @@ function buildDatasetteUrl({ sid, inList, withCols = true }: {
   return withCols ? common + `&_col=station_id&_col=date&_col=temperature_average_2m` : common;
 }
 
-type HistoricalRow = {
+/**
+ * Represents a historical weather data row from the database.
+ * Contains temperature measurements and metadata for a specific weather station on a given date.
+ *
+ * @interface HistoricalRowFromDatasette
+ * @property {number} rowid - Unique identifier for the database row
+ * @property {number} station_id - Identifier of the weather station that recorded the data
+ * @property {string} date - Date when the temperature data was recorded (ISO date string format)
+ * @property {number} [temperature_average_2m] - Optional average temperature at 2 meters height in Celsius
+ * @property {number} [temperature_avg] - Optional average temperature measurement in Celsius
+ * @property {number} [temperature_average] - Optional average temperature value in Celsius
+ */
+type HistoricalRowFromDatasette = {
   rowid: number;
   station_id: number;
   date: string;
@@ -376,12 +398,164 @@ type HistoricalRow = {
   temperature_average?: number;
 };
 
+// Types for normalized temperature data
+type NormalizedTemperatureRecord = {
+  year: number;
+  tavg: number;
+  day_offset?: number;
+};
+
+type HistoricalChartRecord = {
+  year: number;
+  tavg: number;
+  day_offset: number;
+};
+
+/**
+ * Extracts temperature value from various possible field names
+ */
+function extractTemperatureValue(record: {year?: number, tavg?:number}): number | null {
+  const tempValue = convertToNumberOrNull(record.tavg);
+  
+  /** 
+   * @deprecated Previous complex extraction logic replaced with simplified version above.
+   */
+  // const tempValue = 
+  //   record.tavg ??
+  //   record.temperature_average_2m ??
+  //   record.temperature_avg ??
+  //   record.temperature_average ??
+  //   record.avg ??
+  //   record.tempAvg ??
+  //   record.temp_mean ??
+  //   (record.tmin != null && record.tmax != null
+  //     ? (Number(record.tmin) + Number(record.tmax)) / 2
+  //     : null);
+  
+  return tempValue != null && Number.isFinite(Number(tempValue)) ? Number(tempValue) : null;
+}
+
+/**
+ * Extracts year from record, handling different date formats
+ */
+function extractYear(record: { year?: number | string; date?: string }): number | null {
+  const year = Number(
+    record.year ?? 
+    (typeof record.date === "string" ? record.date.slice(0, 4) : undefined)
+  );
+  
+  return Number.isFinite(year) ? year : null;
+}
+
+/**
+ * Normalizes temperature records from different data sources
+ */
+function normalizeTemperatureRecords(
+  rows: {year?: number, tavg?: number, day_offset?: number}[]): NormalizedTemperatureRecord[] {
+    console.log('rows to normalize:', rows);
+  return rows
+    .map((record) => {
+      const year = extractYear(record);
+      const tavg = extractTemperatureValue(record);
+      
+      if (year === null || tavg === null) return null;
+      
+      return {
+        year,
+        tavg,
+        day_offset: record.day_offset,
+      };
+    })
+    .filter(isDefined);
+}
+
+/**
+ * Processes and filters Datasette response data
+ */
+function processDatasetteResponse(rows: HistoricalRowFromDatasette[], stationId: number): { year: number; tavg: number }[] {
+  const filtered = rows.filter((row) => String(row.station_id) === String(stationId));
+  
+  return filtered
+    .map((row) => {
+      const date = String(row.date);
+      const year = Number(date.slice(0, 4));
+      const tavg =
+        convertToNumberOrNull(row.temperature_average_2m) ??
+        convertToNumberOrNull(row.temperature_avg) ??
+        convertToNumberOrNull(row.temperature_average);
+      return { year, tavg };
+    })
+    .filter(isValidRecord);
+}
+
+/**
+ * Fetches data from Datasette with fallback for invalid columns
+ */
+async function fetchFromDatasette(
+  sid: number, 
+  inList: string, 
+  timeoutMs: number = 10000
+): Promise<HistoricalRowFromDatasette[]> {
+  let url = buildDatasetteUrl({ sid, inList, withCols: true });
+  let response = await fetchWithTimeout(url, { timeoutMs });
+  
+  if (!response.ok) {
+    const text = await response.text().catch(() => "");
+    if (response.status === 400 && /invalid columns/i.test(text)) {
+      // Retry without column specification
+      url = buildDatasetteUrl({ sid, inList, withCols: false });
+      response = await fetchWithTimeout(url, { timeoutMs });
+    }
+    
+    if (!response.ok) {
+      throw new Error(`Datasette request failed with status ${response.status}`);
+    }
+  }
+
+  const responseData = await response.json() as HistoricalRowFromDatasette[];
+  console.log('Datasette response data:', responseData);
+  if (!Array.isArray(responseData)) {
+    throw new Error('Datasette response is not an array as expected');
+  }
+
+  return responseData;
+}
+
+/**
+ * Fetches historical data from the API
+ */
+async function fetchFromApi(
+  station_id: string | number,
+  center_mmdd: string,
+  window_days: number,
+  timeoutMs: number = 8000
+) {
+  const apiUrl = `${API_BASE}/staging/ali-je-vroce/historical_window?station_id=${encodeURIComponent(
+    station_id
+  )}&center_mmdd=${encodeURIComponent(center_mmdd)}&window_days=${encodeURIComponent(window_days)}`;
+
+  const response = await fetchWithTimeout(apiUrl, { timeoutMs });
+  
+  if (!response.ok) {
+    throw new Error(`API request failed with status ${response.status}`);
+  }
+
+  const responseData = await response.json() as { year: number; tavg: number }[] ;
+  console.log('API response data:', responseData);    
+  if (!Array.isArray(responseData)) {
+    throw new Error('API response is not an array as expected');
+  }
+  
+  return responseData;
+}
+
 /**
  * Requests historical temperature data for a specific weather station within a time window.
  * 
  * This function retrieves historical temperature data for a given station, centered around
  * a specific date (MM-DD format) with a configurable window of days. It attempts to fetch
- * data from an API first, then falls back to a Datasette source if the API fails.
+ * data from an API first (in production), then falls back to a Datasette source if the API fails.
+ * In development, it goes directly to Datasette to avoid API timeout issues.
  * 
  * The function normalizes data from different sources, handling various temperature field
  * names and formats. It filters out invalid data points and returns standardized temperature
@@ -406,107 +580,44 @@ type HistoricalRow = {
  * });
  * ```
  */
-export async function requestHistoricalWindow({ station_id, center_mmdd, window_days }: {
+export async function requestHistoricalWindow({ 
+  station_id, 
+  center_mmdd, 
+  window_days 
+}: {
   station_id: string | number;
   center_mmdd: string;
   window_days: number;
-}) {
+}): Promise<NormalizedTemperatureRecord[]> {
   const sid = Number(station_id);
   const mmddList = buildWindow(center_mmdd, window_days);
   const inList = mmddList.map((d) => `'${d}'`).join(", ");
 
-  // Normalizer works for both API and Datasette shapes
-  const normalize = (rows: any[]) =>
-    rows
-      .map((r) => {
-        const y = Number(
-          r.year ??
-            (typeof r.date === "string" ? r.date.slice(0, 4) : undefined)
-        );
-        const avg =
-          r.tavg ??
-          r.temperature_average_2m ??
-          r.temperature_avg ??
-          r.temperature_average ??
-          r.avg ??
-          r.tempAvg ??
-          r.temp_mean ??
-          (r.tmin != null && r.tmax != null
-            ? (Number(r.tmin) + Number(r.tmax)) / 2
-            : null);
-        if (!Number.isFinite(y) || !Number.isFinite(Number(avg))) return null;
-        return {
-          year: y,
-          tavg: Number(avg),
-          day_offset: r.day_offset != null ? Number(r.day_offset) : undefined,
-        };
-      })
-      .filter(isDefined); // Boolean function doesn’t narrow types (typescript quirk)
-
-  // DEV: go straight to Datasette (avoid 504 noise)
+  // In development mode, go directly to Datasette to avoid API timeouts
   if (__devLike) {
-    let url = buildDatasetteUrl({ sid, inList, withCols: true });
-    let r = await fetchWithTimeout(url);
-    if (!r.ok) {
-      const text = await r.text().catch(() => "");
-      if (r.status === 400 && /invalid columns/i.test(text)) {
-        url = buildDatasetteUrl({ sid, inList, withCols: false });
-        r = await fetchWithTimeout(url);
-      } else {
-        throw new Error(`Datasette failed (${r.status})`);
-      }
+    try {
+      const rows = await fetchFromDatasette(sid, inList);
+      const processedData = processDatasetteResponse(rows, sid);
+      return normalizeTemperatureRecords(processedData);
+    } catch (error) {
+      throw new Error(`Development datasette request failed: ${error instanceof Error ? error.message : String(error)}`);
     }
-    const rows = await r.json() as HistoricalRow[];
-    const filtered = rows.filter((row) => String(row.station_id) === String(sid));
-    const mapped = filtered
-      .map((row) => {
-        const date = String(row.date);
-        const year = Number(date.slice(0, 4));
-        const tavg =
-          convertToNumberOrNull(row.temperature_average_2m) ??
-          convertToNumberOrNull(row.temperature_avg) ??
-          convertToNumberOrNull(row.temperature_average);
-        return { year, tavg };
-      })
-      .filter((p) => Number.isFinite(p.year) && Number.isFinite(p.tavg));
-    return normalize(mapped);
   }
 
-  // PROD: try API → fallback to Datasette
-  const apiUrl = `${API_BASE}/staging/ali-je-vroce/historical_window?station_id=${encodeURIComponent(
-    station_id
-  )}&center_mmdd=${encodeURIComponent(center_mmdd)}&window_days=${encodeURIComponent(window_days)}`;
-
+  // In production mode, try API first, then fallback to Datasette
   try {
-    const viaApi = await fetchWithTimeout(apiUrl, { timeoutMs: 8000 });
-    if (!viaApi.ok) throw new Error(`HTTP ${viaApi.status}`);
-    const rows = await viaApi.json() as HistoricalRow[];
-    return normalize(rows);
-  } catch {
-    let url = buildDatasetteUrl({ sid, inList, withCols: true });
-    let r = await fetchWithTimeout(url, { timeoutMs: 8000 });
-    if (!r.ok) {
-      const text = await r.text().catch(() => "");
-      if (r.status === 400 && /invalid columns/i.test(text)) {
-        url = buildDatasetteUrl({ sid, inList, withCols: false });
-        r = await fetchWithTimeout(url, { timeoutMs: 8000 });
-      } else {
-        throw new Error(`Datasette failed (${r.status})`);
-      }
+    const apiRows = await fetchFromApi(station_id, center_mmdd, window_days);
+    return normalizeTemperatureRecords(apiRows);
+  } catch (apiError) {
+    // API failed, fallback to Datasette
+    try {
+      const rows = await fetchFromDatasette(sid, inList, 8000);
+      const processedData = processDatasetteResponse(rows, sid);
+      return normalizeTemperatureRecords(processedData);
+    } catch (datasetteError) {
+      throw new Error(
+        `Both API and Datasette requests failed. API: ${apiError instanceof Error ? apiError.message : String(apiError)}, Datasette: ${datasetteError instanceof Error ? datasetteError.message : String(datasetteError)}`
+      );
     }
-    const rows = await r.json() as HistoricalRow[];
-    const filtered = rows.filter((row) => String(row.station_id) === String(sid));
-    const mapped = filtered
-      .map((row) => {
-        const date = String(row.date);
-        const year = Number(date.slice(0, 4));
-        const tavg =
-          convertToNumberOrNull(row.temperature_average_2m) ??
-          convertToNumberOrNull(row.temperature_avg) ??
-          convertToNumberOrNull(row.temperature_average);
-        return { year, tavg };
-      })
-      .filter((p) => Number.isFinite(p.year) && Number.isFinite(p.tavg));
-    return normalize(mapped);
   }
 }
