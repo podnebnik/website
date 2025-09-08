@@ -30,6 +30,8 @@
   - Check for duplicate task. Sometimes the file is corrupted.
   - Always check the integrity of the file.
 
+- **Assumption**: Even when you think that you are done with task, ask and wait for confirmation.
+
 ## Tasks
 
 - [x] 1.0 Extend Query Infrastructure for Historical Data
@@ -80,40 +82,26 @@
   - [x] 6.4 Test error states display properly in both components
   - [x] 6.5 Test loading states work correctly
   - [x] 6.6 Validate that both components can share cached data when using same parameters
-  - [ ] 6.7 Test with different station IDs and date ranges to ensure flexibility - **STILL BROKEN**:
+  - [ ] 6.7 Test with different station IDs and date ranges to ensure flexibility
 
-**CURRENT ISSUE:**
+    **CURRENT STATUS:** Both robust charts created but still have issues with TODAY labels and styling, and some computations
 
-The histogram chart's TODAY label is still not appearing consistently. While the scatter chart works correctly, the histogram chart (first chart) intermittently fails to show the TODAY label.
+    **CURRENT SETUP:** 4 charts total displayed in test mode (`?test=1`):
 
-**OBSERVED BEHAVIOR:**
-✅ **Scatter Chart**: Shows "TODAY X.X°C" label consistently on right side  
-❌ **Histogram Chart**: TODAY label missing - only shows the vertical black line but no "TODAY: X.X°C" text label  
-✅ **Query Stability**: Parameters properly memoized, no unnecessary query recreation  
-✅ **Historical Data**: Renders immediately and consistently
+    1. SeasonalHistogramRobust (robust histogram)
+    2. SeasonalHistogram (original histogram)
+    3. SeasonalScatterRobust (robust scatter)
+    4. SeasonalScatter (original scatter)
 
-**ATTEMPTED FIXES:**
+    **INITIAL COMMIT WITH CHARTS**: b940de6d7bda1cd83a12a000a40e61054a2acc0f
 
-1. **Chart Label Configuration**: Changed from `formatter()` to `format` property - partially helped
-2. **Query Parameter Stability**: Refactored useHistoricalDataQuery to individual parameters
-3. **Race Condition Handling**: Allow chart creation even with invalid todayTemp
-4. **Enhanced Debugging**: Added logging to track label creation (labels are created but not displayed)
+    **IDENTIFIED ISSUES:**
 
-**ROOT CAUSE:**
-The issue appears to be with the Highcharts scatter series used for labels in the histogram configuration. Even though the label data is being created correctly (confirmed via console logs), the labels are not being rendered visually in the chart.
-
-**NEXT APPROACH:**
-Will implement a more robust chart update mechanism similar to the provided example:
-
-- Use `chart.series[n].setData()` for updating series data
-- Use `createEffect()` for reactive updates instead of recreating entire charts
-- Implement proper data processing separation from chart rendering
-
-**EXAMPLE IMPLEMENTATION TO FOLLOW:**
-The provided ScatterChart example shows the correct pattern:
-
-- Data processing in separate functions
-- Chart creation in `onMount()`
-- Updates via `createEffect()` using `setData()` and `redraw()`
-
-**STATUS:** ❌ **NOT RESOLVED** - Histogram TODAY labels still not appearing consistently
+    - [ ] 6.7.1 Compare original vs robust histogram charts to identify TODAY label differences
+    - [ ] 6.7.2 Analyze original histogram's working TODAY label implementation
+    - [ ] 6.7.3 Fix TODAY label positioning in SeasonalHistogramRobust
+    - [x] 6.7.4 Fix any computational differences between original and robust versions; series 2 in robust is not correct for sure
+    - [ ] 6.7.5 Ensure consistent styling across all chart versions - robust must match the original
+    - [ ] 6.7.6 Test with different station IDs (1030=Bovec, 1495=Ljubljana, etc.)
+    - [ ] 6.7.7 Validate both robust charts show identical results to originals
+    - [ ] 6.7.8 Verify TODAY labels appear consistently in all scenarios

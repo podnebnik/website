@@ -160,16 +160,20 @@ export function createLabelSeries(
     createLabelPoint(p95, "95th percentile", yMax, { dx: 10 }),
   ];
 
-  // Add TODAY label if valid
+  // Add TODAY label if valid - with improved positioning
   if (Number.isFinite(today)) {
+    console.log("🔥 Creating TODAY label:", today, "at yMax:", yMax);
     const todayLabel = createLabelPoint(today!, `TODAY: ${today!.toFixed(1)}°C`, yMax, {
       dx: 0,
       color: COLORS.BLACK,
       bold: true,
       size: CHART_STYLES.FONT_SIZE_MEDIUM,
-      topFrac: 0.90,
+      topFrac: 0.85, // Move slightly lower to avoid clipping
     });
     labelPoints.push(todayLabel);
+    console.log("🔥 TODAY label created and added to labelPoints");
+  } else {
+    console.log("🔥 TODAY label not created - invalid today value:", today);
   }
 
   const labelSeries: Highcharts.SeriesOptionsType = {

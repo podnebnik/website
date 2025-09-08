@@ -9,9 +9,11 @@ import { StationSelector } from "./components/StationSelector.tsx";
 import { TemperatureDisplay } from "./components/TemperatureDisplay.tsx";
 import { ErrorMessage } from "./components/ErrorMessage.tsx";
 
-// ✅ INSERT: SeasonalScatter (Highcharts #1)
-import SeasonalScatter from "./charts/SeasonalScatter.tsx";
+// ✅ INSERT: SeasonalScatter (Highcharts #1) - Testing robust versions
+import SeasonalScatterRobust from "./charts/SeasonalScatterRobust.tsx";
+import SeasonalHistogramRobust from "./charts/SeasonalHistogramRobust.tsx";
 import SeasonalHistogram from "./charts/SeasonalHistogram.tsx";
+import SeasonalScatter from "./charts/SeasonalScatter.tsx";
 
 /**
  * AliJeVroce is a Solid JS component that displays whether it is hot today in a selected location,
@@ -108,6 +110,23 @@ export function AliJeVroce() {
       {/* ✅ INSERT: test-only SeasonalScatter chart (uses current station + today's MM-DD) */}
       <Show when={isTest()}>
         <div class="mt-10">
+          <SeasonalHistogramRobust
+            stationId={selectedStation()?.station_id ?? 14}
+            center_mmdd={mmdd}
+            todayTemp={(() => {
+              const temp = tempAvg() ? +tempAvg()! : null;
+              console.log(
+                "Histogram todayTemp:",
+                temp,
+                "station:",
+                selectedStation()?.station_id
+              );
+              return temp;
+            })()}
+            title={`Distribution around ${mmdd}`}
+          />
+        </div>
+        <div class="mt-10">
           <SeasonalHistogram
             stationId={selectedStation()?.station_id ?? 14}
             center_mmdd={mmdd}
@@ -122,6 +141,23 @@ export function AliJeVroce() {
               return temp;
             })()}
             title={`Distribution around ${mmdd}`}
+          />
+        </div>
+        <div class="mt-6">
+          <SeasonalScatterRobust
+            stationId={selectedStation()?.station_id ?? 14}
+            center_mmdd={mmdd}
+            todayTemp={(() => {
+              const temp = tempAvg() ? +tempAvg()! : null;
+              console.log(
+                "Scatter todayTemp:",
+                temp,
+                "station:",
+                selectedStation()?.station_id
+              );
+              return temp;
+            })()}
+            title={prettyTitle}
           />
         </div>
         <div class="mt-6">
