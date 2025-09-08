@@ -20,12 +20,11 @@ import * as Highcharts from "highcharts";
  *  - title?: string
  */
 export default function SeasonalHistogram(props: SeasonalHistogramProps) {
-  // Create reactive parameters for the query
-  const queryParams = createMemo(() => ({
-    station_id: Number(props.stationId),
-    center_mmdd: props.center_mmdd,
-    window_days: CHART_DATA.WINDOW_DAYS,
-  }));
+  // Create stable reactive parameters to prevent unnecessary query recreations
+  const stationId = () => Number(props.stationId);
+  const centerMmdd = () => props.center_mmdd;
+  const windowDays = () => CHART_DATA.WINDOW_DAYS;
+
   console.log(
     "Histogram todayTemp:",
     props.todayTemp,
@@ -33,8 +32,12 @@ export default function SeasonalHistogram(props: SeasonalHistogramProps) {
     props.stationId
   );
 
-  // Use TanStack Query hook for historical data
-  const queryResult = useHistoricalDataQuery(queryParams());
+  // Use TanStack Query hook for historical data with individual parameters
+  const queryResult = useHistoricalDataQuery(
+    stationId(),
+    centerMmdd(),
+    windowDays()
+  );
 
   // Memoized histogram-specific processing
   const chartOptions = createMemo<Highcharts.Options | null>(() => {
@@ -45,16 +48,12 @@ export default function SeasonalHistogram(props: SeasonalHistogramProps) {
       return null;
     }
 
-    // Only generate new chart options when todayTemp is valid to prevent race condition
-    const hasValidTodayTemp =
-      props.todayTemp == null || Number.isFinite(Number(props.todayTemp));
-    if (!hasValidTodayTemp) {
-      console.log(
-        "Histogram skipping chart config due to invalid todayTemp:",
-        props.todayTemp
-      );
-      return null;
-    }
+    // Allow chart creation even when todayTemp is invalid - just omit TODAY labels
+    // This prevents race conditions during station changes
+    const todayTemp =
+      props.todayTemp != null && Number.isFinite(Number(props.todayTemp))
+        ? Number(props.todayTemp)
+        : null;
 
     try {
       // Process the raw historical data inline
@@ -116,10 +115,7 @@ export default function SeasonalHistogram(props: SeasonalHistogramProps) {
       }
 
       const yMax = Math.max(...ys) * 1.12; // a bit of headroom
-      const todayVal =
-        props.todayTemp != null && Number.isFinite(Number(props.todayTemp))
-          ? Number(props.todayTemp)
-          : null;
+      const todayVal = todayTemp; // Use the validated todayTemp from memo scope
 
       const config = createHistogramChartConfig({
         left,
@@ -132,8 +128,6 @@ export default function SeasonalHistogram(props: SeasonalHistogramProps) {
         yMax,
         title: props.title || `Distribution around ${props.center_mmdd}`,
       });
-
-      console.log("Generated histogram config: ", config);
 
       return config;
     } catch (e) {

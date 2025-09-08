@@ -31,19 +31,19 @@ export function Highchart(props: HighchartProps) {
   // Handle options changes after initial mount
   createEffect(() => {
     if (!isInitialized() || !props.options || !chart) {
-      console.log("Highchart effect skipping:", {
-        isInitialized: isInitialized(),
-        hasOptions: !!props.options,
-        hasChart: !!chart,
-      });
       return;
     }
 
-    console.log("Highchart recreating chart with new options:", props.options);
-    // Always recreate the chart to avoid update issues with dynamic series
+    // Defensive check: ensure options has required structure
+    if (!props.options.series || !Array.isArray(props.options.series)) {
+      console.warn("Highchart: Invalid options structure, skipping update");
+      return;
+    }
+
+    // For complex charts like ours (with multiple series and dynamic configurations),
+    // recreation is more reliable than incremental updates
     chart.destroy();
     chart = Highcharts.chart(container, props.options);
-    console.log("Chart recreated successfully");
   });
 
   return (

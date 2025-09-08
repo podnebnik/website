@@ -23,12 +23,11 @@ import * as Highcharts from "highcharts";
  *  - title?: string
  */
 export default function SeasonalScatter(props: SeasonalScatterProps) {
-  // Create reactive parameters for the query
-  const queryParams = createMemo(() => ({
-    station_id: Number(props.stationId),
-    center_mmdd: props.center_mmdd,
-    window_days: CHART_DATA.WINDOW_DAYS,
-  }));
+  // Create stable reactive parameters to prevent unnecessary query recreations
+  const stationId = () => Number(props.stationId);
+  const centerMmdd = () => props.center_mmdd;
+  const windowDays = () => CHART_DATA.WINDOW_DAYS;
+
   console.log(
     "Scatter todayTemp:",
     props.todayTemp,
@@ -36,8 +35,12 @@ export default function SeasonalScatter(props: SeasonalScatterProps) {
     props.stationId
   );
 
-  // Use TanStack Query hook for historical data
-  const queryResult = useHistoricalDataQuery(queryParams());
+  // Use TanStack Query hook for historical data with individual parameters
+  const queryResult = useHistoricalDataQuery(
+    stationId(),
+    centerMmdd(),
+    windowDays()
+  );
 
   // Memoized chart options calculation
   const chartOptions = createMemo<Highcharts.Options | null>(() => {
@@ -48,16 +51,12 @@ export default function SeasonalScatter(props: SeasonalScatterProps) {
       return null;
     }
 
-    // Only generate new chart options when todayTemp is valid to prevent race condition
-    const hasValidTodayTemp =
-      props.todayTemp == null || Number.isFinite(Number(props.todayTemp));
-    if (!hasValidTodayTemp) {
-      console.log(
-        "Scatter skipping chart config due to invalid todayTemp:",
-        props.todayTemp
-      );
-      return null;
-    }
+    // Allow chart creation even when todayTemp is invalid - just omit TODAY labels
+    // This prevents race conditions during station changes
+    const todayTemp =
+      props.todayTemp != null && Number.isFinite(Number(props.todayTemp))
+        ? Number(props.todayTemp)
+        : null;
 
     try {
       // Process the raw historical data to extract temperatures and years
@@ -95,10 +94,10 @@ export default function SeasonalScatter(props: SeasonalScatterProps) {
       // "Today" label plotted slightly to the right of the newest year
       const todayX = x1 + 2;
       const todayPoint: TodayPoint | null =
-        props.todayTemp != null && Number.isFinite(Number(props.todayTemp))
+        todayTemp != null
           ? {
               x: todayX,
-              y: Number(props.todayTemp),
+              y: todayTemp,
               marker: { radius: 7, lineWidth: 2, lineColor: "#333" },
             }
           : null;
@@ -132,8 +131,6 @@ export default function SeasonalScatter(props: SeasonalScatterProps) {
         todayLabel: CHART_DATA.TODAY_LABEL,
       });
 
-      console.log("Generated scatter config: ", config);
-
       // Use configuration builder instead of inline configuration
       return config;
     } catch (e) {
@@ -141,8 +138,6 @@ export default function SeasonalScatter(props: SeasonalScatterProps) {
       return null;
     }
   });
-
-  console.log("Scatter chart options:", chartOptions());
 
   return (
     <ChartContainer

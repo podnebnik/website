@@ -1,7 +1,7 @@
 import { useQuery, UseQueryResult } from '@tanstack/solid-query';
 import { requestData, loadStations, requestHistoricalWindow } from '../helpers';
 import { createLocalStoragePersistor } from '../utils/persistence';
-import type { ProcessedTemperatureData, ProcessedStation, HistoricalTemperatureData, HistoricalDataQueryParams } from '../../types/models.js';
+import type { ProcessedTemperatureData, ProcessedStation, HistoricalTemperatureData } from '../../types/models.js';
 import type { CategorizedError } from '../../types/queries.js';
 
 /**
@@ -155,31 +155,27 @@ export function useWeatherQuery(stationId: string): UseQueryResult<ProcessedTemp
 }
 
 /**
- * Custom hook for fetching historical temperature data for seasonal charts
- * Wraps the requestHistoricalWindow function with TanStack Query for caching and error handling
- *
- * @param params - Historical data query parameters
- * @param params.station_id - The ID of the station to fetch data for
- * @param params.center_mmdd - Center date in MM-DD format (e.g., "07-15" for July 15th)
- * @param params.window_days - Number of days to include in the window around the center date
- * @returns TanStack Query result for historical temperature data
+ * Hook for fetching historical temperature data for seasonal charts
+ * 
+ * This hook wraps the existing requestHistoricalWindow function with TanStack Query
+ * for better caching, loading states, and error handling.
+ * 
+ * @param stationId - Station ID number
+ * @param centerMmdd - Date in MM-DD format (e.g., "07-15")  
+ * @param windowDays - Number of days around center date (e.g., 15)
+ * @returns UseQueryResult with historical temperature data and states
  * 
  * @example
- * ```typescript
- * const { data, isLoading, error } = useHistoricalDataQuery({
- *   station_id: 123,
- *   center_mmdd: "07-15",
- *   window_days: 30
- * });
+ * ```ts
+ * const { data, isLoading, error } = useHistoricalDataQuery(123, "07-15", 30);
  * ```
  */
-export function useHistoricalDataQuery(params: HistoricalDataQueryParams): UseQueryResult<HistoricalTemperatureData, CategorizedError> {
+export function useHistoricalDataQuery(
+    stationId: number, 
+    centerMmdd: string, 
+    windowDays: number
+): UseQueryResult<HistoricalTemperatureData, CategorizedError> {
     return useQuery(() => {
-        // Ensure we track all parameter changes by accessing them explicitly
-        const stationId = params.station_id;
-        const centerMmdd = params.center_mmdd;
-        const windowDays = params.window_days;
-
         return {
             queryKey: queryKeys.historicalData(stationId, centerMmdd, windowDays),
             queryFn: async ({ signal }) => {
@@ -222,7 +218,6 @@ export function useHistoricalDataQuery(params: HistoricalDataQueryParams): UseQu
             },
             refetchIntervalInBackground: true
         };
-
     });
 }
 

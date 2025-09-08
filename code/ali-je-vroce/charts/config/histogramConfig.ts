@@ -40,7 +40,6 @@ export function createHistogramChartConfig({
   title,
 }: HistogramConfigParams): Highcharts.Options {
   const labelSeries = createLabelSeries(p05, p50, p95, today, yMax);
-  console.log("Histogram label series:", labelSeries);
 
   return {
     chart: {
@@ -140,9 +139,7 @@ export function createLabelPoint(
       },
       crop: false,
       overflow: "allow" as const,
-      formatter() {
-        return text;
-      },
+      format: text,
     },
   };
 }
@@ -157,8 +154,6 @@ export function createLabelSeries(
   today: number | null,
   yMax: number
 ): Highcharts.SeriesOptionsType {
-  console.log("createLabelSeries: ", {today})
-  
   const labelPoints = [
     createLabelPoint(p05, "5th percentile", yMax, { dx: -10 }),
     createLabelPoint(p50, "50th percentile", yMax),
@@ -168,13 +163,13 @@ export function createLabelSeries(
   // Add TODAY label if valid
   if (Number.isFinite(today)) {
     const todayLabel = createLabelPoint(today!, `TODAY: ${today!.toFixed(1)}°C`, yMax, {
-      dx: 12,
+      dx: 0,
       color: COLORS.BLACK,
       bold: true,
       size: CHART_STYLES.FONT_SIZE_MEDIUM,
+      topFrac: 0.90,
     });
     labelPoints.push(todayLabel);
-    console.log("Added TODAY label:", todayLabel);
   }
 
   const labelSeries: Highcharts.SeriesOptionsType = {
@@ -185,7 +180,6 @@ export function createLabelSeries(
     showInLegend: false,
   };
   
-  console.log("Histogram label series data:", labelSeries.data);
   return labelSeries;
 }
 

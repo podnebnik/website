@@ -80,33 +80,40 @@
   - [x] 6.4 Test error states display properly in both components
   - [x] 6.5 Test loading states work correctly
   - [x] 6.6 Validate that both components can share cached data when using same parameters
-  - [ ] 6.7 Test with different station IDs and date ranges to ensure flexibility - **ISSUE**:
+  - [ ] 6.7 Test with different station IDs and date ranges to ensure flexibility - **STILL BROKEN**:
 
-ISSUE Subtask 6.7: Race condition during station changes causes TODAY labels to disappear
+**CURRENT ISSUE:**
 
-- TanStack Query returns NaN briefly during station transitions
-- Chart recreation happens with incomplete data during race condition
-- Inconsistent behavior: sometimes histogram labels missing, sometimes both missing
+The histogram chart's TODAY label is still not appearing consistently. While the scatter chart works correctly, the histogram chart (first chart) intermittently fails to show the TODAY label.
 
-ATTEMPTED SOLUTIONS:
+**OBSERVED BEHAVIOR:**
+✅ **Scatter Chart**: Shows "TODAY X.X°C" label consistently on right side  
+❌ **Histogram Chart**: TODAY label missing - only shows the vertical black line but no "TODAY: X.X°C" text label  
+✅ **Query Stability**: Parameters properly memoized, no unnecessary query recreation  
+✅ **Historical Data**: Renders immediately and consistently
 
-- Added validation to skip chart config during NaN transitions
-- Implemented chart recreation instead of chart.update()
-- Enhanced debugging and console logging
-- Modified both SeasonalHistogram.tsx and SeasonalScatter.tsx
+**ATTEMPTED FIXES:**
 
-STATUS: Partially working but inconsistent
+1. **Chart Label Configuration**: Changed from `formatter()` to `format` property - partially helped
+2. **Query Parameter Stability**: Refactored useHistoricalDataQuery to individual parameters
+3. **Race Condition Handling**: Allow chart creation even with invalid todayTemp
+4. **Enhanced Debugging**: Added logging to track label creation (labels are created but not displayed)
 
-- Initial load: works correctly
-- After station changes: labels sometimes missing
-- Need fresh approach from commit ea08e02bf7478286dfaaf3104e2afa50975e3506
+**ROOT CAUSE:**
+The issue appears to be with the Highcharts scatter series used for labels in the histogram configuration. Even though the label data is being created correctly (confirmed via console logs), the labels are not being rendered visually in the chart.
 
-FILES MODIFIED:
+**NEXT APPROACH:**
+Will implement a more robust chart update mechanism similar to the provided example:
 
-- charts/Highchart.tsx: Added chart recreation logic
-- charts/SeasonalHistogram.tsx: Added race condition protection
-- charts/SeasonalScatter.tsx: Added race condition protection
-- charts/config/histogramConfig.ts: Enhanced debugging
-- hooks/queries.ts: TanStack Query integration
-- vroce.tsx: TODAY temp prop passing
-- types/components.ts: Type updates"
+- Use `chart.series[n].setData()` for updating series data
+- Use `createEffect()` for reactive updates instead of recreating entire charts
+- Implement proper data processing separation from chart rendering
+
+**EXAMPLE IMPLEMENTATION TO FOLLOW:**
+The provided ScatterChart example shows the correct pattern:
+
+- Data processing in separate functions
+- Chart creation in `onMount()`
+- Updates via `createEffect()` using `setData()` and `redraw()`
+
+**STATUS:** ❌ **NOT RESOLVED** - Histogram TODAY labels still not appearing consistently
