@@ -1,7 +1,7 @@
 import { queryKeys } from "../hooks/queries.ts";
-import { requestData } from "../helpers.ts";
+import { requestData, requestHistoricalWindow } from "../helpers.ts";
 import { QueryClient } from "@tanstack/solid-query";
-import type { ProcessedStation, ProcessedTemperatureData } from '../../types/models.js';
+import type { ProcessedStation, ProcessedTemperatureData, HistoricalTemperatureData } from '../../types/models.js';
 
 /**
  * Popular weather stations in Slovenia that are frequently accessed by users
@@ -94,4 +94,57 @@ export function prefetchStationsData(queryClient: QueryClient): Promise<Processe
         console.error('Error prefetching stations:', error);
         // Return void to prevent promise rejection
     });
+}
+
+/**
+ * Prefetches historical data for a specific station and date window
+ * This improves TODAY label consistency by ensuring historical data is available
+ * when charts are rendered
+ */
+export function prefetchHistoricalData(
+    queryClient: QueryClient,
+    stationId: number,
+    centerMmdd: string,
+    windowDays: number = 14
+): Promise<HistoricalTemperatureData | void> {
+    // Don't prefetch if already in cache and fresh
+    const existingQuery = queryClient.getQueryState(queryKeys.historicalData(stationId, centerMmdd, windowDays));
+    if (existingQuery && existingQuery.dataUpdatedAt && 
+        Date.now() - existingQuery.dataUpdatedAt < 15 * 60 * 1000) { // 15 minutes stale time
+        return Promise.resolve(existingQuery.data as HistoricalTemperatureData | undefined);
+    }
+
+    return queryClient.prefetchQuery({
+        queryKey: queryKeys.historicalData(stationId, centerMmdd, windowDays),
+        queryFn: async (): Promise<HistoricalTemperatureData> => {
+            const result = await requestHistoricalWindow({
+                station_id: stationId,
+                center_mmdd: centerMmdd,
+                window_days: windowDays
+            });
+            return result;
+        },
+        staleTime: 1000 * 60 * 15, // 15 minutes - historical data is stable
+    }).catch((error: unknown) => {
+        console.error(`Error prefetching historical data for station ${stationId}:`, error);
+        // Return void to prevent promise rejection
+    });
+}
+
+/**
+ * Prefetches historical data for popular stations around today's date
+ * This ensures TODAY labels are consistent when users first visit the site
+ */
+export function prefetchPopularStationsHistoricalData(queryClient: QueryClient): Promise<(HistoricalTemperatureData | void)[]> {
+    // Get today's MM-DD format
+    const today = new Date();
+    const mm = String(today.getMonth() + 1).padStart(2, "0");
+    const dd = String(today.getDate()).padStart(2, "0");
+    const todayMmdd = `${mm}-${dd}`;
+
+    return Promise.all(
+        POPULAR_STATION_IDS.map(stationId =>
+            prefetchHistoricalData(queryClient, stationId, todayMmdd, 14)
+        )
+    );
 }

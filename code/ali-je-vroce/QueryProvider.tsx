@@ -8,6 +8,7 @@ import { Show, onMount, Component, JSX } from "solid-js";
 import {
   prefetchPopularStations,
   prefetchStationsData,
+  prefetchPopularStationsHistoricalData,
 } from "./utils/prefetching.js";
 import { createLocalStoragePersistor } from "./utils/persistence";
 import { QueryProviderProps } from "../types/components";
@@ -144,6 +145,11 @@ export const QueryProvider: Component<QueryProviderProps> = (props) => {
     setTimeout(() => {
       prefetchPopularStations(queryClient);
     }, 2000); // 2 second delay
+
+    // Prefetch historical data for popular stations to ensure TODAY labels work consistently
+    setTimeout(() => {
+      prefetchPopularStationsHistoricalData(queryClient);
+    }, 4000); // 4 second delay - after weather data is prefetched
   });
 
   return (

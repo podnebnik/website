@@ -26,10 +26,12 @@ export default function SeasonalHistogram(props: SeasonalHistogramProps) {
   const windowDays = () => CHART_DATA.WINDOW_DAYS;
 
   console.log(
-    "Histogram todayTemp:",
+    "📊 ORIGINAL Histogram - todayTemp prop:",
     props.todayTemp,
-    "station:",
-    props.stationId
+    "typeof:",
+    typeof props.todayTemp,
+    "isFinite:",
+    Number.isFinite(Number(props.todayTemp))
   );
 
   // Use TanStack Query hook for historical data with individual parameters
@@ -54,6 +56,8 @@ export default function SeasonalHistogram(props: SeasonalHistogramProps) {
       props.todayTemp != null && Number.isFinite(Number(props.todayTemp))
         ? Number(props.todayTemp)
         : null;
+
+    console.log("📊 ORIGINAL Histogram - validated todayTemp:", todayTemp);
 
     try {
       // Process the raw historical data inline

@@ -102,6 +102,14 @@ export default function SeasonalScatter(props: SeasonalScatterProps) {
             }
           : null;
 
+      console.log(
+        "🔥 Scatter - todayPoint creation:",
+        "todayTemp:",
+        todayTemp,
+        "todayPoint:",
+        todayPoint
+      );
+
       const yMin = Math.floor(
         Math.min(...temps, todayPoint?.y ?? Math.min(...temps)) - 1
       );

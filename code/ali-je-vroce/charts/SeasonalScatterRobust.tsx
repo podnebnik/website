@@ -112,6 +112,14 @@ const SeasonalScatterRobust = (props: SeasonalScatterProps) => {
             }
           : null;
 
+      console.log(
+        "🔥 ScatterRobust - todayPoint creation:",
+        "todayTemp:",
+        todayTemp,
+        "todayPoint:",
+        todayPoint
+      );
+
       const yMin = Math.floor(
         Math.min(...temps, todayPoint?.y ?? Math.min(...temps)) - 1
       );

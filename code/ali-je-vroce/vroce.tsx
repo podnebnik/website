@@ -114,10 +114,14 @@ export function AliJeVroce() {
             stationId={selectedStation()?.station_id ?? 14}
             center_mmdd={mmdd}
             todayTemp={(() => {
-              const temp = tempAvg() ? +tempAvg()! : null;
+              const rawTemp = tempAvg();
+              const temp =
+                rawTemp != null && !isNaN(+rawTemp) ? +rawTemp : null;
               console.log(
-                "Histogram todayTemp:",
+                "HistogramRobust todayTemp:",
                 temp,
+                "raw:",
+                rawTemp,
                 "station:",
                 selectedStation()?.station_id
               );
@@ -131,10 +135,14 @@ export function AliJeVroce() {
             stationId={selectedStation()?.station_id ?? 14}
             center_mmdd={mmdd}
             todayTemp={(() => {
-              const temp = tempAvg() ? +tempAvg()! : null;
+              const rawTemp = tempAvg();
+              const temp =
+                rawTemp != null && !isNaN(+rawTemp) ? +rawTemp : null;
               console.log(
                 "Histogram todayTemp:",
                 temp,
+                "raw:",
+                rawTemp,
                 "station:",
                 selectedStation()?.station_id
               );
@@ -148,10 +156,14 @@ export function AliJeVroce() {
             stationId={selectedStation()?.station_id ?? 14}
             center_mmdd={mmdd}
             todayTemp={(() => {
-              const temp = tempAvg() ? +tempAvg()! : null;
+              const rawTemp = tempAvg();
+              const temp =
+                rawTemp != null && !isNaN(+rawTemp) ? +rawTemp : null;
               console.log(
-                "Scatter todayTemp:",
+                "ScatterRobust todayTemp:",
                 temp,
+                "raw:",
+                rawTemp,
                 "station:",
                 selectedStation()?.station_id
               );
@@ -165,10 +177,14 @@ export function AliJeVroce() {
             stationId={selectedStation()?.station_id ?? 14}
             center_mmdd={mmdd}
             todayTemp={(() => {
-              const temp = tempAvg() ? +tempAvg()! : null;
+              const rawTemp = tempAvg();
+              const temp =
+                rawTemp != null && !isNaN(+rawTemp) ? +rawTemp : null;
               console.log(
                 "Scatter todayTemp:",
                 temp,
+                "raw:",
+                rawTemp,
                 "station:",
                 selectedStation()?.station_id
               );

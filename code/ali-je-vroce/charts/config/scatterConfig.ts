@@ -59,6 +59,16 @@ export function createScatterChartConfig({
   trendPerCentury,
   todayLabel,
 }: ScatterConfigParams): Highcharts.Options {
+  console.log(
+    "🔥 Scatter Config - TODAY series creation:",
+    "todayPoint:",
+    todayPoint,
+    "todayLabel:",
+    todayLabel,
+    "adding TODAY series:",
+    !!todayPoint
+  );
+
   return {
     chart: {
       type: "scatter",

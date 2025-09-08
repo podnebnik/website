@@ -97,7 +97,7 @@
 
     **IDENTIFIED ISSUES:**
 
-    - [ ] 6.7.1 Compare original vs robust histogram charts to identify TODAY label differences
+    - [x] 6.7.1 Compare original vs robust histogram charts to identify TODAY label differences
     - [ ] 6.7.2 Analyze original histogram's working TODAY label implementation
     - [ ] 6.7.3 Fix TODAY label positioning in SeasonalHistogramRobust
     - [x] 6.7.4 Fix any computational differences between original and robust versions; series 2 in robust is not correct for sure

@@ -6,6 +6,7 @@ import { useQueryClient } from '@tanstack/solid-query';
 import { requestData, loadStations } from '../helpers';
 import { generateOptimisticWeatherData } from '../utils/optimistic';
 import { retryWithBackoff, createNetworkMonitor } from '../utils/errorRecovery.js';
+import { prefetchHistoricalData } from '../utils/prefetching';
 import type { ProcessedStation } from '../../types/models.js';
 
 /**
@@ -245,6 +246,17 @@ export function useWeatherData() {
             // Update the station ID signal
             setStationId(String(station.station_id));
         });
+
+        // Proactively prefetch historical data for the new station to improve chart loading
+        const today = new Date();
+        const mm = String(today.getMonth() + 1).padStart(2, "0");
+        const dd = String(today.getDate()).padStart(2, "0");
+        const todayMmdd = `${mm}-${dd}`;
+        
+        // Prefetch historical data in the background for better chart performance
+        setTimeout(() => {
+            prefetchHistoricalData(queryClient, station.station_id, todayMmdd, 14);
+        }, 1000); // Small delay to prioritize weather data fetch
 
         // Instead of directly calling the API, use the query client
         // This ensures consistency with the hook-based approach

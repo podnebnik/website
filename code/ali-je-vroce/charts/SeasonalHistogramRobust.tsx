@@ -25,10 +25,12 @@ const SeasonalHistogramRobust = (props: SeasonalHistogramProps) => {
   const windowDays = () => CHART_DATA.WINDOW_DAYS;
 
   console.log(
-    "🔥 Histogram Robust - todayTemp:",
+    "🔥 ROBUST Histogram - todayTemp prop:",
     props.todayTemp,
-    "station:",
-    props.stationId
+    "typeof:",
+    typeof props.todayTemp,
+    "isFinite:",
+    Number.isFinite(Number(props.todayTemp))
   );
 
   // Use TanStack Query hook for historical data with individual parameters
