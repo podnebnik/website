@@ -8,7 +8,7 @@ import { clamp } from "../utils/mathHelpers.ts";
 import { createHistogramChartConfig } from "./config/histogramConfig.ts";
 import { useHistoricalDataQuery } from "../hooks/queries.ts";
 import { LOADING_MESSAGES } from "../utils/uiConstants.ts";
-import { CHART_DATA } from "../utils/chartConstants.ts";
+import { CHART_DATA, DIMENSIONS } from "../utils/chartConstants.ts";
 import * as Highcharts from "highcharts";
 
 /**
@@ -24,15 +24,6 @@ export default function SeasonalHistogram(props: SeasonalHistogramProps) {
   const stationId = () => Number(props.stationId);
   const centerMmdd = () => props.center_mmdd;
   const windowDays = () => CHART_DATA.WINDOW_DAYS;
-
-  console.log(
-    "📊 ORIGINAL Histogram - todayTemp prop:",
-    props.todayTemp,
-    "typeof:",
-    typeof props.todayTemp,
-    "isFinite:",
-    Number.isFinite(Number(props.todayTemp))
-  );
 
   // Use TanStack Query hook for historical data with individual parameters
   const queryResult = useHistoricalDataQuery(
@@ -57,31 +48,27 @@ export default function SeasonalHistogram(props: SeasonalHistogramProps) {
         ? Number(props.todayTemp)
         : null;
 
-    console.log("📊 ORIGINAL Histogram - validated todayTemp:", todayTemp);
-
     try {
       // Process the raw historical data inline
       const temperatures = rawData.map((d: any) => +d.tavg);
       const sortedTemperatures = [...temperatures].sort((a, b) => a - b);
-      const temperatureRange = {
-        min: Math.min(...temperatures),
-        max: Math.max(...temperatures),
-      };
 
       // Calculate specific percentiles needed for histogram (5%, 50%, 95%)
       const p05 = percentile(sortedTemperatures, 5);
       const p50 = percentile(sortedTemperatures, 50);
       const p95 = percentile(sortedTemperatures, 95);
 
-      // Extend range for better visualization
-      const padding = 0.5; // °C
-      const xMin = Math.floor(temperatureRange.min - padding);
-      const xMax = Math.ceil(temperatureRange.max + padding);
+      // Set chart axis range to data bounds ± 2°C
+      const dataMin = Math.min(...temperatures);
+      const dataMax = Math.max(...temperatures);
+      const padding = 2; // °C
+      const axisMin = dataMin - padding;
+      const axisMax = dataMax + padding;
 
-      // Generate denser grid for histogram display (every 0.1°C)
+      // Generate histogram data points only within the intended axis range
       const step = 0.1; // °C resolution
       const xs = [];
-      for (let x = xMin; x <= xMax + 1e-9; x += step) xs.push(x);
+      for (let x = axisMin; x <= axisMax; x += step) xs.push(x);
 
       // Use robust bandwidth calculation (SeasonalHistogram's approach)
       const IQR =
@@ -148,7 +135,7 @@ export default function SeasonalHistogram(props: SeasonalHistogramProps) {
       chartType="histogram"
       loadingMessage={LOADING_MESSAGES.HISTOGRAM}
     >
-      <Highchart options={chartOptions()!} />
+      <Highchart options={chartOptions()!} height={DIMENSIONS.DEFAULT_HEIGHT} />
     </ChartContainer>
   );
 }

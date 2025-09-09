@@ -46,7 +46,8 @@ export function createHistogramChartConfig({
     ? createTodayMarkerSeries(today!, yMax)
     : null;
     
-  console.log("🔥 Histogram - TODAY series created:", !!todaySeries, "today value:", today);
+  const xAxisMin = left[0]?.[0] ?? null;
+  const xAxisMax = right[right.length - 1]?.[0] ?? null;
 
   return {
     chart: {
@@ -58,9 +59,15 @@ export function createHistogramChartConfig({
     },
     title: { text: title, y: 10 },
     xAxis: {
+      min: xAxisMin ? xAxisMin - 0.5 : null,
+      max: xAxisMax ? xAxisMax + 0.5 : null,
+      startOnTick: false,
+      endOnTick: false,
+      showFirstLabel: true,
+      showLastLabel: true,
+      tickInterval: 2, // Show tick every 2°C
       title: { text: "Povprečna dnevna temperatura (°C)" },
       lineColor: COLORS.LIGHT_BLUE_GRAY,
-      tickAmount: CHART_DEFAULTS.HISTOGRAM_TICK_AMOUNT,
       plotLines: [
         { 
           color: COLORS.PERCENTILE_LINE, 
@@ -185,7 +192,7 @@ export function createTodayMarkerSeries(
       style: {
         fontWeight: "700",
         color: COLORS.BLACK,
-        fontSize: "12px", // Smaller font to fit better above
+        fontSize: CHART_STYLES.FONT_SIZE_MEDIUM, // Match scatter chart font size
         textOutline: "2px white", // Thinner outline
       },
       crop: false,

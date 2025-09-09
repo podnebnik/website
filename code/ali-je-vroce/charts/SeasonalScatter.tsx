@@ -12,7 +12,7 @@ import {
 } from "./config/scatterConfig.ts";
 import { useHistoricalDataQuery } from "../hooks/queries.ts";
 import { LOADING_MESSAGES } from "../utils/uiConstants.ts";
-import { CHART_DATA } from "../utils/chartConstants.ts";
+import { CHART_DATA, DIMENSIONS } from "../utils/chartConstants.ts";
 import * as Highcharts from "highcharts";
 
 /**
@@ -27,13 +27,6 @@ export default function SeasonalScatter(props: SeasonalScatterProps) {
   const stationId = () => Number(props.stationId);
   const centerMmdd = () => props.center_mmdd;
   const windowDays = () => CHART_DATA.WINDOW_DAYS;
-
-  console.log(
-    "Scatter todayTemp:",
-    props.todayTemp,
-    "station:",
-    props.stationId
-  );
 
   // Use TanStack Query hook for historical data with individual parameters
   const queryResult = useHistoricalDataQuery(
@@ -102,27 +95,6 @@ export default function SeasonalScatter(props: SeasonalScatterProps) {
             }
           : null;
 
-      console.log(
-        "🔥 Scatter Original - todayPoint creation:",
-        "todayTemp:",
-        todayTemp,
-        "Number.isFinite(todayTemp):",
-        Number.isFinite(todayTemp),
-        "todayPoint:",
-        todayPoint,
-        "x1:",
-        x1,
-        "todayX:",
-        todayX
-      );
-
-      const yMin = Math.floor(
-        Math.min(...temps, todayPoint?.y ?? Math.min(...temps)) - 1
-      );
-      const yMax = Math.ceil(
-        Math.max(...temps, todayPoint?.y ?? Math.max(...temps)) + 1
-      );
-
       // Create trend line data
       const trendLine = [
         { x: x0, y: y0 },
@@ -134,8 +106,7 @@ export default function SeasonalScatter(props: SeasonalScatterProps) {
         xMin: x0,
         xMax: x1,
         todayX,
-        yMin,
-        yMax,
+
         p05,
         p95,
         scatter,
@@ -161,7 +132,7 @@ export default function SeasonalScatter(props: SeasonalScatterProps) {
       chartType="scatter"
       loadingMessage={LOADING_MESSAGES.CHART}
     >
-      <Highchart options={chartOptions()!} height="360px" />
+      <Highchart options={chartOptions()!} height={DIMENSIONS.SCATTER_HEIGHT} />
     </ChartContainer>
   );
 }

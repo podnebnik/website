@@ -30,8 +30,6 @@ export interface ScatterConfigParams {
   xMin: number;
   xMax: number;
   todayX: number;
-  yMin: number;
-  yMax: number;
   p05: number;
   p95: number;
   scatter: ScatterPoint[];
@@ -49,8 +47,6 @@ export function createScatterChartConfig({
   xMin,
   xMax,
   todayX,
-  yMin,
-  yMax,
   p05,
   p95,
   scatter,
@@ -59,18 +55,14 @@ export function createScatterChartConfig({
   trendPerCentury,
   todayLabel,
 }: ScatterConfigParams): Highcharts.Options {
-  console.log(
-    "🔥 Scatter Config - TODAY series creation:",
-    "todayPoint:",
-    todayPoint,
-    "todayLabel:",
-    todayLabel,
-    "adding TODAY series:",
-    !!todayPoint,
-    "todayPoint details:",
-    todayPoint ? { x: todayPoint.x, y: todayPoint.y } : "null"
-  );
 
+  // Find actual scatter data bounds for Y-axis
+  const scatterYValues = scatter.map(point => point.y);
+  const todayY = todayPoint?.y;
+  const allYValues = todayY !== undefined ? [...scatterYValues, todayY] : scatterYValues;
+  const dataYMin = Math.min(...allYValues);
+  const dataYMax = Math.max(...allYValues);
+  
   return {
     chart: {
       type: "scatter",
@@ -92,10 +84,14 @@ export function createScatterChartConfig({
       },
     },
     yAxis: {
-      min: yMin,
-      max: yMax,
+      min: dataYMin,
+      max: dataYMax,
+      startOnTick: false,
+      endOnTick: false,
+      showFirstLabel: true,
+      showLastLabel: true,
+      tickInterval: 2, // Show tick every 2°C
       title: { text: "Daily average temperature (°C)" },
-      tickAmount: CHART_DEFAULTS.TICK_AMOUNT,
       plotLines: [
         {
           value: p95,
@@ -198,7 +194,6 @@ export function createTrendSeries(trendLine: Array<{ x: number; y: number }>): H
  * Create the "today" point series with data label
  */
 export function createTodaySeries(todayPoint: TodayPoint, todayLabel: string): Highcharts.SeriesOptionsType {
-  console.log("🔥 Creating TODAY series with label:", todayLabel, "point:", todayPoint);
   
   return {
     name: todayLabel,

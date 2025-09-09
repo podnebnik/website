@@ -16,7 +16,10 @@ export function Highchart(props: HighchartProps) {
 
   onMount(() => {
     if (props.options && container) {
-      chart = Highcharts.chart(container, props.options);
+      chart = Highcharts.chart(container, {
+        ...props.options,
+        accessibility: { enabled: false },
+      });
       setIsInitialized(true);
     }
 
@@ -43,7 +46,10 @@ export function Highchart(props: HighchartProps) {
     // For complex charts like ours (with multiple series and dynamic configurations),
     // recreation is more reliable than incremental updates
     chart.destroy();
-    chart = Highcharts.chart(container, props.options);
+    chart = Highcharts.chart(container, {
+      ...props.options,
+      accessibility: { enabled: false },
+    });
   });
 
   return (
