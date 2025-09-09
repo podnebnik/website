@@ -66,7 +66,9 @@ export function createScatterChartConfig({
     "todayLabel:",
     todayLabel,
     "adding TODAY series:",
-    !!todayPoint
+    !!todayPoint,
+    "todayPoint details:",
+    todayPoint ? { x: todayPoint.x, y: todayPoint.y } : "null"
   );
 
   return {
@@ -196,6 +198,8 @@ export function createTrendSeries(trendLine: Array<{ x: number; y: number }>): H
  * Create the "today" point series with data label
  */
 export function createTodaySeries(todayPoint: TodayPoint, todayLabel: string): Highcharts.SeriesOptionsType {
+  console.log("🔥 Creating TODAY series with label:", todayLabel, "point:", todayPoint);
+  
   return {
     name: todayLabel,
     type: "scatter",
@@ -205,16 +209,24 @@ export function createTodaySeries(todayPoint: TodayPoint, todayLabel: string): H
       fillColor: COLORS.WHITE,
       lineWidth: DIMENSIONS.MEDIUM_LINE,
       lineColor: COLORS.TODAY_MARKER,
+      radius: 8,
     },
-    dataLabels: [
-      {
-        enabled: true,
-        align: "left" as const,
-        format: `${todayLabel}<br/>{point.y:.1f}°C`,
-        x: 8,
-        y: 4,
-        style: { fontWeight: "600" },
+    dataLabels: {
+      enabled: true,
+      allowOverlap: true,
+      align: "left" as const,
+      verticalAlign: "middle" as const,
+      format: `{series.name}<br/>{point.y:.1f}°C`,
+      x: 5,   // Smaller offset to stay within chart boundaries
+      y: 0,   // Vertically centered
+      style: { 
+        fontWeight: "bold",
+        color: COLORS.BLACK,
+        fontSize: "13px",
+        textOutline: "2px white"
       },
-    ],
+      crop: false,
+      overflow: "allow"
+    },
   };
 }

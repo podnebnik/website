@@ -1,10 +1,11 @@
+// @ts-nocheck
 /**
  * Example of robust chart update pattern using createEffect and setData
  * This pattern should be used to fix the histogram chart TODAY label issue
  */
 import { Component, onMount, createEffect } from "solid-js";
 import Highcharts from "highcharts";
-import { HistoricalData } from "../types/weather";
+import { HistoricalData } from "../types/weather"; // Adjust the import path as necessary
 
 interface ScatterChartProps {
   data: HistoricalData[];

@@ -7,7 +7,8 @@
     "start": "dotnet fable watch code --extension .fs.jsx --run npx @11ty/eleventy --serve --incremental --quiet",
     "start-debug": "dotnet fable watch code --extension .fs.jsx --run sh -c 'DEBUG=\"Eleventy*\" npx @11ty/eleventy --serve --incremental --quiet'",
     "build": "dotnet fable code --extension .fs.jsx --run npx @11ty/eleventy",
-    "build-debug": "dotnet fable code --extension .fs.jsx --run sh -c 'DEBUG=\"Eleventy*\" npx @11ty/eleventy'"
+    "build-debug": "dotnet fable code --extension .fs.jsx --run sh -c 'DEBUG=\"Eleventy*\" npx @11ty/eleventy'",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@highcharts/map-collection": "^2.3.1",

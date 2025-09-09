@@ -8,10 +8,6 @@ import { useWeatherData } from "./hooks/useWeatherData.ts";
 import { StationSelector } from "./components/StationSelector.tsx";
 import { TemperatureDisplay } from "./components/TemperatureDisplay.tsx";
 import { ErrorMessage } from "./components/ErrorMessage.tsx";
-
-// ✅ INSERT: SeasonalScatter (Highcharts #1) - Testing robust versions
-import SeasonalScatterRobust from "./charts/SeasonalScatterRobust.tsx";
-import SeasonalHistogramRobust from "./charts/SeasonalHistogramRobust.tsx";
 import SeasonalHistogram from "./charts/SeasonalHistogram.tsx";
 import SeasonalScatter from "./charts/SeasonalScatter.tsx";
 
@@ -27,9 +23,6 @@ import SeasonalScatter from "./charts/SeasonalScatter.tsx";
  */
 export function AliJeVroce() {
   // ✅ INSERT: test flag + today's label for the SeasonalScatter chart
-  const isTest = () =>
-    typeof window !== "undefined" &&
-    new URLSearchParams(window.location.search).get("test") === "1";
 
   const today = new Date();
   const mm = String(today.getMonth() + 1).padStart(2, "0");
@@ -108,87 +101,36 @@ export function AliJeVroce() {
         onRetry={retryLoadingStations}
       />
       {/* ✅ INSERT: test-only SeasonalScatter chart (uses current station + today's MM-DD) */}
-      <Show when={isTest()}>
-        <div class="mt-10">
-          <SeasonalHistogramRobust
-            stationId={selectedStation()?.station_id ?? 14}
-            center_mmdd={mmdd}
-            todayTemp={(() => {
-              const rawTemp = tempAvg();
-              const temp =
-                rawTemp != null && !isNaN(+rawTemp) ? +rawTemp : null;
-              console.log(
-                "HistogramRobust todayTemp:",
-                temp,
-                "raw:",
-                rawTemp,
-                "station:",
-                selectedStation()?.station_id
-              );
-              return temp;
-            })()}
-            title={`Distribution around ${mmdd}`}
-          />
-        </div>
+      <Show
+        when={
+          !!tempAvg() &&
+          isNaN(+result()) &&
+          !isLoadingData() &&
+          !!selectedStation()?.station_id
+        }
+      >
         <div class="mt-10">
           <SeasonalHistogram
-            stationId={selectedStation()?.station_id ?? 14}
+            stationId={selectedStation()?.station_id ?? 1495}
             center_mmdd={mmdd}
             todayTemp={(() => {
               const rawTemp = tempAvg();
-              const temp =
-                rawTemp != null && !isNaN(+rawTemp) ? +rawTemp : null;
-              console.log(
-                "Histogram todayTemp:",
-                temp,
-                "raw:",
-                rawTemp,
-                "station:",
-                selectedStation()?.station_id
-              );
-              return temp;
+              return rawTemp != null && Number.isFinite(+rawTemp)
+                ? +rawTemp
+                : null;
             })()}
             title={`Distribution around ${mmdd}`}
-          />
-        </div>
-        <div class="mt-6">
-          <SeasonalScatterRobust
-            stationId={selectedStation()?.station_id ?? 14}
-            center_mmdd={mmdd}
-            todayTemp={(() => {
-              const rawTemp = tempAvg();
-              const temp =
-                rawTemp != null && !isNaN(+rawTemp) ? +rawTemp : null;
-              console.log(
-                "ScatterRobust todayTemp:",
-                temp,
-                "raw:",
-                rawTemp,
-                "station:",
-                selectedStation()?.station_id
-              );
-              return temp;
-            })()}
-            title={prettyTitle}
           />
         </div>
         <div class="mt-6">
           <SeasonalScatter
-            stationId={selectedStation()?.station_id ?? 14}
+            stationId={selectedStation()?.station_id ?? 1495}
             center_mmdd={mmdd}
             todayTemp={(() => {
               const rawTemp = tempAvg();
-              const temp =
-                rawTemp != null && !isNaN(+rawTemp) ? +rawTemp : null;
-              console.log(
-                "Scatter todayTemp:",
-                temp,
-                "raw:",
-                rawTemp,
-                "station:",
-                selectedStation()?.station_id
-              );
-              return temp;
+              return rawTemp != null && Number.isFinite(+rawTemp)
+                ? +rawTemp
+                : null;
             })()}
             title={prettyTitle}
           />

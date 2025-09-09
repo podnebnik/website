@@ -94,7 +94,7 @@ export default function SeasonalScatter(props: SeasonalScatterProps) {
       // "Today" label plotted slightly to the right of the newest year
       const todayX = x1 + 2;
       const todayPoint: TodayPoint | null =
-        todayTemp != null
+        Number.isFinite(todayTemp) && todayTemp != null
           ? {
               x: todayX,
               y: todayTemp,
@@ -103,11 +103,17 @@ export default function SeasonalScatter(props: SeasonalScatterProps) {
           : null;
 
       console.log(
-        "🔥 Scatter - todayPoint creation:",
+        "🔥 Scatter Original - todayPoint creation:",
         "todayTemp:",
         todayTemp,
+        "Number.isFinite(todayTemp):",
+        Number.isFinite(todayTemp),
         "todayPoint:",
-        todayPoint
+        todayPoint,
+        "x1:",
+        x1,
+        "todayX:",
+        todayX
       );
 
       const yMin = Math.floor(

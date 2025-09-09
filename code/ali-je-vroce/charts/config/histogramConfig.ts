@@ -39,7 +39,14 @@ export function createHistogramChartConfig({
   yMax,
   title,
 }: HistogramConfigParams): Highcharts.Options {
-  const labelSeries = createLabelSeries(p05, p50, p95, today, yMax);
+  const labelSeries = createLabelSeries(p05, p50, p95, yMax);
+  
+  // Create TODAY marker series if today value is valid
+  const todaySeries = Number.isFinite(today) 
+    ? createTodayMarkerSeries(today!, yMax)
+    : null;
+    
+  console.log("🔥 Histogram - TODAY series created:", !!todaySeries, "today value:", today);
 
   return {
     chart: {
@@ -106,6 +113,7 @@ export function createHistogramChartConfig({
       createNormalAreaSeries(mid),
       createHotAreaSeries(right),
       labelSeries,
+      ...(todaySeries ? [todaySeries] : []),
     ],
     credits: { enabled: CHART_DEFAULTS.CREDITS_ENABLED },
   };
@@ -145,13 +153,56 @@ export function createLabelPoint(
 }
 
 /**
+ * Create a TODAY marker series with horizontal positioning similar to scatter charts
+ */
+export function createTodayMarkerSeries(
+  x: number,
+  yMax: number
+): Highcharts.SeriesOptionsType {
+  return {
+    name: "TODAY",
+    type: "scatter",
+    data: [{
+      x,
+      y: yMax * 0.85, // Position near the top for better visibility
+    }],
+    marker: { 
+      enabled: true,
+      symbol: "circle",
+      fillColor: COLORS.WHITE,
+      lineWidth: 3,
+      lineColor: COLORS.TODAY_MARKER,
+      radius: 8,
+    },
+    zIndex: 5, // Higher z-index to ensure visibility over other series
+    dataLabels: {
+      enabled: true,
+      align: "center" as const,
+      verticalAlign: "bottom" as const,
+      format: `TODAY<br/>${x.toFixed(1)}°C`,
+      x: 0, // Centered horizontally on the marker
+      y: -15, // Position above the marker
+      style: {
+        fontWeight: "700",
+        color: COLORS.BLACK,
+        fontSize: "12px", // Smaller font to fit better above
+        textOutline: "2px white", // Thinner outline
+      },
+      crop: false,
+      overflow: "allow" as const,
+    },
+    enableMouseTracking: false,
+    showInLegend: false,
+  };
+}
+
+/**
  * Create the label series for percentile markers and today point
  */
 export function createLabelSeries(
   p05: number,
   p50: number,
   p95: number,
-  today: number | null,
   yMax: number
 ): Highcharts.SeriesOptionsType {
   const labelPoints = [
@@ -160,21 +211,8 @@ export function createLabelSeries(
     createLabelPoint(p95, "95th percentile", yMax, { dx: 10 }),
   ];
 
-  // Add TODAY label if valid - with improved positioning
-  if (Number.isFinite(today)) {
-    console.log("🔥 Creating TODAY label:", today, "at yMax:", yMax);
-    const todayLabel = createLabelPoint(today!, `TODAY: ${today!.toFixed(1)}°C`, yMax, {
-      dx: 0,
-      color: COLORS.BLACK,
-      bold: true,
-      size: CHART_STYLES.FONT_SIZE_MEDIUM,
-      topFrac: 0.85, // Move slightly lower to avoid clipping
-    });
-    labelPoints.push(todayLabel);
-    console.log("🔥 TODAY label created and added to labelPoints");
-  } else {
-    console.log("🔥 TODAY label not created - invalid today value:", today);
-  }
+  // Note: TODAY label is now handled by separate series in createHistogramChartConfig
+  // No longer added to this labelPoints array
 
   const labelSeries: Highcharts.SeriesOptionsType = {
     name: "labels",
