@@ -2,9 +2,8 @@
  * TypeScript interfaces for SolidJS component props throughout the website
  */
 
-import { Component, JSX } from 'solid-js';
-import { AppError } from './common.js';
-import { ProcessedStation, HistoricalTemperatureData, HistoricalDataQueryParams } from './models.js';
+import { JSX } from 'solid-js';
+import { ProcessedStation } from './models.js';
 import * as Highcharts from 'highcharts';
 
 // Base component props
@@ -74,104 +73,11 @@ export interface SeasonalScatterProps extends BaseComponentProps {
   title?: string;
 }
 
-// Historical data query hook parameters (for TanStack Query integration)
-export interface HistoricalDataHookParams {
-  stationId: number;
-  center_mmdd: string;
-  windowDays: number;
-}
-
-// Query state props for components using TanStack Query
-export interface QueryStateProps {
-  isLoading?: boolean;
-  isError?: boolean;
-  error?: Error | null;
-  isStale?: boolean;
-  isFetching?: boolean;
-}
-
-// Extended seasonal chart props with query state (for TanStack Query migration)
-export interface SeasonalChartWithQueryStateProps extends BaseComponentProps, QueryStateProps {
-  stationId: number | string;
-  center_mmdd: string;
-  title?: string;
-  data?: HistoricalTemperatureData; // Optional direct data prop
-  queryParams?: HistoricalDataQueryParams; // Optional query parameters
-}
-
 // Query Provider Props
 export interface QueryProviderProps {
   children: JSX.Element;
   enableDevtools?: boolean;
 }
-
-// Generic Data Display Props
-export interface DataTableProps<T = any> extends BaseComponentProps {
-  data: T[];
-  columns: Array<{
-    key: keyof T;
-    label: string;
-    format?: (value: any) => string;
-    sortable?: boolean;
-  }>;
-  loading?: boolean;
-  error?: AppError | null;
-  onSort?: (key: keyof T, direction: 'asc' | 'desc') => void;
-  sortKey?: keyof T;
-  sortDirection?: 'asc' | 'desc';
-}
-
-// Navigation and Layout Props
-export interface NavigationProps extends BaseComponentProps {
-  items: Array<{
-    label: string;
-    href: string;
-    active?: boolean;
-    external?: boolean;
-  }>;
-}
-
-export interface ModalProps extends BaseComponentProps {
-  open: boolean;
-  onClose: () => void;
-  title?: string;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
-}
-
-// Form Component Props
-export interface FormFieldProps extends BaseComponentProps {
-  label?: string;
-  error?: string;
-  required?: boolean;
-  disabled?: boolean;
-  helpText?: string;
-}
-
-export interface SelectProps extends FormFieldProps {
-  options: Array<{
-    value: string;
-    label: string;
-    disabled?: boolean;
-  }>;
-  value: string;
-  onSelectionChange: (value: string) => void;
-  placeholder?: string;
-  multiple?: boolean;
-}
-
-export interface ButtonProps extends BaseComponentProps {
-  variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
-  disabled?: boolean;
-  loading?: boolean;
-  type?: 'button' | 'submit' | 'reset';
-  onClick?: (event: MouseEvent) => void;
-}
-
-// Utility type for component with ref
-export type ComponentWithRef<T extends HTMLElement, P = {}> = Component<P & {
-  ref?: T | ((el: T) => void);
-}>;
 
 // Additional Component Props
 export interface IsItHotDotProps extends BaseComponentProps {
