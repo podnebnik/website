@@ -1,4 +1,39 @@
+---
+title: "TypeScript Migration Guidelines"
+created: "2025-09-05"
+updated: "2025-09-14"
+author: "Jaka Daneu"
+contributors: ["Copilot - Claude Sonnet 4"]
+status: "Partially Complete"
+audience: "Developers"
+purpose: "Comprehensive guidance for migrating JavaScript files to TypeScript in the Podnebnik website project"
+migration_progress: "~80% complete - core app migrated, some components remain"
+tags: ["typescript", "migration", "javascript", "solidjs", "development-guide"]
+---
+
 # TypeScript Migration Guidelines
+
+## Migration Status Update (September 2025)
+
+**Current Progress: ~80% Complete**
+
+✅ **Completed:**
+
+- Core weather application (`ali-je-vroce/`) - fully TypeScript
+- Type system (`code/types/`) - comprehensive TypeScript definitions
+- Utilities (`code/utils.ts`) - migrated to TypeScript
+- Query hooks and data fetching - fully typed
+
+🔄 **Remaining JavaScript files to migrate:**
+
+- `code/dvig-morja/index.jsx` - Sea level rise visualization
+- `code/faq/faq.jsx` - FAQ component
+- `code/temperatura/heatmaps.jsx` - Temperature heatmaps
+- `code/lazy.jsx` - Lazy loading wrapper
+- `code/main.js` - Main entry point
+- `code/components/is-it-hot-dot.jsx` - Hot dot indicator component
+
+**Phase 2 TypeScript strictness settings have been enabled** as of September 7, 2025.
 
 ## Overview
 
@@ -55,16 +90,16 @@ The project uses a **mixed approach** configuration designed to support both str
 
 ## Future Strictness Roadmap
 
-### Phase 1: Current State (Implemented)
+### Phase 1: Current State ✅ (Completed)
 
 - Mixed JS/TS coexistence ✅
 - Core type definitions established ✅
 - Weather app fully converted ✅
 - Essential utilities migrated ✅
 
-### Phase 2: Intermediate Strictness ✅
+### Phase 2: Intermediate Strictness ✅ (Completed September 2025)
 
-When most files are converted, consider enabling:
+The following settings have been enabled as most files are now converted:
 
 ```json
 {
@@ -75,9 +110,9 @@ When most files are converted, consider enabling:
 }
 ```
 
-### Phase 3: Full Strictness (Long-term)
+### Phase 3: Full Strictness (Next Goal)
 
-For complete type safety across the codebase:
+For complete type safety across the remaining codebase, enable once all JS files are converted:
 
 ```json
 {

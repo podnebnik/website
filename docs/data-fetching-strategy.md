@@ -1,20 +1,34 @@
+---
+title: "Data Fetching and Caching Strategy Guide"
+created: "2025-07-07"
+updated: "2025-09-14"
+author: "Jaka Daneu"
+contributors: ["Copilot - Claude Sonnet 4"]
+status: "Active"
+audience: "Developers"
+purpose: "Technical documentation of our TanStack Query v5 data fetching architecture"
+tags: ["tanstack-query", "typescript", "solidjs", "caching", "architecture"]
+---
+
 # Data Fetching and Caching Strategy Guide
 
 ## Table of Contents
 
 1. [Overview](#overview)
-2. [Core Components](#core-components)
-3. [Query Keys Structure](#query-keys-structure)
-4. [Caching Configuration](#caching-configuration)
-5. [Persistence Layer](#persistence-layer)
-6. [Prefetching Strategy](#prefetching-strategy)
-7. [Error Handling](#error-handling)
-8. [Performance Optimizations](#performance-optimizations)
-9. [Improvement Suggestions](#improvement-suggestions)
+2. [Current Implementation Status](#current-implementation-status)
+3. [Core Components](#core-components)
+4. [Query Keys Structure](#query-keys-structure)
+5. [Caching Configuration](#caching-configuration)
+6. [Persistence Layer](#persistence-layer)
+7. [Prefetching Strategy](#prefetching-strategy)
+8. [Error Handling](#error-handling)
+9. [Performance Optimizations](#performance-optimizations)
+10. [TanStack Query v5 Migration](#tanstack-query-v5-migration)
+11. [Future Improvements](#future-improvements)
 
 ## Overview
 
-This document outlines our approach to data fetching, caching, and state management in the Podnebnik weather application. We use TanStack Query (formerly React Query) with SolidJS and **TypeScript** to implement a robust data layer with offline support, aggressive prefetching, and optimized user experience.
+This document outlines our approach to data fetching, caching, and state management in the Podnebnik weather application. We use **TanStack Query v5** with **SolidJS** and **TypeScript** to implement a robust data layer with offline support, aggressive prefetching, and optimized user experience.
 
 Our strategy focuses on:
 
@@ -23,6 +37,25 @@ Our strategy focuses on:
 - **Resource efficiency**: Minimizing unnecessary network requests
 - **Data freshness**: Balancing cache usage with up-to-date data
 - **Type safety**: Full TypeScript integration with runtime validation for API responses
+- **Modern patterns**: Leveraging TanStack Query v5's latest features and best practices
+
+## Current Implementation Status
+
+✅ **Fully Implemented:**
+
+- TypeScript integration with comprehensive type system
+- TanStack Query v5 with SolidJS adapter
+- Query client configuration with specialized defaults
+- Persistence layer with localStorage
+- Prefetching strategies for stations and weather data
+- Error handling with categorization
+- Historical data queries for seasonal analysis
+
+✅ **Recently Updated:**
+
+- Migration from `.jsx` to `.tsx` file extensions
+- Updated to TanStack Query v5 API (`cacheTime` → `gcTime`, `keepPreviousData` → `placeholderData`)
+- Enhanced type safety with runtime validation
 
 ## Core Components
 
@@ -35,6 +68,8 @@ Our data fetching layer is fully typed with TypeScript, providing compile-time s
 import {
   VremenarStationDetailsResponse,
   ProcessedStation,
+  ProcessedTemperatureData,
+  HistoricalTemperatureData,
 } from "/code/types/index.js";
 
 // Runtime validation with type guards
@@ -54,12 +89,14 @@ const fetchStations = async (): Promise<ProcessedStation[]> => {
 };
 ```
 
-### 2. Query Client
+### 2. Query Client (TanStack Query v5)
 
-The core of our data fetching strategy is a singleton `QueryClient` instance exported from `QueryProvider.jsx`. This ensures consistent cache across the application and prevents cache fragmentation.
+The core of our data fetching strategy is a singleton `QueryClient` instance exported from `QueryProvider.tsx`. This ensures consistent cache across the application and prevents cache fragmentation.
 
-```jsx
-// QueryProvider.jsx
+```tsx
+// QueryProvider.tsx
+import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
+
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -72,13 +109,21 @@ export const queryClient = new QueryClient({
 });
 ```
 
-### 2. Query Hooks
+### 3. Query Hooks with TypeScript
 
 Custom hooks encapsulate specific data fetching logic while providing a consistent interface with full TypeScript support:
 
 ```tsx
-// queries.ts (TypeScript)
-export function useWeatherQuery(stationId) {
+// hooks/queries.ts (TypeScript)
+import { useQuery, UseQueryResult } from "@tanstack/solid-query";
+import type {
+  ProcessedTemperatureData,
+  ProcessedStation,
+} from "../../types/models.js";
+
+export function useWeatherQuery(
+  stationId: string
+): UseQueryResult<ProcessedTemperatureData, CategorizedError> {
   const persistor = createLocalStoragePersistor();
 
   return useQuery(() => {
@@ -90,48 +135,50 @@ export function useWeatherQuery(stationId) {
       queryKey: queryKeys.weatherData(stationId),
       queryFn: async ({ signal }) => {
         // Implementation with network request and fallback to persistence
+        return requestData(stationId, signal);
       },
-      placeholderData: cachedData,
-      keepPreviousData: true,
+      placeholderData: cachedData, // v5: replaces keepPreviousData
     };
   });
 }
 ```
 
-### 3. Prefetching Utilities
+````
+
+### 4. Prefetching Utilities
 
 Utilities for proactively loading data before it's needed:
 
-```jsx
-// prefetching.js
-export function prefetchStationData(queryClient, stationId) {
+```tsx
+// utils/prefetching.ts (TypeScript)
+export function prefetchStationData(queryClient: QueryClient, stationId: string): Promise<ProcessedTemperatureData | undefined> {
   // Check cache before fetching
   const existingQuery = queryClient.getQueryState(queryKeys.weatherData(stationId));
   if (existingQuery && !existingQuery.isStale) return Promise.resolve(existingQuery.data);
 
   return queryClient.prefetchQuery({
     queryKey: queryKeys.weatherData(stationId),
-    queryFn: () => requestData(stationId).then(result => {...}),
+    queryFn: () => requestData(stationId).then(result => processTemperatureData(result)),
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 }
-```
+````
 
-### 4. Persistence Layer
+### 5. Persistence Layer
 
 A custom persistence layer that saves and retrieves data from localStorage:
 
-```jsx
-// persistence.js
+```tsx
+// utils/persistence.ts (TypeScript)
 export function createLocalStoragePersistor() {
   return {
-    persistQuery: (queryKey, data) => {
+    persistQuery: <T,>(queryKey: QueryKey, data: T): void => {
       // Save to localStorage with timestamp
     },
-    getPersistedQuery: (queryKey) => {
+    getPersistedQuery: <T,>(queryKey: QueryKey): T | undefined => {
       // Retrieve and validate freshness
     },
-    cleanupCache: () => {
+    cleanupExpiredQueries: (): void => {
       // Remove expired entries
     },
   };
@@ -143,10 +190,25 @@ export function createLocalStoragePersistor() {
 We use a factory pattern to create consistent, type-safe query keys:
 
 ```typescript
+// types/queries.ts
 export const queryKeys = {
+  // Station-related queries
   stations: () => ["stations"] as const,
+
+  // Weather data queries
   weatherData: (stationId: number) => ["weatherData", stationId] as const,
+
+  // Historical data queries (newly implemented)
+  historicalData: (stationId: number, centerMmdd: string, windowDays: number) =>
+    ["historicalData", stationId, centerMmdd, windowDays] as const,
 } as const;
+
+/**
+ * All possible query keys in the application (derived from factory)
+ */
+export type AppQueryKey = ReturnType<
+  (typeof queryKeys)[keyof typeof queryKeys]
+>;
 ```
 
 This structure enables:
@@ -156,6 +218,7 @@ This structure enables:
 - Consistent references across components
 - Clear debugging in Query DevTools
 - **Compile-time validation** of query key structure
+- Support for new query types like historical data
 
 ## Caching Configuration
 
@@ -163,23 +226,36 @@ We use different caching configurations for different types of data:
 
 ### Weather Data
 
-```javascript
+```typescript
 queryClient.setQueryDefaults(["weatherData"], {
   staleTime: 1000 * 60 * 15, // 15 minutes - consider data fresh
-  cacheTime: 1000 * 60 * 60 * 24, // 24 hours - keep in cache
+  gcTime: 1000 * 60 * 60 * 24, // 24 hours - keep in cache (v5: renamed from cacheTime)
   refetchInterval: 1000 * 60 * 15, // Background refresh every 15 minutes
   refetchIntervalInBackground: true, // Even when tab not focused
-  keepPreviousData: true, // Key for SWR pattern
+  placeholderData: (previousData) => previousData, // v5: replaces keepPreviousData
 });
 ```
 
 ### Station List
 
-```javascript
+```typescript
 queryClient.setQueryDefaults(["stations"], {
   staleTime: 1000 * 60 * 30, // 30 minutes - stations change rarely
-  cacheTime: 1000 * 60 * 60, // 1 hour
+  gcTime: 1000 * 60 * 60, // 1 hour (v5: renamed from cacheTime)
   retry: 2,
+});
+```
+
+### Historical Data (New)
+
+```typescript
+queryClient.setQueryDefaults(["historicalData"], {
+  staleTime: 1000 * 60 * 15, // 15 minutes - historical data rarely changes
+  retry: 2,
+  gcTime: 1000 * 60 * 60 * 4, // 4 hours - keep cached data longer since historical data is stable
+  refetchOnMount: false, // Historical data is stable, no need to refetch on mount
+  refetchOnWindowFocus: false, // Historical data is stable, no need to refetch on focus
+  refetchOnReconnect: true, // Still refetch on reconnect for reliability
 });
 ```
 
@@ -194,13 +270,21 @@ Our persistence strategy involves:
 
 Key persistence code:
 
-```javascript
+```typescript
 // Set up event listeners to save queries to localStorage
 queryClient.getQueryCache().subscribe((event) => {
   if (event.type === "updated" && event.query?.state?.data) {
     const queryKey = event.query.queryKey;
 
-    if (queryKey[0] === "stations" || queryKey[0] === "weatherData") {
+    // Don't persist empty data
+    if (!event.query.state.data) return;
+
+    // Determine if query should be persisted
+    if (queryKey[0] === "stations") {
+      // Always persist stations list
+      persistor.persistQuery(queryKey, event.query.state.data);
+    } else if (queryKey[0] === "weatherData") {
+      // Persist weather data for all stations
       persistor.persistQuery(queryKey, event.query.state.data);
     }
   }
@@ -215,15 +299,21 @@ We implement multi-layered prefetching:
 
 - Stations list loaded immediately
 - Popular weather stations prefetched with slight delay
+- Historical data for popular stations prefetched for TODAY labels
 
-```javascript
-// In QueryProvider.jsx
+```typescript
+// In QueryProvider.tsx
 onMount(() => {
   prefetchStationsData(queryClient);
 
   setTimeout(() => {
     prefetchPopularStations(queryClient);
   }, 2000);
+
+  // Prefetch historical data for popular stations to ensure TODAY labels work consistently
+  setTimeout(() => {
+    prefetchPopularStationsHistoricalData(queryClient);
+  }, 4000); // 4 second delay - after weather data is prefetched
 });
 ```
 
@@ -233,9 +323,9 @@ onMount(() => {
 - Item hover/focus triggers prefetch of specific station data
 - Debounced to prevent request flooding
 
-```javascript
-// In StationSelector.jsx
-onOpenChange={(isOpen) => {
+```typescript
+// In StationSelector.tsx
+onOpenChange={(isOpen: boolean) => {
   if (isOpen) {
     const visibleStations = props.stations.slice(0, 5).map(station => station.station_id);
     visibleStations.forEach(stationId => {
@@ -256,33 +346,43 @@ Our error handling strategy includes:
 1. **Error Categorization**: Network vs. unknown errors
 2. **Graceful Degradation**: Fallback to cached data when possible
 3. **Retry Mechanism**: Configurable retry counts
-4. **User Feedback**: Error messages with appropriate context
+4. **User Feedback**: Error messages with appropriate context in Slovenian
 
-```javascript
-function categorizeError(error, context = "") {
+```typescript
+// hooks/queries.ts
+function categorizeError(
+  error: unknown,
+  context: string = ""
+): CategorizedError {
+  // Type guard to ensure we have an Error object
+  const errorObj = error instanceof Error ? error : new Error(String(error));
+
   if (!navigator.onLine) {
     return {
       type: "network",
       message: "Ni povezave z internetom",
-      originalError: error,
+      originalError: errorObj,
+      context,
     };
   }
 
   if (
-    error.message?.includes("Failed to fetch") ||
-    error instanceof TypeError
+    errorObj.message?.includes("Failed to fetch") ||
+    errorObj instanceof TypeError
   ) {
     return {
       type: "network",
       message: "Napaka pri povezavi s strežnikom",
-      originalError: error,
+      originalError: errorObj,
+      context,
     };
   }
 
   return {
     type: "unknown",
-    message: `Napaka: ${error.message || "Neznana napaka"}`,
-    originalError: error,
+    message: `Napaka: ${errorObj.message || "Neznana napaka"}`,
+    originalError: errorObj,
+    context,
   };
 }
 ```
@@ -293,15 +393,15 @@ Key performance optimization techniques:
 
 1. **Debouncing**: Prevents excessive API calls during rapid user interactions
 
-   ```javascript
-   const debouncedPrefetch = debounce((stationId) => {
+   ```typescript
+   const debouncedPrefetch = debounce((stationId: string) => {
      prefetchStationData(queryClient, stationId);
    }, 200);
    ```
 
 2. **Cache Checking**: Avoids redundant requests
 
-   ```javascript
+   ```typescript
    const existingQuery = queryClient.getQueryState(
      queryKeys.weatherData(stationId)
    );
@@ -311,17 +411,34 @@ Key performance optimization techniques:
 
 3. **Request Staggering**: Prevents request flooding
 
-   ```javascript
+   ```typescript
    setTimeout(() => debouncedPrefetch(stationId), 50 * Math.random());
    ```
 
 4. **Placeholder Data**: Shows cached data immediately while refreshing
-   ```javascript
-   placeholderData: cachedData,
-   keepPreviousData: true,
+   ```typescript
+   placeholderData: (previousData) => previousData, // v5: replaces keepPreviousData
    ```
 
-## Improvement Suggestions
+## TanStack Query v5 Migration
+
+We have successfully migrated to TanStack Query v5. Key changes implemented:
+
+### API Changes
+
+- ✅ `cacheTime` → `gcTime`
+- ✅ `keepPreviousData` → `placeholderData: (previousData) => previousData`
+- ✅ Single object syntax for all hooks
+- ✅ TypeScript improvements with better error types
+- ✅ Window focus refetching now uses `visibilitychange` event exclusively
+
+### New Features Utilized
+
+- **Enhanced TypeScript Support**: Full type safety with `Error` as default error type
+- **Improved Performance**: Better memory management and garbage collection
+- **Modern Browser Support**: Leveraging latest browser APIs for better performance
+
+## Future Improvements
 
 ### 1. Implement Service Worker for Offline Support
 
@@ -347,24 +464,31 @@ workbox.routing.registerRoute(
 
 Not all data is equally important. We could implement priority levels for cache items:
 
-```javascript
+```typescript
 // Example prioritization implementation
-function persistQuery(queryKey, data, priority = 'normal') {
+function persistQuery(
+  queryKey: QueryKey,
+  data: unknown,
+  priority: "low" | "normal" | "high" = "normal"
+) {
   // Check available storage
   const storageEstimate = await navigator.storage.estimate();
   const availableSpace = storageEstimate.quota - storageEstimate.usage;
 
   // If storage is limited, only keep high priority items
   if (availableSpace < LOW_STORAGE_THRESHOLD) {
-    if (priority !== 'high') return;
+    if (priority !== "high") return;
   }
 
   // Store with priority metadata
-  localStorage.setItem(key, JSON.stringify({
-    data,
-    timestamp: Date.now(),
-    priority
-  }));
+  localStorage.setItem(
+    key,
+    JSON.stringify({
+      data,
+      timestamp: Date.now(),
+      priority,
+    })
+  );
 }
 ```
 
@@ -372,7 +496,7 @@ function persistQuery(queryKey, data, priority = 'normal') {
 
 Use the Background Sync API to update data when connectivity is restored:
 
-```javascript
+```typescript
 // Register sync event
 navigator.serviceWorker.ready.then((registration) => {
   registration.sync.register("sync-weather-data");
@@ -386,107 +510,52 @@ self.addEventListener("sync", (event) => {
 });
 ```
 
-### 4. Implement Query Invalidation Strategies
+### 4. Leverage TanStack Query v5 New Features
 
-Currently, our app relies primarily on staleTime for refetching. We could implement more sophisticated invalidation:
+Consider implementing these v5 features:
 
-```javascript
-// Example: Invalidate weather data after user action
-function updateUserPreferences(preferences) {
-  // Update preferences
-  const result = await saveUserPreferences(preferences);
+- **Infinite Queries with maxPages**: For paginated historical data
+- **Suspense Hooks**: Use `useSuspenseQuery` for components that always need data
+- **Enhanced Optimistic Updates**: Simplified optimistic UI patterns
 
-  // Invalidate affected queries
-  if (preferences.temperatureUnit !== previousUnit) {
-    queryClient.invalidateQueries({
-      predicate: query => query.queryKey[0] === 'weatherData',
-    });
-  }
-
-  return result;
-}
+```typescript
+// Example: Suspense query for critical data
+const { data: stations } = useSuspenseQuery({
+  queryKey: queryKeys.stations(),
+  queryFn: loadStations,
+});
+// data is never undefined with suspense queries
 ```
 
 ### 5. Implement Data Streaming for Real-time Updates
 
 For more real-time weather updates, consider using WebSockets or Server-Sent Events:
 
-```javascript
+```typescript
 // Example of integrating SSE with TanStack Query
-function useRealtimeWeatherQuery(stationId) {
+function useRealtimeWeatherQuery(stationId: string) {
   const queryClient = useQueryClient();
 
-  useEffect(() => {
+  onMount(() => {
     const eventSource = new EventSource(`/api/weather-stream/${stationId}`);
 
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      queryClient.setQueryData(["weatherData", stationId], data);
+      queryClient.setQueryData(queryKeys.weatherData(stationId), data);
     };
 
-    return () => eventSource.close();
-  }, [stationId, queryClient]);
+    onCleanup(() => eventSource.close());
+  });
 
   return useWeatherQuery(stationId);
 }
 ```
 
-### 6. Implement Memory Usage Monitoring
-
-Monitor and optimize memory usage, especially for large datasets:
-
-```javascript
-// Example memory usage monitoring
-const MEMORY_THRESHOLD = 50 * 1024 * 1024; // 50MB
-
-function monitorMemoryUsage() {
-  if ("memory" in performance) {
-    const memoryInfo = performance.memory;
-    if (memoryInfo.usedJSHeapSize > MEMORY_THRESHOLD) {
-      console.warn("Memory usage high, pruning cache...");
-      queryClient.getQueryCache().clear();
-    }
-  }
-}
-
-// Check periodically
-setInterval(monitorMemoryUsage, 60000);
-```
-
-### 7. Implement Data Normalization
-
-For more complex data structures, consider normalizing data to avoid duplication:
-
-```javascript
-// Example: Normalized data store
-const normalizedCache = {
-  stations: {
-    byId: {
-      1495: { id: "1495", name: "Ljubljana" /* other data */ },
-      1491: { id: "1491", name: "Maribor" /* other data */ },
-    },
-    allIds: ["1495", "1491"],
-  },
-  weatherData: {
-    byId: {
-      1495: {
-        /* weather data */
-      },
-      1491: {
-        /* weather data */
-      },
-    },
-  },
-};
-
-// Custom serialize/deserialize functions for query client
-```
-
-### 8. Implement Analytics for Cache Effectiveness
+### 6. Implement Analytics for Cache Effectiveness
 
 Track and analyze how effectively the cache is serving users:
 
-```javascript
+```typescript
 function trackCacheEffectiveness() {
   queryClient.getQueryCache().subscribe((event) => {
     if (event.type === "updated") {
@@ -506,55 +575,6 @@ function trackCacheEffectiveness() {
 }
 ```
 
-### 9. Implement Rate Limiting for API Requests
-
-To prevent overwhelming the API:
-
-```javascript
-class RateLimiter {
-  constructor(maxRequests = 10, timeWindow = 1000) {
-    this.maxRequests = maxRequests;
-    this.timeWindow = timeWindow;
-    this.requestTimestamps = [];
-  }
-
-  canMakeRequest() {
-    const now = Date.now();
-    this.requestTimestamps = this.requestTimestamps.filter(
-      (time) => now - time < this.timeWindow
-    );
-
-    return this.requestTimestamps.length < this.maxRequests;
-  }
-
-  recordRequest() {
-    this.requestTimestamps.push(Date.now());
-  }
-}
-
-const rateLimiter = new RateLimiter(5, 1000); // 5 requests per second
-
-// In queryFn
-if (!rateLimiter.canMakeRequest()) {
-  await new Promise((resolve) => setTimeout(resolve, 200));
-}
-rateLimiter.recordRequest();
-```
-
-### 10. Implement Pagination Support
-
-For handling large datasets:
-
-```javascript
-function usePaginatedStationsQuery(page = 0, pageSize = 20) {
-  return useQuery({
-    queryKey: ["stations", "paginated", page, pageSize],
-    queryFn: () => fetchStations({ page, pageSize }),
-    keepPreviousData: true,
-  });
-}
-```
-
 ---
 
-This guide reflects our current approach to data fetching and caching while outlining potential improvements. As our application evolves, we'll continue to refine these strategies to provide the best possible user experience.
+This guide reflects our current TanStack Query v5 implementation with TypeScript and outlines potential improvements. As our application evolves, we'll continue to refine these strategies to provide the best possible user experience.
