@@ -26,7 +26,7 @@
     "@11ty/eleventy-img": "^6.0.4",
     "@11ty/eleventy-plugin-vite": "^7.0.0",
     "sass": "^1.89.2",
-    "sharp": "^0.34.2",
+    "sharp": "^0.34.4",
     "vite": "^7.0.2",
     "vite-plugin-solid": "^2.11.7"
   },
