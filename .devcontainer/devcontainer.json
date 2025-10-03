@@ -3,7 +3,7 @@
 {
 	"name": "Podnebnik",
 
-    "image": "python:3.12-slim",
+    "image": "mcr.microsoft.com/devcontainers/python:3.12-bookworm",
 
     // Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {
@@ -12,7 +12,7 @@
 	},
 
     // Finalize container setup when a dev container is created.
-	"onCreateCommand": "apt-get update && apt-get install -y fish git pipenv",
+	"onCreateCommand": "sudo apt-get update && sudo apt-get install -y fish git pipenv libvips-dev",
 
     // A command to run each time the container is successfully started.
     "postStartCommand": "yarn install && pipenv install --dev --system",

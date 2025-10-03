@@ -22,5 +22,6 @@
     ],
     "editor.quickSuggestions": {
         "strings": "on"
-    }
+    },
+    "typescript.tsdk": "node_modules/typescript/lib"
 }
