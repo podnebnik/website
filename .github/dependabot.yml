@@ -7,42 +7,57 @@ updates:
     schedule:
       interval: "quarterly"
     open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
 
   - package-ecosystem: "pip" # See documentation for possible values
     directory: "/data/​temperature/​sources" # Location of package manifests
     schedule:
       interval: "quarterly"
     open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
 
   - package-ecosystem: "npm" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
       interval: "quarterly"
     open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
 
   - package-ecosystem: "github-actions" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
       interval: "quarterly"
     open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
 
   - package-ecosystem: "docker" # See documentation for possible values
     directory: "/deployment" # Location of package manifests
     schedule:
       interval: "quarterly"
     open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
 
   - package-ecosystem: "nuget" # See documentation for possible values
     directory: "/code" # Location of package manifests
     schedule:
       interval: "quarterly"
     open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
 
   - package-ecosystem: "nuget" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
       interval: "quarterly"
     open-pull-requests-limit: 10
+
+    cooldown:
+      default-days: 7
 
   # https://containers.dev/guide/dependabot
   - package-ecosystem: "devcontainers" # See documentation for possible values
@@ -50,3 +65,6 @@ updates:
     schedule:
       interval: "quarterly"
     open-pull-requests-limit: 10
+
+    cooldown:
+      default-days: 7
