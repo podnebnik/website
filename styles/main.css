@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./octocat.css";
+@import "./a11y.css";
 
 @plugin "@tailwindcss/typography";
 

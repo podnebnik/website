@@ -10,6 +10,7 @@ This repository is the source code for the [podnebnik.org](https://podnebnik.org
 The project is structured as a multi page, statically generated web site that allows authors to create rich narratives by combining data, text and visualizations. By combining data, content and code in one repository it is possible to keep all three components in sync, have a single source of truth, and a complete history of changes.
 
 The project resources are organized in following top level folders:
+
 - `data` folder contains the data in the form of Frictionless Data packages
 - `code` folder contains the code for the visualizations
 - `pages` folder contains the text content of the website
@@ -18,11 +19,13 @@ The project resources are organized in following top level folders:
 - `deployment` folder contains the deployment definitions such as Dockerfiles
 
 The project is build on top of the following fantastic tools:
+
 - [11ty](https://www.11ty.dev/) static site generator
 - [Highcharts](https://www.highcharts.com/) charting library
 - [Frictionless Data](https://frictionlessdata.io/) data packaging and validation
 - [Datasette](https://datasette.io/) SQLite database viewer
 - [Fable](https://fable.io/) F# to JavaScript compiler
+- [TypeScript](https://www.typescriptlang.org/) typed JavaScript for enhanced developer experience
 - [Tailwind CSS](https://tailwindcss.com/) utility-first CSS framework
 - [Solid JS](https://www.solidjs.com/) a reactive JavaScript library
 
@@ -40,7 +43,6 @@ If you are editing content on website you can just edit the files and the webpag
 If you are developing data packages and want to re-import data into datasette, you need to build the datasette image again:
 
     docker-compose -f compose.yaml build datasette
-
 
 ## Manual development setup
 
@@ -86,19 +88,17 @@ To then start datasette, run:
 
     uv run invoke datasette
 
-
 ### Creating new datapackages
 
 A datapackage is a combination of data resources (`.csv` data files) and a datapackage descriptor file (`.yaml`) containing the metadata. Check the existing data packages for an example how to write a descriptor file.
 
 Data files should be in CSV format, as this is what our current system knows how to import into datasette.
 
-After creating CSV files and writing a package description, validate it, to check the metadata matches the data: 
+After creating CSV files and writing a package description, validate it, to check the metadata matches the data:
 
     uv run frictionless validate data/package/description.yaml
 
-
-You can also check [old data repository](https://github.com/podnebnik/data) for more hints. 
+You can also check [old data repository](https://github.com/podnebnik/data) for more hints.
 
 ## Developing content
 
@@ -109,6 +109,36 @@ Probably the easiest way to start authoring content is to look at the existing p
 > NOTE: 11ty supports a number of templating languages. However, to keep markup consistent, the recommended templating language in this project is [Liquid JS](https://liquidjs.com/).
 
 ## Developing visualizations
+
+### TypeScript Support
+
+This project now includes comprehensive TypeScript support alongside JavaScript. You can:
+
+- **Use TypeScript** for new components and utilities (`.ts`, `.tsx` files)
+- **Keep JavaScript** for existing code (`.js`, `.jsx` files continue working)
+- **Mix both** - TypeScript and JavaScript files work together seamlessly
+
+**Key Benefits:**
+
+- Enhanced IDE support with autocomplete and error detection
+- Type safety for API responses and component props
+- Better refactoring support and code documentation
+- Gradual adoption - no need to convert everything at once
+
+**Getting Started:**
+
+- **New components**: Use `.tsx` extension for SolidJS components with TypeScript
+- **Utilities**: Use `.ts` extension for helper functions and data processing
+- **Examples**: Check `code/examples/types-example/` for comprehensive patterns
+- **Types**: Import shared types from `code/types/` directory
+
+**Resources:**
+
+- Examples: `code/examples/types-example/`
+- Project types: `code/types/`
+- Performance analysis: `docs/typescript-performance-analysis.md`
+
+### Creating Visualizations
 
 Technically and for the purpose of this project, a visualization is a JavaScript function that renders the content of the visualization in the provided DOM element. You can in principle use any JavaScript library or language that compiles to JavaScript. However, we recommend using [Fable](https://fable.io/) and/or JavaScript together with [Solid JS](https://www.solidjs.com/) as we have found these to be the most productive and performant for most cases. See `code/examples` for examples of visualizations.
 
