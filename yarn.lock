@@ -1077,9 +1077,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kobalte/core@npm:^0.13.10":
-  version: 0.13.10
-  resolution: "@kobalte/core@npm:0.13.10"
+"@kobalte/core@npm:^0.13.11":
+  version: 0.13.11
+  resolution: "@kobalte/core@npm:0.13.11"
   dependencies:
     "@floating-ui/dom": "npm:^1.5.1"
     "@internationalized/date": "npm:^3.4.0"
@@ -1091,7 +1091,7 @@ __metadata:
     solid-prevent-scroll: "npm:^0.1.4"
   peerDependencies:
     solid-js: ^1.8.15
-  checksum: 10c0/ec0a2f3b5fd29de2ec88a30ebd1cdb90a819e4480417eda0443c67a232e360aa4e6ecb9b6735a62a95570fc2b2c9f1b9b6a13a27ae57faa4c55a4c4ff4274670
+  checksum: 10c0/0adeee986cf84075d247492896711beb4b8d541f193a8bf38e8d431a9f1fd1a5f5e5a779a6429e1972a75f826d678e6765d45f589276e3cc729cd377fac1709c
   languageName: node
   linkType: hard
 
@@ -3961,7 +3961,7 @@ __metadata:
     "@11ty/eleventy-img": "npm:^6.0.4"
     "@11ty/eleventy-plugin-vite": "npm:^7.0.0"
     "@highcharts/map-collection": "npm:^2.3.1"
-    "@kobalte/core": "npm:^0.13.10"
+    "@kobalte/core": "npm:^0.13.11"
     "@tailwindcss/typography": "npm:^0.5.16"
     "@tailwindcss/vite": "npm:^4.1.11"
     class-variance-authority: "npm:^0.7.1"
