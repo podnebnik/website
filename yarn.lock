@@ -3969,7 +3969,7 @@ __metadata:
     highcharts: "npm:^12.3.0"
     sass: "npm:^1.89.2"
     sharp: "npm:^0.34.2"
-    solid-js: "npm:^1.9.7"
+    solid-js: "npm:^1.9.10"
     tailwind-merge: "npm:^3.3.1"
     tailwindcss: "npm:^4.1.11"
     vite: "npm:^7.0.2"
@@ -4296,14 +4296,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"solid-js@npm:^1.9.7":
-  version: 1.9.7
-  resolution: "solid-js@npm:1.9.7"
+"solid-js@npm:^1.9.10":
+  version: 1.9.10
+  resolution: "solid-js@npm:1.9.10"
   dependencies:
     csstype: "npm:^3.1.0"
     seroval: "npm:~1.3.0"
     seroval-plugins: "npm:~1.3.0"
-  checksum: 10c0/60f90a38d1c49d1e4d48717e2a4c3d27d93a69f5429eca958ad4f89864a967b054e80f888cf7d89f57a19d4a15368dc3311d5941d887e0ff5dce8b383b563cea
+  checksum: 10c0/ec397466b29ac36af79dfb8363ccdd79bdf77f8a12f16c740ab714c5b23207bc3961cd1171f488cf37b5d59baf28098db96e73a0c49a644e1b147f237f507357
   languageName: node
   linkType: hard
 
