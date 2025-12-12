@@ -12,7 +12,7 @@
   "dependencies": {
     "@highcharts/map-collection": "^2.3.1",
     "@kobalte/core": "^0.13.10",
-    "@tailwindcss/typography": "^0.5.16",
+    "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.1.11",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
