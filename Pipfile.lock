@@ -981,12 +981,12 @@
         },
         "sqlite-utils": {
             "hashes": [
-                "sha256:1ae77b931384052205a15478d429464f6c67a3ac3b4eafd3c674ac900f623aab",
-                "sha256:8a27441015c3b2ef475f555861f7a2592f73bc60d247af9803a11b65fc605bf9"
+                "sha256:349c099c0cd60d4ee9139a24d5c9cb64af3906c3e90832fcbbd74da49333374d",
+                "sha256:bfa2eac29b3e3eb5c9647283797527febcf4efd4a9bbb31d979a14a11ef9dbcd"
             ],
             "index": "pypi",
-            "markers": "python_version >= '3.8'",
-            "version": "==3.38"
+            "markers": "python_version >= '3.10'",
+            "version": "==3.39"
         },
         "stringcase": {
             "hashes": [
