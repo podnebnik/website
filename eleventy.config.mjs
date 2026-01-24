@@ -1,8 +1,12 @@
 import path from "path";
-import Image from "@11ty/eleventy-img";
+// ⬇️ PATCH: remove static import of eleventy-img (this pulls in sharp at load time)
+// import Image from "@11ty/eleventy-img";
 import SolidPlugin from "vite-plugin-solid";
 import TailwindCSS from "@tailwindcss/vite";
 import EleventyVitePlugin from "@11ty/eleventy-plugin-vite";
+
+// ⬇️ PATCH: env flag to disable image processing in dev
+const IMG_DISABLED = process.env.ELEVENTY_DISABLE_IMG === "1";
 
 function monthToNumber(date) {
     return date.replace('januar', '1.')
@@ -76,7 +80,10 @@ async function editedShortcode(edited, short) {
     </span>`
 }
 
+// ⬇️ PATCH: keep the real shortcode but load eleventy-img dynamically (only when enabled)
 async function imageShortcode(src, alt, sizes) {
+    const { default: Image } = await import("@11ty/eleventy-img");
+
     // If src is a relative path, resolve it relative to the current page.
     const imagePath = src.startsWith('./') ? path.join(path.dirname(this.page.inputPath), src) : src;
     // preserve directory structure
@@ -135,7 +142,17 @@ export default function (eleventyConfig) {
     eleventyConfig.addPassthroughCopy('assets')
     eleventyConfig.addPassthroughCopy('public')
 
-    eleventyConfig.addAsyncShortcode("image", imageShortcode)
+    // ⬇️ PATCH: when disabled, register a lightweight placeholder so Liquid doesn't error
+    if (IMG_DISABLED) {
+        eleventyConfig.addShortcode("image", function (_src, alt, _sizes) {
+            // Minimal placeholder; keeps build green in dev.
+            const safeAlt = typeof alt === "string" ? alt : "";
+            return `<img alt="${safeAlt}" loading="lazy" decoding="async" style="display:none" />`;
+        });
+    } else {
+        eleventyConfig.addAsyncShortcode("image", imageShortcode);
+    }
+
     eleventyConfig.addShortcode("photoAuthor", photoAuthorShortcode)
     eleventyConfig.addShortcode("articleAuthors", articleAuthorsShortcode)
     eleventyConfig.addShortcode("publishedAt", publishedShortcode)
@@ -145,8 +162,6 @@ export default function (eleventyConfig) {
         dir: {
             input: 'pages',
             output: 'dist',
-
-
         },
         htmlTemplateEngine: 'liquid',
         markdownTemplateEngine: 'liquid',
