@@ -3450,10 +3450,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"highcharts@npm:^12.3.0":
-  version: 12.4.0
-  resolution: "highcharts@npm:12.4.0"
-  checksum: 10c0/c91ad97f41f6af16001c72edc55c632034403a18e5648142d765e60f5832e52c261937b6c5d488d660f508bcc647a7a3a5f5d718e6b71a9ac2a9c8ecf24271c2
+"highcharts@npm:^12.5.0":
+  version: 12.5.0
+  resolution: "highcharts@npm:12.5.0"
+  peerDependencies:
+    jspdf: ^3.0.0
+    svg2pdf.js: ^2.6.0
+  peerDependenciesMeta:
+    jspdf:
+      optional: true
+    svg2pdf.js:
+      optional: true
+  checksum: 10c0/92d3964139ff35f183e1f95910aafa09304afa2486b92d30320e25ffe0d7df81688784f05523021186603987bd1a0aee7c4f0928259a74f893cf17370a0da089
   languageName: node
   linkType: hard
 
@@ -4842,7 +4850,7 @@ __metadata:
     compression: "npm:^1.8.1"
     cors: "npm:^2.8.5"
     express: "npm:^5.1.0"
-    highcharts: "npm:^12.3.0"
+    highcharts: "npm:^12.5.0"
     http-proxy-middleware: "npm:^3.0.5"
     morgan: "npm:^1.10.1"
     node-fetch: "npm:^3.3.2"
