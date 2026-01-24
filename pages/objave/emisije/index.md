@@ -3,6 +3,7 @@ title: Emisije toplogrednih plinov
 date: git Last Modified
 topics: emisije
 summary: Pregled stanja emisij toplogrednih plinov v Sloveniji
+draft: true
 ---
 
 

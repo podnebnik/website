@@ -3,6 +3,7 @@ title: Slogovni vodič
 date: git Last Modified
 topics: emisije
 summary: Pregled slogov za ustvarjanje objav in mehanizmov za vdelavo bogatih vsebin
+draft: true
 ---
 
 Primer besedila, ki bo objavljen. Besedilo je lahko **odebeljeno** ali *ležeče* ali ***odebeljeno ležeče***. Besedilo lahko tudi ~~prečrtamo~~. Za podpisane in nadpisane številke se priporoča uporaba ustreznih unicode znakov, npr. H₂O, CO₂ in CH₄.  

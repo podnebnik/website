@@ -9,6 +9,7 @@ authors:
  - Tadej Novak
  - Matic Pikovnik
 summary: TODO
+draft: true
 ---
 
 ## Temperatura v Sloveniji v zadnjih 60 letih

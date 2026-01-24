@@ -7,6 +7,7 @@ import EleventyVitePlugin from "@11ty/eleventy-plugin-vite";
 
 // ⬇️ PATCH: env flag to disable image processing in dev
 const IMG_DISABLED = process.env.ELEVENTY_DISABLE_IMG === "1";
+const EMULATE_PRODUCTION = process.env.ELEVENTY_EMULATE_PRODUCTION === "1";
 
 function monthToNumber(date) {
     return date.replace('januar', '1.')
@@ -136,6 +137,12 @@ export default function (eleventyConfig) {
             ]
         }
     })
+
+    eleventyConfig.addPreprocessor("pages", "*", (data, content) => {
+		if (data.draft && (EMULATE_PRODUCTION || process.env.ELEVENTY_RUN_MODE === "build")) {
+			return false
+		}
+	});
 
     eleventyConfig.addPassthroughCopy('code')
     eleventyConfig.addPassthroughCopy('styles')
