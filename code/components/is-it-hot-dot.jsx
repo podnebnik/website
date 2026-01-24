@@ -1,6 +1,6 @@
 import { cva } from "class-variance-authority";
 import { createMemo } from "solid-js";
-import { cn } from "../utils.mjs";
+import { cn } from "../utils";
 
 /**
  * @typedef {import('class-variance-authority').VariantProps<typeof dot>} DotVariants

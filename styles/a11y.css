@@ -1,0 +1,66 @@
+/* 
+ * Accessibility enhancements for Tailwind CSS v4.1
+ * Using Tailwind's built-in directives for better integration
+ */
+
+@theme {
+  /* Accessibility design tokens */
+  --a11y-focus-outline-width: 2px;
+  --a11y-focus-outline-color: #2563eb; /* blue-600 */
+  --a11y-focus-outline-offset: 3px;
+  --a11y-skip-link-z: 9999;
+}
+
+/* Skip link - Essential for keyboard navigation */
+@utility skip-link {
+  position: fixed;
+  top: -50px;
+  left: 0;
+  background-color: white;
+  color: black;
+  padding: 0.5rem 1rem;
+  z-index: var(--a11y-skip-link-z);
+  border: 2px solid black;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-decoration: none;
+  transition: top 0.2s ease-in-out;
+
+  @variant focus-visible {
+    top: 0;
+    outline-width: var(--a11y-focus-outline-width);
+    outline-color: var(--a11y-focus-outline-color);
+    outline-offset: var(--a11y-focus-outline-offset);
+    outline-style: solid;
+  }
+}
+
+/* Announcement container for screen readers */
+@utility announce {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* High contrast mode utilities */
+@custom-variant forced-colors (&:media(forced-colors: active));
+
+@layer utilities {
+  /* Overrides for Windows High Contrast Mode */
+  @variant forced-colors {
+    .hc-border {
+      border: 2px solid currentColor;
+    }
+    
+    .hc-interactive {
+      border: 1px solid ButtonText;
+      color: ButtonText;
+      background: ButtonFace;
+    }
+  }
+}
