@@ -54,7 +54,7 @@ To start developing you need to have the following requirements on:
 
 - `node` https://nodejs.org/en/ with `corepack` enabled
 - `yarn` https://yarnpkg.com
-- `.NET 8.0` https://dotnet.microsoft.com/en-us/download
+- `.NET 10.0` https://dotnet.microsoft.com/en-us/download
 - `python 3.12` https://www.python.org/
 - `uv` https://docs.astral.sh/uv/
 
