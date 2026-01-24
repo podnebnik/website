@@ -8,7 +8,8 @@ on:
       - '.github/workflows/docker-data.yaml'
       - '.dockerignore'
       - 'deployment/Dockerfile.datasette'
-      - 'Pipfile*'
+      - 'pyproject.toml'
+      - 'uv.lock'
       - '**.py'
       - 'data/**'
     tags:
@@ -21,7 +22,8 @@ on:
       - '.github/workflows/docker-data.yaml'
       - '.dockerignore'
       - 'deployment/Dockerfile.datasette'
-      - 'Pipfile*'
+      - 'pyproject.toml'
+      - 'uv.lock'
       - '**.py'
       - 'data/**'
 
