@@ -1,13 +1,8 @@
-FROM --platform=$BUILDPLATFORM bitnamilegacy/dotnet-sdk:8.0.408-debian-12-r5@sha256:040a99069083da2352aaea2b4398599ff8b5c2709b58a6d7f0f8250834926c0d AS builder
-ARG NODE_MAJOR=22
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0.102-noble@sha256:25d14b400b75fa4e89d5bd4487a92a604a4e409ab65becb91821e7dc4ac7f81f AS builder
+ARG NODE_MAJOR=24
 
 WORKDIR /build
 
-# RUN wget https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-# RUN dpkg -i packages-microsoft-prod.deb
-
-# RUN apt-get update && \
-#     apt-get install -y dotnet-sdk-6.0 dotnet-sdk-7.0
 RUN apt-get update && apt-get install -y ca-certificates curl gnupg git && mkdir -p /etc/apt/keyrings && \
     curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg;
 
