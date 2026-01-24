@@ -16,7 +16,7 @@
     "@tailwindcss/typography": "^0.5.16",
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/solid-query": "^5.90.21",
-    "@tanstack/solid-query-devtools": "^5.81.5",
+    "@tanstack/solid-query-devtools": "^5.91.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "compression": "^1.8.1",

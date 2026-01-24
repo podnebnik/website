@@ -2022,22 +2022,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/query-devtools@npm:5.86.0":
-  version: 5.86.0
-  resolution: "@tanstack/query-devtools@npm:5.86.0"
-  checksum: 10c0/02c29da23b6185894395bcdf95350a13a84af5f576fb6470c51c1da4f445b4d7282cecc015532bf8243ee2f603cbebfd8fce92af5cabb9c44ead61c7ab3ac91d
+"@tanstack/query-devtools@npm:5.92.0":
+  version: 5.92.0
+  resolution: "@tanstack/query-devtools@npm:5.92.0"
+  checksum: 10c0/3e41da3c47881b6190d954b60cc0f93f11251ff3066b68b7312eee5696ff114ce078309ed7ec80cd85a5b7a56ed0360fb2048d204ec459ab05f4a3c11268f6ce
   languageName: node
   linkType: hard
 
-"@tanstack/solid-query-devtools@npm:^5.81.5":
-  version: 5.87.2
-  resolution: "@tanstack/solid-query-devtools@npm:5.87.2"
+"@tanstack/solid-query-devtools@npm:^5.91.2":
+  version: 5.91.2
+  resolution: "@tanstack/solid-query-devtools@npm:5.91.2"
   dependencies:
-    "@tanstack/query-devtools": "npm:5.86.0"
+    "@tanstack/query-devtools": "npm:5.92.0"
   peerDependencies:
-    "@tanstack/solid-query": ^5.87.1
+    "@tanstack/solid-query": ^5.90.17
     solid-js: ^1.6.0
-  checksum: 10c0/7676a4a41ccee966642cfd38ea39127d8e9ce3054201f39f97598b4c323196c359f065e68d1cc77f83ebe93509789a145635c58e3a67f000b047de58f0e33b5e
+  checksum: 10c0/5a1dccd7c12fcd151969d88b69b1a48e9d0a2b9b5166a7d557e48331b4612c9f21f1c305a689db4e396e1a9710d2bd38b0c2598c3816d667a9f27cdfa915796d
   languageName: node
   linkType: hard
 
@@ -4928,7 +4928,7 @@ __metadata:
     "@tailwindcss/typography": "npm:^0.5.16"
     "@tailwindcss/vite": "npm:^4.1.18"
     "@tanstack/solid-query": "npm:^5.90.21"
-    "@tanstack/solid-query-devtools": "npm:^5.81.5"
+    "@tanstack/solid-query-devtools": "npm:^5.91.2"
     "@types/node": "npm:^22.10.5"
     class-variance-authority: "npm:^0.7.1"
     clsx: "npm:^2.1.1"
