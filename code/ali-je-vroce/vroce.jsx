@@ -126,7 +126,7 @@ export function AliJeVroce() {
                 <Select.Label class="sr-only">Izberite lokacijo</Select.Label>
                 <Select.Trigger class="select font-bold appearance-none inline-block bg-transparent rounded-none focus:outline-hidden leading-[64px] hover:cursor-pointer transition-all duration-300">
                     <Select.Value>{state => state.selectedOption().label}</Select.Value>
-                </Select.Trigger>
+                </Select.Trigger>?
                 <Select.Portal>
                     <Select.Content class="bg-muted text-white px-2 py-2 max-w-fit">
                         <Select.Listbox class="max-h-80 overflow-auto p-2 max-w-fit" />
