@@ -2,7 +2,7 @@
 import numpy as np
 import pandas as pd
 from netCDF4 import Dataset
-from scipy import interpolate
+from scipy.interpolate import RectBivariateSpline
 
 # variables of interest
 var_all = ["ensmean", "perc10", "perc25", "perc75", "perc90"]
@@ -61,8 +61,8 @@ for var in var_all:
         xx = np.arange(0, 360, 0.25)
         yy = np.arange(-90., 90.1, 0.25)
 
-        tint = interpolate.interp2d(lons_surf, lats_surf, data_10yrt[i], kind='cubic')
-        t2m_int = tint(xx, yy)
+        tint = RectBivariateSpline(lons_surf, lats_surf, data_10yrt[i].T)
+        t2m_int = tint(xx, yy).T
         data = t2m_int[:]
         X = data[:, 0]
         X = np.reshape(X, (X.size, 1))

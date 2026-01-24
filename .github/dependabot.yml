@@ -10,8 +10,8 @@ updates:
     cooldown:
       default-days: 7
 
-  - package-ecosystem: "pip" # See documentation for possible values
-    directory: "/data/​temperature/​sources" # Location of package manifests
+  - package-ecosystem: "uv" # See documentation for possible values
+    directory: "/data/temperature/sources" # Location of package manifests
     schedule:
       interval: "quarterly"
     open-pull-requests-limit: 10

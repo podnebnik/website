@@ -1,0 +1,12 @@
+[project]
+name = "podnebnik-temperature-source"
+version = "0.1"
+description = "Podnebnik temperatures data source"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy == 1.*",
+    "pandas == 2.*",
+    "scipy == 1.*",
+    "netcdf4",
+]
