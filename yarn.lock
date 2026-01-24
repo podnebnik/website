@@ -4946,7 +4946,7 @@ __metadata:
     tailwindcss: "npm:^4.1.18"
     typescript: "npm:^5.9.3"
     vite: "npm:^7.0.8"
-    vite-plugin-solid: "npm:^2.11.7"
+    vite-plugin-solid: "npm:^2.11.10"
   languageName: unknown
   linkType: soft
 
@@ -5700,9 +5700,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite-plugin-solid@npm:^2.11.7":
-  version: 2.11.8
-  resolution: "vite-plugin-solid@npm:2.11.8"
+"vite-plugin-solid@npm:^2.11.10":
+  version: 2.11.10
+  resolution: "vite-plugin-solid@npm:2.11.10"
   dependencies:
     "@babel/core": "npm:^7.23.3"
     "@types/babel__core": "npm:^7.20.4"
@@ -5717,7 +5717,7 @@ __metadata:
   peerDependenciesMeta:
     "@testing-library/jest-dom":
       optional: true
-  checksum: 10c0/c48204f9863b95d9cb958a7fc00f769f9940bd529ac46832f6f6deca21dee8c21ec377ab0b8ddb8f4daf3d10c17e75861dbe423b3e2227fee12a75718d20a7bd
+  checksum: 10c0/c374633a5083283db45b35acda65f975e8758a47f97488ca1f48258211d22e43717da2aa4e66cb1588cba763088d795af03b792337079cbb14786ba0b8faff8e
   languageName: node
   linkType: hard
 
