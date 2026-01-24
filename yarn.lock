@@ -1942,12 +1942,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^24.10.9":
-  version: 24.10.9
-  resolution: "@types/node@npm:24.10.9"
+"@types/node@npm:^25.0.9":
+  version: 25.0.10
+  resolution: "@types/node@npm:25.0.10"
   dependencies:
     undici-types: "npm:~7.16.0"
-  checksum: 10c0/e9e436fcd2136bddb1bbe3271a89f4653910bcf6ee8047c4117f544c7905a106c039e2720ee48f28505ef2560e22fb9ead719f28bf5e075fdde0c1120e38e3b2
+  checksum: 10c0/9edc3c812b487c32c76eebac7c87acae1f69515a0bc3f6b545806d513eb9e918c3217bf751dc93da39f60e06bf1b0caa92258ef3a6dd6457124b2e761e54f61f
   languageName: node
   linkType: hard
 
@@ -4625,7 +4625,7 @@ __metadata:
     "@tailwindcss/vite": "npm:^4.1.18"
     "@tanstack/solid-query": "npm:^5.90.21"
     "@tanstack/solid-query-devtools": "npm:^5.91.2"
-    "@types/node": "npm:^24.10.9"
+    "@types/node": "npm:^25.0.9"
     class-variance-authority: "npm:^0.7.1"
     clsx: "npm:^2.1.1"
     compression: "npm:^1.8.1"
