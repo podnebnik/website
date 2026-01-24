@@ -57,7 +57,7 @@ jobs:
           cache: 'yarn'
 
       - name: Install libvips
-        run: sudo apt-get install libvips-dev
+        run: sudo apt-get update && sudo apt-get install -y libvips-dev
 
       - run: yarn install
       - run: yarn build
