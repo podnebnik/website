@@ -4,30 +4,6 @@ import { STAGE_DATA_BASE_URL, STAGING_VREMENAR_API_URL } from "./constants";
 import { RequestStationData, StationsResponse } from '../types/api-raw.js';
 import type { ProcessedStation, ProcessedTemperatureData } from '../types/models.js';
 
-/** Figure out if we're running the local dev site (including LAN IP access). */
-function isDevLikeHost(h: string) {
-  if (!h) return false;
-  if (h === "localhost" || h === "127.0.0.1" || h === "::1") return true;
-  if (h.startsWith("10.") || h.startsWith("192.168.")) return true;
-  const m = h.match(/^172\.(\d+)\./);
-  if (m) {
-    const n = Number(m[1]);
-    if (n >= 16 && n <= 31) return true;
-  }
-  if (h.endsWith(".local")) return true;
-  return false;
-}
-
-const __hasWindow = typeof window !== "undefined";
-const __host = __hasWindow ? window.location.hostname : "";
-const __port = __hasWindow ? window.location.port : "";
-const __devLike = __hasWindow && (isDevLikeHost(__host) || __port === "8080");
-
-/** In dev we route via our proxy (same host, :8090). In prod we hit vremenar directly. */
-const API_BASE = __devLike
-  ? `http://${__host}:8090/api`
-  : "https://podnebnik.vremenar.app";
-
 /**
  * Returns a string representation of a number, prefixing it with a zero if it is less than 10.
  * @param number
@@ -518,34 +494,6 @@ async function fetchFromDatasette(
 }
 
 /**
- * Fetches historical data from the API
- */
-async function fetchFromApi(
-  station_id: string | number,
-  center_mmdd: string,
-  window_days: number,
-  timeoutMs: number = 8000
-) {
-  // not sure if this is correct @kesma01
-  const apiUrl = `${API_BASE}/staging/ali-je-vroce/historical_window?station_id=${encodeURIComponent(
-    station_id
-  )}&center_mmdd=${encodeURIComponent(center_mmdd)}&window_days=${encodeURIComponent(window_days)}`;
-
-  const response = await fetchWithTimeout(apiUrl, { timeoutMs });
-  
-  if (!response.ok) {
-    throw new Error(`API request failed with status ${response.status}`);
-  }
-
-  const responseData = await response.json() as { year: number; tavg: number }[] ;
-  if (!Array.isArray(responseData)) {
-    throw new Error('API response is not an array as expected');
-  }
-  
-  return responseData;
-}
-
-/**
  * Requests historical temperature data for a specific weather station within a time window.
  * 
  * This function retrieves historical temperature data for a given station, centered around
@@ -589,31 +537,11 @@ export async function requestHistoricalWindow({
   const mmddList = buildWindow(center_mmdd, window_days);
   const inList = mmddList.map((d) => `'${d}'`).join(", ");
 
-  // In development mode, go directly to Datasette to avoid API timeouts
-  if (__devLike) {
-    try {
-      const rows = await fetchFromDatasette(sid, inList);
-      const processedData = processDatasetteResponse(rows, sid);
-      return normalizeTemperatureRecords(processedData);
-    } catch (error) {
-      throw new Error(`Development datasette request failed: ${error instanceof Error ? error.message : String(error)}`);
-    }
-  }
-
-  // In production mode, try API first, then fallback to Datasette
   try {
-    const apiRows = await fetchFromApi(station_id, center_mmdd, window_days);
-    return normalizeTemperatureRecords(apiRows);
-  } catch (apiError) {
-    // API failed, fallback to Datasette
-    try {
-      const rows = await fetchFromDatasette(sid, inList, 8000);
-      const processedData = processDatasetteResponse(rows, sid);
-      return normalizeTemperatureRecords(processedData);
-    } catch (datasetteError) {
-      throw new Error(
-        `Both API and Datasette requests failed. API: ${apiError instanceof Error ? apiError.message : String(apiError)}, Datasette: ${datasetteError instanceof Error ? datasetteError.message : String(datasetteError)}`
-      );
-    }
+    const rows = await fetchFromDatasette(sid, inList);
+    const processedData = processDatasetteResponse(rows, sid);
+    return normalizeTemperatureRecords(processedData);
+  } catch (error) {
+    throw new Error(`Development datasette request failed: ${error instanceof Error ? error.message : String(error)}`);
   }
 }
