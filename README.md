@@ -72,7 +72,8 @@ and point your browser to:
 
     http://127.0.0.1:8080/
 
-> NOTE: The projects requirements may change over time. To keep your development environment up to date, run `pipenv install --dev` and `yarn install` from time to time. If the python version is upgraded as well, please run `pipenv --rm` first to remove the old virtual environment. Also, in case of major changes to the JavaScript dependencies, you may need to run `yarn install --force` to force the installation of the new dependencies.
+> NOTE: The projects requirements may change over time. To keep your development environment up to date, run `yarn install` from time to time.
+Also, in case of major changes to the JavaScript dependencies, you may need to run `yarn install --force` to force the installation of the new dependencies.
 
 > NOTE: The development server is configured to watch for changes in the `code`, `pages` and `styles` folders. If you make changes to any of these folders, the server will automatically rebuild the site and reload the browser. However, there may be cases where the server does not detect the changes. In that case, you can force the server to rebuild the site by pressing `Ctrl + C` and then run `yarn start` again. In some cases it may help to run `yarn clean` before running `yarn start` again.
 

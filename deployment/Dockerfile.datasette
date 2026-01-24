@@ -4,18 +4,12 @@
 # To build only the "builder" stage, one can do:
 # docker build --target=builder --progress=plain -f deployment/Dockerfile.datasette .
 
-
-FROM python:3.13-slim-bookworm AS uv_setup
+FROM ghcr.io/astral-sh/uv:0.9.26-python3.13-trixie-slim AS uv_setup
 
 WORKDIR /build
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends sqlite3 curl ca-certificates
-
-# uv
-ADD https://astral.sh/uv/0.7.17/install.sh /uv-installer.sh
-RUN sh /uv-installer.sh && rm /uv-installer.sh
-ENV PATH="/root/.local/bin/:$PATH"
 
 # -----------------------------------------------------------------------------
 
@@ -40,9 +34,6 @@ RUN uv run invoke create-databases --no-validate-arch=aarch64
 
 FROM uv_setup
 
-RUN apt-get update && \
-    apt-get install -y sqlite3
-
 WORKDIR /datasette
 
 COPY pyproject.toml .python-version uv.lock ./
@@ -50,8 +41,6 @@ COPY pyproject.toml .python-version uv.lock ./
 RUN uv sync --locked
 
 COPY --from=builder /build/var/sqlite /datasette/sqlite
-
-
 
 EXPOSE 8001
 # TODO: remove custom setting when no longer needed

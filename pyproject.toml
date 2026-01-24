@@ -5,13 +5,13 @@ description = "Podnebnik datasette"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "datasette>=0.65.1",
+    "datasette == 0.65.*",
 ]
 
 [dependency-groups]
 build = [
-    "colorama>=0.4.6",
-    "frictionless>=5.18.1",
-    "invoke>=2.2.0",
-    "sqlite-utils>=3.38",
+    "colorama",
+    "frictionless == 5.18.*",
+    "invoke",
+    "sqlite-utils",
 ]
