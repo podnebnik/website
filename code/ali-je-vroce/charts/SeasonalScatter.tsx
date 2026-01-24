@@ -73,6 +73,7 @@ export default function SeasonalScatter(props: SeasonalScatterProps) {
         y: +d.tavg,
         // optional: keep offset if we later want to jitter or show tooltip
         day_offset: d.day_offset ?? null,
+        date: d.date,
         marker: { radius: 4, fillColor: colorFor(anomalies[i]!, zmin, zmax) },
       }));
 

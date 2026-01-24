@@ -402,7 +402,7 @@ type NormalizedTemperatureRecord = {
 /**
  * Extracts temperature value from various possible field names
  */
-function extractTemperatureValue(record: {year?: number, tavg?:number}): number | null {
+function extractTemperatureValue(record: {year?: number, tavg?:number | null}): number | null {
   const tempValue = convertToNumberOrNull(record.tavg);
   
   /** 
@@ -426,7 +426,7 @@ function extractTemperatureValue(record: {year?: number, tavg?:number}): number 
 /**
  * Extracts year from record, handling different date formats
  */
-function extractYear(record: { year?: number | string; date?: string }): number | null {
+function extractYear(record: { year?: number | string; date?: string | Date }): number | null {
   const year = Number(
     record.year ?? 
     (typeof record.date === "string" ? record.date.slice(0, 4) : undefined)
@@ -436,20 +436,30 @@ function extractYear(record: { year?: number | string; date?: string }): number 
 }
 
 /**
+ * Extract date from record, if it exists
+ */
+function extractDate(record: { year?: number | string; date?: Date }): Date | null {
+  const date = record.date ?? null;
+  return date
+}
+
+/**
  * Normalizes temperature records from different data sources
  */
 function normalizeTemperatureRecords(
-  rows: {year?: number, tavg?: number}[]): NormalizedTemperatureRecord[] {
+  rows: {year?: number, tavg?: number | null, date?: Date}[]): NormalizedTemperatureRecord[] {
   return rows
     .map((record) => {
       const year = extractYear(record);
       const tavg = extractTemperatureValue(record);
+      const date = extractDate(record);
       
       if (year === null || tavg === null) return null;
       
       return {
         year,
         tavg,
+        date,
       };
     })
     .filter(isDefined);
@@ -458,18 +468,19 @@ function normalizeTemperatureRecords(
 /**
  * Processes and filters Datasette response data
  */
-function processDatasetteResponse(rows: HistoricalRowFromDatasette[], stationId: number): { year: number; tavg: number }[] {
+function processDatasetteResponse(rows: HistoricalRowFromDatasette[], stationId: number): { year: number; tavg: number | null; date: Date }[] {
   const filtered = rows.filter((row) => String(row.station_id) === String(stationId));
   
   return filtered
     .map((row) => {
-      const date = String(row.date);
-      const year = Number(date.slice(0, 4));
+      const dateString = String(row.date);
+      const date = new Date(dateString);
+      const year = Number(dateString.slice(0, 4));
       const tavg =
         convertToNumberOrNull(row.temperature_average_2m) ??
         convertToNumberOrNull(row.temperature_avg) ??
         convertToNumberOrNull(row.temperature_average);
-      return { year, tavg };
+      return { year, tavg, date };
     })
     .filter(isValidRecord);
 }

@@ -92,5 +92,5 @@ export const CHART_DEFAULTS = {
 export const CHART_DATA = {
   // Server understands as ±7; we expect 15 points/year
   WINDOW_DAYS: 14,
-  TODAY_LABEL: "TODAY",
+  TODAY_LABEL: "DANES",
 } as const;

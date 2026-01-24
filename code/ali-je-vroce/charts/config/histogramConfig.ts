@@ -104,7 +104,7 @@ export function createHistogramChartConfig({
       ],
     },
     yAxis: {
-      title: { text: "Frekvenca (štetje)" },
+      title: { text: "Število dni med 1950 in 2025" },
       min: 0,
       max: yMax,
       gridLineColor: COLORS.GRID_LINE,
@@ -113,7 +113,7 @@ export function createHistogramChartConfig({
     tooltip: {
       shared: false,
       headerFormat: "",
-      pointFormat: "<b>{point.x:.1f}°C</b><br/>Ocena frekvence: {point.y:.0f}",
+      pointFormat: "<b>{point.x:.1f}°C</b><br/>Ocena števila dni: {point.y:.0f}",
     },
     series: [
       createColdAreaSeries(left),
@@ -186,7 +186,7 @@ export function createTodayMarkerSeries(
       enabled: true,
       align: "center" as const,
       verticalAlign: "bottom" as const,
-      format: `TODAY<br/>${x.toFixed(1)}°C`,
+      format: `DANES<br/>${x.toFixed(1)}°C`,
       x: 0, // Centered horizontally on the marker
       y: -15, // Position above the marker
       style: {
@@ -213,9 +213,9 @@ export function createLabelSeries(
   yMax: number
 ): Highcharts.SeriesOptionsType {
   const labelPoints = [
-    createLabelPoint(p05, "5th percentile", yMax, { dx: -10 }),
-    createLabelPoint(p50, "50th percentile", yMax),
-    createLabelPoint(p95, "95th percentile", yMax, { dx: 10 }),
+    createLabelPoint(p05, "5. percentil", yMax, { dx: -10 }),
+    createLabelPoint(p50, "50. percentil", yMax),
+    createLabelPoint(p95, "95. percentil", yMax, { dx: 10 }),
   ];
 
   // Note: TODAY label is now handled by separate series in createHistogramChartConfig
@@ -237,7 +237,7 @@ export function createLabelSeries(
  */
 export function createColdAreaSeries(data: [number, number | null][]): Highcharts.SeriesOptionsType {
   return {
-    name: "≤ 5th",
+    name: "≤ 5.",
     type: "areaspline",
     data,
     color: COLORS.COLD_AREA,
@@ -253,7 +253,7 @@ export function createColdAreaSeries(data: [number, number | null][]): Highchart
  */
 export function createNormalAreaSeries(data: [number, number | null][]): Highcharts.SeriesOptionsType {
   return {
-    name: "5th–95th",
+    name: "5.–95.",
     type: "areaspline",
     data,
     color: COLORS.NORMAL_AREA,
@@ -269,7 +269,7 @@ export function createNormalAreaSeries(data: [number, number | null][]): Highcha
  */
 export function createHotAreaSeries(data: [number, number | null][]): Highcharts.SeriesOptionsType {
   return {
-    name: "≥ 95th",
+    name: "≥ 95.",
     type: "areaspline",
     data,
     color: COLORS.HOT_AREA,

@@ -17,10 +17,14 @@ export function createScatterTooltip(todayLabel: string): Highcharts.TooltipOpti
         return `<b>${todayLabel}</b>: ${(this as any).y!.toFixed(1)}°C`;
       }
       const point = (this as any).point;
+      const day = point?.date ? point?.date.toLocaleString("sl-SI", {
+          day: "numeric",
+          month: "long",
+        }) : null;
       const off = point?.day_offset;
       const offTxt =
         off || off === 0 ? ` (offset ${off >= 0 ? "+" : ""}${off}d)` : "";
-      return `Year: <b>${(this as any).x}</b>${offTxt}<br/>Tavg: <b>${(
+      return `Leto: <b>${(this as any).x}</b>${offTxt}<br/>Dan: ${day}<br/>Povprečna temp.: <b>${(
         this as any
       ).y!.toFixed(1)}°C</b>`;
     },
@@ -34,7 +38,7 @@ export function createHistogramTooltip(): Highcharts.TooltipOptions {
   return {
     shared: false,
     headerFormat: "",
-    pointFormat: "<b>{point.x:.1f}°C</b><br/>Ocena frekvence: {point.y:.0f}",
+    pointFormat: "<b>{point.x:.1f}°C</b><br/>Ocena števila dni: {point.y:.0f}",
   };
 }
 

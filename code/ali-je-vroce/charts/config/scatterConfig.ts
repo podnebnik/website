@@ -91,7 +91,7 @@ export function createScatterChartConfig({
       showFirstLabel: true,
       showLastLabel: true,
       tickInterval: 2, // Show tick every 2°C
-      title: { text: "Daily average temperature (°C)" },
+      title: { text: "Povprečna dnevna temperatura (°C)" },
       plotLines: [
         {
           value: p95,
@@ -100,7 +100,7 @@ export function createScatterChartConfig({
           width: DIMENSIONS.THIN_LINE,
           zIndex: CHART_STYLES.ANNOTATION_Z,
           label: {
-            text: `95th percentile: ${p95.toFixed(1)}°C`,
+            text: `95. percentil: ${p95.toFixed(1)}°C`,
             align: "right" as const,
             x: 60,
           },
@@ -112,7 +112,7 @@ export function createScatterChartConfig({
           width: DIMENSIONS.THIN_LINE,
           zIndex: CHART_STYLES.ANNOTATION_Z,
           label: {
-            text: `5th percentile: ${p05.toFixed(1)}°C`,
+            text: `5. percentil: ${p05.toFixed(1)}°C`,
             align: "right" as const,
             x: 60,
           },
@@ -128,9 +128,13 @@ export function createScatterChartConfig({
           return `<b>${todayLabel}</b>: ${(this as any).y!.toFixed(1)}°C`;
         }
         const point = (this as any).point;
+        const day = point?.date ? point?.date.toLocaleString("sl-SI", {
+          day: "numeric",
+          month: "long",
+        }) : null;
         const off = point?.day_offset;
         const offTxt = off || off === 0 ? ` (offset ${off >= 0 ? "+" : ""}${off}d)` : "";
-        return `Year: <b>${(this as any).x}</b>${offTxt}<br/>Tavg: <b>${(this as any).y!.toFixed(1)}°C</b>`;
+        return `Leto: <b>${(this as any).x}</b>${offTxt}<br/>Dan: <b>${day}</b><br/>Povprečna temp.: <b>${(this as any).y!.toFixed(1)}°C</b>`;
       },
     },
     annotations: [

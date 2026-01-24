@@ -28,9 +28,14 @@ export function AliJeVroce() {
   const mm = String(today.getMonth() + 1).padStart(2, "0");
   const dd = String(today.getDate()).padStart(2, "0");
   const mmdd = `${mm}-${dd}`;
-  const prettyTitle = `Two weeks around ${dd} ${today.toLocaleString("en-US", {
-    month: "long",
-  })} — history`;
+  const prettyTitleHistogram = `Temperature v dveh tednih okoli ${today.toLocaleString("sl-SI", {
+    day: "numeric",
+    month: "short",
+  })} — porazdelitev`;
+  const prettyTitleScatter = `Temperature v dveh tednih okoli ${today.toLocaleString("sl-SI", {
+    day: "numeric",
+    month: "short",
+  })} — zgodovinski trend`;
 
   // Use the custom hook to manage all data and state
   const {
@@ -100,7 +105,7 @@ export function AliJeVroce() {
         error={stationsError() || ""}
         onRetry={retryLoadingStations}
       />
-      {/* ✅ INSERT: test-only SeasonalScatter chart (uses current station + today's MM-DD) */}
+
       <Show
         when={
           !!tempAvg() &&
@@ -119,7 +124,7 @@ export function AliJeVroce() {
                 ? +rawTemp
                 : null;
             })()}
-            title={`Distribution around ${mmdd}`}
+            title={prettyTitleHistogram}
           />
         </div>
         <div class="mt-6">
@@ -132,7 +137,7 @@ export function AliJeVroce() {
                 ? +rawTemp
                 : null;
             })()}
-            title={prettyTitle}
+            title={prettyTitleScatter}
           />
         </div>
       </Show>
