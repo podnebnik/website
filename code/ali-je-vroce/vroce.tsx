@@ -108,7 +108,7 @@ export function AliJeVroce() {
 
       <Show
         when={
-          !!tempAvg() &&
+          tempAvg() != null &&
           isNaN(+result()) &&
           !isLoadingData() &&
           !!selectedStation()?.station_id
