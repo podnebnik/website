@@ -1,4 +1,4 @@
-import { onMount, Show } from "solid-js";
+import { createMemo, onMount, Show } from "solid-js";
 import { vrednosti, opisi, opisi_pod_30, percentile_labels } from "./constants.ts";
 
 // Import custom hooks
@@ -70,13 +70,13 @@ export function AliJeVroce() {
     initialize();
   });
 
-  const getDescriptionsForTemperature = () => {
+  const getDescriptionsForTemperature = createMemo(() => {
     const avg = tempAvg();
     if (avg != null && Number.isFinite(+avg) && +avg < 30) {
       return opisi_pod_30;
     }
     return opisi;
-  };
+  });
 
   return (
     <div class="text-center">
