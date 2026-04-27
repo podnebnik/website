@@ -1,5 +1,5 @@
-import { onMount, Show } from "solid-js";
-import { vrednosti, opisi, percentile_labels } from "./constants.ts";
+import { createMemo, onMount, Show } from "solid-js";
+import { vrednosti, opisi, opisi_pod_30, percentile_labels } from "./constants.ts";
 
 // Import custom hooks
 import { useWeatherData } from "./hooks/useWeatherData.ts";
@@ -70,6 +70,14 @@ export function AliJeVroce() {
     initialize();
   });
 
+  const getDescriptionsForTemperature = createMemo(() => {
+    const avg = tempAvg();
+    if (avg != null && Number.isFinite(+avg) && +avg < 30) {
+      return opisi_pod_30;
+    }
+    return opisi;
+  });
+
   return (
     <div class="text-center">
       <h1 class="not-prose font-normal text-5xl font-sans text-balance">
@@ -96,7 +104,7 @@ export function AliJeVroce() {
         isStale={false}
         labels={percentile_labels}
         values={vrednosti}
-        descriptions={opisi}
+        descriptions={getDescriptionsForTemperature()}
       />
 
       <ErrorMessage error={dataError() || ""} onRetry={retryLoadingData} />
