@@ -97,12 +97,12 @@ export const opisi = {
  * Alternative descriptions used when the measured average temperature is below 30 C.
  */
 export const opisi_pod_30 = {
-    'p00': 'Izjemno hladno za ta čas leta',
-    'p05': 'Zelo hladno za ta čas leta',
+    'p00': 'Izjemno hladno za ta čas v letu',
+    'p05': 'Zelo hladno za ta čas v letu',
     'p20': 'Hladneje kot običajno',
-    'p40': 'Običajne temperature za ta čas leta',
+    'p40': 'Običajne temperature za ta čas v letu',
     'p60': 'Topleje kot običajno',
-    'p80': 'Zelo toplo za ta čas leta',
-    'p95': 'Izjemno toplo za ta čas leta',
+    'p80': 'Zelo toplo za ta čas v letu',
+    'p95': 'Izjemno toplo za ta čas v letu',
     '': '',
 } satisfies PercentileDescriptions
