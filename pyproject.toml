@@ -11,7 +11,7 @@ dependencies = [
 [dependency-groups]
 build = [
     "colorama",
-    "frictionless == 5.18.*",
+    "frictionless==5.19.*",
     "invoke",
     "sqlite-utils",
 ]
