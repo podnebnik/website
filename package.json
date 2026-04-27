@@ -14,7 +14,7 @@
     "@highcharts/map-collection": "^2.3.2",
     "@kobalte/core": "^0.13.10",
     "@tailwindcss/typography": "^0.5.19",
-    "@tailwindcss/vite": "^4.1.18",
+    "@tailwindcss/vite": "^4.2.2",
     "@tanstack/solid-query": "^5.90.21",
     "@tanstack/solid-query-devtools": "^5.91.2",
     "class-variance-authority": "^0.7.1",
