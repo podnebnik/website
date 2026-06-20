@@ -134,6 +134,28 @@ export function AliJeVroce() {
             })()}
             title={prettyTitleHistogram}
           />
+          <div class="mt-4 text-left max-w-2xl mx-auto font-sans text-base space-y-3">
+            <p>
+              To je razporeditev temperatur, ki je značilna za ta letni čas, ki
+              smo ga opredelili kot 15 dnevno obdobje pred in po današnjem dnevu.
+              Podobno kot pri porazdelitveni krivulji je krivulja višja pri bolj
+              pogostih temperaturah in nižja pri nepogostih ali netipičnih
+              temperaturah.
+            </p>
+            <p>
+              Ekstremne temperature, ki so sicer redke (manj kot 5 % dni), so
+              označene s črtkano navpično črto. Sredina teh črt (50-ti percentil)
+              označuje temperaturo, ki razdeli porazdelitev na dva enaka dela, tj.
+              polovica dni je toplejših od te temperature, druga polovica pa
+              hladnejših.
+            </p>
+            <p>
+              Če želimo ugotoviti, ali je bil današnji dan ekstremno hladen ali
+              topel, lahko preverimo, ali je današnja povprečna temperatura pod ali
+              nad črtkano črto, ki označujeta najhladnejših oziroma najtoplejših 5
+              % dni v tem letnem času.
+            </p>
+          </div>
         </div>
         <div class="mt-6">
           <SeasonalScatter
@@ -147,6 +169,13 @@ export function AliJeVroce() {
             })()}
             title={prettyTitleScatter}
           />
+          <div class="mt-4 text-left max-w-2xl mx-auto font-sans text-base">
+            <p>
+              Današnja točka v primerjavi z vsemi dnevi iz preteklosti vse do
+              zadnjega leta s podobnim časom iz preteklih let. Rdeče označeni dnevi
+              so toplejši glede na pretekle podatke, modro označeni pa hladnejši.
+            </p>
+          </div>
         </div>
       </Show>
     </div>
