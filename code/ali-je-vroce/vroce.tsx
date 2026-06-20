@@ -137,7 +137,7 @@ export function AliJeVroce() {
           <div class="mt-4 text-left max-w-2xl mx-auto font-sans text-base space-y-3">
             <p>
               To je razporeditev temperatur, ki je značilna za ta letni čas, ki
-              smo ga opredelili kot 15 dnevno obdobje pred in po današnjem dnevu.
+              smo ga opredelili kot 15-dnevno obdobje okoli današnjega dne.
               Podobno kot pri porazdelitveni krivulji je krivulja višja pri bolj
               pogostih temperaturah in nižja pri nepogostih ali netipičnih
               temperaturah.
