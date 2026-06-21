@@ -9,6 +9,7 @@
     "start-debug": "dotnet fable watch code --extension .fs.jsx --run sh -c 'DEBUG=\"Eleventy*\" npx @11ty/eleventy --serve --incremental --quiet'",
     "build": "dotnet fable code --extension .fs.jsx --run npx @11ty/eleventy",
     "build-debug": "dotnet fable code --extension .fs.jsx --run sh -c 'DEBUG=\"Eleventy*\" npx @11ty/eleventy'",
+    "test": "node --test $(find code -name '*.test.ts' -print)",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

@@ -3,43 +3,12 @@
 import { STAGE_DATA_BASE_URL, STAGING_VREMENAR_API_URL } from "./constants";
 import { RequestStationData, StationsResponse } from '../types/api-raw.js';
 import type { ProcessedStation, ProcessedTemperatureData } from '../types/models.js';
-
-/**
- * Returns a string representation of a number, prefixing it with a zero if it is less than 10.
- * @param number
- */
-function zeroPrefix(number: number): string {
-  if (number < 10) return `0${number}`;
-  return `${number}`;
-}
-
-/**
- * Formats a JavaScript Date object into 'YYYY-MM-DD'.
- * @param date
- * @returns string in 'YYYY-MM-DD' format
- */
-function formatDateForQuery(date: Date): string {
-  let year = `${date.getFullYear()}`;
-  let month = `${zeroPrefix(date.getMonth() + 1)}`;
-  let day = `${zeroPrefix(date.getDate())}`;
-  return `${year}-${month}-${day}`;
-}
-
-/**
- * Human readable "danes/včeraj ob HH:MM".
- * @param date
- * @param updated
- * @returns formatted time string
- *
- * @example
- * formatTime(new Date('2024-06-15T14:30:00'), new Date('2024-06-15T16:00:00')) // "danes ob 14:30"
- * formatTime(new Date('2024-06-14T14:30:00'), new Date('2024-06-15T16:00:00')) // "včeraj ob 14:30"
- */
-function formatTime(date: Date, updated: Date): string {
-  let day = date.getDate() == updated.getDate() ? "danes" : "včeraj";
-  let time = `${zeroPrefix(date.getHours())}:${zeroPrefix(date.getMinutes())}`;
-  return `${day} ob ${time}`;
-}
+import {
+  dateForCurrentHotnessPercentiles,
+  toProcessedCurrentHotness,
+  toProcessedStations,
+  type CurrentHotnessPercentileResponse,
+} from "./model/readModel.ts";
 
 /** Small fetch helper with abort timeout. */
 async function fetchWithTimeout(url: string, { timeoutMs = 10000 } = {}) {
@@ -76,17 +45,8 @@ export async function loadStations(): Promise<
 
   if (resultStations.ok) {
     try {
-      let stationsList: ProcessedStation[] = [];
       const dataStations = (await resultStations.json()) as StationsResponse;
-      for (let row of dataStations["rows"]) {
-        let name_list = row[3].split(" ");
-        stationsList.push({
-          station_id: row[1],
-          name_locative: name_list.slice(1).join(" "),
-          prefix: name_list[0] ?? "",
-        });
-      }
-      return { success: true, stations: stationsList };
+      return { success: true, stations: toProcessedStations(dataStations) };
     } catch (error) {
       console.error("Error processing station data:", error);
       return {
@@ -124,73 +84,20 @@ export async function requestData(
     );
     if (resultAverage.ok) {
       const dataAverage = (await resultAverage.json()) as RequestStationData;
-      const averageTemperature = dataAverage.statistics.temperature_average_24h;
-
-      let timeUpdated = new Date(Number(dataAverage.statistics.timestamp));
-      const date = formatDateForQuery(timeUpdated);
-
-      let timeMinDate = new Date(
-        Number(dataAverage.statistics.timestamp_temperature_min_24h)
-      );
-      let timeMaxDate = new Date(
-        Number(dataAverage.statistics.timestamp_temperature_max_24h)
-      );
+      const date = dateForCurrentHotnessPercentiles(dataAverage);
 
       const resultPercentile = await fetch(
         `${STAGE_DATA_BASE_URL}/temperature/temperature~2Eslovenia_historical~2Edaily~2Eaverage_percentiles.json?date__exact=${date}&station_id__exact=${stationID}&_col=p05&_col=p20&_col=p40&_col=p60&_col=p80&_col=p95`,
-         options.signal ? { signal: options?.signal } : undefined
+        options.signal ? { signal: options?.signal } : undefined
       );
-        const dataPercentile = await resultPercentile.json();
+      const dataPercentile = await resultPercentile.json() as CurrentHotnessPercentileResponse;
 
-        let columns = dataPercentile["columns"];
-        let values = dataPercentile["rows"][0];
-        if (!values) throw new Error("Percentiles not found");
+      return {
+        success: true,
+        data: toProcessedCurrentHotness(dataAverage, dataPercentile),
+      };
+    }
 
-        // first column is rowid
-        columns.shift();
-        values.shift();
-
-        // find bucket of current average
-        let resultValue: string = "-1";
-        let resultTemperatureValue = -1;
-
-        if (averageTemperature < values[0]) {
-          resultValue = "p00";
-          resultTemperatureValue = values[0];
-        } else {
-          for (let i = 0; i < values.length; i++) {
-            if (i == values.length - 1) {
-              resultValue = "p95";
-              resultTemperatureValue = values[i];
-            } else if (
-              averageTemperature >= values[i] &&
-              averageTemperature < values[i + 1]
-            ) {
-              resultValue = columns[i];
-              resultTemperatureValue = values[i];
-              break;
-            }
-          }
-        }
-
-        return {
-          success: true,
-          data: {
-            resultValue,
-            resultTemperatureValue,
-            tempMin: dataAverage.statistics.temperature_min_24h,
-            timeMin: formatTime(timeMinDate, timeUpdated),
-            tempMax: dataAverage.statistics.temperature_max_24h,
-            timeMax: formatTime(timeMaxDate, timeUpdated),
-            tempAvg: averageTemperature,
-            timeUpdated: new Intl.DateTimeFormat("sl-SI", {
-              dateStyle: "long",
-              timeStyle: "short",
-            }).format(timeUpdated),
-          },
-        };
-      }
-    
   } catch (error) {
     if (!(error instanceof Error)) {
       console.error("Unknown error type:", error);
