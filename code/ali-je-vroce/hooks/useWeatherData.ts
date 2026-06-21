@@ -1,77 +1,21 @@
 import { createSignal, createEffect, batch, onMount, onCleanup } from "solid-js";
 import { createStore } from "solid-js/store";
-import { DEFAULT_STATION, CACHE_KEY_PREFIX } from "../constants";
 import { useStationsQuery, useWeatherQuery, queryKeys } from './queries';
 import { useQueryClient } from '@tanstack/solid-query';
 import { requestData, loadStations } from '../helpers';
-import { generateOptimisticWeatherData } from '../utils/optimistic';
 import { retryWithBackoff, createNetworkMonitor } from '../utils/errorRecovery.js';
 import { prefetchHistoricalData } from '../utils/prefetching';
-import type { ProcessedStation } from '../../types/models.js';
-
-/**
- * Simplified localStorage helper for user preferences
- * Uses the same prefix as the query cache for consistency
- * 
- * @param {string} key - The key to store preference under
- * @param {any} value - The preference value to store
- */
-function setPreference(key: string, value: unknown) {
-    try {
-        // Use the same prefix for consistency with the query cache
-        const prefixedKey = `${CACHE_KEY_PREFIX}-${key}`;
-        localStorage.setItem(prefixedKey, JSON.stringify(value));
-    } catch (error) {
-        console.warn('Error saving preference:', error);
-    }
-}
-
-/**
- * Retrieves user preference from local storage
- * Uses the same prefix as the query cache for consistency
- * 
- * @param key - The key to retrieve preference for
- * @param defaultValue - Default value if preference doesn't exist
- * @returns  The preference value or defaultValue if not found
- */
-function getPreference(key: string, defaultValue: {value: number,label: string, prefix: string} | null = null) {
-    try {
-        // First try with the new prefixed key
-        const prefixedKey = `${CACHE_KEY_PREFIX}-${key}`;
-        let item = localStorage.getItem(prefixedKey);
-
-        // If not found, try the old unprefixed key for backward compatibility
-        if (!item) {
-            // Try the legacy hardcoded prefix (if we changed the constant)
-            const legacyPrefixedKey = `ali-je-vroce-cache-${key}`;
-            item = localStorage.getItem(legacyPrefixedKey);
-
-            // If found with legacy prefixed key, migrate it
-            if (item) {
-                const parsedValue = JSON.parse(item);
-                setPreference(key, parsedValue);
-                localStorage.removeItem(legacyPrefixedKey);
-                return parsedValue;
-            }
-
-            // Last resort: try completely unprefixed key
-            item = localStorage.getItem(key);
-
-            // If found with old key, migrate it to new prefixed format
-            if (item) {
-                const parsedValue = JSON.parse(item);
-                setPreference(key, parsedValue);
-                localStorage.removeItem(key); // Remove old key
-                return parsedValue;
-            }
-        }
-
-        return item ? JSON.parse(item) : defaultValue;
-    } catch (error) {
-        console.warn('Error reading preference:', error);
-        return defaultValue;
-    }
-}
+import type { ProcessedStation, ProcessedTemperatureData } from '../../types/models.js';
+import {
+    createInitialReadModelState,
+    createOptimisticDisplayFields,
+    toDisplayFields,
+    toProcessedStation,
+    toStationPreference,
+    writeSelectedStationPreference,
+    type CurrentHotnessDisplayFields,
+    type ReadModelState,
+} from "../model/readModel.ts";
 
 /**
  * Custom hook for fetching and managing weather data and stations using TanStack Query
@@ -114,32 +58,9 @@ export function useWeatherData() {
     const queryClient = useQueryClient();
     const [isChanging, setIsChanging] = createSignal(false);
 
-    const cachedStation = getPreference('selectedStation', DEFAULT_STATION);
-    const [stationId, setStationId] = createSignal(String(cachedStation.value));
-
-    const [state, setState] = createStore<{
-        selectedStation: { value: number; label: string; prefix: string } | null;
-        stationPrefix: string;
-        result: string;
-        resultTemperature: string;
-        tempMin?: number;
-        timeMin: string;
-        tempMax?: number;
-        timeMax: string;
-        tempAvg?: number;
-        timeUpdated: string;
-    }>({
-        // Station data
-        selectedStation: cachedStation,
-        stationPrefix: cachedStation?.prefix || 'v',
-
-        // Temperature display state
-        result: '',
-        resultTemperature: "C",
-        timeMin: '',
-        timeMax: '',
-        timeUpdated: ''
-    });
+    const initialState = createInitialReadModelState(localStorage);
+    const [stationId, setStationId] = createSignal(String(initialState.selectedStation?.value));
+    const [state, setState] = createStore<ReadModelState>(initialState);
 
     /**
      * Holds the current AbortController instance used to manage and cancel ongoing fetch requests.
@@ -155,20 +76,21 @@ export function useWeatherData() {
         // Skip if data is loading or there's an error
         if (weatherQuery.isPending || weatherQuery.isError || !weatherQuery.data) return;
 
-        const data = weatherQuery.data;
-        batch(() => {
-            setState({
-                resultTemperature: `${data.resultTemperatureValue} °C`,
-                tempMin: data.tempMin,
-                timeMin: data.timeMin,
-                tempMax: data.tempMax,
-                timeMax: data.timeMax,
-                tempAvg: data.tempAvg,
-                timeUpdated: data.timeUpdated,
-                result: data.resultValue
-            });
-        });
+        setCurrentHotnessDisplay(toDisplayFields(weatherQuery.data));
     });
+
+    function setCurrentHotnessDisplay(displayFields: CurrentHotnessDisplayFields) {
+        setState({
+            resultTemperature: displayFields.resultTemperature,
+            tempMin: displayFields.tempMin,
+            timeMin: displayFields.timeMin,
+            tempMax: displayFields.tempMax,
+            timeMax: displayFields.timeMax,
+            tempAvg: displayFields.tempAvg,
+            timeUpdated: displayFields.timeUpdated,
+            result: displayFields.result,
+        });
+    }
 
     /**
      * Handles station change selection with improved data fetching, cancellation,
@@ -194,12 +116,7 @@ export function useWeatherData() {
     function onStationChange(station: ProcessedStation) {
         if (String(station.station_id) === stationId()) return;
 
-        // Transform ProcessedStation format to cached format for internal use
-        const cachedFormat = {
-            value: station.station_id,
-            label: station.name_locative,
-            prefix: station.prefix
-        };
+        const selectedStation = toStationPreference(station);
 
         if (currentController) {
             currentController.abort();
@@ -207,16 +124,15 @@ export function useWeatherData() {
 
         currentController = new AbortController();
 
-        // Save selected station to local storage (in cached format)
-        setPreference('selectedStation', cachedFormat);
+        writeSelectedStationPreference(localStorage, selectedStation);
 
-        // Generate optimistic data based on current or cached data
         const previousData = weatherQuery.data;
-        const optimisticData = generateOptimisticWeatherData(
-            station.station_id,
-            previousData ?? null,
-            queryClient,
-            queryKeys
+        const cachedData = queryClient.getQueryData<ProcessedTemperatureData>(
+            queryKeys.weatherData(String(station.station_id)),
+        );
+        const optimisticDisplay = createOptimisticDisplayFields(
+            cachedData,
+            previousData,
         );
 
         // Set loading state for UI feedback
@@ -226,21 +142,12 @@ export function useWeatherData() {
         batch(() => {
             setState({
                 stationPrefix: station.prefix,
-                selectedStation: cachedFormat
+                selectedStation,
             });
 
             // If we have optimistic data, show it immediately for better UX
-            if (optimisticData) {
-                setState({
-                    resultTemperature: optimisticData.resultTemperatureValue ? `${optimisticData.resultTemperatureValue} °C` : '...',
-                    tempMin: optimisticData.tempMin,
-                    timeMin: optimisticData.timeMin,
-                    tempMax: optimisticData.tempMax,
-                    timeMax: optimisticData.timeMax,
-                    tempAvg: optimisticData.tempAvg,
-                    timeUpdated: optimisticData.timeUpdated,
-                    result: optimisticData.resultValue
-                });
+            if (optimisticDisplay) {
+                setCurrentHotnessDisplay(optimisticDisplay);
             }
 
             // Update the station ID signal
@@ -274,18 +181,7 @@ export function useWeatherData() {
         })
             .then((data) => {
                 // Update state with fetched data
-                batch(() => {
-                    setState({
-                        resultTemperature: `${data.resultTemperatureValue} °C`,
-                        tempMin: data.tempMin,
-                        timeMin: data.timeMin,
-                        tempMax: data.tempMax,
-                        timeMax: data.timeMax,
-                        tempAvg: data.tempAvg,
-                        timeUpdated: data.timeUpdated,
-                        result: data.resultValue
-                    });
-                });
+                setCurrentHotnessDisplay(toDisplayFields(data));
             })
             .catch((error) => {
                 // Only handle errors that aren't from cancellation
@@ -369,24 +265,11 @@ export function useWeatherData() {
         networkMonitor.cleanup();
     });
 
-    // Transform cached station format to ProcessedStation format for components
-    const transformedSelectedStation = () => {
-        const cachedStation = state.selectedStation;
-        if (!cachedStation) return null;
-        
-        // Convert from cached format {value, label, prefix} to ProcessedStation format
-        return {
-            station_id: cachedStation.value,
-            name_locative: cachedStation.label,
-            prefix: cachedStation.prefix
-        };
-    };
-
     // Return derived values and functions needed by components
     return {
         // Station data
         stations: () => stationsQuery.data || [],
-        selectedStation: transformedSelectedStation,
+        selectedStation: () => toProcessedStation(state.selectedStation),
         stationPrefix: () => state.stationPrefix,
         isLoadingStations: () => stationsQuery.isPending,
         stationsError: () => stationsQuery.isError ? stationsQuery.error?.message : null,
