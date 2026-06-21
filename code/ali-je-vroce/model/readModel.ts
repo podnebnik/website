@@ -9,9 +9,9 @@ export interface PreferenceStorage {
 }
 
 export interface StationPreference {
-  value: number;
-  label: string;
-  prefix: string;
+  readonly value: number;
+  readonly label: string;
+  readonly prefix: string;
 }
 
 export interface CurrentHotnessDisplayFields {

@@ -14,8 +14,26 @@ import {
     toStationPreference,
     writeSelectedStationPreference,
     type CurrentHotnessDisplayFields,
+    type PreferenceStorage,
     type ReadModelState,
 } from "../model/readModel.ts";
+
+const unavailablePreferenceStorage: PreferenceStorage = {
+    getItem() {
+        return null;
+    },
+    setItem() {},
+    removeItem() {},
+};
+
+function getBrowserPreferenceStorage(): PreferenceStorage {
+    try {
+        return localStorage;
+    } catch (error) {
+        console.warn("Selected station preference storage unavailable:", error);
+        return unavailablePreferenceStorage;
+    }
+}
 
 /**
  * Custom hook for fetching and managing weather data and stations using TanStack Query
@@ -58,7 +76,8 @@ export function useWeatherData() {
     const queryClient = useQueryClient();
     const [isChanging, setIsChanging] = createSignal(false);
 
-    const initialState = createInitialReadModelState(localStorage);
+    const preferenceStorage = getBrowserPreferenceStorage();
+    const initialState = createInitialReadModelState(preferenceStorage);
     const [stationId, setStationId] = createSignal(String(initialState.selectedStation?.value));
     const [state, setState] = createStore<ReadModelState>(initialState);
 
@@ -124,7 +143,7 @@ export function useWeatherData() {
 
         currentController = new AbortController();
 
-        writeSelectedStationPreference(localStorage, selectedStation);
+        writeSelectedStationPreference(preferenceStorage, selectedStation);
 
         const previousData = weatherQuery.data;
         const cachedData = queryClient.getQueryData<ProcessedTemperatureData>(
