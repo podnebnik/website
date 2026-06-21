@@ -45,6 +45,8 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y libvips-dev
 
       - run: yarn install
+      - run: yarn test
+      - run: yarn typecheck
       - run: yarn build
 
   # T-1.1 — the output snapshot is only a regression net if something reads it.
