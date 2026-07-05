@@ -180,3 +180,59 @@ For the first case we suggest to load the data directly from the `data` folder. 
 For the second case we provide a [Datasette](https://datasette.io/) API that serves all the data in this repository.
 
 > TODO: provide the infrastructure and examples of how to load data from the Datasette API.
+
+## ERA5 Live Climate Data (Ali je vroče? — ERA5)
+
+The `/ali-je-vroce-era5/` page shows live ERA5-Land climate trends for Slovenia powered by a Python sidecar service (`scripts/era5/`). The sidecar fetches daily ERA5-Land data from [Open-Meteo](https://open-meteo.com/), pre-computes statistics into SQLite, and serves them at `/api/live/*` — proxied through nginx so the frontend needs no separate origin.
+
+### Sidecar files
+
+| File | Purpose |
+|------|---------|
+| `scripts/era5/mk_collect.py` | Fetches ERA5-Land CSVs from Open-Meteo (18 Slovenian stations) |
+| `scripts/era5/mk_precompute.py` | Builds `era5-slovenia.db` SQLite from CSVs |
+| `scripts/era5/mk_sidecar.py` | Flask API on port 5052 — all `/api/live/*` routes |
+| `scripts/era5/si.yaml` | Station list and feature flags |
+| `scripts/era5/pyproject.toml` | Python dependencies (managed by `uv`) |
+| `deployment/Dockerfile.era5-sidecar` | Sidecar container image |
+| `deployment/Dockerfile.website.era5` | Website image with nginx ERA5 proxy |
+| `deployment/default.conf.era5.template` | nginx config — proxies `/api/live/` to sidecar |
+
+### Running the full ERA5 stack locally with Docker
+
+```bash
+# Build both images
+docker build -f deployment/Dockerfile.era5-sidecar -t podnebnik/era5-sidecar .
+docker build -f deployment/Dockerfile.website.era5  -t podnebnik/website-era5  .
+
+# Shared network + persistent data volume
+docker network create era5-net
+docker volume create era5-data
+
+# Start the sidecar (collects data on first run — ~10 min)
+docker run -d --name era5-sidecar \
+  --network era5-net \
+  -v era5-data:/app/data/si \
+  podnebnik/era5-sidecar
+
+# Start the website (proxies /api/live/* to the sidecar)
+docker run -d --name era5-website \
+  --network era5-net -p 8090:80 \
+  -e ERA5_SIDECAR_HOST=era5-sidecar \
+  podnebnik/website-era5
+```
+
+Open http://localhost:8090/ali-je-vroce-era5/.
+
+### Charts
+
+- **Today status** — national temperature percentile vs ERA5 history (1950–present), with last-7-days strip
+- **Regression chart** — per-station Theil-Sen trend + TFPW Mann-Kendall significance, with projection to 2050
+- **Season heatmap** — seasonal anomaly calendar across all stations
+- **SPEI heatmap + drought trend** — standardised precipitation-evapotranspiration index, per station and season
+- **Tropical days / nights** — annual event counts above a user-chosen threshold, fitted with Negative Binomial GLM
+- **Sea level — Koper** — IPCC AR6 rise projections (SSP2-4.5 / SSP5-8.5) with interactive flood-zone overlay for the northern Adriatic
+
+### Static flood data
+
+The sea-level widget requires pre-rendered flood-zone images served from `public/data/flood/` (25 PNGs at 10 cm increments, 10–250 cm) and `public/data/flood-stats.json` (affected area and building counts per level). These files are checked into the repository and are bundled into the website image at build time.

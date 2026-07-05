@@ -1,7 +1,7 @@
 import { createSignal, createEffect, For, Show, onMount, onCleanup } from "solid-js";
 
 interface TropTrend {
-  model_used:      boolean;
+  model_used:      boolean | "nb";
   rate_per_year:   number;
   days_per_decade: number;
   p_value:         number;
@@ -41,10 +41,12 @@ interface Config {
   plainNoun:        string;
 }
 
+const SIDECAR_BASE = (import.meta.env.VITE_ERA5_SIDECAR_URL as string | undefined) ?? "";
+
 const CONFIGS: Record<string, Config> = {
   days: {
     kind:             "days",
-    endpoint:         "/api/tropical_days",
+    endpoint:         `${SIDECAR_BASE}/api/live/tropical_days`,
     unitLabel:        "dni",
     defaultThreshold: 30,
     minT:             15,
@@ -58,7 +60,7 @@ const CONFIGS: Record<string, Config> = {
   },
   nights: {
     kind:             "nights",
-    endpoint:         "/api/tropical_nights",
+    endpoint:         `${SIDECAR_BASE}/api/live/tropical_nights`,
     unitLabel:        "noči",
     defaultThreshold: 20,
     minT:             5,
