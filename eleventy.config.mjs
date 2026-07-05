@@ -129,12 +129,22 @@ async function imageShortcode(src, alt, sizes) {
 }
 
 export default function (eleventyConfig) {
+    const era5SidecarUrl = process.env.ERA5_SIDECAR_URL || "http://localhost:5052";
+
     eleventyConfig.addPlugin(EleventyVitePlugin, {
         viteOptions: {
             plugins: [
                 TailwindCSS(),
                 SolidPlugin(),
-            ]
+            ],
+            server: {
+                proxy: {
+                    "/api/live": {
+                        target: era5SidecarUrl,
+                        changeOrigin: true,
+                    },
+                },
+            },
         }
     })
 
