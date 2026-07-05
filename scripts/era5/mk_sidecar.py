@@ -18,6 +18,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import requests as http_requests
+import statsmodels.api as sm
 import yaml
 from flask import Flask, jsonify, request
 from flask_cors import CORS
@@ -159,7 +160,8 @@ if _csv_files:
 else:
     _data = pd.DataFrame()
 
-_LOCATIONS = sorted(_data["location"].unique().tolist()) if not _data.empty else []
+_LOCATIONS    = sorted(_data["location"].unique().tolist()) if not _data.empty else []
+_CSV_MAX_YEAR = int(_data["date"].max().year) if not _data.empty else datetime.date.today().year
 
 # Per-station lapse-rate correction offset (°C) = elevation_diff_m * LAPSE_RATE
 # elevation_diff_m = elevation_era5_m - elevation_station_m (negative for high-altitude stations)
@@ -1471,6 +1473,165 @@ def api_spei_station_seasonal():
     if not CONFIG.get("features", {}).get("drought_trend_chart", True):
         return "", 204
     return jsonify(_compute_spei_station_seasonal())
+
+
+# ── Tropical days / nights ────────────────────────────────────────────────────
+
+_TROPICAL_CACHE: dict = {}
+
+
+def _streak_filter(arr: np.ndarray, streak: int) -> np.ndarray:
+    """Zero out True runs shorter than `streak` consecutive qualifying days."""
+    out = arr.copy()
+    n, i = len(arr), 0
+    while i < n:
+        if arr[i]:
+            j = i
+            while j < n and arr[j]:
+                j += 1
+            if j - i < streak:
+                out[i:j] = False
+            i = j
+        else:
+            i += 1
+    return out
+
+
+def _compute_tropical(col: str, threshold: float, streak: int) -> dict | None:
+    key = (col, threshold, streak)
+    if key in _TROPICAL_CACHE:
+        return _TROPICAL_CACHE[key]
+    if _data.empty:
+        return None
+
+    corr_col = col + "_corr" if col in ("temperature_max", "temperature_min", "temperature_mean") else col
+
+    stations_out: dict = {}
+    era5_last = ""
+
+    for loc in _LOCATIONS:
+        ld = _data[_data["location"] == loc].sort_values("date").copy()
+        if ld.empty:
+            continue
+        if not era5_last:
+            era5_last = ld["date"].max().strftime("%Y-%m-%d")
+
+        qualifies = (ld[corr_col] > threshold).to_numpy()
+        if streak > 1:
+            qualifies = _streak_filter(qualifies, streak)
+        ld = ld.assign(_qualifies=qualifies)
+
+        annual = (
+            ld[ld["_qualifies"]]
+            .groupby("year")
+            .size()
+            .reindex(range(int(ld["year"].min()), int(ld["year"].max()) + 1), fill_value=0)
+        )
+        years  = annual.index.tolist()
+        counts = [int(v) for v in annual.values]
+
+        # Exclude current (possibly incomplete) year from NB fit
+        fit_mask   = [i for i, y in enumerate(years) if y != _CSV_MAX_YEAR]
+        fit_years  = [years[i]  for i in fit_mask]
+        fit_counts = [counts[i] for i in fit_mask]
+
+        nonzero_count = sum(1 for c in fit_counts if c > 0)
+        trend: dict = {}
+
+        if len(fit_years) >= 10 and nonzero_count >= 10:
+            try:
+                years_arr = np.array(fit_years, dtype=float)
+                year_mean = float(years_arr[0])
+                X_c       = sm.add_constant(years_arr - year_mean)
+                fitted    = sm.NegativeBinomial(fit_counts, X_c).fit(disp=False, maxiter=200)
+
+                x_dense = np.linspace(years[0], years[-1], len(years))
+                X_dense = sm.add_constant(x_dense - year_mean)
+                pred    = fitted.get_prediction(X_dense)
+                pred_df = pred.summary_frame(alpha=0.05)
+
+                mid_year        = float(np.median(fit_years))
+                mid_mu          = float(np.exp(fitted.params[0] + fitted.params[1] * (mid_year - year_mean)))
+                days_per_decade = round(mid_mu * (float(np.exp(fitted.params[1] * 10)) - 1), 1)
+                alpha_val       = round(float(fitted.params[-1]), 3)
+
+                mu_dense = pred_df["predicted"].values
+                se_pred  = np.sqrt(mu_dense + mu_dense ** 2 * alpha_val)
+                pi_low   = np.maximum(0.0, mu_dense - 1.96 * se_pred)
+                pi_high  = mu_dense + 1.96 * se_pred
+
+                trend = {
+                    "model_used":      "nb",
+                    "rate_per_year":   round(max(-50.0, min(50.0, float(np.exp(fitted.params[1]) - 1) * 100)), 2),
+                    "days_per_decade": days_per_decade,
+                    "p_value":         round(max(0.0001, min(0.9999, float(fitted.pvalues[1]))), 3),
+                    "alpha":           alpha_val,
+                    "aic":             round(float(fitted.aic), 1),
+                    "fit_year_max":    int(fit_years[-1]),
+                    "x_line":          [round(float(x), 2) for x in x_dense],
+                    "y_line":          pred_df["predicted"].round(2).tolist(),
+                    "ci_low":          pred_df["ci_lower"].round(2).tolist(),
+                    "ci_high":         pred_df["ci_upper"].round(2).tolist(),
+                    "pi_low":          pi_low.round(2).tolist(),
+                    "pi_high":         pi_high.round(2).tolist(),
+                }
+
+                yl = trend["y_line"]; cl = trend["ci_low"]; ch = trend["ci_high"]
+                if not (
+                    all(np.isfinite(v) and v >= 0 for v in yl) and
+                    all(np.isfinite(v)             for v in cl) and
+                    all(np.isfinite(v)             for v in ch) and
+                    all(cl[i] <= ch[i] for i in range(len(cl)))
+                ):
+                    trend = {}
+
+            except Exception as e:
+                import sys
+                print(f"[tropical] NB fit failed for {loc} ({col},{threshold},{streak}): {e}", file=sys.stderr)
+
+        stations_out[loc] = {
+            "years":         years,
+            "counts":        counts,
+            "nonzero_count": nonzero_count,
+            "trend":         trend,
+        }
+
+    if not stations_out:
+        return None
+
+    result = {"stations": stations_out, "era5_last": era5_last}
+    _TROPICAL_CACHE[key] = result
+    return result
+
+
+@app.route("/api/live/tropical_days")
+def api_tropical_days():
+    if not CONFIG.get("features", {}).get("tropical_days_chart", True):
+        return "", 204
+    try:
+        threshold = float(request.args.get("threshold", 30))
+        streak    = max(1, int(request.args.get("streak", 1)))
+    except (ValueError, TypeError):
+        return jsonify({"error": "invalid params"}), 400
+    result = _compute_tropical("temperature_max", threshold, streak)
+    if result is None:
+        return jsonify({"error": "no data"}), 503
+    return jsonify(result)
+
+
+@app.route("/api/live/tropical_nights")
+def api_tropical_nights():
+    if not CONFIG.get("features", {}).get("tropical_nights_chart", True):
+        return "", 204
+    try:
+        threshold = float(request.args.get("threshold", 20))
+        streak    = max(1, int(request.args.get("streak", 1)))
+    except (ValueError, TypeError):
+        return jsonify({"error": "invalid params"}), 400
+    result = _compute_tropical("temperature_min", threshold, streak)
+    if result is None:
+        return jsonify({"error": "no data"}), 503
+    return jsonify(result)
 
 
 def _prewarm() -> None:

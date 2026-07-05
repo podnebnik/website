@@ -33,15 +33,15 @@ features:
   today_section:       true
   season_heat_heatmap: true
   spei_heatmap:        true
-  sea_level_section:   false  # MK-specific flood data not available in podnebnik
-  drought_trend_chart: false  # WIP — off everywhere for now
+  sea_level_section:   true
+  drought_trend_chart: true
   chatbot:             false   # no Azure Direct Line for Slovenia
   welcome_modal:       true
   next_episodes_teaser: false
   mk2036_section:      false
   analytics_export:    false
-  tropical_days_chart:   false  # MK-specific API not available in podnebnik
-  tropical_nights_chart: false  # MK-specific API not available in podnebnik
+  tropical_days_chart:   true
+  tropical_nights_chart: true
 
 stations:
   - { name: Ljubljana,          lat: 46.0511, lon: 14.5051, elevation: 299,  elevation_era5_m: 300  }
