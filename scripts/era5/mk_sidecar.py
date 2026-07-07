@@ -950,8 +950,8 @@ def api_annual_trend():
                 (month, day),
             ).fetchone()
         return jsonify([dict(row)] if row else [])
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    except Exception:
+        return jsonify({"error": "internal server error"}), 500
 
 
 @app.route("/api/live/regression")
