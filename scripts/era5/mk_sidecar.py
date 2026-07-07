@@ -1070,8 +1070,8 @@ def api_daily_window():
         if not row:
             return jsonify([])
         return jsonify([dict(row)])
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    except Exception:
+        return jsonify({"error": "Internal server error"}), 500
 
 
 def _compute_season_heatmap() -> dict:
