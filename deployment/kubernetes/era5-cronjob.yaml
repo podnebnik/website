@@ -1,0 +1,43 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: era5-nightly-refresh
+  namespace: podnebnik  # adapt to your namespace
+spec:
+  schedule: "0 2 * * *"  # 02:00 UTC nightly
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 3600  # abort if still running after 1 h
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: era5-refresh
+              image: ghcr.io/podnebnik/era5-sidecar:latest
+              command: ["sh", "-c"]
+              args:
+                - |
+                  uv run python mk_collect.py &&
+                  uv run python mk_precompute.py
+              env:
+                - name: COUNTRY
+                  value: "si"
+                - name: DATA_DIR
+                  value: "/app/data/si"
+              volumeMounts:
+                - name: era5-data
+                  mountPath: /app/data/si
+              resources:
+                requests:
+                  memory: "512Mi"
+                  cpu: "500m"
+                limits:
+                  memory: "1Gi"
+                  cpu: "1000m"
+          volumes:
+            - name: era5-data
+              persistentVolumeClaim:
+                claimName: era5-data
