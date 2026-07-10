@@ -89,10 +89,7 @@ LOCATIONS = CONFIG["stations"]
 
 # ── Setup Open-Meteo client with cache + retry ────────────────────────────────
 
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
 cache_session = requests_cache.CachedSession(".openmeteo_cache", expire_after=-1)
-cache_session.verify = False  # disable SSL verification (corporate proxy workaround)
 retry_session = retry(cache_session, retries=3, backoff_factor=2)
 openmeteo = openmeteo_requests.Client(session=retry_session)
 
@@ -295,6 +292,10 @@ def fetch_location(loc):
 
         daily = response.Daily()
 
+        _has_precip = "precipitation_sum" in DAILY_VARIABLES
+        _idx_precip = 3 if _has_precip else None
+        _idx_et0    = 4 if _has_precip else None
+
         df_new = pd.DataFrame({
             "date": pd.date_range(
                 start=pd.to_datetime(daily.Time(),    unit="s", utc=True),
@@ -302,11 +303,13 @@ def fetch_location(loc):
                 freq=pd.Timedelta(seconds=daily.Interval()),
                 inclusive="left",
             ).date,
-            "temperature_max":        daily.Variables(0).ValuesAsNumpy(),
-            "temperature_min":        daily.Variables(1).ValuesAsNumpy(),
-            "temperature_mean":       daily.Variables(2).ValuesAsNumpy(),
-            "precipitation_sum":      daily.Variables(3).ValuesAsNumpy(),
-            "et0_evapotranspiration": daily.Variables(4).ValuesAsNumpy(),
+            "temperature_max":  daily.Variables(0).ValuesAsNumpy(),
+            "temperature_min":  daily.Variables(1).ValuesAsNumpy(),
+            "temperature_mean": daily.Variables(2).ValuesAsNumpy(),
+            **({
+                "precipitation_sum":      daily.Variables(_idx_precip).ValuesAsNumpy(),
+                "et0_evapotranspiration": daily.Variables(_idx_et0).ValuesAsNumpy(),
+            } if _has_precip else {}),
         })
 
         before = len(df_new)

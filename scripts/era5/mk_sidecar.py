@@ -21,7 +21,6 @@ import requests as http_requests
 import statsmodels.api as sm
 import yaml
 from flask import Flask, jsonify, request
-from flask_cors import CORS
 from scipy import stats
 from scipy.stats import theilslopes, gaussian_kde
 import pymannkendall as mk_test
@@ -759,7 +758,6 @@ def _today_status(date_str: str, loc: str | None, *, include_rank: bool = True) 
 # ── Flask app ─────────────────────────────────────────────────────────────────
 
 app = Flask(__name__)
-CORS(app)
 
 
 @app.route("/api/live/today_status")

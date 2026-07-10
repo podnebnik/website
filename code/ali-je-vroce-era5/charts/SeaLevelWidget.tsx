@@ -302,7 +302,9 @@ export function SeaLevelWidget() {
 
     const onUpdate = () => { renderFloodCanvas(); setViewFrac(calcViewFrac()); };
     leafletMap.on('move zoom moveend zoomend viewreset resize', onUpdate);
-    new ResizeObserver(onUpdate).observe(mapWrapEl);
+    const resizeObserver = new ResizeObserver(onUpdate);
+    resizeObserver.observe(mapWrapEl);
+    onCleanup(() => resizeObserver.disconnect());
 
     wireDivider();
     updateDividerPos();
