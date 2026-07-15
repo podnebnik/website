@@ -3,3 +3,7 @@
 host: stage.podnebnik.org
 image:
   tag: main-9c2ed09-1783102723
+era5:
+  image:
+    # seeded with latest; image-updater takes over after the first main build
+    tag: latest

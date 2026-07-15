@@ -3,3 +3,8 @@
 host: podnebnik.org
 image:
   tag: main-9c2ed09-1783102723
+era5:
+  image:
+    # seeded with latest for the first rollout; pin to a stage-proven
+    # main-<sha>-<ts> tag afterwards (same promotion flow as image.tag)
+    tag: latest

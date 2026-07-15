@@ -41,12 +41,12 @@ interface Config {
   plainNoun:        string;
 }
 
-const SIDECAR_BASE = (import.meta.env.VITE_ERA5_SIDECAR_URL as string | undefined) ?? "";
+const API_BASE = (import.meta.env.VITE_ERA5_API_URL as string | undefined) ?? "";
 
 const CONFIGS: Record<string, Config> = {
   days: {
     kind:             "days",
-    endpoint:         `${SIDECAR_BASE}/api/live/tropical_days`,
+    endpoint:         `${API_BASE}/api/live/tropical_days`,
     unitLabel:        "dni",
     defaultThreshold: 30,
     minT:             15,
@@ -60,7 +60,7 @@ const CONFIGS: Record<string, Config> = {
   },
   nights: {
     kind:             "nights",
-    endpoint:         `${SIDECAR_BASE}/api/live/tropical_nights`,
+    endpoint:         `${API_BASE}/api/live/tropical_nights`,
     unitLabel:        "noči",
     defaultThreshold: 20,
     minT:             5,

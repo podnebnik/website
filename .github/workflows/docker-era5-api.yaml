@@ -1,4 +1,4 @@
-name: "Docker: website-era5"
+name: "Docker: era5-api"
 
 on:
   push:
@@ -7,37 +7,17 @@ on:
     tags:
       - "v*.*.*"
     paths:
-      - '.github/workflows/docker-era5-website.yaml'
-      - '.dockerignore'
-      - 'deployment/Dockerfile.website.era5'
-      - 'deployment/default.conf.era5.template'
-      - 'assets/**'
-      - 'code/**'
-      - 'pages/**'
-      - 'public/**'
-      - 'styles/**'
-      - '*config.js'
-      - '.config/**'
-      - 'package*.json'
-      - 'yarn.lock'
+      - '.github/workflows/docker-era5-api.yaml'
+      - 'deployment/Dockerfile.era5-api'
+      - 'scripts/era5/**'
 
   pull_request:
     branches:
       - "main"
     paths:
-      - '.github/workflows/docker-era5-website.yaml'
-      - '.dockerignore'
-      - 'deployment/Dockerfile.website.era5'
-      - 'deployment/default.conf.era5.template'
-      - 'assets/**'
-      - 'code/**'
-      - 'pages/**'
-      - 'public/**'
-      - 'styles/**'
-      - '*config.js'
-      - '.config/**'
-      - 'package*.json'
-      - 'yarn.lock'
+      - '.github/workflows/docker-era5-api.yaml'
+      - 'deployment/Dockerfile.era5-api'
+      - 'scripts/era5/**'
 
 permissions:
   contents: read
@@ -69,7 +49,7 @@ jobs:
         uses: docker/metadata-action@80c7e94dd9b9319bd5eb7a0e0fe9291e23a2a2e9 # v6.1.0
         with:
           images: |
-            ghcr.io/${{ github.repository_owner }}/website-era5
+            ghcr.io/${{ github.repository_owner }}/era5-api
           tags: |
             type=raw,value=${{ steps.git-info.outputs.branch }}-${{ steps.git-info.outputs.short_sha }}-${{ steps.git-info.outputs.timestamp }}
             type=raw,value=latest
@@ -101,7 +81,7 @@ jobs:
         uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf # v7.2.0
         with:
           context: .
-          file: ./deployment/Dockerfile.website.era5
+          file: ./deployment/Dockerfile.era5-api
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

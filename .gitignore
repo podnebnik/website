@@ -19,3 +19,6 @@ dist
 
 *.asc
 *.nc
+
+
+.claude/settings.local.json

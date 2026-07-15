@@ -129,7 +129,7 @@ async function imageShortcode(src, alt, sizes) {
 }
 
 export default function (eleventyConfig) {
-    const era5SidecarUrl = process.env.ERA5_SIDECAR_URL || "http://localhost:5052";
+    const era5ApiUrl = process.env.ERA5_API_URL || "http://localhost:5052";
 
     eleventyConfig.addPlugin(EleventyVitePlugin, {
         viteOptions: {
@@ -140,7 +140,7 @@ export default function (eleventyConfig) {
             server: {
                 proxy: {
                     "/api/live": {
-                        target: era5SidecarUrl,
+                        target: era5ApiUrl,
                         changeOrigin: true,
                     },
                 },

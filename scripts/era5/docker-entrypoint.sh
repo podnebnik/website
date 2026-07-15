@@ -18,6 +18,6 @@ if [ ! -f "$DB_PATH" ] || [ -n "$LATEST_CSV" ]; then
     uv run python mk_precompute.py
 fi
 
-# Start the sidecar (foreground)
-echo "[entrypoint] Starting ERA5 sidecar on port ${SIDECAR_PORT:-5052}..."
-exec uv run python mk_sidecar.py
+# Start the API service (foreground)
+echo "[entrypoint] Starting ERA5 API on port ${API_PORT:-5052}..."
+exec uv run python mk_api.py

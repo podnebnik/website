@@ -1,13 +1,13 @@
 """
-ERA5 live-data sidecar for podnebnik/website.
+ERA5 live-data API service for podnebnik/website.
 Serves /api/live/* for the ali-je-vroce-era5 page.
 
-Extends the MK_ERA5 sidecar with Docker-friendly paths and extra endpoints:
+Extends the MK_ERA5 API with Docker-friendly paths and extra endpoints:
   /api/live/season_heatmap, /api/live/daily_window,
   /api/live/spei_heatmap, /api/live/spei_station_seasonal
 
 Run:
-    DATA_DIR=/path/to/era5/data python3 mk_sidecar.py
+    DATA_DIR=/path/to/era5/data python3 mk_api.py
 Serves on 0.0.0.0:5052
 """
 
@@ -49,7 +49,7 @@ else:
 DB_PATH    = DATA_DIR / "era5-slovenia.db"
 _CACHE_DIR = DATA_DIR / "cache"
 _CACHE_DIR.mkdir(parents=True, exist_ok=True)
-PORT       = int(os.environ.get("SIDECAR_PORT", 5052))
+PORT       = int(os.environ.get("API_PORT", 5052))
 MONTH_NAMES = ["Jan","Feb","Mar","Apr","May","Jun",
                "Jul","Aug","Sep","Oct","Nov","Dec"]
 
@@ -1673,6 +1673,6 @@ def _prewarm() -> None:
 threading.Thread(target=_prewarm, daemon=True).start()
 
 if __name__ == "__main__":
-    host = os.environ.get("SIDECAR_HOST", "0.0.0.0")
-    print(f"ERA5 sidecar listening on http://{host}:{PORT}")
+    host = os.environ.get("API_HOST", "0.0.0.0")
+    print(f"ERA5 API listening on http://{host}:{PORT}")
     app.run(host=host, port=PORT, debug=False)

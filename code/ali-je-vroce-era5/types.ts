@@ -1,4 +1,4 @@
-/** ERA5 sidecar /api/live/today_status response */
+/** ERA5 API /api/live/today_status response */
 export interface TodayStatus {
   available:    boolean;
   date?:        string;
@@ -29,7 +29,7 @@ export interface RankInfo {
   top5:      Array<{ year: number; date: string; temp: number; is_today?: boolean }>;
 }
 
-/** ERA5 sidecar /api/live/today_status/last7 response */
+/** ERA5 API /api/live/today_status/last7 response */
 export interface Last7 {
   available: boolean;
   days: Array<{
@@ -81,7 +81,7 @@ export interface DailyWindowRow {
   distribution_json: string;
 }
 
-/** ERA5 sidecar /api/live/meta response */
+/** ERA5 API /api/live/meta response */
 export interface SiteMeta {
   country:          string;
   name:             string;
@@ -109,7 +109,7 @@ export interface SeasonHeatmapRow {
   n_days:     number;
 }
 
-/** ERA5 sidecar /api/live/regression — single location result */
+/** ERA5 API /api/live/regression — single location result */
 export interface RegressionResult {
   loc:      string;
   year_min: number;
@@ -133,7 +133,7 @@ export interface RegressionResult {
   };
 }
 
-/** ERA5 sidecar /api/live/regression response */
+/** ERA5 API /api/live/regression response */
 export interface RegressionResponse {
   results:    RegressionResult[];
   date_label: string;
