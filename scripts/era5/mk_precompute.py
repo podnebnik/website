@@ -1,5 +1,5 @@
 """
-Pre-compute ERA5-Land statistics into SQLite for the ERA5 sidecar.
+Pre-compute ERA5-Land statistics into SQLite for the ERA5 API service.
 
 Run after mk_collect.py:
     DATA_DIR=/app/data/si python3 mk_precompute.py

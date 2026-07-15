@@ -1,0 +1,8 @@
+apiVersion: v2
+name: website
+description: >-
+  podnebnik.org website. Rendered by ArgoCD (sledilnik/infrastructure repo
+  holds the Application pointers); see that repo's argocd/README.md for the
+  stage/prod/preview conventions.
+type: application
+version: 1.1.0

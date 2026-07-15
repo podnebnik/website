@@ -16,14 +16,14 @@ services:
   website:
     depends_on:
       - base # website needs to have base image built before
-      - era5-sidecar
+      - era5-api
     build:
       context: .
       dockerfile: deployment/Dockerfile.dev.website
     volumes:
       - .:/build
     environment:
-      - ERA5_SIDECAR_URL=http://era5-sidecar:5052
+      - ERA5_API_URL=http://era5-api:5052
     command:
       bash -c "yarn install && yarn run start"
     ports:
@@ -41,11 +41,11 @@ services:
     ports:
       - "8001:8001"
 
-  # ERA5 live-data sidecar — serves /api/live/* for the ali-je-vroce-era5 page
-  era5-sidecar:
+  # ERA5 live-data API service — serves /api/live/* for the ali-je-vroce-era5 page
+  era5-api:
     build:
       context: .
-      dockerfile: deployment/Dockerfile.era5-sidecar
+      dockerfile: deployment/Dockerfile.era5-api
     volumes:
       # Persistent store for collected ERA5 CSV files and precomputed SQLite
       - era5-data:/app/data/si

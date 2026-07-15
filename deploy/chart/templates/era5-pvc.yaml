@@ -1,0 +1,14 @@
+# Collected ERA5 CSVs + precomputed SQLite. RWO is fine: the era5-api pod
+# (Recreate) and the nightly CronJob share it on the single-node cluster.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: era5-data
+  labels:
+    app.kubernetes.io/name: era5-api
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.era5.storage }}

@@ -1,8 +1,8 @@
 import type { TodayStatus, Last7, AnnualTrendRow, AnnualTrend, SiteMeta, SeasonHeatmapRow, RegressionResult, RegressionResponse, DailyWindowRow } from "./types.ts";
 
 // In dev: empty string = same-origin proxy (Vite config or dev-proxy)
-// In prod: set VITE_ERA5_SIDECAR_URL at build time (e.g. https://era5.podnebnik.org)
-const SIDECAR = (import.meta.env.VITE_ERA5_SIDECAR_URL as string | undefined) ?? "";
+// In prod: set VITE_ERA5_API_URL at build time (e.g. https://era5.podnebnik.org)
+const API = (import.meta.env.VITE_ERA5_API_URL as string | undefined) ?? "";
 
 async function get<T>(url: string): Promise<T> {
   const resp = await fetch(url);
@@ -11,25 +11,25 @@ async function get<T>(url: string): Promise<T> {
 }
 
 export function fetchMeta(): Promise<SiteMeta> {
-  return get(`${SIDECAR}/api/live/meta`);
+  return get(`${API}/api/live/meta`);
 }
 
 export function fetchTodayStatus(date: string, loc: string | null): Promise<TodayStatus> {
   const params = new URLSearchParams({ date });
   if (loc) params.set("loc", loc);
-  return get(`${SIDECAR}/api/live/today_status?${params}`);
+  return get(`${API}/api/live/today_status?${params}`);
 }
 
 export function fetchLast7(date: string, loc: string | null): Promise<Last7> {
   const params = new URLSearchParams({ date });
   if (loc) params.set("loc", loc);
-  return get(`${SIDECAR}/api/live/today_status/last7?${params}`);
+  return get(`${API}/api/live/today_status/last7?${params}`);
 }
 
 export function fetchDailyWindow(station: string | null, month: number, day: number): Promise<DailyWindowRow[]> {
   const s = station ?? "Ljubljana";
   const params = new URLSearchParams({ station: s, month: String(month), day: String(day) });
-  return get<DailyWindowRow[]>(`${SIDECAR}/api/live/daily_window?${params}`);
+  return get<DailyWindowRow[]>(`${API}/api/live/daily_window?${params}`);
 }
 
 export async function fetchPageData(
@@ -44,7 +44,7 @@ export async function fetchPageData(
 }
 
 export async function fetchSeasonHeatmap(): Promise<SeasonHeatmapRow[]> {
-  const result = await get<{ available: boolean; data: SeasonHeatmapRow[] }>(`${SIDECAR}/api/live/season_heatmap`);
+  const result = await get<{ available: boolean; data: SeasonHeatmapRow[] }>(`${API}/api/live/season_heatmap`);
   return result.available ? result.data : [];
 }
 
@@ -60,15 +60,15 @@ export interface RegressionParams {
 export function fetchRegression(p: RegressionParams): Promise<RegressionResponse> {
   const params = new URLSearchParams({ var: p.var, doy: String(p.doy), window: String(p.window), corr: p.corr, method: p.method });
   p.locs.forEach(l => params.append("loc", l));
-  return get<RegressionResponse>(`${SIDECAR}/api/live/regression?${params}`);
+  return get<RegressionResponse>(`${API}/api/live/regression?${params}`);
 }
 
 export function fetchSpeiHeatmap(): Promise<any> {
-  return get(`${SIDECAR}/api/live/spei_heatmap`);
+  return get(`${API}/api/live/spei_heatmap`);
 }
 
 export function fetchSpeiStationSeasonal(): Promise<any> {
-  return fetch(`${SIDECAR}/api/live/spei_station_seasonal`).then(r => {
+  return fetch(`${API}/api/live/spei_station_seasonal`).then(r => {
     if (r.status === 204) return null;
     if (!r.ok) throw new Error(`${r.status}`);
     return r.json();
@@ -97,13 +97,13 @@ export function fetchCalendar(
   const params = new URLSearchParams({
     loc, var: variable, window: String(window_), corr, method,
   });
-  return get<CalendarData>(`${SIDECAR}/api/live/calendar?${params}`);
+  return get<CalendarData>(`${API}/api/live/calendar?${params}`);
 }
 
 export async function fetchAnnualTrend(month: number, day: number, loc?: string | null): Promise<AnnualTrend> {
   const params = new URLSearchParams({ month: String(month), day: String(day) });
   if (loc) params.set("loc", loc);
-  const url = `${SIDECAR}/api/live/annual_trend?${params}`;
+  const url = `${API}/api/live/annual_trend?${params}`;
   const rows = await get<AnnualTrendRow[]>(url);
   if (!rows.length) throw new Error("No annual trend row");
   const r = rows[0]!;

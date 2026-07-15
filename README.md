@@ -183,43 +183,46 @@ For the second case we provide a [Datasette](https://datasette.io/) API that ser
 
 ## ERA5 Live Climate Data (Ali je vroče? — ERA5)
 
-The `/ali-je-vroce-era5/` page shows live ERA5-Land climate trends for Slovenia powered by a Python sidecar service (`scripts/era5/`). The sidecar fetches daily ERA5-Land data from [Open-Meteo](https://open-meteo.com/), pre-computes statistics into SQLite, and serves them at `/api/live/*` — proxied through nginx so the frontend needs no separate origin.
+The `/ali-je-vroce-era5/` page shows live ERA5-Land climate trends for Slovenia powered by a Python API service (`scripts/era5/`). The service fetches daily ERA5-Land data from [Open-Meteo](https://open-meteo.com/), pre-computes statistics into SQLite, and serves them at `/api/live/*` — proxied through the website's nginx so the frontend needs no separate origin.
 
-### Sidecar files
+### ERA5 API service files
 
 | File | Purpose |
 |------|---------|
 | `scripts/era5/mk_collect.py` | Fetches ERA5-Land CSVs from Open-Meteo (18 Slovenian stations) |
 | `scripts/era5/mk_precompute.py` | Builds `era5-slovenia.db` SQLite from CSVs |
-| `scripts/era5/mk_sidecar.py` | Flask API on port 5052 — all `/api/live/*` routes |
+| `scripts/era5/mk_api.py` | Flask API on port 5052 — all `/api/live/*` routes |
 | `scripts/era5/si.yaml` | Station list and feature flags |
 | `scripts/era5/pyproject.toml` | Python dependencies (managed by `uv`) |
-| `deployment/Dockerfile.era5-sidecar` | Sidecar container image |
-| `deployment/Dockerfile.website.era5` | Website image with nginx ERA5 proxy |
-| `deployment/default.conf.era5.template` | nginx config — proxies `/api/live/` to sidecar |
+| `deployment/Dockerfile.era5-api` | ERA5 API container image |
+| `deployment/default.conf.template` | nginx config — proxies `/api/live/` to the ERA5 API |
+
+In Kubernetes the service is deployed by the Helm chart in `deploy/chart/` (Deployment + Service
+`era5-api`, a persistent volume for the collected data, and a nightly refresh CronJob) — see
+`deploy/chart/values.yaml` (`era5:` block).
 
 ### Running the full ERA5 stack locally with Docker
 
 ```bash
 # Build both images
-docker build -f deployment/Dockerfile.era5-sidecar -t podnebnik/era5-sidecar .
-docker build -f deployment/Dockerfile.website.era5  -t podnebnik/website-era5  .
+docker build -f deployment/Dockerfile.era5-api -t podnebnik/era5-api .
+docker build -f deployment/Dockerfile.website  -t podnebnik/website  .
 
 # Shared network + persistent data volume
 docker network create era5-net
 docker volume create era5-data
 
-# Start the sidecar (collects data on first run — ~10 min)
-docker run -d --name era5-sidecar \
+# Start the ERA5 API (collects data on first run — ~10 min)
+docker run -d --name era5-api \
   --network era5-net \
   -v era5-data:/app/data/si \
-  podnebnik/era5-sidecar
+  podnebnik/era5-api
 
-# Start the website (proxies /api/live/* to the sidecar)
-docker run -d --name era5-website \
+# Start the website (proxies /api/live/* to the ERA5 API)
+docker run -d --name website \
   --network era5-net -p 8090:80 \
-  -e ERA5_SIDECAR_HOST=era5-sidecar \
-  podnebnik/website-era5
+  -e ERA5_API_HOST=era5-api \
+  podnebnik/website
 ```
 
 Open http://localhost:8090/ali-je-vroce-era5/.

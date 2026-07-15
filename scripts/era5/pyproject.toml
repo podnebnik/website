@@ -1,5 +1,5 @@
 [project]
-name = "era5-sidecar"
+name = "era5-api"
 version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [

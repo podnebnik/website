@@ -13,7 +13,7 @@ RUN uv sync --locked 2>/dev/null || uv sync
 
 # ── Application files ──────────────────────────────────────────────────────────
 
-COPY scripts/era5/mk_sidecar.py scripts/era5/mk_collect.py scripts/era5/mk_precompute.py ./
+COPY scripts/era5/mk_api.py scripts/era5/mk_collect.py scripts/era5/mk_precompute.py ./
 COPY scripts/era5/si.yaml ./si.yaml
 COPY scripts/era5/locales/ ./locales/
 
@@ -24,7 +24,7 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 ENV DATA_DIR=/app/data/si
 ENV COUNTRY=si
-ENV SIDECAR_PORT=5052
+ENV API_PORT=5052
 
 EXPOSE 5052
 
