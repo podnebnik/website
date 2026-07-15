@@ -1,0 +1,5 @@
+# Stage overlay. image.tag is written back by argocd-image-updater
+# (newest main-<sha>-<timestamp> build) — do not pin by hand.
+host: stage.podnebnik.org
+image:
+  tag: main-9c2ed09-1783102723

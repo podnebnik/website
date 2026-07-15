@@ -1,0 +1,5 @@
+# Prod overlay. image.tag is PINNED: promote by editing it to a tag that has
+# proven itself on stage (see values-stage.yaml for the current one).
+host: podnebnik.org
+image:
+  tag: main-9c2ed09-1783102723

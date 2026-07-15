@@ -1,0 +1,32 @@
+{{- if .Values.previewDatabase.enabled }}
+# Preview-only CNPG database, cloned from the shared prod cluster at preview
+# creation. Prerequisites (see the website-preview ApplicationSet in
+# sledilnik/infrastructure): the preview_import role on postgres-prod and the
+# preview-import Secret synced into this namespace as a second source.
+# Pruned with the namespace when the PR closes.
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: website-preview-db
+spec:
+  instances: 1
+  storage:
+    size: 1Gi
+  bootstrap:
+    initdb:
+      import:
+        type: microservice
+        databases:
+          - {{ .Values.previewDatabase.database }}
+        source:
+          externalCluster: postgres-prod
+  externalClusters:
+    - name: postgres-prod
+      connectionParameters:
+        host: postgres-prod-rw.postgres.svc
+        user: preview_import
+        dbname: {{ .Values.previewDatabase.database }}
+      password:
+        name: preview-import
+        key: password
+{{- end }}
