@@ -7,15 +7,20 @@
 
     // Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {
-		"ghcr.io/devcontainers/features/dotnet:2": {"version": "10.0"},
-		"ghcr.io/devcontainers/features/node:1": {"version": "24"}
+		"ghcr.io/devcontainers/features/dotnet:2": {},
+		"ghcr.io/devcontainers/features/github-cli:1": {},
+		"ghcr.io/devcontainers/features/node:2": {
+            "version": "24"
+        },
+		"ghcr.io/stuartleeks/dev-container-features/shell-history:0": {},
+		"ghcr.io/esimkowitz/devcontainer-features/claude-code-persistence:1": {}
 	},
 
     // Finalize container setup when a dev container is created.
 	"onCreateCommand": "sudo apt-get update && sudo apt-get install -y fish git pipenv libvips-dev",
 
     // A command to run each time the container is successfully started.
-    "postStartCommand": "yarn install && pipenv install --dev --system",
+    "postStartCommand": "npx yarn install",
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	"forwardPorts": [8000, 8080],
@@ -24,10 +29,11 @@
 	"customizations": {
         "vscode": {
 			"extensions": [
-                "ms-python.python",
-                "georgewfraser.fsharp-language-server",
-                "Ionide.Ionide-fsharp"
-            ]
+				"ms-python.python",
+				"georgewfraser.fsharp-language-server",
+				"Ionide.Ionide-fsharp",
+				"Anthropic.claude-code"
+			]
 		}
     }
 
