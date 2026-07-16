@@ -4,30 +4,15 @@ on:
   push:
     branches:
       - main
-    paths:
-      - '.github/workflows/build.yaml'
-      - 'assets/**'
-      - 'code/**'
-      - 'pages/**'
-      - 'public/**'
-      - 'styles/**'
-      - '*config.js'
-      - '.config/**'
-      - 'package*.json'
-      - 'yarn.lock'
+    paths-ignore:
+      # ArgoCD image-updater commits the new tag back into deploy/ after each
+      # build. Ignore it so that write-back doesn't retrigger build -> push ->
+      # write-back forever.
+      - 'deploy/**'
 
   pull_request:
-    paths:
-      - '.github/workflows/build.yaml'
-      - 'assets/**'
-      - 'code/**'
-      - 'pages/**'
-      - 'public/**'
-      - 'styles/**'
-      - '*config.js'
-      - '.config/**'
-      - 'package*.json'
-      - 'yarn.lock'
+    paths-ignore:
+      - 'deploy/**'
 
   workflow_dispatch:
 
