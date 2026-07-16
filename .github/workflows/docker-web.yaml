@@ -6,36 +6,22 @@ on:
       - main
     tags:
       - "v*.*.*"
-    paths:
-      - '.github/workflows/docker-web.yaml'
-      - '.dockerignore'
-      - 'deployment/Dockerfile.website'
-      - 'assets/**'
-      - 'code/**'
-      - 'pages/**'
-      - 'public/**'
-      - 'styles/**'
-      - '*config.js'
-      - '.config/**'
-      - 'package*.json'
-      - 'yarn.lock'
+    paths-ignore:
+      # ArgoCD image-updater commits the new tag back into deploy/ after each
+      # build. Ignore it so that write-back doesn't retrigger build -> push ->
+      # write-back forever.
+      - 'deploy/**'
+
 
   pull_request:
     branches:
       - "main"
-    paths:
-      - '.github/workflows/docker-web.yaml'
-      - '.dockerignore'
-      - 'deployment/Dockerfile.website'
-      - 'assets/**'
-      - 'code/**'
-      - 'pages/**'
-      - 'public/**'
-      - 'styles/**'
-      - '*config.js'
-      - '.config/**'
-      - 'package*.json'
-      - 'yarn.lock'
+    paths-ignore:
+      # ArgoCD image-updater commits the new tag back into deploy/ after each
+      # build. Ignore it so that write-back doesn't retrigger build -> push ->
+      # write-back forever.
+      - 'deploy/**'
+
 
 permissions:
   contents: read # to allow the action to read the repository contents
