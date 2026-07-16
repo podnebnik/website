@@ -46,6 +46,13 @@ era5:
     limits:
       memory: 2Gi
 
+# Extra annotations for the HTTPRoute. The podnebnik/infrastructure preview
+# ApplicationSet sets external-dns.alpha.kubernetes.io/cloudflare-proxied:
+# "false" here so preview DNS records stay grey-cloud; stage/prod leave it empty
+# and inherit external-dns's proxied (orange-cloud) default.
+httproute:
+  annotations: {}
+
 # Preview environments only (set by the website-preview ApplicationSet in the
 # infrastructure repo): CNPG database cloned from postgres-prod via the
 # preview_import role. Requires the preview-import Secret in the namespace.
