@@ -13,6 +13,12 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: website
+      annotations:
+        # Previews reuse the mutable pr-<n> image tag, so a freshly-built image
+        # under the same tag does NOT change the rendered Deployment and ArgoCD
+        # won't restart the pod. Bump this value to force a rollout that re-pulls
+        # the tag (imagePullPolicy: Always picks up the new digest).
+        podnebnik.org/rollout-revision: "1"
     spec:
       containers:
         - name: website
