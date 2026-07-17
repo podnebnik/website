@@ -1,5 +1,6 @@
 import { Show, For, createSignal, lazy, Suspense } from "solid-js";
 import type { TodayStatus, Last7, SiteMeta, RankInfo } from "../types.ts";
+import { isArsoLoc } from "../api.ts";
 import { TodayFlag } from "./TodayFlag.tsx";
 import { TodayGauge } from "../charts/TodayGauge.tsx";
 
@@ -14,6 +15,14 @@ const CATEGORIES: Record<string, string> = {
 };
 
 const CAT_DESCS: Record<string, string> = {
+  freezing: "Med najhladnejšimi {d} v naših zapisih ARSO.",
+  cold:     "Hladneje od večine izmerjenih {d}.",
+  nope:     "Točno takšno, kot {d} v {country} ponavadi je.",
+  hot:      "Med najtoplejšimi {d} v naših zapisih.",
+  hell:     "Izjemna vročina — vrh 5 % vseh {d} glede na meritve ARSO.",
+};
+
+const CAT_DESCS_ERA5: Record<string, string> = {
   freezing: "Med najhladnejšimi {d} v naših {record_years} letih zapisov.",
   cold:     "Hladneje od večine izmerjenih {d}.",
   nope:     "Točno takšno, kot {d} v {country} ponavadi je.",
@@ -22,7 +31,8 @@ const CAT_DESCS: Record<string, string> = {
 };
 
 function catDesc(catKey: string, r: TodayStatus): string {
-  const tpl = CAT_DESCS[catKey] ?? "";
+  const isArso = r.loc ? isArsoLoc(r.loc) : false;
+  const tpl = (isArso ? CAT_DESCS : CAT_DESCS_ERA5)[catKey] ?? "";
   const d = fmtDayLabel(r.day_label ?? "");
   const yearMin = r.year_min ?? 1950;
   const yearMax = r.year_max ?? new Date().getFullYear();
@@ -62,6 +72,7 @@ interface Props {
   loading:      boolean;
   onDateChange: (d: string) => void;
   onLocChange:  (v: string) => void;
+  nationalLoc?: string;  // loc key for the "Slovenija" option (e.g. "arso:national")
 }
 
 export function TodayCard(props: Props) {
@@ -96,13 +107,24 @@ export function TodayCard(props: Props) {
         </button>
         <select
           class="today-loc-select"
-          value={r().loc ?? ""}
+          value={r().loc === props.nationalLoc ? (props.nationalLoc ?? "") : r().loc ?? ""}
           onChange={(e) => props.onLocChange(e.currentTarget.value)}
         >
-          <option value="">Slovenija</option>
-          <For each={props.meta.stations}>
-            {(s) => <option value={s.name}>{s.name.replace(/_/g, " ")}</option>}
-          </For>
+          <option value={props.nationalLoc ?? ""}>Slovenija</option>
+          <Show when={props.meta.stations.some(s => s.source === "arso")}>
+            <optgroup label="ARSO postaje">
+              <For each={props.meta.stations.filter(s => s.source === "arso")}>
+                {(s) => <option value={s.name}>{s.label}</option>}
+              </For>
+            </optgroup>
+          </Show>
+          <Show when={props.meta.stations.some(s => s.source === "era5")}>
+            <optgroup label="ERA5 postaje">
+              <For each={props.meta.stations.filter(s => s.source === "era5")}>
+                {(s) => <option value={s.name}>{s.label ?? s.name}</option>}
+              </For>
+            </optgroup>
+          </Show>
         </select>
       </div>
 
@@ -137,7 +159,14 @@ export function TodayCard(props: Props) {
             <div class="today-pct-wrap">
               <span class="today-pct-num">{(r().percentile ?? 0).toFixed(0)}</span>
               <span class="today-pct-label">percentil</span>
-              <span class="today-pct-samples">{(r().n_samples ?? 0).toLocaleString()} vzorcev</span>
+              <Show when={r().loc && isArsoLoc(r().loc!)}>
+                <span class="today-pct-samples">ARSO meritve</span>
+              </Show>
+              <Show when={!r().loc || !isArsoLoc(r().loc ?? "")}>
+                <Show when={(r().n_samples ?? 0) > 0}>
+                  <span class="today-pct-samples">{(r().n_samples ?? 0).toLocaleString()} vzorcev</span>
+                </Show>
+              </Show>
               <Show when={r().is_preliminary}>
                 <span style={{
                   "font-family": "var(--font-mono)", "font-size": "9px",
@@ -158,8 +187,12 @@ export function TodayCard(props: Props) {
           {/* Explain */}
           <p class="today-explain">
             {r().loc
-              ? `Temperatura na postaji ${r().loc!.replace(/_/g, " ")}, razvrstena glede na zapise ERA5-Land od leta ${r().year_min} za isto ±7-dnevno okno.`
-              : `Današnji vrh je najvišja napovedana temperatura na vseh 18 postajah, razvrstena glede na zapise ERA5-Land od leta ${r().year_min} za isto ±7-dnevno okno.`
+              ? r().loc === props.nationalLoc
+                ? `Povprečna najvišja temperatura vseh ARSO postaj v Sloveniji, razvrstena glede na percentilne zapise ARSO meritev (${r().year_min}–${r().year_max}).`
+                : isArsoLoc(r().loc!)
+                  ? `Temperatura na ARSO postaji ${props.meta.stations.find(s => s.name === r().loc)?.label ?? r().loc!.replace("arso:", "")}, razvrstena glede na percentilne zapise ARSO meritev.`
+                  : `Temperatura na postaji ${r().loc!.replace(/_/g, " ")}, razvrstena glede na zapise ERA5-Land od leta ${r().year_min} za isto ±7-dnevno okno.`
+              : `Današnji vrh je najvišja napovedana temperatura, razvrstena glede na zapise ERA5-Land od leta ${r().year_min} za isto ±7-dnevno okno.`
             }
           </p>
 
@@ -182,18 +215,13 @@ export function TodayCard(props: Props) {
 
           {/* Footer */}
           <div class="today-foot">
-            {(r().today_temp ?? 0).toFixed(1)} °C · {(r().percentile ?? 0).toFixed(0)}th percentile · {(r().n_samples ?? 0).toLocaleString()} samples ({r().year_min}–{r().year_max})
-          </div>
-
-          {/* Data provenance — reanalysis for history, live forecast for the gap */}
-          <div class="today-source" style={{
-            "font-family": "var(--font-mono)", "font-size": "10px",
-            "letter-spacing": "0.04em", color: "var(--color-ink-soft)",
-            "margin-top": "6px",
-          }}>
-            {r().source === "forecast"
-              ? "Vir: zgodovina ERA5-Land · prikazana vrednost je živa napoved Open-Meteo (predhodno)"
-              : "Vir: ERA5-Land (reanaliza)"}
+            {(r().today_temp ?? 0).toFixed(1)} °C · {(r().percentile ?? 0).toFixed(0)}. percentil
+            {r().loc && isArsoLoc(r().loc!)
+              ? ` · ${(r().n_samples ?? 0).toLocaleString()} vzorcev (${r().year_min}–${r().year_max}) · vir: ARSO`
+              : (r().n_samples ?? 0) > 0
+                ? ` · ${(r().n_samples ?? 0).toLocaleString()} vzorcev (${r().year_min}–${r().year_max})`
+                : ""
+            }
           </div>
 
         </div>

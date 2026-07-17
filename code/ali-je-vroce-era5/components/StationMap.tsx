@@ -22,6 +22,7 @@ export function StationMap(props: Props) {
   function buildPoints(loc: string | null) {
     return props.meta.stations.map(s => ({
       name:  s.name,
+      label: s.label ?? s.name,
       lat:   s.lat,
       lon:   s.lon,
       color: elevColor(s.elevation),
@@ -37,7 +38,6 @@ export function StationMap(props: Props) {
   onMount(async () => {
     try {
     const Highcharts = (await import("highcharts")).default;
-    // modules/map registers mapChart on the Highcharts namespace (same pattern as highcharts-more)
     const mapMod = await import("highcharts/modules/map") as any;
     const initFn = mapMod.default ?? mapMod;
     if (typeof initFn === 'function') initFn(Highcharts);
@@ -47,7 +47,6 @@ export function StationMap(props: Props) {
 
     const mapChart = (Highcharts as any).mapChart;
     const currentLoc = props.loc;
-    const points = buildPoints(currentLoc);
 
     chart = mapChart(container, {
       chart: {
@@ -73,7 +72,7 @@ export function StationMap(props: Props) {
         borderColor: "rgba(14,14,12,0.14)",
         style: { fontSize: "13px", fontFamily: "'Space Grotesk', sans-serif" },
         formatter(this: any) {
-          return `<span style="font-weight:600">${this.point.name.replace(/_/g, " ")}</span>`;
+          return `<span style="font-weight:600">${this.point.label ?? this.point.name}</span>`;
         },
       },
       series: [
@@ -90,13 +89,13 @@ export function StationMap(props: Props) {
         {
           type: "mappoint",
           name: "Postaje",
-          data: points,
+          data: buildPoints(currentLoc),
           cursor: "pointer",
           findNearestPointBy: "xy",
           stickyTracking: false,
           dataLabels: {
             enabled: true,
-            formatter(this: any) { return this.point.name.replace(/_/g, " "); },
+            formatter(this: any) { return this.point.label ?? this.point.name; },
             style: {
               fontSize: "8px",
               fontWeight: "400",

@@ -1,4 +1,4 @@
-/** ERA5 API /api/live/today_status response */
+/** ERA5 sidecar /api/live/today_status response */
 export interface TodayStatus {
   available:    boolean;
   date?:        string;
@@ -19,8 +19,6 @@ export interface TodayStatus {
   day_num?:     number;
   rank_info?:      RankInfo | null;
   loc?:            string | null;
-  /** Provenance of today_temp: finalised reanalysis, preliminary reanalysis, or live forecast. */
-  source?:         "era5" | "era5t" | "forecast";
   is_preliminary?: boolean;
 }
 
@@ -31,7 +29,7 @@ export interface RankInfo {
   top5:      Array<{ year: number; date: string; temp: number; is_today?: boolean }>;
 }
 
-/** ERA5 API /api/live/today_status/last7 response */
+/** ERA5 sidecar /api/live/today_status/last7 response */
 export interface Last7 {
   available: boolean;
   days: Array<{
@@ -44,7 +42,7 @@ export interface Last7 {
   }>;
 }
 
-/** Datasette si_annual_trend row */
+/** Datasette climate-si annual_trend row (slim: line params, not point arrays) */
 export interface AnnualTrendRow {
   month:           number;
   day:             number;
@@ -55,15 +53,15 @@ export interface AnnualTrendRow {
   p_val:           number;
   tau:             number;
   n_years:         number;
+  proj_end_year:   number;
   scatter_json:    string;
-  hist_x_json:     string;
-  hist_y_json:     string;
-  hist_upper_json: string;
-  hist_lower_json: string;
-  proj_x_json:     string;
-  proj_y_json:     string;
-  proj_upper_json: string;
-  proj_lower_json: string;
+  // fitted line parameters — central + upper/lower CI (y = slope·x + intercept)
+  slope:           number;
+  intercept:       number;
+  slope_hi:        number;
+  intercept_hi:    number;
+  slope_lo:        number;
+  intercept_lo:    number;
 }
 
 /** Datasette si_daily_window row */
@@ -83,7 +81,7 @@ export interface DailyWindowRow {
   distribution_json: string;
 }
 
-/** ERA5 API /api/live/meta response */
+/** ERA5 sidecar /api/live/meta response */
 export interface SiteMeta {
   country:          string;
   name:             string;
@@ -93,7 +91,7 @@ export interface SiteMeta {
   features:         Record<string, boolean>;
   map:              { center_lat: number; center_lon: number; zoom: number };
   branding:         { site_title: string; domain: string };
-  stations: Array<{ name: string; lat: number; lon: number; elevation: number }>;
+  stations: Array<{ name: string; label: string; source: "era5" | "arso"; lat: number; lon: number; elevation: number }>;
   strings:          { explain_reg: string; explain_cal: string };
 }
 
@@ -111,7 +109,7 @@ export interface SeasonHeatmapRow {
   n_days:     number;
 }
 
-/** ERA5 API /api/live/regression — single location result */
+/** ERA5 sidecar /api/live/regression — single location result */
 export interface RegressionResult {
   loc:      string;
   year_min: number;
@@ -135,7 +133,7 @@ export interface RegressionResult {
   };
 }
 
-/** ERA5 API /api/live/regression response */
+/** ERA5 sidecar /api/live/regression response */
 export interface RegressionResponse {
   results:    RegressionResult[];
   date_label: string;

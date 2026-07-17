@@ -144,7 +144,7 @@ export function RegressionSection(props: Props) {
                 }}
                 onClick={() => toggleLoc(s.name)}
               >
-                {s.name.replace(/_/g, " ")}
+                {s.label ?? s.name}
               </button>
             );
           }}

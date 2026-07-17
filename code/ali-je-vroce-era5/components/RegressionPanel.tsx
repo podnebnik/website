@@ -8,11 +8,9 @@ const RegressionChart = lazy(() => import("../charts/RegressionChart.tsx").then(
 const YearRoundChart  = lazy(() => import("../charts/YearRoundChart.tsx").then(m => ({ default: m.YearRoundChart })));
 
 const VARIABLES: [string, string][] = [
-  ["temperature_max",        "Max temperature (°C)"],
-  ["temperature_min",        "Min temperature (°C)"],
-  ["temperature_mean",       "Mean temperature (°C)"],
-  ["precipitation_sum",      "Precipitation (mm)"],
-  ["et0_evapotranspiration", "ET₀ (mm)"],
+  ["temperature_max",  "Max temperature (°C)"],
+  ["temperature_min",  "Min temperature (°C)"],
+  ["temperature_mean", "Mean temperature (°C)"],
 ];
 
 interface ProviderProps {
@@ -61,12 +59,10 @@ function createStore(props: ProviderProps) {
     loc:     selLocs()[0] ?? defaultLoc(),
     var:     selVar(),
     window_: window_(),
-    corr:    corr() ? "corr" : "raw" as const,
-    method:  useOls() ? "ols" : "theilsen" as const,
   }));
   const [calData] = createResource(
     calParams,
-    p => fetchCalendar(p.loc, p.var, p.window_, p.corr, p.method),
+    p => fetchCalendar(p.loc, p.var, p.window_, "raw", "theilsen"),
   );
 
   const isPrecip   = () => selVar() === "precipitation_sum" || selVar() === "et0_evapotranspiration";
@@ -82,13 +78,17 @@ function createStore(props: ProviderProps) {
     if (!s) return null;
     return (trend10() * s.n_years / 10).toFixed(2);
   };
+  const stationLabel = (name: string) => {
+    const st = props.meta.stations.find(s => s.name === name);
+    return (st?.label ?? name).replace(/_/g, " ");
+  };
   const locLabel   = () => {
     const locs = selLocs();
-    return locs.length === 1 ? locs[0].replace(/_/g, " ") : `${locs.length} locations`;
+    return locs.length === 1 ? stationLabel(locs[0]!) : `${locs.length} locations`;
   };
   const varLabel   = () => VARIABLES.find(([k]) => k === selVar())?.[1] ?? selVar();
   const chartTitle = () => `${varLabel().split("(")[0].trim()} · ${doyToLabel(doy())} ±${window_()}d`;
-  const chartSub   = () => selLocs().map(l => l.replace(/_/g, " ")).join(", ");
+  const chartSub   = () => selLocs().map(stationLabel).join(", ");
 
   function toggleLoc(name: string) {
     setSelLocs(prev => {
@@ -112,7 +112,7 @@ function createStore(props: ProviderProps) {
 
 type Store = ReturnType<typeof createStore>;
 const RegressionCtx = createContext<Store>();
-const useReg = () => useContext(RegressionCtx)!;
+export const useReg = () => useContext(RegressionCtx)!;
 
 // ── Provider ──────────────────────────────────────────────────────────────────
 
@@ -153,7 +153,7 @@ export function RegToolbar() {
                 return (
                   <label style={{ display: "flex", "align-items": "center", gap: "8px", padding: "5px 12px", cursor: "pointer", "font-size": "12px", "font-family": "var(--font-sans)", color: "var(--color-ink)", background: active() ? "var(--color-paper-2)" : "transparent" }}>
                     <input type="checkbox" checked={active()} onChange={() => s.toggleLoc(st.name)} />
-                    {st.name.replace(/_/g, " ")}
+                    {st.label ?? st.name}
                   </label>
                 );
               }}
@@ -323,7 +323,7 @@ export function RegYearRoundCard() {
           <div style={panelTitleStyle}>Year-round trend · {s.selLocs()[0]?.replace(/_/g, " ")}</div>
           <div style={{ ...panelSubStyle, "margin-top": "3px" }}>
             {(s.VARIABLES.find(([k]) => k === s.selVar())?.[1] ?? s.selVar()).split("(")[0].trim()}
-            {" · "}{s.useOls() ? "OLS" : "Theil-Sen + TFPW MK"}{" · "}±{s.window_()}d window
+            {" · Theil-Sen + MK · ±"}{s.window_()}{"d window"}
           </div>
         </div>
         <div style={panelSubStyle}>trend/decade per day of year · red line = selected day</div>

@@ -1,6 +1,6 @@
 import { createSignal, createEffect, For, Show, onMount, onCleanup } from "solid-js";
 
-interface TropTrend {
+export interface TropTrend {
   model_used:      boolean | "nb";
   rate_per_year:   number;
   days_per_decade: number;
@@ -16,7 +16,7 @@ interface TropTrend {
   alpha:           number;
 }
 
-interface TropStation {
+export interface TropStation {
   years:         number[];
   counts:        number[];
   nonzero_count: number;
@@ -28,7 +28,7 @@ interface TropData {
   era5_last: string;
 }
 
-interface Config {
+export interface Config {
   kind:             "days" | "nights";
   endpoint:         string;
   unitLabel:        string;
@@ -41,12 +41,12 @@ interface Config {
   plainNoun:        string;
 }
 
-const API_BASE = (import.meta.env.VITE_ERA5_API_URL as string | undefined) ?? "";
+const SIDECAR_BASE = (import.meta.env.VITE_ERA5_SIDECAR_URL as string | undefined) ?? "";
 
 const CONFIGS: Record<string, Config> = {
   days: {
     kind:             "days",
-    endpoint:         `${API_BASE}/api/live/tropical_days`,
+    endpoint:         `${SIDECAR_BASE}/api/live/tropical_days`,
     unitLabel:        "dni",
     defaultThreshold: 30,
     minT:             15,
@@ -60,7 +60,7 @@ const CONFIGS: Record<string, Config> = {
   },
   nights: {
     kind:             "nights",
-    endpoint:         `${API_BASE}/api/live/tropical_nights`,
+    endpoint:         `${SIDECAR_BASE}/api/live/tropical_nights`,
     unitLabel:        "noči",
     defaultThreshold: 20,
     minT:             5,
@@ -85,14 +85,14 @@ function pFmt(p: number): string {
 
 // ── Highcharts inner component ────────────────────────────────────────────────
 
-interface ChartProps {
+export interface ChartProps {
   station:   string;
   series:    TropStation;
   cfg:       Config;
   threshold: number;
 }
 
-function TropHighchart(props: ChartProps) {
+export function TropHighchart(props: ChartProps) {
   let container!: HTMLDivElement;
   let chart: any = null;
 
