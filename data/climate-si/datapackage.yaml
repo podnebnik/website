@@ -1,0 +1,293 @@
+profile: data-package
+name: climate-si
+title: ERA5-Land Climate Data for Slovenia
+description: 'ERA5-Land reanalysis for 18 stations across Slovenia (1950–present), plus precomputed statistics:
+  day-of-year percentile cutoffs, KDE distributions, seasonal anomaly rankings, and annual temperature
+  trends (Theil-Sen + Mann-Kendall). Powers the ''Ali je vroče? — ERA5'' explorer; live current temperatures
+  come from Vremenar.'
+contributors:
+- title: Vladimir Nešković Kesma
+  role: author
+  path: https://bsky.app/profile/kesma.bsky.social
+keywords:
+- climate
+- ERA5
+- Slovenia
+- temperature
+- trend
+- drought
+geography: Slovenia
+schedule: daily
+licenses:
+- name: ODbL-1.0
+  title: Open Data Commons Open Database License 1.0
+  path: https://www.opendefinition.org/licenses/odc-odbl
+sources:
+- title: Open-Meteo ERA5-Land reanalysis
+  url: https://open-meteo.com/
+  author: Open-Meteo / Copernicus Climate Change Service (C3S)
+  code: sources/mk_collect.py, sources/precompute_datasette.py
+resources:
+- name: annual_trend
+  type: table
+  path: data/climate-si.annual_trend.csv
+  title: Annual temperature trend (Theil-Sen + Mann-Kendall) per station × variable × day
+  scheme: file
+  format: csv
+  mediatype: text/csv
+  encoding: utf-8
+  schema:
+    fields:
+    - name: era5_name
+      type: string
+      title: ERA5 station name
+    - name: station_id
+      type: number
+      title: Vremenar/ARSO station id
+    - name: variable
+      type: string
+      title: Variable
+    - name: month
+      type: integer
+      title: Month
+    - name: day
+      type: integer
+      title: Day
+    - name: day_label
+      type: string
+      title: Day label
+    - name: year_min
+      type: integer
+      title: First year
+    - name: year_max
+      type: integer
+      title: Last year
+    - name: trend10
+      type: number
+      title: Trend per decade
+      unit: °C/decade
+    - name: p_val
+      type: number
+      title: Mann-Kendall p-value
+    - name: tau
+      type: number
+      title: Kendall's tau
+    - name: n_years
+      type: integer
+      title: Number of years
+    - name: proj_end_year
+      type: integer
+      title: Projection end year
+    - name: slope
+      type: number
+      title: Theil-Sen slope (per year)
+    - name: intercept
+      type: number
+      title: Central line intercept
+    - name: slope_hi
+      type: number
+      title: Upper-CI slope
+    - name: intercept_hi
+      type: number
+      title: Upper-CI intercept
+    - name: slope_lo
+      type: number
+      title: Lower-CI slope
+    - name: intercept_lo
+      type: number
+      title: Lower-CI intercept
+    - name: scatter_json
+      type: string
+      title: Per-year scatter points (JSON)
+- name: daily
+  type: table
+  path: data/climate-si.daily.csv
+  title: Daily ERA5-Land temperatures per station (elevation-corrected)
+  scheme: file
+  format: csv
+  mediatype: text/csv
+  encoding: utf-8
+  schema:
+    fields:
+    - name: station_id
+      type: number
+      title: Vremenar/ARSO station id
+    - name: era5_name
+      type: string
+      title: ERA5 station name
+    - name: date
+      type: date
+      title: Date
+    - name: year
+      type: integer
+    - name: month
+      type: integer
+      title: Month
+    - name: day
+      type: integer
+      title: Day
+    - name: temperature_max_2m
+      type: number
+      title: Daily max temperature
+      unit: °C
+    - name: temperature_average_2m
+      type: number
+      title: Daily mean temperature
+      unit: °C
+    - name: temperature_min_2m
+      type: number
+      title: Daily min temperature
+      unit: °C
+- name: daily_percentiles
+  type: table
+  path: data/climate-si.daily_percentiles.csv
+  title: Daily mean-temperature percentiles per station × day-of-year
+  scheme: file
+  format: csv
+  mediatype: text/csv
+  encoding: utf-8
+  schema:
+    fields:
+    - name: date
+      type: date
+      title: Date
+    - name: station_id
+      type: integer
+      title: Vremenar/ARSO station id
+    - name: p05
+      type: number
+    - name: p20
+      type: number
+    - name: p40
+      type: number
+    - name: p60
+      type: number
+    - name: p80
+      type: number
+    - name: p95
+      type: number
+- name: daily_window
+  type: table
+  path: data/climate-si.daily_window.csv
+  title: Day-of-year window percentile cutoffs + KDE distribution
+  scheme: file
+  format: csv
+  mediatype: text/csv
+  encoding: utf-8
+  schema:
+    fields:
+    - name: era5_name
+      type: string
+      title: ERA5 station name
+    - name: station_id
+      type: number
+      title: Vremenar/ARSO station id
+    - name: month
+      type: integer
+      title: Month
+    - name: day
+      type: integer
+      title: Day
+    - name: p5
+      type: number
+    - name: p10
+      type: number
+    - name: p20
+      type: number
+    - name: p50
+      type: number
+    - name: p80
+      type: number
+    - name: p95
+      type: number
+    - name: n_samples
+      type: integer
+    - name: year_min
+      type: integer
+      title: First year
+    - name: year_max
+      type: integer
+      title: Last year
+    - name: distribution_json
+      type: string
+      title: KDE distribution (JSON)
+- name: season_heatmap
+  type: table
+  path: data/climate-si.season_heatmap.csv
+  title: Seasonal anomaly ranking per station × year × season
+  scheme: file
+  format: csv
+  mediatype: text/csv
+  encoding: utf-8
+  schema:
+    fields:
+    - name: era5_name
+      type: string
+      title: ERA5 station name
+    - name: station_id
+      type: number
+      title: Vremenar/ARSO station id
+    - name: x
+      type: integer
+    - name: y
+      type: integer
+    - name: season
+      type: string
+    - name: avg
+      type: number
+    - name: percentile
+      type: number
+    - name: cat
+      type: string
+    - name: rank
+      type: integer
+    - name: total
+      type: integer
+    - name: color
+      type: string
+    - name: n_days
+      type: integer
+- name: stations
+  type: table
+  path: data/climate-si.stations.csv
+  title: ERA5 station metadata (+ Vremenar station_id mapping)
+  scheme: file
+  format: csv
+  mediatype: text/csv
+  encoding: utf-8
+  schema:
+    fields:
+    - name: era5_name
+      type: string
+      title: ERA5 station name
+    - name: name
+      type: string
+      title: Display name
+    - name: official_name
+      type: string
+      title: Official name
+    - name: name_locative
+      type: string
+      title: Locative name
+    - name: station_id
+      type: number
+      title: Vremenar/ARSO station id
+    - name: xml_id
+      type: string
+      title: ARSO XML id
+    - name: lat
+      type: number
+      title: Latitude
+      unit: °
+    - name: lon
+      type: number
+      title: Longitude
+      unit: °
+    - name: elevation
+      type: integer
+      title: Station elevation
+      unit: m
+    - name: elevation_era5_m
+      type: integer
+      title: ERA5 grid elevation
+      unit: m

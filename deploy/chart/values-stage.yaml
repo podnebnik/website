@@ -2,7 +2,8 @@
 # (newest main-<sha>-<timestamp> build) — do not pin by hand.
 host: stage.podnebnik.org
 image:
-  tag: main-9c2ed09-1783102723
+  tag: main-2bfc8a4-1784278809
+  repository: ghcr.io/podnebnik/website
 era5:
   image:
     # seeded with latest; image-updater takes over after the first main build
