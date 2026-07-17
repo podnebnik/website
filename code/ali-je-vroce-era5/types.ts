@@ -19,6 +19,8 @@ export interface TodayStatus {
   day_num?:     number;
   rank_info?:      RankInfo | null;
   loc?:            string | null;
+  /** Provenance of today_temp: finalised reanalysis, preliminary reanalysis, or live forecast. */
+  source?:         "era5" | "era5t" | "forecast";
   is_preliminary?: boolean;
 }
 

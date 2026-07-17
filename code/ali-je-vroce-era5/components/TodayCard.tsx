@@ -185,6 +185,17 @@ export function TodayCard(props: Props) {
             {(r().today_temp ?? 0).toFixed(1)} °C · {(r().percentile ?? 0).toFixed(0)}th percentile · {(r().n_samples ?? 0).toLocaleString()} samples ({r().year_min}–{r().year_max})
           </div>
 
+          {/* Data provenance — reanalysis for history, live forecast for the gap */}
+          <div class="today-source" style={{
+            "font-family": "var(--font-mono)", "font-size": "10px",
+            "letter-spacing": "0.04em", color: "var(--color-ink-soft)",
+            "margin-top": "6px",
+          }}>
+            {r().source === "forecast"
+              ? "Vir: zgodovina ERA5-Land · prikazana vrednost je živa napoved Open-Meteo (predhodno)"
+              : "Vir: ERA5-Land (reanaliza)"}
+          </div>
+
         </div>
       </Show>
     </div>

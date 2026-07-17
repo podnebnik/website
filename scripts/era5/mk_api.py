@@ -437,6 +437,75 @@ def _get_cutoffs(station: str | None, month: int, day: int) -> dict | None:
 
 _RAW_CACHE: dict[str, dict[str, float]] = {}
 
+# ── Reanalysis-lag gap-fill ─────────────────────────────────────────────────────
+# ERA5-Land reanalysis lags real time by ~5-10 days.  For any date newer than the
+# last finalised ERA5 date we transparently fall back to the Open-Meteo *forecast*
+# API (which serves recent past days too), and tag the value so the UI can label
+# it "live forecast" rather than "historical ERA5".
+_RAW_SOURCE: dict[str, str] = {}            # date_str -> "era5" | "era5t" | "forecast"
+_LAST_ERA5_CACHE: "tuple[datetime.date, datetime.date] | None" = None  # (probed_on, last_era5_date)
+RECENT_FORECAST_DAYS   = 10   # last N days are served by the forecast API (full station coverage);
+                              # ERA5-Land is missing or has sparse coverage there
+FORECAST_PAST_DAYS_MAX = 90   # Open-Meteo forecast API serves up to 92 past days
+
+
+def _last_era5_date() -> datetime.date:
+    """Most recent date the Open-Meteo ARCHIVE (ERA5/ERA5T) actually has data for.
+
+    Probed once per day against one reference station.  On any error it falls back
+    to a safe conservative estimate (today-6), so callers never crash and never
+    over-claim reanalysis coverage.
+    """
+    global _LAST_ERA5_CACHE
+    today = datetime.date.today()
+    if _LAST_ERA5_CACHE is not None and _LAST_ERA5_CACHE[0] == today:
+        return _LAST_ERA5_CACHE[1]
+    fallback = today - datetime.timedelta(days=6)
+    last = fallback
+    try:
+        s = CONFIG["stations"][0]
+        resp = http_requests.get(
+            "https://archive-api.open-meteo.com/v1/archive",
+            params={
+                "latitude":  f'{s["lat"]:.4f}', "longitude": f'{s["lon"]:.4f}',
+                "daily": "temperature_2m_max", "timezone": CONFIG["timezone"],
+                "start_date": (today - datetime.timedelta(days=20)).isoformat(),
+                "end_date":   today.isoformat(),
+            }, timeout=10,
+        )
+        resp.raise_for_status()
+        daily = resp.json().get("daily", {})
+        for t, v in zip(daily.get("time", []), daily.get("temperature_2m_max", [])):
+            if v is not None:
+                d = datetime.date.fromisoformat(t)
+                if d > last:
+                    last = d
+    except Exception as e:
+        print(f"  _last_era5_date probe failed ({e.__class__.__name__}); using {fallback}", flush=True)
+    _LAST_ERA5_CACHE = (today, last)
+    return last
+
+
+def _forecast_from() -> datetime.date:
+    """First date (inclusive) served by the live forecast API rather than ERA5.
+
+    Normally the last RECENT_FORECAST_DAYS days — where ERA5-Land is missing or has
+    sparse station coverage.  If the archive lags even more than that, the daily
+    probe extends the window further back so we never serve a coverage hole.
+    """
+    today = datetime.date.today()
+    fixed = today - datetime.timedelta(days=RECENT_FORECAST_DAYS)
+    return min(fixed, _last_era5_date() + datetime.timedelta(days=1))
+
+
+def _date_source(date_str: str) -> str:
+    """Provenance of a date's temperature: live 'forecast' vs finalised 'era5'."""
+    try:
+        target = datetime.date.fromisoformat(date_str)
+    except ValueError:
+        return "era5"
+    return "forecast" if target >= _forecast_from() else "era5"
+
 
 def _prefetch_range(date_strings: list[str]) -> None:
     """Batch-fetch a list of dates via the archive API, 1 call per station.
@@ -517,9 +586,10 @@ def _fetch_om(date_str: str) -> dict[str, float]:
     if date_str in _RAW_CACHE:
         return _RAW_CACHE[date_str]
 
-    today_str = datetime.date.today().isoformat()
+    today     = datetime.date.today()
+    today_str = today.isoformat()
 
-    # Fast path: pre-collected SQLite data for any historical date
+    # Fast path: pre-collected SQLite data for any finalised historical date
     if date_str < today_str and DB_PATH.exists():
         try:
             sqlite_result: dict[str, float] = {}
@@ -531,17 +601,27 @@ def _fetch_om(date_str: str) -> dict[str, float]:
                     if row and row[0] is not None:
                         sqlite_result[name] = float(row[0]) + _STATION_CORR_OFFSET.get(name, 0.0)
             if len(sqlite_result) >= len(_STATION_TABLES) // 2:
-                _RAW_CACHE[date_str] = sqlite_result
+                _RAW_CACHE[date_str]  = sqlite_result
+                _RAW_SOURCE[date_str] = _date_source(date_str)
                 return sqlite_result
         except Exception:
             pass
 
-    if date_str == today_str:
-        url, extra = "https://api.open-meteo.com/v1/forecast", {"forecast_days": 1}
+    # Live source: for anything newer than the last finalised ERA5 date (the
+    # reanalysis gap, incl. today) use the forecast API's past_days window;
+    # older dates come from the archive (ERA5/ERA5T).
+    source = _date_source(date_str)
+    if source == "forecast":
+        try:
+            past = (today - datetime.date.fromisoformat(date_str)).days
+        except ValueError:
+            past = 0
+        past  = min(max(past, 0), FORECAST_PAST_DAYS_MAX)
+        url   = "https://api.open-meteo.com/v1/forecast"
+        extra = {"past_days": past, "forecast_days": 1}
     else:
-        url, extra = "https://archive-api.open-meteo.com/v1/archive", {
-            "start_date": date_str, "end_date": date_str
-        }
+        url   = "https://archive-api.open-meteo.com/v1/archive"
+        extra = {"start_date": date_str, "end_date": date_str}
 
     def _one(name: str, lat: float, lon: float) -> tuple[str, float | None]:
         try:
@@ -551,8 +631,12 @@ def _fetch_om(date_str: str) -> dict[str, float]:
                 "timezone": CONFIG["timezone"], **extra,
             }, timeout=10)
             resp.raise_for_status()
-            arr = resp.json().get("daily", {}).get("temperature_2m_max", [])
-            return name, float(arr[0]) if arr and arr[0] is not None else None
+            daily = resp.json().get("daily", {})
+            # forecast responses span many days — pick the row matching date_str
+            for t, v in zip(daily.get("time", []), daily.get("temperature_2m_max", [])):
+                if t == date_str and v is not None:
+                    return name, float(v)
+            return name, None
         except Exception:
             return name, None
 
@@ -566,7 +650,8 @@ def _fetch_om(date_str: str) -> dict[str, float]:
                 result[name] = val + _STATION_CORR_OFFSET.get(name, 0.0)
 
     if result:
-        _RAW_CACHE[date_str] = result
+        _RAW_CACHE[date_str]  = result
+        _RAW_SOURCE[date_str] = source
     return result
 
 # ── Category helper ───────────────────────────────────────────────────────────
@@ -671,10 +756,10 @@ def _today_status(date_str: str, loc: str | None, *, include_rank: bool = True) 
             if not coords:
                 return {"available": False}
             try:
-                today_str = datetime.date.today().isoformat()
-                if date_str == today_str:
+                if _date_source(date_str) == "forecast":
+                    past     = min(max((today - target).days, 0), FORECAST_PAST_DAYS_MAX)
                     om_url   = "https://api.open-meteo.com/v1/forecast"
-                    om_extra = {"forecast_days": 1}
+                    om_extra = {"past_days": past, "forecast_days": 1}
                 else:
                     om_url   = "https://archive-api.open-meteo.com/v1/archive"
                     om_extra = {"start_date": date_str, "end_date": date_str}
@@ -686,9 +771,13 @@ def _today_status(date_str: str, loc: str | None, *, include_rank: bool = True) 
                     **om_extra,
                 }, timeout=10)
                 resp.raise_for_status()
-                arr = resp.json().get("daily", {}).get("temperature_2m_max", [])
-                if arr and arr[0] is not None:
-                    temps = {loc: float(arr[0]) + _STATION_CORR_OFFSET.get(loc, 0.0)}
+                daily = resp.json().get("daily", {})
+                val = next((v for t, v in zip(daily.get("time", []),
+                                              daily.get("temperature_2m_max", []))
+                            if t == date_str and v is not None), None)
+                if val is not None:
+                    temps = {loc: float(val) + _STATION_CORR_OFFSET.get(loc, 0.0)}
+                    _RAW_SOURCE[date_str] = _date_source(date_str)
                 else:
                     return {"available": False}
             except Exception:
@@ -732,7 +821,9 @@ def _today_status(date_str: str, loc: str | None, *, include_rank: bool = True) 
 
     rank_info = _compute_rank(loc, month, day, date_str, today_temp) if include_rank else None
 
-    era5t_cutoff = today - datetime.timedelta(days=7)
+    # Provenance of today_temp: "era5" (finalised reanalysis), "era5t" (preliminary
+    # reanalysis) or "forecast" (Open-Meteo forecast filling the reanalysis-lag gap).
+    source = _RAW_SOURCE.get(date_str) or _date_source(date_str)
 
     return {
         "available":      True,
@@ -752,7 +843,8 @@ def _today_status(date_str: str, loc: str | None, *, include_rank: bool = True) 
         "day_num":        day,
         "rank_info":      rank_info,
         "loc":            loc,
-        "is_preliminary": target >= era5t_cutoff,
+        "source":         source,
+        "is_preliminary": source != "era5",
     }
 
 # ── Flask app ─────────────────────────────────────────────────────────────────
