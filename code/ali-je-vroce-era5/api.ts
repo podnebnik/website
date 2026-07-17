@@ -212,13 +212,13 @@ async function vremenarTemp(stationId: number): Promise<number | null> {
 // ── fetchMeta ──────────────────────────────────────────────────────────────────
 
 export async function fetchMeta(): Promise<SiteMeta> {
-  const [era5Stations, arsoRaw] = await Promise.all([
-    dsGet<Array<{
-      era5_name: string; name: string; lat: number; lon: number;
-      elevation: number; station_id: number | null;
-    }>>("stations.json?_shape=array&_col=era5_name&_col=name&_col=lat&_col=lon&_col=elevation&_col=station_id&_size=30"),
-    saGet("stations", "_col=station_id&_col=name&_col=name_locative&_col=latitude&_col=longitude&_col=elevation&_sort=name&_size=20"),
-  ]);
+  // ERA5-only page: history/stats come entirely from the climate-si datasette.
+  // ARSO measurements live in a separate database and a separate page, so they
+  // are intentionally NOT fetched here.
+  const era5Stations = await dsGet<Array<{
+    era5_name: string; name: string; lat: number; lon: number;
+    elevation: number; station_id: number | null;
+  }>>("stations.json?_shape=array&_col=era5_name&_col=name&_col=lat&_col=lon&_col=elevation&_col=station_id&_size=30");
 
   // Build Vremenar live-data map from ERA5 stations
   vremenarIdMap = Object.fromEntries(
@@ -227,30 +227,14 @@ export async function fetchMeta(): Promise<SiteMeta> {
       .map(s => [s.era5_name, s.station_id as number])
   );
 
-  type ArsoRow = { station_id: number; name: string; name_locative: string; latitude: number; longitude: number; elevation: number };
-  const arsoStations: ArsoRow[] = Array.isArray(arsoRaw) ? arsoRaw : [];
-
-  // Populate module-level list for national average Vremenar fetches
-  arsoStationIds = arsoStations.filter(s => s.station_id != null).map(s => s.station_id);
-
-  const stations = [
-    ...era5Stations.map(s => ({
-      name:      s.era5_name,
-      label:     s.name,
-      source:    "era5" as const,
-      lat:       s.lat,
-      lon:       s.lon,
-      elevation: s.elevation,
-    })),
-    ...arsoStations.map(s => ({
-      name:      `arso:${s.station_id}`,
-      label:     s.name,
-      source:    "arso" as const,
-      lat:       s.latitude ?? 0,
-      lon:       s.longitude ?? 0,
-      elevation: s.elevation ?? 0,
-    })),
-  ];
+  const stations = era5Stations.map(s => ({
+    name:      s.era5_name,
+    label:     s.name,
+    source:    "era5" as const,
+    lat:       s.lat,
+    lon:       s.lon,
+    elevation: s.elevation,
+  }));
 
   return {
     country:          "si",
