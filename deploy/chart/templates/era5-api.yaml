@@ -24,6 +24,9 @@ spec:
       containers:
         - name: era5-api
           image: "{{ .Values.era5.image.repository }}:{{ .Values.era5.image.tag }}"
+          # Preview envs reuse the mutable pr-<n> tag; Always ensures a recreated
+          # pod pulls the freshly-built image instead of the node's cached copy.
+          imagePullPolicy: Always
           ports:
             - name: http
               containerPort: 5052

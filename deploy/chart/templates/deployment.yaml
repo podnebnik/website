@@ -17,6 +17,9 @@ spec:
       containers:
         - name: website
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          # Preview envs reuse the mutable pr-<n> tag; Always ensures a recreated
+          # pod pulls the freshly-built image instead of the node's cached copy.
+          imagePullPolicy: Always
           ports:
             - name: http
               containerPort: 80
