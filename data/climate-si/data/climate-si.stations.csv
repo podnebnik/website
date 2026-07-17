@@ -1,0 +1,19 @@
+era5_name,name,official_name,name_locative,station_id,xml_id,lat,lon,elevation,elevation_era5_m
+Ljubljana,Ljubljana,"Ljubljana Bežigrad","v Ljubljani",1495.0,LJUBL-ANA_BEZIGRAD,46.0511,14.5051,299,300
+Maribor,Maribor,"Maribor Vrbanski plato","v Mariboru",1491.0,MARIBOR_VRBAN-PLA,46.5547,15.6459,270,262
+Celje,Celje,"Celje Medlog","v Celju",1025.0,CELJE_MEDLOG,46.2313,15.2617,241,241
+Kranj,Kranj,Kranj,"v Kranju",,,46.2392,14.3556,387,389
+Koper,Koper,Koper,"v Kopru",,,45.5483,13.73,10,18
+Novo_Mesto,"Novo Mesto","Novo mesto","v Novem mestu",1447.0,NOVO-MES,45.8011,15.17,220,164
+Murska_Sobota,"Murska Sobota","Rakičan","v Murski Soboti",1444.0,MURSK-SOB,46.6625,16.1667,189,192
+Nova_Gorica,"Nova Gorica",Bilje,"v Novi Gorici",1402.0,NOVA-GOR_BILJE,45.9564,13.6431,94,93
+Postojna,Postojna,Postojna,"v Postojni",1455.0,POSTOJNA,45.7756,14.2133,549,557
+Ptuj,Ptuj,Ptuj,"v Ptuju",,,46.4197,15.8697,228,235
+Velenje,Velenje,Velenje,"v Velenju",,,46.3592,15.1119,405,391
+Trbovlje,Trbovlje,Trbovlje,"v Trbovljah",,,46.1511,15.0511,230,304
+Tolmin,Tolmin,Tolmin,"v Tolminu",,,46.1858,13.7317,194,207
+Kocevje,Kocevje,"Kočevje","v Kočevju",1426.0,KOCEVJE,45.6433,14.8619,467,469
+Ilirska_Bistrica,"Ilirska Bistrica","Ilirska Bistrica","v Ilirski Bistrici",,,45.5667,14.2358,440,402
+Domzale,Domzale,"Domžale","v Domžalah",,,46.1375,14.5942,301,300
+Ratece,Ratece,"Rateče","v Ratečah",,,46.4967,13.7131,864,866
+Kredarica,Kredarica,Kredarica,"na Kredarici",1430.0,KREDA-ICA,46.3792,14.5267,2514,1307
