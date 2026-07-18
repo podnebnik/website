@@ -1038,6 +1038,38 @@ export interface ArsoTropicalData {
   };
 }
 
+// ERA5 tropical days/nights — read straight from the precomputed datasette
+// `tropical` table (counts + NB-GLM trend per station × threshold × streak).
+export async function fetchEra5Tropical(
+  loc:       string,
+  kind:      "days" | "nights",
+  threshold: number,
+  streak:    number = 1,
+): Promise<ArsoTropicalData | null> {
+  if (isArsoLoc(loc) || loc === ERA5_NATIONAL) return null;
+  let rows: Array<{ years_json: string; counts_json: string; nonzero_count: number; trend_json: string }>;
+  try {
+    rows = await dsGet(
+      `tropical.json?_shape=array&era5_name__exact=${encodeURIComponent(loc)}` +
+      `&kind__exact=${kind}&threshold__exact=${threshold}&streak__exact=${streak}&_size=1`
+    );
+  } catch {
+    // tropical table not yet published on this datasette
+    return null;
+  }
+  const r = rows[0];
+  if (!r) return null;
+  const years  = JSON.parse(r.years_json)  as number[];
+  const counts = JSON.parse(r.counts_json) as number[];
+  const t = JSON.parse(r.trend_json) as ArsoTropicalData["trend"] | Record<string, never>;
+  const trend = (t && (t as any).model_used) ? (t as ArsoTropicalData["trend"]) : {
+    model_used: false as const, rate_per_year: 0, days_per_decade: 0, p_value: 1,
+    x_line: [], y_line: [], ci_low: [], ci_high: [],
+    fit_year_max: years[years.length - 1] ?? 0, aic: 0, alpha: 0,
+  };
+  return { years, counts, nonzero_count: r.nonzero_count, trend };
+}
+
 const arsoAllDailyMinCache = new Map<number, Promise<Array<{ year: number; temperature_min_2m: number | null }>>>();
 
 async function fetchArsoAllDailyMin(stationId: number) {

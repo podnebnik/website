@@ -10,6 +10,7 @@ import type { SiteMeta } from "./types.ts";
 const Era5SeasonHeatmapChart = lazy(() => import("./charts/Era5SeasonHeatmap.tsx").then(m => ({ default: m.Era5SeasonHeatmap })));
 const StationMap             = lazy(() => import("./components/StationMap.tsx").then(m => ({ default: m.StationMap })));
 const HeroCardsPanel         = lazy(() => import("./components/HeroCards.tsx").then(m => ({ default: m.HeroCards })));
+const Era5TropicalChart      = lazy(() => import("./charts/Era5TropicalChart.tsx").then(m => ({ default: m.Era5TropicalChart })));
 
 const EN_MONTHS: Record<string, string> = {
   Jan:"01", Feb:"02", Mar:"03", Apr:"04", May:"05", Jun:"06",
@@ -173,10 +174,40 @@ function Dashboard(props: { meta: SiteMeta }) {
   );
 }
 
+function TropControls(props: {
+  threshold: number; setThreshold: (n: number) => void; min: number; max: number;
+  streak: number; setStreak: (n: number) => void; unit: string;
+}) {
+  const ctlLabel = { "font-family": "var(--font-mono)", "font-size": "10px", "letter-spacing": "0.06em", "text-transform": "uppercase", color: "var(--color-ink-soft)" } as const;
+  return (
+    <div style={{ display: "flex", gap: "24px", "align-items": "center", "flex-wrap": "wrap", margin: "0 40px 12px" }}>
+      <label style={{ display: "flex", "align-items": "center", gap: "8px" }}>
+        <span style={ctlLabel}>Prag:</span>
+        <input type="range" min={props.min} max={props.max} step={1} value={props.threshold}
+               onInput={(e) => props.setThreshold(Number(e.currentTarget.value))} />
+        <span style={{ ...ctlLabel, color: "var(--color-ink)" }}>{props.threshold} °C</span>
+      </label>
+      <label style={{ display: "flex", "align-items": "center", gap: "8px" }}>
+        <span style={ctlLabel}>Min. zap. {props.unit}:</span>
+        <select value={props.streak} onInput={(e) => props.setStreak(Number(e.currentTarget.value))}
+                style={{ "font-family": "var(--font-mono)", "font-size": "11px", padding: "2px 6px" }}>
+          <option value={1}>1</option>
+          <option value={2}>2</option>
+          <option value={3}>3</option>
+        </select>
+      </label>
+    </div>
+  );
+}
+
 function Era5Charts() {
   const s = useReg();
   const loc = () => s.selLocs()[0] ?? null;
   const st  = () => s.meta.stations.find(station => station.name === loc()) ?? null;
+
+  const [daysThr,   setDaysThr]   = createSignal(30);
+  const [nightsThr, setNightsThr] = createSignal(20);
+  const [streak,    setStreak]    = createSignal(1);
 
   return (
     <Show when={loc()}>
@@ -190,7 +221,7 @@ function Era5Charts() {
         </Suspense>
       </section>
 
-      <section class="sec-p" style={{ "padding-bottom": "60px" }}>
+      <section class="sec-p" style={{ "padding-bottom": "40px" }}>
         <div class="sec-h" style={{ "padding-inline": "0", "padding-top": "24px" }}>
           Sezonski pregled
         </div>
@@ -199,6 +230,30 @@ function Era5Charts() {
         </div>
         <Suspense fallback={<div class="h-40 animate-pulse bg-[var(--color-paper-2)] rounded-xl" />}>
           <Era5SeasonHeatmapChart loc={loc()} label={st()?.label} />
+        </Suspense>
+      </section>
+
+      {/* Tropical days */}
+      <section class="sec-p" style={{ "padding-bottom": "40px" }}>
+        <div class="sec-h" style={{ "padding-inline": "0", "padding-top": "8px" }}>Tropski dnevi</div>
+        <div class="sec-hs2">
+          Število dni z najvišjo temperaturo nad pragom · ERA5-Land · lapsna korekcija nadmorske višine
+        </div>
+        <TropControls threshold={daysThr()} setThreshold={setDaysThr} min={25} max={35} streak={streak()} setStreak={setStreak} unit="dni" />
+        <Suspense fallback={<div class="h-56 animate-pulse bg-[var(--color-paper-2)] rounded-xl" />}>
+          <Era5TropicalChart loc={loc()} label={st()?.label} kind="days" threshold={daysThr()} streak={streak()} />
+        </Suspense>
+      </section>
+
+      {/* Tropical nights */}
+      <section class="sec-p" style={{ "padding-bottom": "60px" }}>
+        <div class="sec-h" style={{ "padding-inline": "0", "padding-top": "8px" }}>Tropske noči</div>
+        <div class="sec-hs2">
+          Število noči z najnižjo temperaturo nad pragom · ERA5-Land · lapsna korekcija nadmorske višine
+        </div>
+        <TropControls threshold={nightsThr()} setThreshold={setNightsThr} min={15} max={25} streak={streak()} setStreak={setStreak} unit="noči" />
+        <Suspense fallback={<div class="h-56 animate-pulse bg-[var(--color-paper-2)] rounded-xl" />}>
+          <Era5TropicalChart loc={loc()} label={st()?.label} kind="nights" threshold={nightsThr()} streak={streak()} />
         </Suspense>
       </section>
     </Show>

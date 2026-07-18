@@ -18,7 +18,7 @@ spec:
         # under the same tag does NOT change the rendered Deployment and ArgoCD
         # won't restart the pod. Bump this value to force a rollout that re-pulls
         # the tag (imagePullPolicy: Always picks up the new digest).
-        podnebnik.org/rollout-revision: "5"
+        podnebnik.org/rollout-revision: "6"
     spec:
       containers:
         - name: website
