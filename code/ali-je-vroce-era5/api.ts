@@ -15,6 +15,8 @@ const VR = `${(import.meta.env.VITE_VREMENAR_URL as string | undefined) ?? "http
 
 // Populated during fetchMeta()
 let vremenarIdMap: Record<string, number> = {};
+// era5_name → {lat, lon}; used for Open-Meteo live temps (the ERA5 live source)
+let era5Coords: Record<string, { lat: number; lon: number }> = {};
 // All ARSO station IDs — used for national Vremenar average
 let arsoStationIds: number[] = [];
 
@@ -235,6 +237,43 @@ async function vremenarTemp(stationId: number): Promise<number | null> {
   }
 }
 
+// ── Open-Meteo live (the ONLY correct live source for ERA5) ──────────────────
+// ERA5-Land reanalysis lags ~5-10 days; the datasette stays authoritative for
+// any date it has, and Open-Meteo fills only the recent gap (today/last days).
+const OM = "https://api.open-meteo.com/v1/forecast";
+
+async function openMeteoMax(lat: number, lon: number, date: string): Promise<number | null> {
+  try {
+    const resp = await fetch(`${OM}?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max&timezone=UTC&start_date=${date}&end_date=${date}`);
+    if (!resp.ok) return null;
+    const d = await resp.json() as { daily?: { temperature_2m_max?: (number | null)[] } };
+    return d?.daily?.temperature_2m_max?.[0] ?? null;
+  } catch {
+    return null;
+  }
+}
+
+// National live = mean of the daily max across all ERA5 stations, in one call
+// (Open-Meteo accepts comma-separated coordinate lists → array of results).
+async function openMeteoNationalMax(date: string): Promise<number | null> {
+  const coords = Object.values(era5Coords);
+  if (coords.length === 0) return null;
+  try {
+    const lats = coords.map(c => c.lat).join(",");
+    const lons = coords.map(c => c.lon).join(",");
+    const resp = await fetch(`${OM}?latitude=${lats}&longitude=${lons}&daily=temperature_2m_max&timezone=UTC&start_date=${date}&end_date=${date}`);
+    if (!resp.ok) return null;
+    const d = await resp.json();
+    const arr = Array.isArray(d) ? d : [d];
+    const vals = arr
+      .map((x: any) => x?.daily?.temperature_2m_max?.[0])
+      .filter((v: any): v is number => v != null);
+    return vals.length ? vals.reduce((a: number, b: number) => a + b, 0) / vals.length : null;
+  } catch {
+    return null;
+  }
+}
+
 // ── fetchMeta ──────────────────────────────────────────────────────────────────
 
 export async function fetchMeta(): Promise<SiteMeta> {
@@ -251,6 +290,11 @@ export async function fetchMeta(): Promise<SiteMeta> {
     era5Stations
       .filter(s => s.station_id != null)
       .map(s => [s.era5_name, s.station_id as number])
+  );
+
+  // Coordinates for Open-Meteo live temps (the ERA5 live source)
+  era5Coords = Object.fromEntries(
+    era5Stations.map(s => [s.era5_name, { lat: s.lat, lon: s.lon }])
   );
 
   const stations = era5Stations.map(s => ({
@@ -296,36 +340,29 @@ export async function fetchTodayStatus(date: string, loc: string | null): Promis
   const { month, day } = dateToMonthDay(date);
 
   if (era5Name === ERA5_NATIONAL) {
-    const todayStr = new Date().toISOString().slice(0, 10);
-    const isToday  = date === todayStr;
-    const ids      = Object.values(vremenarIdMap);
+    // ERA5-Land datasette is authoritative; Open-Meteo fills only the recent gap.
+    const w = await fetchEra5NationalWindowRow(month, day);
+    if (!w) return { available: false };
 
-    let todayTempPromise: Promise<number | null>;
-    if (isToday) {
-      // Average live temps across all ERA5 stations
-      todayTempPromise = Promise.all(ids.map(id => vremenarTemp(id))).then(temps => {
-        const valid = temps.filter((t): t is number => t !== null);
-        return valid.length > 0 ? valid.reduce((a, b) => a + b) / valid.length : null;
-      });
-    } else {
-      // Historical national average — mean of all stations' ERA5 daily for the date
-      todayTempPromise = dsGet<Array<{ temperature_max_2m: number | null }>>(
-        `daily.json?_shape=array&date__exact=${date}&_col=temperature_max_2m&_size=50`
-      ).then(rows => {
-        const valid = rows.filter(r => r.temperature_max_2m != null).map(r => r.temperature_max_2m!);
-        return valid.length > 0 ? valid.reduce((a, b) => a + b) / valid.length : null;
-      });
+    const dsRows = await dsGet<Array<{ temperature_max_2m: number | null }>>(
+      `daily.json?_shape=array&date__exact=${date}&_col=temperature_max_2m&_size=50`
+    );
+    const dsVals = dsRows.filter(r => r.temperature_max_2m != null).map(r => r.temperature_max_2m!);
+    let todayTemp: number | null = dsVals.length > 0
+      ? dsVals.reduce((a, b) => a + b) / dsVals.length
+      : null;
+    let isPreliminary = false;
+    if (todayTemp == null) {
+      // Beyond the reanalysis → live Open-Meteo national average (preliminary)
+      todayTemp = await openMeteoNationalMax(date);
+      isPreliminary = true;
     }
+    if (todayTemp == null) return { available: false };
 
-    const [todayTemp, w] = await Promise.all([
-      todayTempPromise,
-      fetchEra5NationalWindowRow(month, day),
-    ]);
-    if (todayTemp == null || !w) return { available: false };
     const cat = categorizeEra5(todayTemp, w);
     return {
       available: true, date,
-      today_temp: parseFloat(todayTemp.toFixed(1)), is_preliminary: isToday,
+      today_temp: parseFloat(todayTemp.toFixed(1)), is_preliminary: isPreliminary,
       percentile: cat.percentile, category_key: cat.category_key, color: cat.color,
       n_samples: w.n_samples, year_min: w.year_min, year_max: w.year_max,
       distribution: JSON.parse(w.distribution_json) as [number, number][],
@@ -407,22 +444,22 @@ export async function fetchTodayStatus(date: string, loc: string | null): Promis
     };
   }
 
-  // ERA5 path
-  const stationId = vremenarIdMap[era5Name];
+  // ERA5 path — datasette reanalysis is authoritative; Open-Meteo fills the gap.
   let todayTemp: number | null = null;
   let isPreliminary = false;
 
-  if (stationId) {
-    todayTemp = await vremenarTemp(stationId);
-  }
-  if (todayTemp === null) {
-    const rows = await dsGet<Array<{ temperature_max_2m: number }>>(
-      `daily.json?_shape=array&era5_name__exact=${encodeURIComponent(era5Name)}&date__exact=${date}&_col=temperature_max_2m&_size=1`
-    );
-    if (!rows[0]?.temperature_max_2m) return { available: false };
+  const rows = await dsGet<Array<{ temperature_max_2m: number }>>(
+    `daily.json?_shape=array&era5_name__exact=${encodeURIComponent(era5Name)}&date__exact=${date}&_col=temperature_max_2m&_size=1`
+  );
+  if (rows[0]?.temperature_max_2m != null) {
     todayTemp = rows[0].temperature_max_2m;
+  } else {
+    // Beyond the reanalysis lag → live Open-Meteo forecast (preliminary)
+    const coord = era5Coords[era5Name];
+    if (coord) todayTemp = await openMeteoMax(coord.lat, coord.lon, date);
     isPreliminary = true;
   }
+  if (todayTemp == null) return { available: false };
 
   const w = await fetchEra5WindowRow(era5Name, month, day);
   if (!w) return { available: false };
