@@ -13,6 +13,7 @@ const HeroCardsPanel         = lazy(() => import("./components/HeroCards.tsx").t
 const Era5TropicalChart      = lazy(() => import("./charts/Era5TropicalChart.tsx").then(m => ({ default: m.Era5TropicalChart })));
 const SpeiHeatmapChart       = lazy(() => import("./charts/SpeiHeatmap.tsx").then(m => ({ default: m.SpeiHeatmap })));
 const SpeiTrendChartLazy     = lazy(() => import("./charts/SpeiTrendChart.tsx").then(m => ({ default: m.SpeiTrendChart })));
+const SeaLevelChart          = lazy(() => import("./charts/SeaLevelWidget.tsx").then(m => ({ default: m.SeaLevelWidget })));
 
 const EN_MONTHS: Record<string, string> = {
   Jan:"01", Feb:"02", Mar:"03", Apr:"04", May:"05", Jun:"06",
@@ -287,6 +288,19 @@ function Era5Charts() {
         <TropControls threshold={nightsThr()} setThreshold={setNightsThr} min={15} max={25} streak={streak()} setStreak={setStreak} unit="noči" />
         <Suspense fallback={<div class="h-56 animate-pulse bg-[var(--color-paper-2)] rounded-xl" />}>
           <Era5TropicalChart loc={loc()} label={st()?.label} kind="nights" threshold={nightsThr()} streak={streak()} />
+        </Suspense>
+      </section>
+
+      {/* Sea level rise — Koper (IPCC AR6 projections, static) */}
+      <section class="sec-p" style={{ "padding-bottom": "40px" }}>
+        <div class="sec-h" style={{ "padding-inline": "0", "padding-top": "8px" }}>
+          Dvig morske gladine — Koper
+        </div>
+        <div class="sec-hs2" style={{ "margin-bottom": "16px" }}>
+          Projekcije dviga morske gladine po scenarijih IPCC AR6 z viharnimi nalivi · severni Jadran
+        </div>
+        <Suspense fallback={<div class="animate-pulse rounded-xl bg-[#071e26]" style={{ height: "500px" }} />}>
+          <SeaLevelChart />
         </Suspense>
       </section>
     </Show>
