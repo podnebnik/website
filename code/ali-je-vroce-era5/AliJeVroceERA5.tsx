@@ -1,11 +1,23 @@
-import { createSignal, createResource, Show, Suspense, lazy } from "solid-js";
-import { fetchMeta } from "./api.ts";
+import { createSignal, createResource, createMemo, Show, Suspense, lazy } from "solid-js";
+import { fetchMeta, fetchPageData, ERA5_NATIONAL } from "./api.ts";
+import { TodayCard } from "./components/TodayCard.tsx";
+import { DistributionChart } from "./charts/DistributionChart.tsx";
+import { TodayTrendChart } from "./components/TodayTrendChart.tsx";
 import { RegressionPanel, RegToolbar, RegScatterCard, RegYearRoundCard, useReg,
          panelHStyle, panelTitleStyle, panelSubStyle } from "./components/RegressionPanel.tsx";
 import type { SiteMeta } from "./types.ts";
 
 const Era5SeasonHeatmapChart = lazy(() => import("./charts/Era5SeasonHeatmap.tsx").then(m => ({ default: m.Era5SeasonHeatmap })));
 const StationMap             = lazy(() => import("./components/StationMap.tsx").then(m => ({ default: m.StationMap })));
+
+const EN_MONTHS: Record<string, string> = {
+  Jan:"01", Feb:"02", Mar:"03", Apr:"04", May:"05", Jun:"06",
+  Jul:"07", Aug:"08", Sep:"09", Oct:"10", Nov:"11", Dec:"12",
+};
+function fmtDayLabel(dl: string): string {
+  const [mon, day] = dl.split(" ");
+  return `${(day ?? "").padStart(2, "0")}.${EN_MONTHS[mon ?? ""] ?? "??"}`;
+}
 
 function dateToDoy(dateStr: string): number {
   const d = new Date(dateStr + "T12:00:00Z");
@@ -24,30 +36,87 @@ export function AliJeVroceERA5() {
 
 function Dashboard(props: { meta: SiteMeta }) {
   const today = new Date().toISOString().slice(0, 10);
-  const defaultDoy = dateToDoy(today);
+  const [date, setDate] = createSignal(today);
 
   const era5Stations = props.meta.stations.filter(s => s.source === "era5");
+  const defaultLoc = props.meta.default_location ?? "Ljubljana";
+  // Page opens on the Slovenia national ERA5 average
+  const [loc, setLoc] = createSignal<string | null>(ERA5_NATIONAL);
+  const isNat = createMemo(() => loc() === ERA5_NATIONAL);
 
-  const era5Meta = (): SiteMeta => ({
-    ...props.meta,
-    stations: era5Stations,
-    default_location: props.meta.default_location ?? "Ljubljana",
-  });
+  const defaultDoy = createMemo(() => dateToDoy(date()));
+  const era5Meta = (): SiteMeta => ({ ...props.meta, stations: era5Stations, default_location: defaultLoc });
+
+  const [pageData] = createResource(
+    () => ({ date: date(), loc: loc() }),
+    ({ date, loc }) => fetchPageData(date, loc),
+  );
+  const pageDataResolved = () => pageData() ?? pageData.latest;
+  const todayData = () => pageDataResolved()?.status;
+  const last7Data = () => pageDataResolved()?.last7;
 
   const [mapLoc, setMapLoc] = createSignal<string | null>(null);
 
-  const mapLabel = () => {
-    const loc = mapLoc();
-    if (!loc) return "Slovenija — vse postaje";
-    const st = era5Stations.find(s => s.name === loc);
-    return st?.label ?? loc.replace(/_/g, " ");
-  };
-
   return (
     <div>
+
+      {/* ── Today status section ──────────────────────────────────── */}
+      <section class="today-status">
+        <div class="sec-heading">
+          <div class="today-heading-text">
+            <span class="today-heading-title">ERA5 — Ali je vroče?</span>
+            <span class="today-heading-subtitle">reanaliza ERA5-Land v primerjavi z zgodovinskimi percentili</span>
+          </div>
+        </div>
+
+        <div class="today-grid">
+          <Show
+            when={todayData()}
+            fallback={<div style={{ "min-height": "480px", "grid-column": "1 / -1" }} class="animate-pulse rounded-xl bg-[var(--color-paper-2)]" />}
+          >
+            {(r) => (
+              <TodayCard
+                data={r()}
+                last7={last7Data()}
+                meta={era5Meta()}
+                date={date()}
+                today={today}
+                loading={pageData.loading}
+                onDateChange={setDate}
+                onLocChange={(v) => setLoc(v === "" ? ERA5_NATIONAL : (v || ERA5_NATIONAL))}
+                nationalLoc={ERA5_NATIONAL}
+              />
+            )}
+          </Show>
+
+          <Show when={todayData()?.available}>
+            <div class="today-chart">
+              <div class="today-chart-title">
+                {isNat()
+                  ? `Dnevne najvišje temperature v Sloveniji za dva tedna okoli ${fmtDayLabel(todayData()!.day_label ?? "")} od ${todayData()!.year_min}`
+                  : `Dnevne najvišje temperature na postaji ${todayData()!.loc!.replace(/_/g, " ")} za dva tedna okoli ${fmtDayLabel(todayData()!.day_label ?? "")} od ${todayData()!.year_min}`}
+              </div>
+              <DistributionChart data={todayData()!} chartId="dist-chart" />
+              <p class="today-explain" style={{ "font-size": "12px", "padding-top": "6px" }}>
+                Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.
+              </p>
+              <div class="today-foot">
+                {`${isNat() ? "Slovenija" : "Danes"}: ${todayData()!.today_temp!.toFixed(1)} °C · ${todayData()!.percentile!.toFixed(0)}. percentil · mediana ${todayData()!.cutoffs!.p50.toFixed(1)} °C · ${(todayData()!.n_samples ?? 0).toLocaleString()} opazovanj · ${todayData()!.year_min}–${todayData()!.year_max}`}
+              </div>
+            </div>
+          </Show>
+
+          {/* Per-day trend only for a specific station (no national daily series) */}
+          <Show when={todayData()?.available && !isNat()}>
+            <TodayTrendChart date={date()} loc={loc()} />
+          </Show>
+        </div>
+      </section>
+
+      {/* ── Regression section (ERA5) — own station picker, always shown ── */}
       <RegressionPanel
         meta={era5Meta()}
-        defaultDoy={defaultDoy}
+        defaultDoy={defaultDoy()}
         syncLoc={mapLoc}
         onLocChange={setMapLoc}
       >
@@ -61,7 +130,9 @@ function Dashboard(props: { meta: SiteMeta }) {
           <div class="reg-card" style={{ background: "var(--color-paper)" }}>
             <div style={{ ...panelHStyle, background: "var(--color-card)" }}>
               <div>
-                <div style={panelTitleStyle}>{mapLabel()}</div>
+                <div style={panelTitleStyle}>
+                  {mapLoc() ? mapLoc()!.replace(/_/g, " ") : "Slovenija — vse postaje"}
+                </div>
                 <div style={{ ...panelSubStyle, "margin-top": "3px" }}>
                   {era5Stations.length} postaj · ERA5
                 </div>
@@ -96,27 +167,20 @@ function Dashboard(props: { meta: SiteMeta }) {
         <Era5Charts />
 
       </RegressionPanel>
+
     </div>
   );
 }
 
 function Era5Charts() {
   const s = useReg();
-
   const loc = () => s.selLocs()[0] ?? null;
   const st  = () => s.meta.stations.find(station => station.name === loc()) ?? null;
 
   return (
-    <Show when={loc()} fallback={
+    <Show when={loc()}>
       <section class="sec-p" style={{ "padding-bottom": "60px" }}>
-        <p style={{ "padding-top": "32px", color: "var(--color-ink-soft)", "font-size": "14px", "text-align": "center" }}>
-          Za izbrano postajo ni podatkov.
-        </p>
-      </section>
-    }>
-
-      <section class="sec-p" style={{ "padding-bottom": "60px" }}>
-        <div class="sec-h" style={{ "padding-inline": "0", "padding-top": "40px" }}>
+        <div class="sec-h" style={{ "padding-inline": "0", "padding-top": "24px" }}>
           Sezonski pregled
         </div>
         <div class="sec-hs2">
@@ -126,7 +190,6 @@ function Era5Charts() {
           <Era5SeasonHeatmapChart loc={loc()} label={st()?.label} />
         </Suspense>
       </section>
-
     </Show>
   );
 }

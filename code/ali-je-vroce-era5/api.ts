@@ -19,6 +19,9 @@ let vremenarIdMap: Record<string, number> = {};
 let arsoStationIds: number[] = [];
 
 export const ARSO_NATIONAL = "arso:national";
+// Slovenia average across all ERA5 stations (no precomputed national row exists
+// in climate-si, so it is averaged client-side from the per-station data).
+export const ERA5_NATIONAL = "era5:national";
 
 export function isArsoLoc(loc: string): boolean {
   return loc.startsWith("arso:");
@@ -197,6 +200,29 @@ async function fetchEra5WindowRow(era5Name: string, month: number, day: number):
   return rows[0] ?? null;
 }
 
+// Slovenia national ±window climatology = mean of the 18 stations' daily_window
+// rows for this month/day. Distribution is synthesised from the averaged
+// p5/p50/p95 (same approach as the ARSO national curve).
+async function fetchEra5NationalWindowRow(month: number, day: number): Promise<DailyWindowRow | null> {
+  const rows = await dsGet<DailyWindowRow[]>(
+    `daily_window.json?_shape=array&month__exact=${month}&day__exact=${day}&_size=50`
+  );
+  if (rows.length === 0) return null;
+  const avg = (f: (r: DailyWindowRow) => number) =>
+    rows.reduce((s, r) => s + (f(r) ?? 0), 0) / rows.length;
+  const p5  = avg(r => r.p5),  p10 = avg(r => r.p10), p20 = avg(r => r.p20);
+  const p50 = avg(r => r.p50), p80 = avg(r => r.p80), p95 = avg(r => r.p95);
+  return {
+    station: ERA5_NATIONAL,
+    month, day,
+    p5, p10, p20, p50, p80, p95,
+    n_samples: rows.reduce((s, r) => s + (r.n_samples ?? 0), 0),
+    year_min:  Math.min(...rows.map(r => r.year_min)),
+    year_max:  Math.max(...rows.map(r => r.year_max)),
+    distribution_json: JSON.stringify(syntheticDistribution(p5, p50, p95)),
+  } as DailyWindowRow;
+}
+
 
 async function vremenarTemp(stationId: number): Promise<number | null> {
   try {
@@ -268,6 +294,46 @@ export async function fetchMeta(): Promise<SiteMeta> {
 export async function fetchTodayStatus(date: string, loc: string | null): Promise<TodayStatus> {
   const era5Name = loc ?? "Ljubljana";
   const { month, day } = dateToMonthDay(date);
+
+  if (era5Name === ERA5_NATIONAL) {
+    const todayStr = new Date().toISOString().slice(0, 10);
+    const isToday  = date === todayStr;
+    const ids      = Object.values(vremenarIdMap);
+
+    let todayTempPromise: Promise<number | null>;
+    if (isToday) {
+      // Average live temps across all ERA5 stations
+      todayTempPromise = Promise.all(ids.map(id => vremenarTemp(id))).then(temps => {
+        const valid = temps.filter((t): t is number => t !== null);
+        return valid.length > 0 ? valid.reduce((a, b) => a + b) / valid.length : null;
+      });
+    } else {
+      // Historical national average — mean of all stations' ERA5 daily for the date
+      todayTempPromise = dsGet<Array<{ temperature_max_2m: number | null }>>(
+        `daily.json?_shape=array&date__exact=${date}&_col=temperature_max_2m&_size=50`
+      ).then(rows => {
+        const valid = rows.filter(r => r.temperature_max_2m != null).map(r => r.temperature_max_2m!);
+        return valid.length > 0 ? valid.reduce((a, b) => a + b) / valid.length : null;
+      });
+    }
+
+    const [todayTemp, w] = await Promise.all([
+      todayTempPromise,
+      fetchEra5NationalWindowRow(month, day),
+    ]);
+    if (todayTemp == null || !w) return { available: false };
+    const cat = categorizeEra5(todayTemp, w);
+    return {
+      available: true, date,
+      today_temp: parseFloat(todayTemp.toFixed(1)), is_preliminary: isToday,
+      percentile: cat.percentile, category_key: cat.category_key, color: cat.color,
+      n_samples: w.n_samples, year_min: w.year_min, year_max: w.year_max,
+      distribution: JSON.parse(w.distribution_json) as [number, number][],
+      cutoffs: { p5: w.p5, p10: w.p10, p20: w.p20, p50: w.p50, p80: w.p80, p95: w.p95 },
+      day_label: dayLabel(month, day), month_num: month, day_num: day,
+      rank_info: null, loc: ERA5_NATIONAL,
+    };
+  }
 
   if (era5Name === ARSO_NATIONAL) {
     const todayStr = new Date().toISOString().slice(0, 10);
@@ -378,6 +444,9 @@ export async function fetchTodayStatus(date: string, loc: string | null): Promis
 
 export async function fetchLast7(date: string, loc: string | null): Promise<Last7> {
   const era5Name = loc ?? "Ljubljana";
+
+  // National ERA5 average has no per-day last-7 strip; the mini-chart is hidden.
+  if (era5Name === ERA5_NATIONAL) return { available: false, days: [] };
 
   if (era5Name === ARSO_NATIONAL) {
     // Use station 0 to get the 7 most recent dates, then average all stations per date
