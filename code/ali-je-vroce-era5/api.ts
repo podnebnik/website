@@ -2,6 +2,8 @@ import type {
   TodayStatus, Last7, AnnualTrendRow, AnnualTrend, SiteMeta,
   SeasonHeatmapRow, RegressionResult, RegressionResponse, DailyWindowRow,
 } from "./types.ts";
+import type { SpeiData } from "./charts/SpeiHeatmap.tsx";
+import type { SpeiStationData } from "./charts/SpeiTrendChart.tsx";
 
 // podnebnik.org datasette serves each DB at the root (no /datasette prefix),
 // e.g. https://stage-data.podnebnik.org/climate-si — override with VITE_DATASETTE_URL for dev.
@@ -1297,12 +1299,58 @@ export async function fetchArsoTrend(stationId: number, month: number, day: numb
 
 // ── SPEI stubs (no precipitation data) ────────────────────────────────────────
 
-export function fetchSpeiHeatmap(): Promise<{ available: boolean }> {
-  return Promise.resolve({ available: false });
+// SPEI national heatmap — read the precomputed climate-si `spei` table.
+export async function fetchSpeiHeatmap(): Promise<SpeiData> {
+  const empty: SpeiData = { available: false, data: [], year_min: 0, year_max: 0, baseline: null, era5_last: "" };
+  try {
+    const rows = await dsGet<Array<{
+      y: number; spei: number; balance: number; cat: string; rank: number;
+      total: number; color: string; season: string; n_days: number;
+    }>>(
+      `spei.json?_shape=array&_col=y&_col=spei&_col=balance&_col=cat&_col=rank&_col=total&_col=color&_col=season&_col=n_days&_size=2000`
+    );
+    if (!rows.length) return empty;
+    const years = rows.map(r => r.y);
+    return {
+      available: true,
+      data: rows.map(r => ({
+        season: r.season, y: r.y, spei: r.spei, cat: r.cat, color: r.color,
+        balance: r.balance, n_days: r.n_days, rank: r.rank, total: r.total,
+      })),
+      year_min: Math.min(...years), year_max: Math.max(...years),
+      baseline: "1950–1980", era5_last: "",
+    };
+  } catch {
+    return empty;
+  }
 }
 
-export function fetchSpeiStationSeasonal(): Promise<null> {
-  return Promise.resolve(null);
+// SPEI per-station SPEI-3/SPEI-30 series — read the `spei_station` table.
+export async function fetchSpeiStationSeasonal(): Promise<SpeiStationData> {
+  const empty: SpeiStationData = { available: false, stations: {}, era5_last: "", baseline: "", year_min: 0, year_max: 0 };
+  try {
+    const rows = await dsGet<Array<{
+      era5_name: string; series: string; years_json: string; spei_json: string; trend_json: string;
+    }>>(
+      `spei_station.json?_shape=array&_col=era5_name&_col=series&_col=years_json&_col=spei_json&_col=trend_json&_size=1000`
+    );
+    if (!rows.length) return empty;
+    const stations: SpeiStationData["stations"] = {};
+    let ymin = Infinity, ymax = -Infinity;
+    for (const r of rows) {
+      const years = JSON.parse(r.years_json) as number[];
+      const spei  = JSON.parse(r.spei_json)  as number[];
+      const trend = JSON.parse(r.trend_json);
+      (stations[r.era5_name] ??= {})[r.series] = { years, spei, trend };
+      if (years.length) { ymin = Math.min(ymin, years[0]!); ymax = Math.max(ymax, years[years.length - 1]!); }
+    }
+    return {
+      available: true, stations, era5_last: "", baseline: "1950–1980",
+      year_min: ymin === Infinity ? 0 : ymin, year_max: ymax === -Infinity ? 0 : ymax,
+    };
+  } catch {
+    return empty;
+  }
 }
 
 // ── fetchCalendar ──────────────────────────────────────────────────────────────

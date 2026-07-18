@@ -1,5 +1,5 @@
 import { createSignal, createResource, createMemo, Show, Suspense, lazy } from "solid-js";
-import { fetchMeta, fetchPageData, ERA5_NATIONAL } from "./api.ts";
+import { fetchMeta, fetchPageData, fetchSpeiHeatmap, fetchSpeiStationSeasonal, ERA5_NATIONAL } from "./api.ts";
 import { TodayCard } from "./components/TodayCard.tsx";
 import { DistributionChart } from "./charts/DistributionChart.tsx";
 import { TodayTrendChart } from "./components/TodayTrendChart.tsx";
@@ -11,6 +11,8 @@ const Era5SeasonHeatmapChart = lazy(() => import("./charts/Era5SeasonHeatmap.tsx
 const StationMap             = lazy(() => import("./components/StationMap.tsx").then(m => ({ default: m.StationMap })));
 const HeroCardsPanel         = lazy(() => import("./components/HeroCards.tsx").then(m => ({ default: m.HeroCards })));
 const Era5TropicalChart      = lazy(() => import("./charts/Era5TropicalChart.tsx").then(m => ({ default: m.Era5TropicalChart })));
+const SpeiHeatmapChart       = lazy(() => import("./charts/SpeiHeatmap.tsx").then(m => ({ default: m.SpeiHeatmap })));
+const SpeiTrendChartLazy     = lazy(() => import("./charts/SpeiTrendChart.tsx").then(m => ({ default: m.SpeiTrendChart })));
 
 const EN_MONTHS: Record<string, string> = {
   Jan:"01", Feb:"02", Mar:"03", Apr:"04", May:"05", Jun:"06",
@@ -209,6 +211,10 @@ function Era5Charts() {
   const [nightsThr, setNightsThr] = createSignal(20);
   const [streak,    setStreak]    = createSignal(1);
 
+  // SPEI is national (heatmap) / has its own station picker (trend) — load once
+  const [speiData]        = createResource(fetchSpeiHeatmap);
+  const [speiStationData] = createResource(fetchSpeiStationSeasonal);
+
   return (
     <Show when={loc()}>
       {/* Location impact details */}
@@ -230,6 +236,33 @@ function Era5Charts() {
         </div>
         <Suspense fallback={<div class="h-40 animate-pulse bg-[var(--color-paper-2)] rounded-xl" />}>
           <Era5SeasonHeatmapChart loc={loc()} label={st()?.label} />
+        </Suspense>
+      </section>
+
+      {/* SPEI drought heatmap (national) */}
+      <section class="sec-p" style={{ "padding-bottom": "40px" }}>
+        <div class="sec-h" style={{ "padding-inline": "0", "padding-top": "8px" }}>
+          Sezonski sušni indeks (SPEI)
+        </div>
+        <Suspense fallback={<div class="h-40 animate-pulse bg-[var(--color-paper-2)] rounded-xl" />}>
+          <Show when={speiData()?.available}>
+            <SpeiHeatmapChart data={speiData()!} />
+          </Show>
+        </Suspense>
+      </section>
+
+      {/* SPEI drought trend per station */}
+      <section class="sec-p" style={{ "padding-bottom": "40px" }}>
+        <div class="sec-h" style={{ "padding-inline": "0", "padding-top": "8px" }}>
+          Sušni trend po postaji — SPEI
+        </div>
+        <div class="sec-hs2">
+          Sezonski (SPEI-3) in mesečni (SPEI-30) indeks vodne bilance · Theil-Sen · ERA5-Land
+        </div>
+        <Suspense fallback={<div class="animate-pulse rounded-xl bg-[var(--color-paper-2)]" style={{ height: "400px" }} />}>
+          <Show when={speiStationData()?.available}>
+            <SpeiTrendChartLazy data={speiStationData()!} />
+          </Show>
         </Suspense>
       </section>
 

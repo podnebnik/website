@@ -11,6 +11,8 @@ const VARIABLES: [string, string][] = [
   ["temperature_max",  "Max temperature (°C)"],
   ["temperature_min",  "Min temperature (°C)"],
   ["temperature_mean", "Mean temperature (°C)"],
+  ["precipitation_sum",      "Precipitation (mm)"],
+  ["et0_evapotranspiration", "ET₀ (mm)"],
 ];
 
 interface ProviderProps {
