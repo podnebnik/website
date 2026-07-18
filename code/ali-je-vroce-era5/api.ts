@@ -15,8 +15,11 @@ const VR = `${(import.meta.env.VITE_VREMENAR_URL as string | undefined) ?? "http
 
 // Populated during fetchMeta()
 let vremenarIdMap: Record<string, number> = {};
-// era5_name → {lat, lon}; used for Open-Meteo live temps (the ERA5 live source)
-let era5Coords: Record<string, { lat: number; lon: number }> = {};
+// era5_name → {lat, lon, elevation}; used for Open-Meteo live temps. Elevation is
+// REQUIRED: the datasette climatology is lapse-corrected to the true station
+// elevation, so Open-Meteo must be downscaled to the same elevation (otherwise
+// high peaks like Kredarica read far too warm at Open-Meteo's grid elevation).
+let era5Coords: Record<string, { lat: number; lon: number; elevation: number }> = {};
 // All ARSO station IDs — used for national Vremenar average
 let arsoStationIds: number[] = [];
 
@@ -242,9 +245,9 @@ async function vremenarTemp(stationId: number): Promise<number | null> {
 // any date it has, and Open-Meteo fills only the recent gap (today/last days).
 const OM = "https://api.open-meteo.com/v1/forecast";
 
-async function openMeteoMax(lat: number, lon: number, date: string): Promise<number | null> {
+async function openMeteoMax(lat: number, lon: number, elevation: number, date: string): Promise<number | null> {
   try {
-    const resp = await fetch(`${OM}?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max&timezone=UTC&start_date=${date}&end_date=${date}`);
+    const resp = await fetch(`${OM}?latitude=${lat}&longitude=${lon}&elevation=${Math.round(elevation)}&daily=temperature_2m_max&timezone=UTC&start_date=${date}&end_date=${date}`);
     if (!resp.ok) return null;
     const d = await resp.json() as { daily?: { temperature_2m_max?: (number | null)[] } };
     return d?.daily?.temperature_2m_max?.[0] ?? null;
@@ -254,14 +257,15 @@ async function openMeteoMax(lat: number, lon: number, date: string): Promise<num
 }
 
 // National live = mean of the daily max across all ERA5 stations, in one call
-// (Open-Meteo accepts comma-separated coordinate lists → array of results).
+// (Open-Meteo accepts comma-separated coordinate + elevation lists → array).
 async function openMeteoNationalMax(date: string): Promise<number | null> {
   const coords = Object.values(era5Coords);
   if (coords.length === 0) return null;
   try {
-    const lats = coords.map(c => c.lat).join(",");
-    const lons = coords.map(c => c.lon).join(",");
-    const resp = await fetch(`${OM}?latitude=${lats}&longitude=${lons}&daily=temperature_2m_max&timezone=UTC&start_date=${date}&end_date=${date}`);
+    const lats  = coords.map(c => c.lat).join(",");
+    const lons  = coords.map(c => c.lon).join(",");
+    const elevs = coords.map(c => Math.round(c.elevation)).join(",");
+    const resp = await fetch(`${OM}?latitude=${lats}&longitude=${lons}&elevation=${elevs}&daily=temperature_2m_max&timezone=UTC&start_date=${date}&end_date=${date}`);
     if (!resp.ok) return null;
     const d = await resp.json();
     const arr = Array.isArray(d) ? d : [d];
@@ -292,9 +296,9 @@ export async function fetchMeta(): Promise<SiteMeta> {
       .map(s => [s.era5_name, s.station_id as number])
   );
 
-  // Coordinates for Open-Meteo live temps (the ERA5 live source)
+  // Coordinates + true elevation for Open-Meteo live temps (elevation-corrected)
   era5Coords = Object.fromEntries(
-    era5Stations.map(s => [s.era5_name, { lat: s.lat, lon: s.lon }])
+    era5Stations.map(s => [s.era5_name, { lat: s.lat, lon: s.lon, elevation: s.elevation }])
   );
 
   const stations = era5Stations.map(s => ({
@@ -454,9 +458,10 @@ export async function fetchTodayStatus(date: string, loc: string | null): Promis
   if (rows[0]?.temperature_max_2m != null) {
     todayTemp = rows[0].temperature_max_2m;
   } else {
-    // Beyond the reanalysis lag → live Open-Meteo forecast (preliminary)
+    // Beyond the reanalysis lag → live Open-Meteo forecast (preliminary),
+    // downscaled to the station's true elevation to match the climatology.
     const coord = era5Coords[era5Name];
-    if (coord) todayTemp = await openMeteoMax(coord.lat, coord.lon, date);
+    if (coord) todayTemp = await openMeteoMax(coord.lat, coord.lon, coord.elevation, date);
     isPreliminary = true;
   }
   if (todayTemp == null) return { available: false };
