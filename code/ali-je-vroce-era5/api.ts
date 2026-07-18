@@ -1298,14 +1298,53 @@ export async function fetchCalendar(
 
 // ── fetchAnnualTrend ───────────────────────────────────────────────────────────
 
+// National annual trend = mean of the 18 stations' temperature_max rows for this
+// day: scatter averaged per year, line params averaged. (Interim client-side
+// pooling; the precompute will eventually bake an era5:national row.)
+async function fetchNationalAnnualTrendRow(month: number, day: number): Promise<AnnualTrendRow | undefined> {
+  const rows = await dsGet<AnnualTrendRow[]>(
+    `annual_trend.json?_shape=array&variable__exact=temperature_max&month__exact=${month}&day__exact=${day}&_size=50`
+  );
+  if (!rows.length) return undefined;
+  const avg = (f: (r: AnnualTrendRow) => number) => rows.reduce((s, r) => s + (f(r) ?? 0), 0) / rows.length;
+
+  // Average scatter y per year across stations
+  const perYear = new Map<number, { sum: number; n: number }>();
+  for (const r of rows) {
+    for (const pt of JSON.parse(r.scatter_json) as Array<{ x: number; y: number }>) {
+      const e = perYear.get(pt.x) ?? { sum: 0, n: 0 };
+      e.sum += pt.y; e.n += 1; perYear.set(pt.x, e);
+    }
+  }
+  const scatter = [...perYear.entries()]
+    .sort((a, b) => a[0] - b[0])
+    .map(([x, e]) => ({ x, y: +(e.sum / e.n).toFixed(2) }));
+
+  const base = rows[0]!;
+  return {
+    ...base,
+    era5_name: ERA5_NATIONAL,
+    trend10: +avg(r => r.trend10).toFixed(3),
+    p_val: avg(r => r.p_val), tau: +avg(r => r.tau).toFixed(3),
+    year_min: Math.min(...rows.map(r => r.year_min)),
+    year_max: Math.max(...rows.map(r => r.year_max)),
+    n_years: Math.max(...rows.map(r => r.n_years)),
+    slope: avg(r => r.slope), intercept: avg(r => r.intercept),
+    slope_hi: avg(r => r.slope_hi), intercept_hi: avg(r => r.intercept_hi),
+    slope_lo: avg(r => r.slope_lo), intercept_lo: avg(r => r.intercept_lo),
+    scatter_json: JSON.stringify(scatter),
+  };
+}
+
 export async function fetchAnnualTrend(month: number, day: number, loc?: string | null): Promise<AnnualTrend> {
   const era5Name = loc ?? "Ljubljana";
   if (isArsoLoc(era5Name)) throw new Error("Annual trend not available for ARSO stations");
-  const rows = await dsGet<AnnualTrendRow[]>(
-    `annual_trend.json?_shape=array&era5_name__exact=${encodeURIComponent(era5Name)}&variable__exact=temperature_mean&month__exact=${month}&day__exact=${day}&_size=1`
-  );
-  if (!rows.length) throw new Error("No annual trend row");
-  const r = rows[0]!;
+  const r = era5Name === ERA5_NATIONAL
+    ? await fetchNationalAnnualTrendRow(month, day)
+    : (await dsGet<AnnualTrendRow[]>(
+        `annual_trend.json?_shape=array&era5_name__exact=${encodeURIComponent(era5Name)}&variable__exact=temperature_mean&month__exact=${month}&day__exact=${day}&_size=1`
+      ))[0];
+  if (!r) throw new Error("No annual trend row");
   return {
     dayLabel: r.day_label, monthNum: r.month, dayNum: r.day,
     yearMin: r.year_min, yearMax: r.year_max,

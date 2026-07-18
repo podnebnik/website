@@ -9,6 +9,7 @@ import type { SiteMeta } from "./types.ts";
 
 const Era5SeasonHeatmapChart = lazy(() => import("./charts/Era5SeasonHeatmap.tsx").then(m => ({ default: m.Era5SeasonHeatmap })));
 const StationMap             = lazy(() => import("./components/StationMap.tsx").then(m => ({ default: m.StationMap })));
+const HeroCardsPanel         = lazy(() => import("./components/HeroCards.tsx").then(m => ({ default: m.HeroCards })));
 
 const EN_MONTHS: Record<string, string> = {
   Jan:"01", Feb:"02", Mar:"03", Apr:"04", May:"05", Jun:"06",
@@ -106,8 +107,8 @@ function Dashboard(props: { meta: SiteMeta }) {
             </div>
           </Show>
 
-          {/* Per-day trend only for a specific station (no national daily series) */}
-          <Show when={todayData()?.available && !isNat()}>
+          {/* National (pooled) or per-station annual trend with projection */}
+          <Show when={todayData()?.available}>
             <TodayTrendChart date={date()} loc={loc()} />
           </Show>
         </div>
@@ -179,6 +180,16 @@ function Era5Charts() {
 
   return (
     <Show when={loc()}>
+      {/* Location impact details */}
+      <section class="sec-p" style={{ "padding-top": "16px", "padding-bottom": "24px" }}>
+        <div class="sec-hs" style={{ "padding-inline": "0", "padding-top": "0", "padding-bottom": "10px" }}>
+          Podrobnosti lokacije
+        </div>
+        <Suspense fallback={<div style={{ height: "180px" }} class="animate-pulse rounded-xl bg-[var(--color-paper-2)]" />}>
+          <HeroCardsPanel loc={loc()} doy={s.doy()} />
+        </Suspense>
+      </section>
+
       <section class="sec-p" style={{ "padding-bottom": "60px" }}>
         <div class="sec-h" style={{ "padding-inline": "0", "padding-top": "24px" }}>
           Sezonski pregled
