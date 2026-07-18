@@ -329,3 +329,63 @@ resources:
     - name: trend_json
       type: string
       title: NB-GLM trend (days_per_decade, p_value, x_line/y_line, CI/PI) or {}
+- name: spei
+  type: table
+  path: data/climate-si.spei.csv
+  title: National seasonal drought index (SPEI) heatmap per year × season
+  scheme: file
+  format: csv
+  mediatype: text/csv
+  encoding: utf-8
+  schema:
+    fields:
+    - name: x
+      type: integer
+      title: Season index (0=Winter…3=Autumn)
+    - name: y
+      type: integer
+      title: Year
+    - name: spei
+      type: number
+      title: SPEI value
+    - name: balance
+      type: number
+      title: Seasonal water balance (precip − ET0)
+      unit: mm
+    - name: cat
+      type: string
+      title: Category (extreme_dry…extreme_wet)
+    - name: rank
+      type: integer
+    - name: total
+      type: integer
+    - name: color
+      type: string
+    - name: season
+      type: string
+    - name: n_days
+      type: integer
+- name: spei_station
+  type: table
+  path: data/climate-si.spei_station.csv
+  title: Per-station SPEI-3 (seasonal) & SPEI-30 (monthly) series + Theil-Sen trend
+  scheme: file
+  format: csv
+  mediatype: text/csv
+  encoding: utf-8
+  schema:
+    fields:
+    - name: era5_name
+      type: string
+    - name: station_id
+      type: number
+    - name: series
+      type: string
+      title: Winter/Spring/Summer/Autumn/Annual or Jan…Dec
+    - name: years_json
+      type: string
+    - name: spei_json
+      type: string
+    - name: trend_json
+      type: string
+      title: Theil-Sen slope_per_decade, p_value, mk_trend, intercept

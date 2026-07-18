@@ -22,6 +22,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import pymannkendall as mk_test
+from scipy import stats
 from scipy.stats import gaussian_kde, theilslopes
 import statsmodels.api as sm
 import sqlite3
@@ -284,12 +285,16 @@ VARIABLES = {
     "temperature_mean": "temperature_mean_corr",
     "temperature_max":  "temperature_max_corr",
     "temperature_min":  "temperature_min_corr",
+    "precipitation_sum":        "precipitation_sum",
+    "et0_evapotranspiration":   "et0_evapotranspiration",
 }
+# Precip/ET0 accumulate over the window (sum); temperatures average (mean).
+SUM_VARIABLES = {"precipitation_sum", "et0_evapotranspiration"}
 
 def _annual_trend_row(era5_name: str, station_id, loc_data: pd.DataFrame,
                       month: int, day: int, variable: str, col: str) -> dict | None:
     w       = window_filter(loc_data, month, day, TREND_WINDOW)
-    agg_fn  = "mean"
+    agg_fn  = "sum" if variable in SUM_VARIABLES else "mean"
     annual  = (
         w.groupby("_window_year")[col].agg(agg_fn).dropna()
          .loc[lambda s: s.index >= TREND_START_YEAR]
@@ -581,6 +586,171 @@ def build_tropical(data: pd.DataFrame, stations_df: pd.DataFrame) -> pd.DataFram
     return pd.DataFrame(rows)
 
 
+# ── 8. SPEI drought index (national heatmap + per-station seasonal/monthly) ────
+# Standardised Precipitation-Evapotranspiration Index: seasonal/monthly water
+# balance (precip − ET0), fitted to a log-logistic distribution over the
+# 1950–1980 baseline and mapped to a normal deviate. Ported from the sidecar.
+
+def _spei_cat(spei):
+    if   spei < -1.5: return "extreme_dry"
+    elif spei < -1.0: return "dry"
+    elif spei <  1.0: return "normal"
+    elif spei <  1.5: return "wet"
+    else:             return "extreme_wet"
+
+def _spei_color(spei):
+    return {"extreme_dry": "#8b3a0f", "dry": "#c2713a", "normal": "#e7e0d0",
+            "wet": "#4a80b0", "extreme_wet": "#1e4d78"}[_spei_cat(spei)]
+
+def _spei_from_balances(all_vals, baseline_vals):
+    """SPEI for all_vals, log-logistic fitted on baseline_vals (>=5 else all)."""
+    b_vals = baseline_vals if len(baseline_vals) >= 5 else all_vals
+    b_vals = np.asarray(b_vals, dtype=float)
+    gamma_shift = float(b_vals.min()) - 1e-6
+    try:
+        c_par, _, scale_par = stats.fisk.fit(b_vals - gamma_shift, floc=0)
+    except Exception:
+        c_par, scale_par = 1.0, max(float((b_vals - gamma_shift).mean()), 1e-6)
+    out = []
+    for bal in all_vals:
+        sv = max(float(bal) - gamma_shift, 1e-9)
+        p  = float(np.clip(stats.fisk.cdf(sv, c_par, loc=0, scale=scale_par), 1e-6, 1 - 1e-6))
+        out.append(float(np.clip(stats.norm.ppf(p), -3.0, 3.0)))
+    return out
+
+def _spei_trend(spei_vals, years):
+    if len(spei_vals) < 10:
+        return {}
+    try:
+        ts     = theilslopes(spei_vals, years)
+        mk_res = mk_test.original_test(np.array(spei_vals))
+        return {"slope_per_decade": round(float(ts.slope) * 10, 3),
+                "p_value": round(float(mk_res.p), 3), "mk_trend": mk_res.trend,
+                "intercept": round(float(ts.intercept), 3)}
+    except Exception:
+        return {}
+
+def build_spei_heatmap(data: pd.DataFrame) -> pd.DataFrame:
+    last_era5 = data["date"].max()
+    daily_p   = data.groupby("date")["precipitation_sum"].mean()
+    daily_et0 = data.groupby("date")["et0_evapotranspiration"].mean()
+    daily_bal = (daily_p - daily_et0).reset_index()
+    daily_bal.columns = ["date", "balance"]
+    daily_bal["year"]  = daily_bal["date"].dt.year
+    daily_bal["month"] = daily_bal["date"].dt.month
+    year_min = int(daily_bal["year"].min()); year_max = int(daily_bal["year"].max())
+
+    SEASONS = [("Winter", 0, None, 2,  lambda y: pd.Timestamp(y, 2, 29 if _is_leap(y) else 28)),
+               ("Spring", 1, 3,    5,  lambda y: pd.Timestamp(y, 5, 31)),
+               ("Summer", 2, 6,    8,  lambda y: pd.Timestamp(y, 8, 31)),
+               ("Autumn", 3, 9,    11, lambda y: pd.Timestamp(y, 11, 30))]
+    records = []
+    for yr in range(year_min, year_max + 1):
+        for s_name, s_xi, s_start, s_end_m, end_fn in SEASONS:
+            if end_fn(yr) > last_era5:
+                continue
+            if s_name == "Winter":
+                chunk = daily_bal[((daily_bal["year"] == yr - 1) & (daily_bal["month"] == 12)) |
+                                  ((daily_bal["year"] == yr) & (daily_bal["month"].isin([1, 2])))]
+            else:
+                chunk = daily_bal[(daily_bal["year"] == yr) & (daily_bal["month"] >= s_start) & (daily_bal["month"] <= s_end_m)]
+            if len(chunk) < 30:
+                continue
+            records.append({"year": yr, "xi": s_xi, "season": s_name,
+                            "balance": round(float(chunk["balance"].sum()), 1), "n_days": len(chunk)})
+    if not records:
+        return pd.DataFrame()
+    rec_df = pd.DataFrame(records)
+
+    rows = []
+    for xi in range(4):
+        sub = rec_df[rec_df["xi"] == xi].copy()
+        if sub.empty:
+            continue
+        all_vals = sub["balance"].values
+        n_total  = len(all_vals)
+        b_sub    = sub[(sub["year"] >= BASELINE_START) & (sub["year"] <= BASELINE_END)]
+        speis    = _spei_from_balances(all_vals, b_sub["balance"].values)
+        sorted_asc = np.sort(all_vals)
+        for (_, row), spei_val in zip(sub.iterrows(), speis):
+            rank = int(np.searchsorted(sorted_asc, row["balance"])) + 1
+            rows.append({"x": int(row["xi"]), "y": int(row["year"]),
+                         "spei": round(spei_val, 2), "balance": row["balance"],
+                         "cat": _spei_cat(spei_val), "rank": rank, "total": n_total,
+                         "color": _spei_color(spei_val), "season": row["season"],
+                         "n_days": int(row["n_days"])})
+    return pd.DataFrame(rows)
+
+def build_spei_station(data: pd.DataFrame, stations_df: pd.DataFrame) -> pd.DataFrame:
+    sid_map = dict(zip(stations_df["era5_name"], stations_df["station_id"]))
+    last_era5 = data["date"].max()
+    year_min = int(data["year"].min()); year_max = int(data["year"].max())
+    SEASONS = [("Winter", None, 2,  lambda y: pd.Timestamp(y, 2, 29 if _is_leap(y) else 28)),
+               ("Spring", 3,    5,  lambda y: pd.Timestamp(y, 5, 31)),
+               ("Summer", 6,    8,  lambda y: pd.Timestamp(y, 8, 31)),
+               ("Autumn", 9,    11, lambda y: pd.Timestamp(y, 11, 30))]
+    MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+
+    out_rows = []
+    for station, sd in data.groupby("location"):
+        sd = sd.copy()
+        sd["balance"] = sd["precipitation_sum"] - sd["et0_evapotranspiration"]
+        series = {}
+        # SPEI-3 seasonal
+        for s_name, s_start, s_end_m, end_fn in SEASONS:
+            recs = []
+            for yr in range(year_min, year_max + 1):
+                if end_fn(yr) > last_era5:
+                    continue
+                if s_name == "Winter":
+                    chunk = sd[((sd["year"] == yr - 1) & (sd["month"] == 12)) | ((sd["year"] == yr) & (sd["month"].isin([1, 2])))]
+                else:
+                    chunk = sd[(sd["year"] == yr) & (sd["month"] >= s_start) & (sd["month"] <= s_end_m)]
+                if len(chunk) < 30:
+                    continue
+                recs.append({"year": yr, "balance": float(chunk["balance"].sum())})
+            if len(recs) < 10:
+                continue
+            rd = pd.DataFrame(recs)
+            b  = rd[(rd["year"] >= BASELINE_START) & (rd["year"] <= BASELINE_END)]
+            speis = [round(v, 2) for v in _spei_from_balances(rd["balance"].values, b["balance"].values)]
+            years = [int(y) for y in rd["year"].tolist()]
+            series[s_name] = {"years": years, "spei": speis, "trend": _spei_trend(speis, years)}
+        # Annual = mean of seasonal SPEI per year
+        by_year = {}
+        for s in series.values():
+            for yr, sp in zip(s["years"], s["spei"]):
+                by_year.setdefault(yr, []).append(sp)
+        ann_years = sorted(yr for yr, v in by_year.items() if len(v) >= 2)
+        ann_spei  = [round(float(np.mean(by_year[yr])), 2) for yr in ann_years]
+        series["Annual"] = {"years": ann_years, "spei": ann_spei, "trend": _spei_trend(ann_spei, ann_years)}
+        # SPEI-30 monthly
+        for m_idx, m_name in enumerate(MONTHS, start=1):
+            recs = []
+            for yr in range(year_min, year_max + 1):
+                m_end = pd.Timestamp(yr, 12, 31) if m_idx == 12 else pd.Timestamp(yr, m_idx + 1, 1) - pd.Timedelta(days=1)
+                if m_end > last_era5:
+                    continue
+                chunk = sd[(sd["year"] == yr) & (sd["month"] == m_idx)]
+                if len(chunk) < 20:
+                    continue
+                recs.append({"year": yr, "balance": float(chunk["balance"].sum())})
+            if len(recs) < 10:
+                continue
+            rd = pd.DataFrame(recs)
+            b  = rd[(rd["year"] >= BASELINE_START) & (rd["year"] <= BASELINE_END)]
+            speis = [round(v, 2) for v in _spei_from_balances(rd["balance"].values, b["balance"].values)]
+            years = [int(y) for y in rd["year"].tolist()]
+            series[m_name] = {"years": years, "spei": speis, "trend": _spei_trend(speis, years)}
+
+        for skey, s in series.items():
+            out_rows.append({"era5_name": station, "station_id": sid_map.get(station),
+                             "series": skey, "years_json": json.dumps(s["years"]),
+                             "spei_json": json.dumps(s["spei"]), "trend_json": json.dumps(s["trend"])})
+        print(f"  spei_station: done {station}", flush=True)
+    return pd.DataFrame(out_rows)
+
+
 def main():
     print(f"Writing to {DB_PATH}")
 
@@ -624,10 +794,20 @@ def main():
     sh_df.to_sql("season_heatmap", conn, if_exists="replace", index=False)
     print(f"  wrote {len(sh_df):,} rows → season_heatmap")
 
-    print("\n[7/7] Computing tropical (days/nights × threshold × streak, NB GLM)…")
+    print("\n[7/9] Computing tropical (days/nights × threshold × streak, NB GLM)…")
     tr_df = build_tropical(data, stations_df)
     tr_df.to_sql("tropical", conn, if_exists="replace", index=False)
     print(f"  wrote {len(tr_df):,} rows → tropical")
+
+    print("\n[8/9] Computing spei (national seasonal drought heatmap)…")
+    spei_df = build_spei_heatmap(data)
+    spei_df.to_sql("spei", conn, if_exists="replace", index=False)
+    print(f"  wrote {len(spei_df):,} rows → spei")
+
+    print("\n[9/9] Computing spei_station (per-station SPEI-3/SPEI-30 trends)…")
+    ss_df = build_spei_station(data, stations_df)
+    ss_df.to_sql("spei_station", conn, if_exists="replace", index=False)
+    print(f"  wrote {len(ss_df):,} rows → spei_station")
 
     # Create indexes for common query patterns
     print("\nCreating indexes…")
@@ -639,6 +819,8 @@ def main():
     cur.execute("CREATE INDEX IF NOT EXISTS idx_at_station_md ON annual_trend(era5_name, variable, month, day)")
     cur.execute("CREATE INDEX IF NOT EXISTS idx_sh_station ON season_heatmap(era5_name, y)")
     cur.execute("CREATE INDEX IF NOT EXISTS idx_trop ON tropical(era5_name, kind, threshold, streak)")
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_spei_xy ON spei(x, y)")
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_spei_station ON spei_station(era5_name, series)")
     conn.commit()
     conn.close()
 
