@@ -23,6 +23,7 @@ import numpy as np
 import pandas as pd
 import pymannkendall as mk_test
 from scipy.stats import gaussian_kde, theilslopes
+import statsmodels.api as sm
 import sqlite3
 import yaml
 
@@ -468,6 +469,118 @@ def build_season_heatmap(data: pd.DataFrame, stations_df: pd.DataFrame) -> pd.Da
 
 # ── Main ───────────────────────────────────────────────────────────────────────
 
+# ── 7. tropical table (days/nights per station × threshold × streak) ──────────
+# Ports the sidecar's _compute_tropical: elevation-corrected counts/year with a
+# consecutive-run filter + a Negative-Binomial GLM trend. Precomputed over a grid
+# so the UI's threshold/min-run sliders read straight from the datasette.
+
+TROPICAL_GRID = {
+    # kind: (corrected column, thresholds, streaks)
+    "days":   ("temperature_max_corr", list(range(25, 36)), [1, 2, 3]),
+    "nights": ("temperature_min_corr", list(range(15, 26)), [1, 2, 3]),
+}
+
+def _streak_filter(arr: np.ndarray, streak: int) -> np.ndarray:
+    """Zero out True runs shorter than `streak` consecutive qualifying days."""
+    out = arr.copy()
+    n, i = len(arr), 0
+    while i < n:
+        if arr[i]:
+            j = i
+            while j < n and arr[j]:
+                j += 1
+            if j - i < streak:
+                out[i:j] = False
+            i = j
+        else:
+            i += 1
+    return out
+
+def _tropical_trend(fit_years, fit_counts, years) -> dict:
+    nonzero = sum(1 for c in fit_counts if c > 0)
+    if len(fit_years) < 10 or nonzero < 10:
+        return {}
+    try:
+        years_arr = np.array(fit_years, dtype=float)
+        year_mean = float(years_arr[0])
+        X_c    = sm.add_constant(years_arr - year_mean)
+        fitted = sm.NegativeBinomial(fit_counts, X_c).fit(disp=False, maxiter=200)
+
+        x_dense = np.linspace(years[0], years[-1], len(years))
+        X_dense = sm.add_constant(x_dense - year_mean)
+        pred_df = fitted.get_prediction(X_dense).summary_frame(alpha=0.05)
+
+        mid_year = float(np.median(fit_years))
+        mid_mu   = float(np.exp(fitted.params[0] + fitted.params[1] * (mid_year - year_mean)))
+        dpd      = round(mid_mu * (float(np.exp(fitted.params[1] * 10)) - 1), 1)
+        alpha_v  = round(float(fitted.params[-1]), 3)
+
+        mu_dense = pred_df["predicted"].values
+        se_pred  = np.sqrt(mu_dense + mu_dense ** 2 * alpha_v)
+        pi_low   = np.maximum(0.0, mu_dense - 1.96 * se_pred)
+        pi_high  = mu_dense + 1.96 * se_pred
+
+        trend = {
+            "model_used":      "nb",
+            "rate_per_year":   round(max(-50.0, min(50.0, float(np.exp(fitted.params[1]) - 1) * 100)), 2),
+            "days_per_decade": dpd,
+            "p_value":         round(max(0.0001, min(0.9999, float(fitted.pvalues[1]))), 3),
+            "alpha":           alpha_v,
+            "aic":             round(float(fitted.aic), 1),
+            "fit_year_max":    int(fit_years[-1]),
+            "x_line":          [round(float(x), 2) for x in x_dense],
+            "y_line":          pred_df["predicted"].round(2).tolist(),
+            "ci_low":          pred_df["ci_lower"].round(2).tolist(),
+            "ci_high":         pred_df["ci_upper"].round(2).tolist(),
+            "pi_low":          pi_low.round(2).tolist(),
+            "pi_high":         pi_high.round(2).tolist(),
+        }
+        yl, cl, ch = trend["y_line"], trend["ci_low"], trend["ci_high"]
+        if not (all(np.isfinite(v) and v >= 0 for v in yl)
+                and all(np.isfinite(v) for v in cl) and all(np.isfinite(v) for v in ch)
+                and all(cl[i] <= ch[i] for i in range(len(cl)))):
+            return {}
+        return trend
+    except Exception as e:
+        print(f"  tropical NB fit failed ({e})", file=sys.stderr)
+        return {}
+
+def build_tropical(data: pd.DataFrame, stations_df: pd.DataFrame) -> pd.DataFrame:
+    sid_map = dict(zip(stations_df["era5_name"], stations_df["station_id"]))
+    max_year = int(data["year"].max())
+    rows = []
+    for era5_name, loc in data.groupby("location"):
+        loc = loc.sort_values("date")
+        yr_lo, yr_hi = int(loc["year"].min()), int(loc["year"].max())
+        full_years = list(range(yr_lo, yr_hi + 1))
+        for kind, (col, thresholds, streaks) in TROPICAL_GRID.items():
+            vals = loc[col].to_numpy()
+            yrs  = loc["year"].to_numpy()
+            for threshold in thresholds:
+                base_qual = vals > threshold
+                for streak in streaks:
+                    qual = _streak_filter(base_qual, streak) if streak > 1 else base_qual
+                    ann = (pd.Series(qual).groupby(yrs).sum()
+                           .reindex(full_years, fill_value=0))
+                    years  = [int(y) for y in ann.index]
+                    counts = [int(v) for v in ann.values]
+                    fit    = [(y, c) for y, c in zip(years, counts) if y != max_year]
+                    trend  = _tropical_trend([y for y, _ in fit], [c for _, c in fit], years)
+                    rows.append({
+                        "era5_name":     era5_name,
+                        "station_id":    sid_map.get(era5_name),
+                        "kind":          kind,
+                        "threshold":     threshold,
+                        "streak":        streak,
+                        "years_json":    json.dumps(years),
+                        "counts_json":   json.dumps(counts),
+                        "nonzero_count": sum(1 for c in counts if c > 0),
+                        "trend_json":    json.dumps(trend),
+                    })
+        print(f"  tropical: done {era5_name}", flush=True)
+    return pd.DataFrame(rows)
+
+
 def main():
     print(f"Writing to {DB_PATH}")
 
@@ -506,10 +619,15 @@ def main():
     at_df.to_sql("annual_trend", conn, if_exists="replace", index=False)
     print(f"  wrote {len(at_df):,} rows → annual_trend")
 
-    print("\n[6/6] Computing season_heatmap (per station × year × season)…")
+    print("\n[6/7] Computing season_heatmap (per station × year × season)…")
     sh_df = build_season_heatmap(data, stations_df)
     sh_df.to_sql("season_heatmap", conn, if_exists="replace", index=False)
     print(f"  wrote {len(sh_df):,} rows → season_heatmap")
+
+    print("\n[7/7] Computing tropical (days/nights × threshold × streak, NB GLM)…")
+    tr_df = build_tropical(data, stations_df)
+    tr_df.to_sql("tropical", conn, if_exists="replace", index=False)
+    print(f"  wrote {len(tr_df):,} rows → tropical")
 
     # Create indexes for common query patterns
     print("\nCreating indexes…")
@@ -520,6 +638,7 @@ def main():
     cur.execute("CREATE INDEX IF NOT EXISTS idx_dw_station_md ON daily_window(era5_name, month, day)")
     cur.execute("CREATE INDEX IF NOT EXISTS idx_at_station_md ON annual_trend(era5_name, variable, month, day)")
     cur.execute("CREATE INDEX IF NOT EXISTS idx_sh_station ON season_heatmap(era5_name, y)")
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_trop ON tropical(era5_name, kind, threshold, streak)")
     conn.commit()
     conn.close()
 

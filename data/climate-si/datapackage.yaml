@@ -291,3 +291,41 @@ resources:
       type: integer
       title: ERA5 grid elevation
       unit: m
+- name: tropical
+  type: table
+  path: data/climate-si.tropical.csv
+  title: Tropical days/nights per station × threshold × streak (counts + NB GLM trend)
+  scheme: file
+  format: csv
+  mediatype: text/csv
+  encoding: utf-8
+  schema:
+    fields:
+    - name: era5_name
+      type: string
+      title: ERA5 station name
+    - name: station_id
+      type: number
+      title: Vremenar/ARSO station id
+    - name: kind
+      type: string
+      title: days (Tmax>threshold) or nights (Tmin>threshold)
+    - name: threshold
+      type: integer
+      title: Temperature threshold
+      unit: °C
+    - name: streak
+      type: integer
+      title: Minimum consecutive qualifying days
+    - name: years_json
+      type: string
+      title: JSON array of years
+    - name: counts_json
+      type: string
+      title: JSON array of qualifying-day counts per year
+    - name: nonzero_count
+      type: integer
+      title: Number of years with count > 0
+    - name: trend_json
+      type: string
+      title: NB-GLM trend (days_per_decade, p_value, x_line/y_line, CI/PI) or {}
