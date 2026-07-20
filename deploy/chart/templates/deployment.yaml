@@ -13,13 +13,26 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: website
+      annotations:
+        # Previews reuse the mutable pr-<n> image tag, so a freshly-built image
+        # under the same tag does NOT change the rendered Deployment and ArgoCD
+        # won't restart the pod. Bump this value to force a rollout that re-pulls
+        # the tag (imagePullPolicy: Always picks up the new digest).
+        podnebnik.org/rollout-revision: "9"
     spec:
       containers:
         - name: website
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          # Preview envs reuse the mutable pr-<n> tag; Always ensures a recreated
+          # pod pulls the freshly-built image instead of the node's cached copy.
+          imagePullPolicy: Always
           ports:
             - name: http
               containerPort: 80
+          env:
+            # nginx proxies /api/live/* here (Service in the same namespace)
+            - name: ERA5_API_HOST
+              value: era5-api
           {{- with .Values.existingSecret }}
           envFrom:
             - secretRef:

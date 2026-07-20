@@ -1,0 +1,476 @@
+{
+  "meta": {
+    "lang": "sl",
+    "style": "default",
+    "label": "Slovenščina",
+    "country_name": "Slovenija"
+  },
+  "ui": {
+    "heading_today": "Slovenija danes",
+    "title_today": "Ali je vroče v Sloveniji?",
+    "subtitle_today": "v primerjavi s tem datumom zgodovinsko",
+    "today_location_short": "Slovenija",
+    "today_location_label": "Lokacija",
+    "heading_location": "Podrobnosti lokacije",
+    "heading_controls": "Nastavitve",
+    "heading_controls_sub": "(rdeča = slabo, modra = dobro)",
+    "heading_charts": "Grafikoni",
+    "heading_about": "O nas",
+    "label_effects": "Nekateri učinki podnebnih sprememb",
+    "map_falling": "pada",
+    "map_rising": "narašča"
+  },
+  "today": {
+    "explain1": "Današnji vrh je najvišja napovedana temperatura na vseh 18 postajah, razvrščena glede na zapise ERA5-Land od leta {year_min} za isto ±7-dnevno okno.",
+    "explain1_location": "Današnja temperatura na postaji {location}, razvrščena glede na zapise ERA5-Land od leta {year_min} za isto ±7-dnevno okno.",
+    "last7_title": "Zadnjih 7 dni",
+    "percentile_label": ". percentil",
+    "percentile_samples": "{samples} vzorcev",
+    "rank_badge_hot": "#{rank} najtoplejši {d}",
+    "rank_badge_cold": "#{rank} najhladnejši {d}",
+    "rank_top5_title_hot": "Najtoplejši {d} v zapisih",
+    "rank_top5_title_cold": "Najhladnejši {d} v zapisih",
+    "rank_top5_today_tag": "danes",
+    "climate_context": "Slovenija leži na stičišču štirih podnebnih con — alpske, sredozemske, celinsko in panonske — stisnjenih v eno izmed podnebno najbolj raznolikih držav v Evropi. Srednja Evropa se segreva približno 1,5-krat hitreje od svetovnega povprečja [ref:copernicus_esotc_2025]. Temperature so v zadnjih 70 letih narasle za skoraj 2 °C. Pomlad v Alpah prihaja vse prej, sredozemske suše segajo vse globlje v notranjost, severovzhodni panonski del pa se sooča z vedno hujšimi vročinskimi vali. Kar je bilo leta 1980 tipično poletje, danes sodi med hladnejšo polovico nedavnih desetletij.",
+    "chart_title": "Dnevne najvišje temperature v Sloveniji za dve tedni okoli {day_label} od {year_min}",
+    "trend_title": "Najvišje temperature v Sloveniji okoli {day_label} · {year_min}–{year_max} · trend s projekcijo do 2050",
+    "explain2": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče — tako da na prvi pogled vidite, kje se uvršča današnja temperatura.",
+    "explain3": "Vsaka pika je 90. percentil nacionalne povprečne dnevne najvišje temperature vseh postaj v ±30-dnevnem oknu okoli tega datuma za vsako leto od {year_min}. Trend Theil-Sen je {trend} °C/desetletje ({sig}). Po tem tempu projekcija kaže {proj2050} °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib. Opomba: ta grafikon uporablja nacionalno povprečje vseh postaj; kartica 'Ali je vroče?' zgoraj pa uporablja nacionalni vrh (posamezna najtoplejša postaja) — obe sta veljavni, a merita različne stvari.",
+    "foot": "{temp} °C · {pct}. percentil · {samples} vzorcev ({year_min}–{year_max})",
+    "foot2": "Danes: {temp} °C · {pct}. percentil · mediana {median} °C · {samples} opazovanj · {year_min}–{year_max}",
+    "today_label": "DANES",
+    "zone_cold": "Hladno",
+    "zone_cool": "Sveže",
+    "zone_normal": "Normalno",
+    "zone_hot": "Vroče",
+    "zone_extreme": "Ekstremno",
+    "trend_foot": "Theil-Sen + TFPW MK: {trend} °C/desetletje · {sig} · τ = {tau} · 95% CI · {n_years} let"
+  },
+  "categories": {
+    "freezing": {
+      "name": "Zmrzujoče",
+      "desc": "Med najhladnejšimi {d} v naših {record_years} letih zapisov."
+    },
+    "cold": {
+      "name": "Hladno",
+      "desc": "Hladneje od večine izmerjenih {d}."
+    },
+    "nope": {
+      "name": "Normalno",
+      "desc": "Točno takšno, kot {d} v {country} ponavadi je."
+    },
+    "hot": {
+      "name": "Vroče",
+      "desc": "Med najtoplejšimi {d} v naših zapisih."
+    },
+    "hell": {
+      "name": "Peklensko",
+      "desc": "Izjemna vročina — vrh 5 % vseh {d} od {year_min}."
+    }
+  },
+  "charts": {
+    "under_mean": "Pod povprečjem",
+    "over_mean": "Nad povprečjem",
+    "trend_line": "Trendna linija",
+    "ci95": "95% CI",
+    "change_record": "sprememba v celotnem obdobju",
+    "cal_cooling": "Ohlajanje",
+    "cal_warming": "Segrevanje",
+    "cal_decreasing": "Zmanjševanje",
+    "cal_increasing": "Povečevanje"
+  },
+  "locations": {},
+  "month_names_short": [
+    "jan.",
+    "feb.",
+    "mar.",
+    "apr.",
+    "maj",
+    "jun.",
+    "jul.",
+    "avg.",
+    "sep.",
+    "okt.",
+    "nov.",
+    "dec."
+  ],
+  "hero": {
+    "verdict_warming": "Sto let segrevanja za <em>{sign}{t100} {unit}</em> – pri trenutnem tempu vsaka <em>{yrs} let</em> doda eno stopinjo.",
+    "verdict_cooling": "Sto let ohlajanja za <em>{sign}{t100} {unit}</em> – pri trenutnem tempu vsaka <em>{yrs} let</em> odšteje eno stopinjo.",
+    "verdict_none": "Na ta dan v letu ni zaznati trenda.",
+    "method_theilsen": "Theil-Sen + TFPW Mann-Kendall",
+    "method_ols": "Metoda navadnih najmanjših kvadratov (OLS)",
+    "explain_reg": "Vsaka pika je vrednost za eno leto; naraščajoča linija je Theil-Senov trend — odporen na odmike. Zasenčeni pas je 95% interval zaupanja. Opazite, kako se gruča pik skozi desetletja premika navzgor: kar velja za normalno leto za to lokacijo, se nenehno na novo definira. Trend, ki se zdi skromen v °C na desetletje, se do sredine stoletja prevede v temeljito drugačno izhodišče — toplejše pomladi, vročejša poletja in krajše hladne sezone, kot jih opisuje kateri koli zgodovinski zapis.",
+    "explain_cal": "Vsaka palica prikazuje trend segrevanja ali ohlajanja za tisti teden v letu, v °C na desetletje. Oranžna pomeni segrevanje, modra ohlajanje. Vzorec čez vse leto pokaže, katere sezone se spreminjajo najhitreje — v Sloveniji so poletne palice tipično najvišje na celinskem severovzhodu, medtem ko je pomladansko segrevanje najbolj izrazito na alpskih postajah. Kalendar, ki ga v vseh sezonah prevladuje oranžna, kaže celoletno segrevanje: krajše zime, zgodnejše pomladi in daljše suše."
+  },
+  "hero_category": {
+    "baseline": "Izhodiščno",
+    "moderate": "Zmerno",
+    "bad": "Slabo",
+    "extreme": "Ekstremno",
+    "catastrophic": "Katastrofalno"
+  },
+  "hero_context": {
+    "Ljubljana": {
+      "baseline": "Glavno mesto v Ljubljanski kotlini, ki jo obkrožajo hribi in pozimi pastuje hladen zrak. Celinsko podnebje s toplimi poletji in hladnimi zimami, okrepljeno z mestnim toplotnim otokom.",
+      "moderate": "Segrevanje skrajšuje zimsko megleno sezono, a povečuje poletni toplotni stres. Mestno tkivo zadržuje toploto, ponoči postaja vse toplejše po vsej metropolitanski regiji.",
+      "bad": "Vročinski valovi presegajo 35 °C več zaporednih dni. Smrtnost starejših narašča. Kotlinska lega kopiči toploto; poraba klimatskih naprav se poveča in preobremeni omrežje.",
+      "extreme": "Podaljšane vročinske izredne razmere postanejo letni pojav. Reka Ljubljanica poleti splahni, kar ogroža vodooskrbo. Mestna zelenjava trpi pod hudim sušnim stresom.",
+      "catastrophic": "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino."
+    },
+    "Maribor": {
+      "baseline": "Drugo največje mesto, dolina reke Drave, severovzhodna Slovenija. Celinsko podnebje z vročimi poletji. Pomembna vinorodna regija — segrevanje že pomika datume trgatve naprej.",
+      "moderate": "Podaljšana rastna sezona kratkoročno koristi vinu, a naraščajoč sušni stres in tveganje poznih zmrzali po zgodnji brstovitvi začenjata ogrožati pridelke.",
+      "bad": "Datumi trgatve se premaknejo 3–4 tedne naprej. Tradicionalne štajerske sorte trpijo pod vročinskim stresom. Fitosanitarni problemi se bistveno okrepijo.",
+      "extreme": "Tradicionalne štajerske vinogradniške sorte postanejo ekonomsko neobstojne. Povpraševanje po namakanju iz Drave se spopada z ekološkimi zahtevami pretoka.",
+      "catastrophic": "Ponavljajoča se huda sušna leta sesedejo štajersko vinsko gospodarstvo. Ekstremno nizki vodostaji Drave ogrožajo vodooskrbo doline in obrečne ekosisteme."
+    },
+    "Celje": {
+      "baseline": "Dolina reke Savinje, zgodovinsko podvržena hudim poplavam. Celinsko podnebje. Zaprta dolina ustvarja temperaturne inverzije in zmrzalne žepe pozimi.",
+      "moderate": "Segrevanje zmanjšuje zmrzalne dni, a krepi konvektivne padavine, ki sprožajo poplave Savinje, po katerih je mesto že znano.",
+      "bad": "Dogodki, ki so bili prej stletni poplavni viški, se ponavljajo v desetletjih. Protipoplavna infrastruktura, zgrajena za zgodovinske povratne dobe, je sistematično prekoračena.",
+      "extreme": "Kombinirani poletni sušni in zimski poplavni ekstremi hkrati destabilizirajo kmetijstvo in infrastrukturo v dolini Savinje.",
+      "catastrophic": "Pogostejši ekstremni poplavni dogodki preplavljajo staro protipoplavno infrastrukturo. Izmenjava suša–poplava destabilizira kmetijsko savinjsko ravnino."
+    },
+    "Kranj": {
+      "baseline": "Ob vznožju Kamniško-Savinjskih Alp, dolina reke Save, 387 m. Alpski vpliv ohranja razmeroma hladna poletja. Vhod v Triglavski narodni park.",
+      "moderate": "Upadanje alpske snežne odeje zmanjšuje poletni pretok Save, kar vpliva na vodooskrbo za odvodne uporabnike, vključno z Ljubljano.",
+      "bad": "Poletni nizki vodostaji Save postanejo hudi. Hidroelektrična proizvodnja na savski verigi elektrarn v sušnih letih občutno pade.",
+      "extreme": "Umikanje ledenikov v Kamniško-Savinjskih Alpah se pospeši. Kamenje iz destabilizirajočih se pobočij ogroža infrastrukturo v dolini.",
+      "catastrophic": "Izguba zanesljive poletne savenice, ki jo napaja snežna odeja, ogroža hidroelektrično hrbtenico slovenskega elektroenergetskega sistema."
+    },
+    "Koper": {
+      "baseline": "Edino slovensko morsko pristanišče, Jadransko morje, 10 m nadmorske višine. Sredozemsko podnebje: mile zime, suha poletja, burjni vetrovi. Temperatura morske gladine neposredno vpliva na lokalne razmere.",
+      "moderate": "Segrevanje morske gladine podaljšuje kopalno sezono. Tveganje suše se poleti povečuje z naraščajočim sredozemskim sušnim signalom.",
+      "bad": "Vdor slane vode v obalne vodonosnike se krepi. Mediteranske invazivne vrste se ustanavljajo v slovenskih obalnih vodah.",
+      "extreme": "Pogostost in resnost neviht s sodro narašča. Obalno kmetijsko zemljišče se sooča s slanostjo od morskih razpršilcev in vdorov podzemne vode.",
+      "catastrophic": "Dvig gladine Jadranskega morja ogroža pristaniško infrastrukturo in obalno kmetijstvo. Ekstremni burjni dogodki se krepijo z naraščajočimi temperaturnimi gradienti med morjem in kopnim."
+    },
+    "Novo_Mesto": {
+      "baseline": "Dolina reke Krke, jugovzhodna Slovenija, 220 m. Celinsko s ponekod panonskim vplivom. Pomembna regija za sadje — jabolka, hruške in hmelj.",
+      "moderate": "Segrevanje podaljšuje brezzmrzalno rastno sezono, a povečuje poletni sušni stres na povodju reke Krke.",
+      "bad": "Osnovni pretok reke Krke poleti občutno upade. Pridelava hmelja — glavne regionalne kulture — se sooča z vročinskim in sušnim stresom, ki zahteva drago namakanje.",
+      "extreme": "Večletne suše izčrpavajo reko Krko in podzemno vodo. Sadjarstvo in hmeljarstvo zahtevata temeljito prestrukturiranje z drago novo namakalvo infrastrukturo.",
+      "catastrophic": "Ponavljajoča se sušna leta izčrpavajo osnovni pretok reke Krke. Hmeljarsko in sadjarsko gospodarstvo Dolenjske se sooča s temeljitim prestrukturiranjem."
+    },
+    "Murska_Sobota": {
+      "baseline": "Severovzhodna panonska ravnina, 189 m. Najbolj celinsko postaja v Sloveniji — najtoplejša poletja, najhladnejše zime, najmanj padavin. Intenzivno kmetijstvo: koruza, sončnice, pšenica.",
+      "moderate": "Že najbolj sušno izpostavljena regija v Sloveniji. Dni z vročinskim stresom nad 35 °C naraščajo najhitreje ravno tukaj. Primanjkljaj kmetijske vode je že občuten.",
+      "bad": "Pridelki koruze in sončnic v sušnih letih padejo za 20–30 %. Poletni ekstremi nad 38 °C postanejo redni. Kmetijsko odvzemanje podzemne vode pospeši njeno izčrpavanje.",
+      "extreme": "Večletna sušna zaporedja sesedejo tradicionalno kmetijstvo brez namakanja. Povpraševanje po namakanju preseže trajnostni donos reke Mure.",
+      "catastrophic": "Panonsko kmetijsko gospodarstvo se sooča s propadom pod trajnimi večletnimi sušami. Izčrpavanje podzemne vode se pospeši, ko povpraševanje po namakanju preseže napajanje."
+    },
+    "Nova_Gorica": {
+      "baseline": "Zahodna Slovenija, spodnja dolina Soče, 94 m. Sredozemsko-alpski prehod. Toplo in sončno z burjnimi vetrovi. Pomembna vinorodna regija — brda in kraška vina.",
+      "moderate": "Segrevanje pospešuje sredozemski trend sušenja. Burjni dogodki se morda okrepijo. Kakovost vin se preoblikuje z naraščanjem rastnih stopinj.",
+      "bad": "Poletna suša naredi tradicionalno kraško vinogradništvo vse bolj odvisno od namakanja. Nizki poletni pretoki Soče ogrožajo ekologijo.",
+      "extreme": "Hladnovodni ribolov Soče — legendarni mramorni postrv — se sooča s toplotnim izumrtjem v spodnjih dosegih, ko poletne temperature presegajo toleranče.",
+      "catastrophic": "Ekstremna poletna suša naredi tradiconalno kraško in brdiško vinogradništvo neobstojno brez namakanja. Nizki pretoki Soče ogrožajo biotsko raznovrstnost in turizem."
+    },
+    "Postojna": {
+      "baseline": "Kraška planota, 549 m. Znana po temperaturnih inverzijah — hladen zrak se kopiči v kraški depresiji in jo naredi za eno najhladnejših točk v južni Sloveniji kljub nadmorski legi.",
+      "moderate": "Segrevanje slabi temperaturne inverzije in zmanjšuje ekstremno hlajenje, ki opredeljuje postojnsko mikroklimo. Temperature v jamskem ekosistemu se začnejo premikati.",
+      "bad": "Notranje jame — stabilne pri 10 °C že tisočletja — začnejo izmerljivo naraščati. Pretok kraških izvirov poleti v sušah upada.",
+      "extreme": "Endemska favna Postojnske jame — človeška ribica (Proteus anguinus) in jamski hrošči, ki ne živijo nikjer drugje na Zemlji — se sooča s toplotnim in hidrološkim stresom.",
+      "catastrophic": "Napajanje kraškega vodonosnika popusti pod podaljšano sušo. Endemska favna Postojnske jame se sooča s toplotnim stresom brez poti pobega."
+    },
+    "Ptuj": {
+      "baseline": "Najstarejše stalno poseljeno mesto v Sloveniji, dolina reke Drave, 228 m. Severovzhodna celinska cona. Vino, hmelj in žitno kmetijstvo.",
+      "moderate": "Dogodki nizkih vodostajev Drave se pogostijo, kar vpliva na hladilno vodo za hidroelektrarno Formin nizvodno.",
+      "bad": "Datumi trgatve se bistveno premaknejo naprej. Kmetijsko povpraševanje po vodi v dravski dolini vse bolj nasprotuje ekološkim zahtevam pretoka.",
+      "extreme": "Ekstremno nizki vodostaji Drave postanejo redni. Hidroelektrarna Formin se v sušnih letih sooča z obveznim omejevanjem.",
+      "catastrophic": "Kombinirani sušni in vročinski ekstremi destabilizirajo kmetijsko gospodarstvo v dravski dolini. Izmenjava poplava–suša večkrat poškoduje infrastrukturo ob reki."
+    },
+    "Velenje": {
+      "baseline": "Šaleška dolina, 405 m, osrednja Slovenija. Zgrajena okoli premogovništva — največji preostali rudnik v Sloveniji. Gorska celinsko mikroklima pod vplivom Šaleških jezer.",
+      "moderate": "Ko premogovništvo upada, podnebni vplivi na posrudarsko pokrajino vključujejo povečano tveganje poplav v posedninskih conah.",
+      "bad": "Šaleška jezera — nastala s posedanjem premogovniških tal — se soočajo z naraščajočim izhlapevanjem in cvetenjem alg ob naraščajočih temperaturah. Upravljanje z vodo postane kompleksno.",
+      "extreme": "Prehod po premogu oteži podnebne ekstreme. Načrtovani prehod na obnovljivo energijo v regiji se sooča s konflikti rabe tal s potrebami po prilagajanju podnebju.",
+      "catastrophic": "Upravljanje z vodo v posedninskih jezerih postane kritično z naraščajočim izhlapevanjem. Posrudarška pokrajina je zelo ranljiva na hidrološke ekstreme."
+    },
+    "Trbovlje": {
+      "baseline": "Zasavje, savska soteska, 230 m. Najožja poseljena dolina v Sloveniji — močno industrializirano premogovniško in cementno mesto. Kotlinska lega ustvarja značilne temperaturne inverzije.",
+      "moderate": "Segrevanje zmanjšuje zimske inverzije, ki trenutno kopičijo onesnaženost zraka, a povečuje poletni toplotni stres v tem zaprtem, gosto pozidanem okolju.",
+      "bad": "Poletni vročinski valovi v soteski so okrepljeni z njeno geometrijo in industrijskimi toplotnimi viri. Dolina ima omejene zelene površine za hlajenje, kar ustvarja resna tveganja za javno zdravje.",
+      "extreme": "Ekstremni padavinski dogodki v savskem povodju nad Trbovljam povečujejo katastrofalno tveganje poplav v soteski. Industrijska dediščinska poslopja so ranljiva.",
+      "catastrophic": "Ekstremni vročinski valovi v soteski so okrepljeni z njeno geometrijo. Tveganje poplav Save narašča z naraščajočimi alpskimi padavinami."
+    },
+    "Tolmin": {
+      "baseline": "Dolina Soče/Isonzo, 194 m. Najtoplejša dolina v Sloveniji kljub celinski alpski legi — topel mediteranski zrak prodira globoko v notranjost skozi koridor Soče. Ekstremni padavinski dogodki (do 400 mm/dan) naredijo to območje najdežnejše v Evropi.",
+      "moderate": "Segrevanje krepi že tako ekstremne padavinske dogodke, ki opredeljujejo zgornje porečje Soče. Izjemna biotska raznovrstnost doline se sooča z naraščajočim toplotnim pritiskom.",
+      "bad": "Poletni pretoki Soče občutno upadejo z naraščanjem sezone padavin. Hladnovodni habitat marmornega postrva se krči navzgor in navzgor po toku.",
+      "extreme": "Ekstremni poplavni dogodki na sistemu Soča–Idrijca se ponavljajo pogosteje. Smaragdna barva Soče — odvisna od glacijalnega moke — zbledi z umikanjem ledenikov.",
+      "catastrophic": "Katastrofalni poplavni dogodki na Soči postanejo pogostejši in hujši. Hladnovodni ribolov in naravni turizem sta temeljno ogrožena."
+    },
+    "Kocevje": {
+      "baseline": "Regija Kočevski Rog, 467 m, pokrita z največjim ostankom pragozdov v Srednji Evropi. Ena najhladnejših točk v nižinski Sloveniji. Medvedi, risi in volkovi v največji gostoti v Evropi.",
+      "moderate": "Segrevanje premakne sestavo gozda od hladnoljubnih jelovo-bukovih k termofilnim vrstam. Izbruhi lubadarja — že zdaj naraščajoči — se pospešijo v toplejših, sušnejših poletjih.",
+      "bad": "Pragozd se sooča s strukturno preobrazbo pod kombiniranim pritiskom suše in lubadarja. Odmiranje gozda odpre vrzeli, ranljive za vetrolomove in požare.",
+      "extreme": "Obsežno odmiranje gozda, ki ga sproži lubadar, odpre pragozd tveganju požarov, ki je bilo v tem vlažnem, hladnem okolju prej zanemarljivo.",
+      "catastrophic": "Kočevski pragozd — evropsko pribežališče biotske raznovrstnosti — se sooča z nepopravljivo strukturno spremembo. Habitat velikih zveri se krči z upadanjem gozda."
+    },
+    "Ilirska_Bistrica": {
+      "baseline": "Pivška kotlina, 440 m. Prehodno območje med sredozemskim in celinskim podnebjem. Hladne zime z burjo, topla poletja. Reka Pivka izgine pod zemljo v največji jamski sistem na svetu.",
+      "moderate": "Segrevanje zmanjšuje zimsko snežno odejo, ki napaja kraške izvire Pivke. Vzorec burje se morda spremeni, kar bo spremenilo toplotni režim tega prehodnega pasu.",
+      "bad": "Površinski pretok reke Pivke izgine zgodaj v sezoni, ko upadejo kraški izviri. Edinstveni hidrološki cikel — površinska reka, ki vstopa v jame — je moten.",
+      "extreme": "Jamski sistem Postojna–Planina, ki ga napaja podzemna Pivka, se sooča z zmanjšanim pretokom in naraščajočimi temperaturami vode, kar ogroža jamsko favno.",
+      "catastrophic": "Kraški izviri, ki napajajo reko Pivko, poleti presahnejo. Edinstveni hidrološki sistem je moten s kaskadnimi učinki na jamske ekosisteme nizvodno."
+    },
+    "Domzale": {
+      "baseline": "Ljubljanska kotlina, 301 m, takoj severovzhodno od prestolnice. Primestno in lahko industrijsko. Celinsko podnebje, ki tesno odraža Ljubljano, z nekoliko manjšim mestnim toplotnim otokom.",
+      "moderate": "Z razširjanjem Ljubljanske metropolitanske regije se mestni toplotni otoški učinki krepijo. Ravna kotlina je ranljiva na kopičenje poletne vročine in zimsko meglo.",
+      "bad": "Poletni toplotni otok po Ljubljanski kotlini ustvarja trajen vročinski stres za 400.000 prebivalcev regije. Povpraševanje po energiji za hlajenje obremeni omrežje.",
+      "extreme": "Kombinirani vročinski in sušni dogodki po kotlini bistveno zmanjšajo kakovost življenja in povečajo smrtnost, povezano z vročino.",
+      "catastrophic": "Urbanizacija v kombinaciji s podnebnim segrevanjem ustvari trajen toplotni otok po Ljubljanski kotlini s kumulativnimi učinki na povpraševanje po energiji in javno zdravje."
+    },
+    "Ratece": {
+      "baseline": "Tarbizijska kotlina, Julijske Alpe, 864 m. Najvišja dolinska postaja in eno najsušnejših mest v Sloveniji kljub alpski legi — v dežni senci Karavank. Ekstremno hladne zime, obilna snežna odeja.",
+      "moderate": "Globina in trajanje snežne odeje se opazno zmanjšujeta. Smučarska sezona se krajša z obeh strani. Čas spomladanskega odtajanja se premika naprej in vpliva na poletne pretoke rek po vsej Sloveniji.",
+      "bad": "Smučarsko letovišče Kranjska Gora se sooča z ekonomsko neobstojnimi snežnimi sezonami. Več zaporednih slabih snežnih let prisili k temeljiti preobrazbi poslovnega modela.",
+      "extreme": "Taljenje permafrosta v Julijskih Alpah nad Ratekami sproži naraščajoče kamenje in nestabilnost pobočij. Alpska infrastruktura in pohodniške poti so ogrožene.",
+      "catastrophic": "Izguba zanesljive zimske snežne odeje konča smučarsko gospodarstvo v dolini Kranjske Gore. Poletni alpski turizem moten z hitrim umikanjem ledenikov in taljenjem permafrosta."
+    },
+    "Kredarica": {
+      "baseline": "Vrh masiva Triglava, 2514 m — najvišja meteorološka postaja v Sloveniji in ena od najdaljših neprekinjenih visokogordnih zapisov v Alpah (od leta 1954). Stalni sneg, ostanki ledenikov, ekstremni vetrovi.",
+      "moderate": "Triglavski ledenik — zadnji ledenik v Sloveniji — se vidno umika leto za letom. Taljenje permafrosta destabilizira visoke grebene. Segrevanje je tukaj približno dvojno od nižinskega.",
+      "bad": "Triglavski ledenik izgubi več kot polovico preostalega volumna. Ikonična trovrha silhueta na slovenskem državnem grbu se sooča s trajno spremembo.",
+      "extreme": "Triglavski ledenik popolnoma izgine. Visokogorski ekosistem nad gozdno mejo propade. Izvirišča Save, Soče in Savice — vsi imajo izvire v tem masiv.",
+      "catastrophic": "Popolna izguba Triglavskega ledenika v desetletjih — narodni simbol in vir Savinjske rek. Propade alpskega ekosistema sproži kaskadne učinke po vsem povodju."
+    }
+  },
+  "about": {
+    "heading": "O nas",
+    "col1_title": "O podnebnik.org",
+    "col1_text": "podnebnik.org vizualizira 75+ let reanalitičnih podatkov ERA5-Land za 18 lokacij po vsej Sloveniji. Vsak trend, grafikon in projekcija je izračunana iz iste zbirke podatkov z odprtimi statističnimi metodami. Brez klepetalnika. Brez reklam. Le podatki.",
+    "col2_title": "Zakaj to počnemo?",
+    "col2_text1": "Osrednja Evropa se segreva pri skoraj 1,5-kratni stopnji globalnega povprečja. Učinki so že tukaj — daljša poletja, taljenje alpskih ledenikov, rekordne temperature in vedno intenzivnejše suše.",
+    "col2_text2": "Številke otežujejo odklonitev pogleda. Ko vidite, koliko hitreje se segreva vaša bližnja pokrajina v primerjavi z zgodovinskimi zapisi, preneha biti abstraktna novica in postane to, kar je: lokalen problem, ki se dogaja zdaj. Razumevanje, kaj se spreminja — tukaj, pri nas doma — je prvi korak k ukrepanju.",
+    "col2_btn": "Kaj lahko storimo? →",
+    "col3_title": "Uporabljene metode",
+    "col3_text": "Zgrajeno na reanalitičnih podatkih ERA5-Land iz storitve Copernicus Climate Change Service. Statistične metode: Theil-Senov nagib s testom Mann-Kendall TFPW Yue-Wang. SPEI izračunan z 3-parametrično log-logistično porazdelitvijo. Kontakt: info@podnebnik.org"
+  },
+  "quotes": [
+    {
+      "author": "Dr. Lučka Kajfež Bogataj (Podnebna znanstvenica, Univerza v Ljubljani)",
+      "quote": "Triglavski ledenik ni samo simbol — je meritev. Njegovo izginotje je najpoštenejša podatkovna točka, ki jo imamo."
+    },
+    {
+      "author": "Dr. Lučka Kajfež Bogataj (Podnebna znanstvenica, Univerza v Ljubljani)",
+      "quote": "V Sloveniji se je povprečna temperatura v zadnjem stoletju dvignila za skoraj 2 stopinji Celzija. To niso samo številke."
+    },
+    {
+      "author": "Anonimni alpski vodnik (Triglavski narodni park)",
+      "quote": "Gore ne lažejo. Vsaka umikаjoča se snežna meja je stavek v zgodbi, ki jo še vedno pišemo."
+    },
+    {
+      "author": "Barack Obama (44. predsednik Združenih držav Amerike)",
+      "quote": "We are the first generation to feel the effect of climate change and the last generation that can do something about it."
+    },
+    {
+      "author": "Mahatma Gandhi",
+      "quote": "What we are doing to the forests of the world is but a mirror reflection of what we are doing to ourselves and to one another."
+    },
+    {
+      "author": "Slavoj Žižek (Filozof)",
+      "quote": "We like to be guilty since, if we are guilty, it all depends on us. We engage in frantic activities just so we can be sure that we are doing something."
+    },
+    {
+      "author": "Greta Thunberg (Podnebna aktivistka)",
+      "quote": "Our house is on fire. I am here to say, our house is on fire."
+    },
+    {
+      "author": "David Attenborough (Naravoslovec)",
+      "quote": "There is no question that climate change is happening; the only arguable point is what part humans are playing in it."
+    },
+    {
+      "author": "Al Gore (Nekdanji podpredsednik ZDA)",
+      "quote": "We are running out of time, and we must have a planetary solution to a planetary crisis."
+    },
+    {
+      "author": "Stephen Hawking (Fizik)",
+      "quote": "We are close to the tipping point where global warming becomes irreversible."
+    },
+    {
+      "author": "Jane Goodall (Primatologinja)",
+      "quote": "Fortunately, nature is amazingly resilient: places we have destroyed, given time and help, can once again support life, and endangered species can be given a second chance."
+    },
+    {
+      "author": "David Suzuki (Znanstvenik)",
+      "quote": "If we pollute the air, water and soil that keep us alive and well, and destroy the biodiversity that allows natural systems to function, no amount of money will save us."
+    },
+    {
+      "author": "Yuval Noah Harari (Zgodovinar)",
+      "quote": "We are all living together on a single planet, and if you don't have some kind of global cooperation, you can't tackle climate change."
+    },
+    {
+      "author": "Bill Nye (Popularizator znanosti)",
+      "quote": "Climate change is happening, humans are causing it, and I think this is perhaps the most serious environmental issue facing us."
+    },
+    {
+      "author": "Bono (Glasbenik)",
+      "quote": "Climate change is not just an environmental issue. It's a human rights issue, an economic issue, and a security issue."
+    },
+    {
+      "author": "Pope Francis (Verski vodja)",
+      "quote": "Now or never. Every year the problems are getting worse."
+    },
+    {
+      "author": "Carl Sagan (Fizik)",
+      "quote": "Anything else you're interested in is not going to happen if you can't breathe the air and drink the water."
+    },
+    {
+      "author": "Terri Swearingen (Aktivistka)",
+      "quote": "We are living on this planet as if we had another one to go to."
+    },
+    {
+      "author": "Native American Proverb",
+      "quote": "We do not inherit the earth from our ancestors. We borrow it from our children."
+    },
+    {
+      "author": "Ernest Hemingway (Pisatelj)",
+      "quote": "The Earth is a fine place and worth fighting for."
+    }
+  ],
+  "effects": [
+    "Vročejša in daljša poletja z vse pogostejšimi ekstremnimi vročinskimi valovi",
+    "Rekordne temperature, ki postajajo pogostejše z vsakim desetletjem",
+    "Mestni toplotni otoki se krepijo v mestih po vsej Evropi",
+    "Milejše zime z manj zmrzalnimi dnevi",
+    "Večje število tropskih noči (temperature ponoči ostajajo nad 20 °C)",
+    "Naraščanje smrtnosti, povezane z vročino, zlasti pri starejšem prebivalstvu",
+    "Živali in rastline spreminjajo sezonsko vedenje (zgodnejše pomladi, poznejše jeseni)",
+    "Hude in dolgotrajne suše zmanjšujejo razpoložljivost vode",
+    "Zmanjšane poletne padavine z bolj nepredvidljivimi vzorci",
+    "Nižji rečni pretoki ogrožajo vodooskrbo s pitno vodo",
+    "Upadanje jezer in rezervoarjev po regiji",
+    "Pospeševanje izčrpavanja podzemne vode zaradi prekomerne porabe in nizkega napajanja",
+    "Zmanjšana alpska snežna odeja in umikanje ledenikov na večjih nadmorskih višinah",
+    "Umikanje ledenikov in permafrosta na večjih nadmorskih višinah",
+    "Daljše suhe sezone, ki obremenjujejo ekosisteme in kmetijstvo",
+    "Povečana konkurenca za skupne vodne vire med državami",
+    "Intenzivnejše hudourniške poplave jeseni in spomladi",
+    "Močnejše in manj predvidljive nevihte",
+    "Večja pogostost toče, ki škoduje pridelkom in premoženju",
+    "Pogostejši ekstremni padavinski dogodki, ki povzročajo mestne poplave",
+    "Rečne poplave postajajo hujše v kratkih, intenzivnih epizodah",
+    "Naraščanje zemeljskih plazov zaradi nestabilnih, nasičenih tal po obilnih padavinah",
+    "Izgube pridelkov zaradi vročinskega stresa in suše",
+    "Vinorodna območja se premikajo severno in na večje nadmorske višine",
+    "Pridelava oljk postaja izvedljiva severno, a na jugu upada",
+    "Degradacija tal in dezertifikacija se širita v južnih območjih",
+    "Daljše in intenzivnejše sezone škodljivcev in bolezni, ki škodijo pridelkom",
+    "Upadanje opraševalcev, ki vpliva na pridelke",
+    "Živina trpi zaradi vročinskega stresa, kar zmanjšuje produktivnost",
+    "Povpraševanje po namakalni vodi ostro narašča in obremenjuje vire",
+    "Pogostejši in uničujoči gozdni požari, zlasti v Sredozemlju in alpskih predgorjih",
+    "Odmiranje gozdov zaradi suše in izbruhov lubadarja",
+    "Invazivne rastlinske vrste se širijo na nova območja",
+    "Populacije rib v rekah upadajo zaradi toplejše in nižje vode",
+    "Beljenje koral in izguba habitatov v Jadranskem in Egejskem morju",
+    "Vzorci selivk se spreminjajo, nekatere vrste se ne prezimujejo več v regiji",
+    "Širjenje invazivnih vrst moti lokalne ekosisteme",
+    "Dvig morske gladine ogroža nizko ležeče obalne predele vzdolž Jadranskega morja",
+    "Pospeševanje obalne erozije, ki uničuje plaže in infrastrukturo",
+    "Sredozemsko morje se segreva hitreje od globalnega oceanskega povprečja",
+    "Večja pogostost cvetenja meduz, ki motijo turizem in ribištvo",
+    "Vdor slane vode v obalne sladkovodne vodonosnike",
+    "Širjenje tropskih bolezni, kot so virus Zahodnega Nila in denga",
+    "Širjenje habitatov tigrastega komarja in peščenih muh, ki prenašajo nove patogene",
+    "Slabšanje kakovosti zraka zaradi vročine, suše in gozdnih požarov",
+    "Povečanje dihalnih in srčno-žilnih bolezni zaradi vročine in onesnaženosti",
+    "Vplivi na duševno zdravje zaradi podnebne anksioznosti in ponavljajoče se izpostavljenosti katastrofam",
+    "Podnebno pogojene migracije z podeželja in obalnih območij v mesta",
+    "Ekonomske izgube v turizmu zaradi ekstremne vročine in razvrednotenih naravnih okolij",
+    "Obremenitev energetskih omrežij z naraščajočim poletnim povpraševanjem po klimatizaciji",
+    "Višje cene hrane, ki jih poganjajo regionalni izpadi pridelkov",
+    "Povečane peščene nevihte in vdori saharske prašne megle, ki zmanjšujejo kakovost zraka"
+  ],
+  "climate_risks": {
+    "heading": "Tveganje vpliva:",
+    "Ljubljana": "Mestni toplotni otok — poletni vročinski stres in tveganje hudourniških poplav v Ljubljanski kotlini",
+    "Maribor": "Sušni stres v vinogradništvu — zgodnejše trgatve in premik vinskih sort",
+    "Celje": "Okrepitev poplav Savinje v kombinaciji z naraščajočo poletno sušo",
+    "Kranj": "Izguba alpske snežne odeje, ki zmanjšuje poletni pretok Save",
+    "Koper": "Podaljšanje sredozemske suše — tveganje vdora slane vode in dviga morske gladine",
+    "Novo_Mesto": "Suša reke Krke ogroža pridelavo hmelja in sadja",
+    "Murska_Sobota": "Panonska vročina in suša — najtoplejše temperaturne razlike v Sloveniji",
+    "Nova_Gorica": "Sredozemsko sušenje — ekosistem hladnovodne Soče in kraško vinogradništvo v nevarnosti",
+    "Postojna": "Suša kraškega vodonosnika — jamsni ekosistem in endemska favna pod toplotnim stresom",
+    "Ptuj": "Nizki vodostaji Drave — vodni stres v vinogradništvu in zmanjšanje hidroenergetskih zmogljivosti",
+    "Velenje": "Upravljanje z vodo po izkopavanju premoga ob stopnjevanju suše in poplav",
+    "Trbovlje": "Ojačanje vročine v savski soteski in naraščajoče tveganje poplav",
+    "Tolmin": "Stopnjevanje ekstremnih poplav Soče — krčenje ekosistema hladnovodnih rib",
+    "Kocevje": "Propad pragozdov pod napadom lubadarja — izguba habitata velikih zveri",
+    "Ilirska_Bistrica": "Izčrpavanje kraških izvirov — motnja podzemnega rečnega sistema Pivke",
+    "Domzale": "Mestni toplotni otok v kotlini — kombinirani vročinski in sušni stres za Ljubljansko regijo",
+    "Ratece": "Izguba alpske snežne odeje — grožnja smučarskemu gospodarstvu in nestabilnost permafrost pobočij",
+    "Kredarica": "Izguba Triglavskega ledenika — izsušitev izvirnih vod za Slovenijo reke"
+  },
+  "welcome": {
+    "greeting": "Dragi obiskovalec,",
+    "body1": "Dobrodošli v Slovenia Climate Explorer — 75 let reanalitičnih podnebnih podatkov ERA5-Land za 18 postaj po vsej Sloveniji, od jadranske obale do vrha Triglava.",
+    "body2": "Raziščite trende segrevanja, sezonske vzorce, kazalnike suše in kje se uvršča današnja temperatura v svojem zgodovinskem kontekstu."
+  },
+  "what_can_we_do": {
+    "heading": "Kaj lahko storimo?",
+    "s1_title": "1. Energija",
+    "s1_items": [
+      "Termoelektrarna Šoštanj (TEŠ 6) je največji posamični vir CO₂ v Sloveniji. Njen načrtovani zaprtje do leta 2033 je ključen — podpora pospešenemu časovnemu načrtu je pomembna.",
+      "Nuklearna elektrarna Krško (NEK) proizvede ~40 % slovenskega elektra brez CO₂. Njeno nadaljnje delovanje in morebitna nadomestitev sta temelj razogljičenja.",
+      "Slovenija ima odlične možnosti za solarno energijo, zlasti na jugozahodu. Subvencije Eko sklada pokrivajo strešne sončne elektrarne, toplotne črpalke in izolacijo — obiščite ekosklad.si, da vidite, kaj velja za vaš dom."
+    ],
+    "s2_title": "2. Promet",
+    "s2_items": [
+      "Potujte z vlakom. Ljubljana–Maribor in Ljubljana–Koper sta z vlakom primerljiva z vožnjo z avtomobilom po času in bistveno boljša po izpustih. Železniška mreža je premalo izkoriščena.",
+      "Za kratke mestne poti se kolesarska infrastruktura širi v Ljubljani, Mariboru in Kopru — infrastruktura se izboljšuje le, ko jo ljudje uporabljajo."
+    ],
+    "s3_title": "3. Narava",
+    "s3_items": [
+      "Slovenijo gozdovi vsako leto vežejo približno 3 milijone ton CO₂. Kupujte certificirane (FSC/PEFC) lesene izdelke in podpirajte zakonodajo o varstvu gozdov.",
+      "Kočevski pragozd je eden zadnjih velikih predelov divjine v Srednji Evropi. Potrebuje trajno pravno zaščito — pišite svojemu poslancu."
+    ],
+    "s4_title": "4. Civilna akcija",
+    "s4_items": [
+      "Vprašajte svojo občino za njen načrt prilagajanja podnebnim spremembam. Pripravljenost na poplave, sajenje dreves v mestih in protokoli za vročinske izredne razmere bi morali biti standardni — če niso, je to vprašanje vredno zastavljanja."
+    ],
+    "s5_title": "5. Ključne organizacije",
+    "s5_items": [
+      "Umanotera (umanotera.org) — inštitut za trajnostni razvoj",
+      "Focus (focus.si) — okoljska akcijska NVO",
+      "DOPPS (dopps.si) — varstvo ptic in narave",
+      "Eko sklad (ekosklad.si) — zeleno financiranje in subvencije za gospodinjstva"
+    ],
+    "s6_title": "",
+    "s6_items": []
+  },
+  "mk2036": {
+    "heading": "",
+    "timeline_btn": "",
+    "r1": {
+      "name": "",
+      "i1": "",
+      "i2": "",
+      "i3": ""
+    },
+    "r2": {
+      "name": "",
+      "i1": "",
+      "i2": ""
+    },
+    "r3": {
+      "name": "",
+      "i1": "",
+      "i2": ""
+    },
+    "r4": {
+      "name": "",
+      "i1": "",
+      "i2": ""
+    },
+    "r5": {
+      "name": "",
+      "i1": "",
+      "i2": ""
+    }
+  }
+}

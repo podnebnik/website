@@ -1,0 +1,64 @@
+# ERA5 live-data API: Flask service on 5052 behind the website's nginx
+# (/api/live/* proxy). The entrypoint self-bootstraps on an empty volume:
+# collects ~75 MB of CSVs from Open-Meteo (~10 min), precomputes SQLite,
+# then serves — hence the generous startupProbe.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: era5-api
+  labels:
+    app.kubernetes.io/name: era5-api
+spec:
+  replicas: 1
+  # the data PVC is ReadWriteOnce — release it before the new pod mounts
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: era5-api
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: era5-api
+    spec:
+      containers:
+        - name: era5-api
+          image: "{{ .Values.era5.image.repository }}:{{ .Values.era5.image.tag }}"
+          # Preview envs reuse the mutable pr-<n> tag; Always ensures a recreated
+          # pod pulls the freshly-built image instead of the node's cached copy.
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 5052
+          env:
+            - name: COUNTRY
+              value: si
+            - name: DATA_DIR
+              value: /app/data/si
+            - name: API_PORT
+              value: "5052"
+          volumeMounts:
+            - name: era5-data
+              mountPath: /app/data/si
+          startupProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 10
+            failureThreshold: 90
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 20
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 20
+          resources:
+            {{- toYaml .Values.era5.resources | nindent 12 }}
+      volumes:
+        - name: era5-data
+          persistentVolumeClaim:
+            claimName: era5-data

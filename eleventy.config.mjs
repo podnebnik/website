@@ -129,12 +129,22 @@ async function imageShortcode(src, alt, sizes) {
 }
 
 export default function (eleventyConfig) {
+    const era5ApiUrl = process.env.ERA5_API_URL || "http://localhost:5052";
+
     eleventyConfig.addPlugin(EleventyVitePlugin, {
         viteOptions: {
             plugins: [
                 TailwindCSS(),
                 SolidPlugin(),
-            ]
+            ],
+            server: {
+                proxy: {
+                    "/api/live": {
+                        target: era5ApiUrl,
+                        changeOrigin: true,
+                    },
+                },
+            },
         }
     })
 

@@ -13,7 +13,6 @@ on:
       # write-back forever.
       - 'deploy/**'
 
-
   pull_request:
     branches:
       - "main"
@@ -22,7 +21,6 @@ on:
       # build. Ignore it so that write-back doesn't retrigger build -> push ->
       # write-back forever.
       - 'deploy/**'
-
 
 permissions:
   contents: read # to allow the action to read the repository contents

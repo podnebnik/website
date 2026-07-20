@@ -1,0 +1,43 @@
+# Nightly Open-Meteo refresh: re-collect CSVs and rebuild the SQLite on the
+# shared volume. The running era5-api picks up the new database file.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: era5-refresh
+  labels:
+    app.kubernetes.io/name: era5-api
+spec:
+  schedule: {{ .Values.era5.refreshSchedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      # abort if still running after 1 h
+      activeDeadlineSeconds: 3600
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: era5-api
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: era5-refresh
+              image: "{{ .Values.era5.image.repository }}:{{ .Values.era5.image.tag }}"
+              command: ["sh", "-c"]
+              args:
+                - uv run python mk_collect.py && uv run python mk_precompute.py
+              env:
+                - name: COUNTRY
+                  value: si
+                - name: DATA_DIR
+                  value: /app/data/si
+              volumeMounts:
+                - name: era5-data
+                  mountPath: /app/data/si
+              resources:
+                {{- toYaml .Values.era5.resources | nindent 16 }}
+          volumes:
+            - name: era5-data
+              persistentVolumeClaim:
+                claimName: era5-data
