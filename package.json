@@ -13,6 +13,8 @@
     "fixtures:start": "node scripts/fixtures/with-pinned-date.mjs yarn start",
     "fixtures:build": "ELEVENTY_OUTPUT_DIR=dist-fixtures node scripts/fixtures/with-pinned-date.mjs yarn build",
     "snapshot": "node scripts/snapshot/run.mjs",
+    "snapshot:check": "node scripts/snapshot/run.mjs --check",
+    "snapshot:write": "node scripts/snapshot/run.mjs --write",
     "snapshot:verify": "node scripts/snapshot/run.mjs --verify"
   },
   "dependencies": {

@@ -24,7 +24,7 @@ dist-fixtures
 *.nc
 
 
-.claude/
+.claude/settings.local.json
 
 # T-1.1 snapshot harness build output
 .snapshot-build/

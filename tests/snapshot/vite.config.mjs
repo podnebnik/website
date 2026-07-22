@@ -71,6 +71,14 @@ export default defineConfig({
     rollupOptions: {
       // The island uses lazy()/dynamic import in several places; one file keeps
       // module resolution in Node trivial and chunk order deterministic.
+      //
+      // `codeSplitting: false` IS the current Rollup option, despite reading like
+      // the older `inlineDynamicImports: true`. Rollup 4.50 (bundled with vite 8)
+      // renamed it: setting inlineDynamicImports here instead prints
+      // "inlineDynamicImports option is deprecated, please use codeSplitting:
+      // false instead". Checked against this repo's installed Rollup, not from
+      // memory — the two names have swapped roles since most documentation was
+      // written.
       output: { codeSplitting: false },
     },
   },

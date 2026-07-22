@@ -5,16 +5,20 @@
 // Order of operations, and why:
 //
 //   1. Assert the pinned environment actually took effect.
-//   2. Assert the section set (tests/snapshot/sections.json) against
-//      AliJeVroceERA5.tsx, BEFORE doing any work — a new unclassified section
-//      should fail in a second, not after a two-minute render.
+//   2. Assert the source-mirror set against code/ali-je-vroce-era5, BEFORE doing
+//      any work — a drifted mirror should fail in a second, not after a
+//      two-minute render. Three assertions: the section set
+//      (tests/snapshot/sections.json), the raw-JSX copy the harness mirrors, and
+//      cases.json `analysis_defaults` against the createSignal defaults.
 //   3. Serve tests/fixtures over loopback, so the app's own shim
 //      (code/ali-je-vroce-era5/fixtures/install.ts) can be used unmodified
 //      rather than reimplemented for Node.
 //   4. Build the harness bundle (tests/snapshot/vite.config.mjs).
 //   5. Install jsdom globals, and the fake clock if asked.
 //   6. Import the bundle and run it.
-//   7. Write the snapshot.
+//   7. Write the snapshot (--write) or diff it against the committed baseline
+//      (--check). Writing is never the default: a harness that rewrites its own
+//      baseline every run enforces nothing.
 
 import { createServer } from "node:http";
 import { readFile, readFileSync, writeFileSync } from "node:fs";
@@ -26,8 +30,11 @@ const ROOT = fileURLToPath(new URL("../..", import.meta.url));
 const FIXTURE_DIR = join(ROOT, "tests", "fixtures");
 const BUILD_DIR = join(ROOT, ".snapshot-build");
 const PAGE_SRC = join(ROOT, "code", "ali-je-vroce-era5", "AliJeVroceERA5.tsx");
+const PANEL_SRC = join(ROOT, "code", "ali-je-vroce-era5", "components", "RegressionPanel.tsx");
 const SECTIONS = join(ROOT, "tests", "snapshot", "sections.json");
-const DEFAULT_OUT = join(FIXTURE_DIR, "snapshot.json");
+const CASES = join(ROOT, "tests", "snapshot", "cases.json");
+const BASELINE = join(FIXTURE_DIR, "snapshot.json");
+const DEFAULT_OUT = BASELINE;
 
 function die(msg) {
   console.error(`\n${msg}\n`);
@@ -44,6 +51,24 @@ function arg(name) {
 const OUT = arg("--out") ?? DEFAULT_OUT;
 const SIMULATE_DATE = arg("--simulate-date");
 const PROBE = argv.includes("--probe-fixture-gaps");
+const WRITE = argv.includes("--write");
+const CHECK = argv.includes("--check");
+
+// A mode has to be asked for. The harness used to write tests/fixtures/snapshot.json
+// whenever it was run with no other flag, which meant the committed baseline was
+// whatever the last run produced — it was never READ, so it could not fail, so
+// it enforced nothing. Both directions are now explicit.
+if (!PROBE && !WRITE && !CHECK) {
+  die(
+    `[snapshot] no mode given. One of:\n` +
+      `  --check                 render and diff against ${"tests/fixtures/snapshot.json"}, exit non-zero on any difference\n` +
+      `  --write                 render and overwrite the baseline (say why in the commit message)\n` +
+      `  --probe-fixture-gaps    report unrecorded URLs; never writes\n\n` +
+      `\`yarn snapshot:check\`, \`yarn snapshot:write\`, \`yarn snapshot:verify\`.`,
+  );
+}
+
+if (WRITE && CHECK) die(`[snapshot] --write and --check are mutually exclusive.`);
 
 // ── 1. environment ────────────────────────────────────────────────────────────
 
@@ -69,7 +94,24 @@ const EXPECTED = {
   }
 }
 
-// ── 2. section-set assertion ──────────────────────────────────────────────────
+// ── 2. source-mirror assertions ───────────────────────────────────────────────
+//
+// WHAT THE SECTION-SET ASSERTION CAN AND CANNOT SEE.
+//
+// It extracts capitalised JSX tags — `/<([A-Z][A-Za-z0-9_]*)/` — and requires
+// each to be classified. That covers everything the page delegates to a
+// component, and NOTHING the page renders itself. AliJeVroceERA5.tsx:99-112 and
+// :137-145 are bare <div>/<p> holding displayed numbers (the distribution
+// chart's title and footer — median cutoff, sample count, record years — and the
+// station count); no capitalised tag appears, so this assertion is structurally
+// blind to them. Widening the regex to lowercase tags would classify every <div>
+// on the page and assert nothing.
+//
+// assertMirroredCopy below is the cover for that blind spot: the harness mirrors
+// those fragments verbatim, and each mirrored template must still appear in the
+// source. It is a whitelist, not a sweep — a NEW raw-JSX number added to the page
+// is still invisible to both assertions. Moving such copy into components is the
+// real fix and belongs to T-5.5 (string catalogue), not here.
 
 function assertSections() {
   const src = readFileSync(PAGE_SRC, "utf8");
@@ -123,6 +165,158 @@ function assertSections() {
 }
 
 const { sections } = assertSections();
+
+/**
+ * Every raw-JSX fragment tests/snapshot/harness.tsx mirrors, as it appears in the
+ * page. Whitespace is collapsed on both sides before comparing, so reformatting is
+ * tolerated and a changed STRING is not.
+ */
+const MIRRORED = [
+  {
+    file: PAGE_SRC,
+    cite: "AliJeVroceERA5.tsx:102",
+    mirror: "harness.tsx TodayChartCopy — title, national branch",
+    fragment:
+      "`Dnevne najvišje temperature v Sloveniji za dva tedna okoli ${fmtDayLabel(todayData()!.day_label ?? \"\")} od ${todayData()!.year_min}`",
+  },
+  {
+    file: PAGE_SRC,
+    cite: "AliJeVroceERA5.tsx:103",
+    mirror: "harness.tsx TodayChartCopy — title, per-station branch",
+    fragment:
+      "`Dnevne najvišje temperature na postaji ${todayData()!.loc!.replace(/_/g, \" \")} za dva tedna okoli ${fmtDayLabel(todayData()!.day_label ?? \"\")} od ${todayData()!.year_min}`",
+  },
+  {
+    file: PAGE_SRC,
+    cite: "AliJeVroceERA5.tsx:110",
+    mirror: "harness.tsx TodayChartCopy — footer (median cutoff, sample count, record years)",
+    fragment:
+      "`${isNat() ? \"Slovenija\" : \"Danes\"}: ${todayData()!.today_temp!.toFixed(1)} °C · ${todayData()!.percentile!.toFixed(0)}. percentil · mediana ${todayData()!.cutoffs!.p50.toFixed(1)} °C · ${(todayData()!.n_samples ?? 0).toLocaleString()} opazovanj · ${todayData()!.year_min}–${todayData()!.year_max}`",
+  },
+  {
+    file: PAGE_SRC,
+    cite: "AliJeVroceERA5.tsx:107",
+    mirror: "harness.tsx TodayChartCopy — explain paragraph",
+    // Anchored on the closing tag: a text node's fragment would otherwise still
+    // "appear in" a LONGER version of itself.
+    fragment:
+      "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče. </p>",
+  },
+  {
+    file: PAGE_SRC,
+    cite: "AliJeVroceERA5.tsx:140",
+    mirror: "harness.tsx MapPanelHeader — title",
+    fragment: '{mapLoc() ? mapLoc()!.replace(/_/g, " ") : "Slovenija — vse postaje"}',
+  },
+  {
+    file: PAGE_SRC,
+    cite: "AliJeVroceERA5.tsx:143",
+    mirror: "harness.tsx MapPanelHeader — station count",
+    fragment: "{era5Stations.length} postaj · ERA5 </div>",
+  },
+];
+
+const collapse = (s) => s.replace(/\s+/g, " ").trim();
+
+/**
+ * A plain `includes` is not enough: it passes when the page EXTENDS the copy, and
+ * extending is the common edit. `postaj · ERA5` still "appears in" `postaj ·
+ * ERA5-Land`, so a label change would sail through while the harness went on
+ * mirroring the old string. So the match has to sit between delimiters — the
+ * fragment must be bounded by whitespace, a bracket, a quote or a separator on
+ * both sides, not by a character that continues it.
+ */
+const BOUNDARY = /[\s<>{}()[\],;:?`"'=]/;
+
+function appearsVerbatim(haystack, fragment) {
+  const bounded = (i) => {
+    const before = i === 0 ? "" : haystack[i - 1];
+    const after = haystack[i + fragment.length] ?? "";
+    return (before === "" || BOUNDARY.test(before)) && (after === "" || BOUNDARY.test(after));
+  };
+  for (let i = haystack.indexOf(fragment); i !== -1; i = haystack.indexOf(fragment, i + 1)) {
+    if (bounded(i)) return true;
+  }
+  return false;
+}
+
+function assertMirroredCopy() {
+  const cache = new Map();
+  const drifted = [];
+  for (const m of MIRRORED) {
+    if (!cache.has(m.file)) cache.set(m.file, collapse(readFileSync(m.file, "utf8")));
+    if (!appearsVerbatim(cache.get(m.file), collapse(m.fragment))) drifted.push(m);
+  }
+  if (drifted.length) {
+    die(
+      `[snapshot] ${drifted.length} mirrored source fragment(s) no longer appear in the page:\n` +
+        drifted.map((m) => `  ${m.cite}\n    mirrored by: ${m.mirror}\n    expected:    ${collapse(m.fragment)}`).join("\n") +
+        `\n\nThese are displayed numbers the page renders as raw JSX, outside any component. ` +
+        `The harness reproduces them character-for-character because nothing else can capture ` +
+        `them, and the section-set assertion cannot see them at all (it matches capitalised ` +
+        `tags only). Update tests/snapshot/harness.tsx and the MIRRORED table together, or the ` +
+        `snapshot pins a string the page stopped rendering. No snapshot was written.`,
+    );
+  }
+}
+
+/**
+ * tests/snapshot/cases.json `analysis_defaults` is a hand-copy of the analysis
+ * panel's createSignal defaults. Nothing made it a copy OF anything — changing a
+ * default in the source would leave the harness snapshotting the old value under
+ * the claim that it is "what a default page load uses". Each entry below names
+ * where the real value lives and how to read it out.
+ */
+const DEFAULT_SOURCES = [
+  { key: "variable", file: PANEL_SRC, cite: "RegressionPanel.tsx:38", from: /const \[selVar,\s*setSelVar\]\s*=\s*createSignal\("([^"]+)"\)/, cast: String },
+  { key: "window_days", file: PANEL_SRC, cite: "RegressionPanel.tsx:40", from: /const \[window_,\s*setWindow\]\s*=\s*createSignal\((\d+)\)/, cast: Number },
+  { key: "method", file: PANEL_SRC, cite: "RegressionPanel.tsx:42 (useOls)", from: /const \[useOls,\s*setUseOls\]\s*=\s*createSignal\((true|false)\)/, cast: (v) => (v === "true" ? "ols" : "theilsen") },
+  { key: "elevation_correction", file: PANEL_SRC, cite: "RegressionPanel.tsx:41 (corr)", from: /const \[corr,\s*setCorr\]\s*=\s*createSignal\((true|false)\)/, cast: (v) => (v === "true" ? "corr" : "raw") },
+  { key: "tropical_days_threshold", file: PAGE_SRC, cite: "AliJeVroceERA5.tsx:212", from: /const \[daysThr,\s*setDaysThr\]\s*=\s*createSignal\((\d+)\)/, cast: Number },
+  { key: "tropical_nights_threshold", file: PAGE_SRC, cite: "AliJeVroceERA5.tsx:213", from: /const \[nightsThr,\s*setNightsThr\]\s*=\s*createSignal\((\d+)\)/, cast: Number },
+  { key: "tropical_streak", file: PAGE_SRC, cite: "AliJeVroceERA5.tsx:214", from: /const \[streak,\s*setStreak\]\s*=\s*createSignal\((\d+)\)/, cast: Number },
+];
+
+function assertAnalysisDefaults() {
+  const declared = JSON.parse(readFileSync(CASES, "utf8")).analysis_defaults;
+  const cache = new Map();
+  const problems = [];
+
+  for (const d of DEFAULT_SOURCES) {
+    if (!cache.has(d.file)) cache.set(d.file, readFileSync(d.file, "utf8"));
+    const m = cache.get(d.file).match(d.from);
+    if (!m) {
+      problems.push(
+        `  ${d.key}: could not find the declaration at ${d.cite} — the signal was renamed, ` +
+          `moved, or its default is no longer a literal.`,
+      );
+      continue;
+    }
+    const actual = d.cast(m[1]);
+    if (actual !== declared[d.key]) {
+      problems.push(
+        `  ${d.key}: cases.json says ${JSON.stringify(declared[d.key])}, ${d.cite} says ` +
+          `${JSON.stringify(actual)}`,
+      );
+    }
+  }
+
+  if (problems.length) {
+    die(
+      `[snapshot] tests/snapshot/cases.json \`analysis_defaults\` does not match the source:\n` +
+        problems.join("\n") +
+        `\n\nThose values claim to be "the analysis panel's own controls at the values a default ` +
+        `page load uses", and every tropical, regression and calendar figure in the snapshot is ` +
+        `taken at them. A default that moved in the source without moving here would be ` +
+        `snapshotted as if the page still used the old one. Update cases.json (and expect the ` +
+        `numbers to move — that is a Phase 4-style baseline change, with a reason). ` +
+        `No snapshot was written.`,
+    );
+  }
+}
+
+assertMirroredCopy();
+assertAnalysisDefaults();
 
 // ── 3. fixture server ─────────────────────────────────────────────────────────
 
@@ -329,8 +523,108 @@ const out = {
   ...result.snapshot,
 };
 
-writeFileSync(OUT, JSON.stringify(out, null, 2) + "\n");
-console.log(
-  `[snapshot] wrote ${OUT} (${(JSON.stringify(out).length / 1_048_576).toFixed(2)} MB), ` +
-    `${out.cases.length} cases, ${Object.keys(out.by_station).length} stations, 0 fixture misses`,
-);
+const serialised = JSON.stringify(out, null, 2) + "\n";
+
+if (WRITE) {
+  writeFileSync(OUT, serialised);
+  console.log(
+    `[snapshot] wrote ${OUT} (${(serialised.length / 1_048_576).toFixed(2)} MB), ` +
+      `${out.cases.length} cases, ${Object.keys(out.by_station).length} stations, 0 fixture misses`,
+  );
+  if (OUT === BASELINE) {
+    console.log(
+      `[snapshot] THE BASELINE WAS OVERWRITTEN. If any number moved, the reason belongs in ` +
+        `the commit message and in the DECISIONS.md log (CLAUDE.md ground rule 2).`,
+    );
+  }
+} else {
+  // ── --check: the baseline is READ, and disagreement is a failure ────────────
+  //
+  // This is the whole point of committing snapshot.json. Phase 2 and Phase 3
+  // claim "no behaviour change"; that claim is only worth something if something
+  // compares the rendered output against the committed file and fails.
+  let baselineRaw;
+  try {
+    baselineRaw = readFileSync(BASELINE, "utf8");
+  } catch {
+    die(
+      `[snapshot] --check: no baseline at ${BASELINE}. Create one with \`yarn snapshot:write\` ` +
+        `and commit it.`,
+    );
+  }
+
+  if (baselineRaw === serialised) {
+    console.log(
+      `[snapshot] --check: identical to ${"tests/fixtures/snapshot.json"} ` +
+        `(${out.cases.length} cases, ${Object.keys(out.by_station).length} stations, ` +
+        `0 fixture misses).`,
+    );
+    process.exit(0);
+  }
+
+  const diffs = diffPaths(JSON.parse(baselineRaw), out);
+
+  if (diffs.length === 0) {
+    // Byte difference with no value difference: key order or formatting.
+    die(
+      `[snapshot] --check: ${BASELINE} differs byte-for-byte but no VALUE differs — the file ` +
+        `was reformatted or hand-edited. Regenerate it with \`yarn snapshot:write\` and commit ` +
+        `the result unmodified.`,
+    );
+  }
+
+  const SHOWN = 60;
+  console.error(
+    `\n[snapshot] --check FAILED: ${diffs.length} path(s) differ from the committed baseline ` +
+      `${"tests/fixtures/snapshot.json"}.\n`,
+  );
+  for (const d of diffs.slice(0, SHOWN)) console.error(`  ${d}`);
+  if (diffs.length > SHOWN) console.error(`  … and ${diffs.length - SHOWN} more`);
+  console.error(
+    `\nA published number moved. If that was intended, the change updates the baseline in the ` +
+      `SAME commit (\`yarn snapshot:write\`), with the reason in the commit message and a row ` +
+      `in the DECISIONS.md log — CLAUDE.md ground rule 2. Phase 2 and Phase 3 tickets must ` +
+      `produce an EMPTY diff here; if one does not, stop and report rather than re-baselining.`,
+  );
+  process.exit(1);
+}
+
+/**
+ * Every path at which `actual` differs from `expected`, as `a.b[0].c: x -> y`.
+ * Depth-first and order-stable so the report reads the same on every run.
+ */
+function diffPaths(expected, actual, path = "", out = []) {
+  const brief = (v) => {
+    if (v === undefined) return "<absent>";
+    const s = JSON.stringify(v);
+    return s.length > 80 ? `${s.slice(0, 77)}…` : s;
+  };
+
+  if (expected === actual) return out;
+
+  const bothObjects =
+    expected && actual && typeof expected === "object" && typeof actual === "object" &&
+    Array.isArray(expected) === Array.isArray(actual);
+
+  if (!bothObjects) {
+    if (JSON.stringify(expected) !== JSON.stringify(actual)) {
+      out.push(`${path || "<root>"}: ${brief(expected)} -> ${brief(actual)}`);
+    }
+    return out;
+  }
+
+  if (Array.isArray(expected)) {
+    if (expected.length !== actual.length) {
+      out.push(`${path}.length: ${expected.length} -> ${actual.length}`);
+    }
+    for (let i = 0; i < Math.max(expected.length, actual.length); i++) {
+      diffPaths(expected[i], actual[i], `${path}[${i}]`, out);
+    }
+    return out;
+  }
+
+  for (const k of new Set([...Object.keys(expected), ...Object.keys(actual)])) {
+    diffPaths(expected[k], actual[k], path ? `${path}.${k}` : k, out);
+  }
+  return out;
+}

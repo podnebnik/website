@@ -38,8 +38,8 @@ const manifest = JSON.parse(
 );
 
 const DS_BASE = manifest.bases.datasette;
-const DS = `${DS_BASE}/climate-si`; // api.ts:12
-const OM = manifest.bases.openmeteo; // api.ts:248
+const DS = `${DS_BASE}/climate-si`; // api.ts:13
+const OM = manifest.bases.openmeteo; // api.ts:249
 const HC = manifest.bases.highcharts;
 
 const enc = encodeURIComponent;
@@ -144,11 +144,11 @@ const monthDays = [];
   }
 }
 
-// D1 — fetchMeta station list. api.ts:292
+// D1 — fetchMeta station list. api.ts:293
 const D1_URL =
   `${DS}/stations.json?_shape=array&_col=era5_name&_col=name&_col=lat&_col=lon` +
   `&_col=elevation&_col=station_id&_size=30`;
-add("D1 stations", "api.ts:292", D1_URL, "climate-si/stations.json");
+add("D1 stations", "api.ts:293", D1_URL, "climate-si/stations.json");
 
 for (const { month, day } of monthDays) {
   // D3 — national +/-window climatology. api.ts:214-216
@@ -306,18 +306,18 @@ for (const name of stations) {
   }
 }
 
-// D13 — SPEI national heatmap. api.ts:1310
+// D13 — SPEI national heatmap. api.ts:1311
 add(
   "D13 spei",
-  "api.ts:1306-1311",
+  "api.ts:1307-1312",
   `${DS}/spei.json?_shape=array&_col=y&_col=spei&_col=balance&_col=cat&_col=rank&_col=total&_col=color&_col=season&_col=n_days&_size=2000`,
   "climate-si/spei.json",
 );
 
-// D14 — SPEI per-station series. api.ts:1335
+// D14 — SPEI per-station series. api.ts:1336
 add(
   "D14 spei_station",
-  "api.ts:1332-1336",
+  "api.ts:1333-1337",
   `${DS}/spei_station.json?_shape=array&_col=era5_name&_col=series&_col=years_json&_col=spei_json&_col=trend_json&_size=1000`,
   "climate-si/spei_station.json",
 );
@@ -332,7 +332,7 @@ add(
 
 // ── Open-Meteo needs the real station coordinates, in the order fetchMeta sees
 // them, because openMeteoNationalMax joins them into one comma-separated URL
-// (api.ts:264-270). So fetch D1 first and derive from the response.
+// (api.ts:265-271). So fetch D1 first and derive from the response.
 
 console.log(`Fetching station list to build Open-Meteo URLs…`);
 const stationRows = await (await fetch(D1_URL)).json();
@@ -343,13 +343,13 @@ const coords = stationRows.map((s) => ({
   elevation: Math.round(s.elevation),
 }));
 
-// O1 — per-station live forecast. api.ts:250-252
+// O1 — per-station live forecast. api.ts:251-253
 // Only for the primary date: for every other date in the matrix the datasette
-// has a `daily` row, so api.ts:460 short-circuits and Open-Meteo is never called.
+// has a `daily` row, so api.ts:461 short-circuits and Open-Meteo is never called.
 for (const c of coords) {
   add(
     "O1 open-meteo station",
-    "api.ts:250-252",
+    "api.ts:251-253",
     `${OM}?latitude=${c.lat}&longitude=${c.lon}&elevation=${c.elevation}` +
       `&daily=temperature_2m_max&timezone=UTC&start_date=${primaryDate}&end_date=${primaryDate}`,
     `open-meteo/forecast__${slug(c.name)}__${primaryDate}.json`,
@@ -357,10 +357,10 @@ for (const c of coords) {
   );
 }
 
-// O2 — national live forecast, all coordinates in one call. api.ts:263-270
+// O2 — national live forecast, all coordinates in one call. api.ts:264-271
 add(
   "O2 open-meteo national",
-  "api.ts:263-270",
+  "api.ts:264-271",
   `${OM}?latitude=${coords.map((c) => c.lat).join(",")}` +
     `&longitude=${coords.map((c) => c.lon).join(",")}` +
     `&elevation=${coords.map((c) => c.elevation).join(",")}` +

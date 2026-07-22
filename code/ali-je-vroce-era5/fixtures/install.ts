@@ -8,6 +8,8 @@
 //   * a recorded URL      → served from /fixtures/http/<file>, same origin
 //   * any same-origin URL → passed through (the app's own bundle and assets,
 //                           e.g. /data/flood-stats.json, SeaLevelWidget.tsx:312)
+//                           — but a NON-OK status there is treated as a miss, see
+//                           below
 //   * anything else       → THROWS, loudly, naming the URL
 //
 // The throw is the point. A missing fixture must fail visibly, because the
@@ -27,11 +29,24 @@
 //   >>> has finished rendering. A snapshot taken with a non-empty array is a
 //   >>> snapshot of partially-missing data and must not be baselined.
 //
-// KNOWN GAP: the OpenTopoMap basemap (SeaLevelWidget.tsx:296) and the flood
-// overlay PNGs (SeaLevelWidget.tsx:137) are loaded by Leaflet and by
-// `new Image()`, which do not route through fetch and so cannot be intercepted
-// here. The flood PNGs are same-origin and resolve offline anyway; the basemap
-// tiles are external and render blank. See manifest.json `_uncapturable`.
+// KNOWN GAPS — everything this shim cannot see or cannot vouch for:
+//
+//   1. Loads that never reach fetch. The OpenTopoMap basemap
+//      (SeaLevelWidget.tsx:296) goes through Leaflet's own <img> tiles and the
+//      flood overlay PNGs (SeaLevelWidget.tsx:137) through `new Image()`.
+//      Neither is interceptable here. The flood PNGs are same-origin and
+//      resolve offline anyway; the basemap tiles are external and render blank.
+//      See manifest.json `_uncapturable`.
+//   2. Same-origin passthrough is a HOLE BY CONSTRUCTION: whatever the origin
+//      serves is served, recorded nowhere, and diffed by nothing. It is narrow
+//      on purpose (the app's own assets), but a same-origin URL that does not
+//      exist used to be invisible — the server answers 404, which is a RESOLVED
+//      Response, so no throw, no miss, both guards green, and the section
+//      degrades silently. A non-ok same-origin response is therefore recorded as
+//      a miss and thrown on, exactly like an unrecorded external URL. Same for a
+//      route hit whose fixture file is missing from /fixtures/http/.
+//   3. Non-GET requests and request bodies are not keyed on: `routes` is a URL
+//      table. The island only ever GETs, so this is currently theoretical.
 //
 // This module is only ever loaded when VITE_FIXTURES=1 (entry.tsx), so it is
 // absent from a production bundle.
@@ -127,7 +142,7 @@ export async function installFixtures(): Promise<void> {
   if (recordedBase !== appBase) {
     throw new Error(
       `[fixtures] datasette base mismatch:\n` +
-        `  app resolves (api.ts:10) = ${appBase}\n` +
+        `  app resolves (api.ts:11) = ${appBase}\n` +
         `  fixtures recorded from   = ${recordedBase}\n\n` +
         `Every recorded datasette URL is keyed on the base it was fetched from, so none of them ` +
         `would match and the page would go to the network. Either unset VITE_DATASETTE_URL for ` +
@@ -144,29 +159,61 @@ export async function installFixtures(): Promise<void> {
     return input.url;
   }
 
+  /**
+   * `raw` is same-origin — as opposed to merely starting with the same
+   * CHARACTERS. `startsWith(origin)` alone matches
+   * `http://localhost:8080.example.com/…`, a different host entirely, and would
+   * hand it to the network in "offline" mode. An origin can only be followed by
+   * a path, a query, a fragment, or nothing at all.
+   */
+  function isSameOrigin(raw: string): boolean {
+    if (!origin || !raw.startsWith(origin)) return false;
+    const rest = raw.slice(origin.length);
+    return rest === "" || rest.startsWith("/") || rest.startsWith("?") || rest.startsWith("#");
+  }
+
+  function miss(url: string, why: string): never {
+    misses.push({ url, at: new Date().toISOString() });
+
+    throw new Error(
+      `[fixtures] ${why}:\n  ${url}\n\n` +
+        `The offline run only serves URLs captured by \`yarn fixtures:record\`, plus ` +
+        `same-origin assets that actually exist. If this URL is legitimate, add its ` +
+        `parameters to tests/fixtures/manifest.json and re-record; if it is new, a code ` +
+        `change introduced a network call that T-1.2 did not enumerate.\n` +
+        `(Also recorded in window.__FIXTURE_MISSES__, in case this throw is swallowed.)`,
+    );
+  }
+
   globalThis.fetch = async function fixtureFetch(input, init) {
     const raw = requestUrl(input);
     const file = index.routes[raw];
-    if (file) return realFetch(`${FIXTURE_ROOT}/http/${file}`, init);
+    if (file) {
+      const resp = await realFetch(`${FIXTURE_ROOT}/http/${file}`, init);
+      // `routes` said this URL was recorded, so anything but 200 means the
+      // fixture FILE is gone or unreadable — a torn fixture set, not a legitimate
+      // error response to snapshot.
+      if (!resp.ok) {
+        miss(raw, `recorded route ${file} came back HTTP ${resp.status} from ${FIXTURE_ROOT}/http`);
+      }
+      return resp;
+    }
 
     // Same-origin: the app's own assets, not network in any meaningful sense.
     // `//host/path` is protocol-relative and goes to ANOTHER host despite the
     // leading slash, so root-relative has to be checked as "/ but not //".
     const rootRelative = raw.startsWith("/") && !raw.startsWith("//");
-    if (rootRelative || (origin && raw.startsWith(origin))) {
-      return realFetch(input as RequestInfo, init);
+    if (rootRelative || isSameOrigin(raw)) {
+      const resp = await realFetch(input as RequestInfo, init);
+      // A 404 is a RESOLVED Response. Without this the passthrough swallows
+      // every same-origin URL the offline server does not have — no throw, no
+      // miss, and a section that renders empty while both T-1.1 guards stay
+      // green. Anything the app legitimately fetches same-origin exists.
+      if (!resp.ok) miss(raw, `same-origin request answered HTTP ${resp.status}`);
+      return resp;
     }
 
-    misses.push({ url: raw, at: new Date().toISOString() });
-
-    throw new Error(
-      `[fixtures] no recorded response for:\n  ${raw}\n\n` +
-        `The offline run only serves URLs captured by \`yarn fixtures:record\`. ` +
-        `If this URL is legitimate, add its parameters to tests/fixtures/manifest.json ` +
-        `and re-record; if it is new, a code change introduced a network call that T-1.2 ` +
-        `did not enumerate.\n` +
-        `(Also recorded in window.__FIXTURE_MISSES__, in case this throw is swallowed.)`,
-    );
+    return miss(raw, "no recorded response for");
   } as typeof fetch;
 
   // eslint-disable-next-line no-console

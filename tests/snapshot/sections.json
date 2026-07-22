@@ -18,7 +18,13 @@
     "capture it needs — and forgetting is not an option the harness allows.",
     "",
     "`covered` entries name the harness unit that renders them, so the mirror is",
-    "auditable against the page rather than taken on trust."
+    "auditable against the page rather than taken on trust.",
+    "",
+    "LIMIT: this assertion sees CAPITALISED TAGS ONLY, so it is blind to numbers the",
+    "page renders itself in bare <div>/<p> — the distribution chart's title and footer",
+    "(AliJeVroceERA5.tsx:99-112) and the station count (:137-145). Those are covered",
+    "instead by the mirrored-source assertion in scripts/snapshot/main.mjs, which is",
+    "where both limits are written up in full."
   ],
 
   "source": "code/ali-je-vroce-era5/AliJeVroceERA5.tsx",

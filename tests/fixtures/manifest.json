@@ -83,7 +83,7 @@
     {
       "date": "1985-01-07",
       "role": "t-1.1 extreme (p5-, both snapshot stations)",
-      "purpose": "VERIFIED against the live datasette before recording, and the reason the 2012 date is not enough: Kredarica -23.707 vs p5 -16.76 (second-coldest day in its whole record, after 1968-01-13) and Ljubljana -11.759 vs p5 -5.34. Both below p5, so the 'freezing' branch is exercised at altitude — which 2012-02-07 does not do. January 1985 was a documented central-European cold wave."
+      "purpose": "VERIFIED against the live datasette before recording, and the reason the 2012 date is not enough: Kredarica -23.707 vs p5 -16.76 and Ljubljana -11.759 vs p5 -5.34. Both below p5, so the 'freezing' branch is exercised at altitude — which 2012-02-07 does not do. January 1985 was a documented central-European cold wave."
     }
   ],
 

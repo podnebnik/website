@@ -10,9 +10,11 @@ const IMG_DISABLED = process.env.ELEVENTY_DISABLE_IMG === "1";
 const EMULATE_PRODUCTION = process.env.ELEVENTY_EMULATE_PRODUCTION === "1";
 
 // T-1.2: `yarn fixtures:build` produces a build that is pinned to a fixed date and
-// carries 7 MB of recorded responses under /fixtures. That must never be mistaken
-// for a deployable build, so it goes to its own directory (dist-fixtures) rather
-// than overwriting the dist/ that `yarn build` and the deploy image use.
+// copies the whole of tests/fixtures (14 MB as of T-1.1 — recorded responses plus
+// the 2 MB output snapshot, which the page has no use for) under /fixtures. That
+// must never be mistaken for a deployable build, so it goes to its own directory
+// (dist-fixtures) rather than overwriting the dist/ that `yarn build` and the
+// deploy image use.
 // Default is unchanged: plain `yarn build` still writes dist/.
 const OUTPUT_DIR = process.env.ELEVENTY_OUTPUT_DIR || "dist";
 

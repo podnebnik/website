@@ -28,6 +28,12 @@
 // does not know about. Adding a section to the page cannot silently escape the
 // snapshot.
 //
+// The page also renders displayed numbers ITSELF, in bare <div>/<p> that no
+// component owns and no tag assertion can see (:99-112 and :137-145). Those are
+// mirrored below by TodayChartCopy and MapPanelHeader, and main.mjs
+// assertMirroredCopy requires each mirrored template to still appear verbatim in
+// the page.
+//
 // ── What is NOT captured ──────────────────────────────────────────────────────
 //
 // SeaLevelWidget. Its numbers come from /data/flood-stats.json and the
@@ -161,26 +167,79 @@ function assertNoMisses(label: string): void {
 // ── Mounting ──────────────────────────────────────────────────────────────────
 
 interface Unit {
+  label: string;
   el: HTMLElement;
   charts: RecordedChart[];
 }
 
-async function mount(label: string, node: () => JSX.Element): Promise<Unit> {
+/**
+ * `expectedCharts` is not bookkeeping — it is the guard on settle().
+ *
+ * settle() waits for a quiet window on in-flight FETCHES, and a chart can mount
+ * after that window closes: a lazy() boundary that resolves late, or a chart
+ * built in an effect that no fetch is pending on. chartLog() would then be read
+ * short, and a chart missing from the snapshot looks exactly like a chart that
+ * has no options — an empty array, no error, silently baselined.
+ *
+ * So every mount states how many charts the unit draws, and this asserts it,
+ * TWICE: once at the end of the first quiet window, and again after a second
+ * one, failing if the count grew in between. The first check catches a chart
+ * that never arrives; the second catches one that arrives late — including the
+ * case where the expected count is 0.
+ */
+async function mount(
+  label: string,
+  node: () => JSX.Element,
+  expectedCharts: number,
+): Promise<Unit> {
   resetChartLog();
   const el = document.createElement("div");
   document.body.appendChild(el);
   const dispose = render(node, el);
   await settle(label);
   assertNoMisses(label);
+
   const charts = chartLog().slice();
+  if (charts.length !== expectedCharts) {
+    throw new Error(
+      `[snapshot] ${label}: expected ${expectedCharts} chart(s), got ${charts.length}.\n\n` +
+        `Either the unit's chart count changed — in which case update the expected count ` +
+        `at the mount() call and say why in the commit — or a chart mounted outside the ` +
+        `settle() quiet window and the capture is short. No snapshot was written.`,
+    );
+  }
+
+  // Second quiet window: a chart that mounts late would otherwise be recorded as
+  // an absence rather than reported as one.
+  await settle(`${label} (re-check)`);
+  if (chartLog().length !== charts.length) {
+    throw new Error(
+      `[snapshot] ${label}: chart count grew from ${charts.length} to ${chartLog().length} ` +
+        `during a SECOND quiet window, so the first capture was taken too early. The unit ` +
+        `mounts a chart that settle() cannot see — it is not gated on a fetch. ` +
+        `No snapshot was written.`,
+    );
+  }
+  assertNoMisses(`${label} (re-check)`);
+
   // Snapshot the DOM before teardown; onCleanup destroys the charts.
   const frozen = el.cloneNode(true) as HTMLElement;
   dispose();
   el.remove();
-  return { el: frozen, charts };
+  return { label, el: frozen, charts };
 }
 
 // ── DOM readers ───────────────────────────────────────────────────────────────
+//
+// A SELECTOR THAT MATCHES NOTHING FAILS THE RUN. It used to return null (or []
+// for txtAll), which records absence as emptiness: `harness.tsx:661` asked
+// SeasonHeatmap for its `<p>` elements, of which it has none, and both stations
+// baselined `[]` — a passing snapshot of a section nobody was watching.
+//
+// Where a selector is legitimately conditional (the today card's unavailable
+// branch, the preliminary badge), the CALLER branches on the state that decides
+// it and uses `optional()`, which takes the reason as an argument. Absence then
+// has to be argued for rather than defaulted into.
 
 function norm(s: string | null | undefined): string | null {
   if (s == null) return null;
@@ -188,19 +247,70 @@ function norm(s: string | null | undefined): string | null {
   return t.length ? t : null;
 }
 
-function txt(root: HTMLElement, sel: string): string | null {
-  return norm(root.querySelector(sel)?.textContent);
+class Reader {
+  constructor(
+    private root: HTMLElement,
+    private label: string,
+  ) {}
+
+  /** Same unit, narrower root (e.g. one card inside a panel). */
+  within(el: HTMLElement, what: string): Reader {
+    return new Reader(el, `${this.label} > ${what}`);
+  }
+
+  private fail(sel: string, what: string): never {
+    throw new Error(
+      `[snapshot] ${this.label}: selector \`${sel}\` matched ${what}.\n\n` +
+        `A capture point that matches nothing records an absence as an empty value, which ` +
+        `is indistinguishable from a section that legitimately has no content — the exact ` +
+        `failure this guard exists for. Either the markup moved (fix the selector) or the ` +
+        `content is genuinely conditional (branch on the state that decides it and use ` +
+        `optional(), stating why). No snapshot was written.`,
+    );
+  }
+
+  one(sel: string): HTMLElement {
+    const el = this.root.querySelector(sel) as HTMLElement | null;
+    if (!el) this.fail(sel, "no elements");
+    return el;
+  }
+
+  txt(sel: string): string | null {
+    return norm(this.one(sel).textContent);
+  }
+
+  all(sel: string): string[] {
+    const els = Array.from(this.root.querySelectorAll(sel));
+    if (els.length === 0) this.fail(sel, "no elements");
+    return els.map((e) => norm(e.textContent)).filter((s): s is string => s !== null);
+  }
+
+  style(sel: string, prop: string): string | null {
+    return norm(this.one(sel).style.getPropertyValue(prop));
+  }
+
+  /**
+   * For markup the page renders only in some states. `why` is not used at
+   * runtime; it exists so every tolerated absence carries its justification at
+   * the call site.
+   */
+  optional(sel: string, _why: string): string | null {
+    const el = this.root.querySelector(sel);
+    return el ? norm(el.textContent) : null;
+  }
+
+  optionalStyle(sel: string, prop: string, _why: string): string | null {
+    const el = this.root.querySelector(sel) as HTMLElement | null;
+    return el ? norm(el.style.getPropertyValue(prop)) : null;
+  }
+
+  has(sel: string): boolean {
+    return this.root.querySelector(sel) != null;
+  }
 }
 
-function txtAll(root: HTMLElement, sel: string): string[] {
-  return Array.from(root.querySelectorAll(sel))
-    .map((e) => norm(e.textContent))
-    .filter((s): s is string => s !== null);
-}
-
-function styleOf(root: HTMLElement, sel: string, prop: string): string | null {
-  const el = root.querySelector(sel) as HTMLElement | null;
-  return norm(el?.style.getPropertyValue(prop)) ?? null;
+function read(unit: Unit): Reader {
+  return new Reader(unit.el, unit.label);
 }
 
 // ── Chart-option extraction ───────────────────────────────────────────────────
@@ -299,11 +409,26 @@ function highlightedBar(chart: any): any {
 
 function captureTodayCard(unit: Unit, status: TodayStatus, last7: Last7): any {
   const el = unit.el;
+  const r = read(unit);
+
+  // TodayCard.tsx:135 renders EITHER the data card or <UnavailableCard>, so the
+  // data selectors are conditional on exactly one thing: r().available. Branch on
+  // it rather than letting every selector shrug and return null.
+  const ok = status.available === true;
+  const why = "TodayCard.tsx:135 — the data card is not rendered when available is false";
+
   const pctSpans = Array.from(el.querySelectorAll(".today-pct-wrap > span"));
   // The badge is the only span in that column with no class attribute
   // (TodayCard.tsx:173-185). Selected structurally so a copy change to the badge
   // TEXT still shows up as a diff instead of silently failing to match.
   const badgeEl = pctSpans.find((s) => !s.getAttribute("class"));
+  if (ok && status.is_preliminary && !badgeEl) {
+    throw new Error(
+      `[snapshot] ${unit.label}: is_preliminary is true but no unclassed span exists in ` +
+        `.today-pct-wrap — the 'ERA5T · preliminarno' badge (TodayCard.tsx:173-185) moved. ` +
+        `No snapshot was written.`,
+    );
+  }
 
   return {
     available: status.available === true,
@@ -330,20 +455,32 @@ function captureTodayCard(unit: Unit, status: TodayStatus, last7: Last7): any {
     },
     // The same numbers as the reader sees them, formatting included.
     rendered: {
-      date_badge: txt(el, ".today-date-badge"),
-      category_label: txt(el, ".today-cat"),
-      category_color: styleOf(el, ".today-cat", "color"),
-      description: txt(el, ".today-desc"),
-      percentile: txt(el, ".today-pct-num"),
-      percentile_label: txt(el, ".today-pct-label"),
-      samples: txt(el, ".today-pct-samples"),
+      // The date/location control is outside the Show, so it renders either way.
+      date_badge: r.txt(".today-date-badge"),
+      category_label: ok ? r.txt(".today-cat") : r.optional(".today-cat", why),
+      category_color: ok
+        ? r.style(".today-cat", "color")
+        : r.optionalStyle(".today-cat", "color", why),
+      description: ok ? r.txt(".today-desc") : r.optional(".today-desc", why),
+      percentile: ok ? r.txt(".today-pct-num") : r.optional(".today-pct-num", why),
+      percentile_label: ok ? r.txt(".today-pct-label") : r.optional(".today-pct-label", why),
+      samples:
+        ok && (status.n_samples ?? 0) > 0
+          ? r.txt(".today-pct-samples")
+          : r.optional(
+              ".today-pct-samples",
+              "TodayCard.tsx:169 — only rendered when n_samples > 0",
+            ),
       // D-11 OPEN: this string says ERA5T, but the value it labels comes from
       // api.open-meteo.com/v1/forecast (api.ts:249), an NWP blend that is never
       // ERA5T. Snapshotted verbatim on purpose — correcting it is T-4.13.
+      // Presence is asserted above against status.is_preliminary.
       preliminary_badge: badgeEl ? norm(badgeEl.textContent) : null,
-      explain: txt(el, ".today-explain"),
-      footer: txt(el, ".today-foot"),
-      unavailable_message: el.querySelector(".today-card-data") ? null : txt(el, ".today-explain"),
+      // Both branches render `.today-explain`: the data card's provenance line
+      // (TodayCard.tsx:191) or UnavailableCard's message (TodayCard.tsx:290).
+      explain: r.txt(".today-explain"),
+      footer: ok ? r.txt(".today-foot") : r.optional(".today-foot", why),
+      unavailable_message: r.has(".today-card-data") ? null : r.txt(".today-explain"),
     },
     last7: {
       available: last7.available === true,
@@ -410,25 +547,80 @@ async function captureTrendApi(month: number, day: number, loc: string | null): 
 // ── Capture: analysis panel ───────────────────────────────────────────────────
 
 function captureAnalysis(unit: Unit): any {
-  const el = unit.el;
-  const cards = Array.from(el.querySelectorAll(".reg-card"));
-  const scatter = (cards[0] ?? el) as HTMLElement;
+  const r = read(unit);
+  const scatter = r.within(r.one(".reg-card"), ".reg-card[0]");
   return {
     rendered: {
-      toolbar: txtAll(el, ".reg-toolbar > div"),
-      day_label: txt(el, ".reg-doy-ctrl > div"),
-      title: txt(scatter, "[style*='font-size: 15px']"),
-      subtitle: txt(scatter, "[style*='margin-top: 3px']"),
+      toolbar: r.all(".reg-toolbar > div"),
+      day_label: r.txt(".reg-doy-ctrl > div"),
+      title: scatter.txt("[style*='font-size: 15px']"),
+      subtitle: scatter.txt("[style*='margin-top: 3px']"),
       // "<n> YR · <significance>" — RegressionPanel.tsx:262
-      stats_badge: txtAll(scatter, "[style*='white-space: nowrap']").slice(-1)[0] ?? null,
-      total_change: norm(
-        (scatter.querySelector("[style*='font-size: 20px']") as HTMLElement | null)?.textContent,
-      ),
-      total_change_color: styleOf(scatter, "[style*='font-size: 20px']", "color"),
-      footer: txtAll(scatter, "p"),
+      stats_badge: scatter.all("[style*='white-space: nowrap']").slice(-1)[0] ?? null,
+      total_change: scatter.txt("[style*='font-size: 20px']"),
+      total_change_color: scatter.style("[style*='font-size: 20px']", "color"),
+      footer: scatter.all("p"),
     },
     charts: unit.charts.map(extractChart),
   };
+}
+
+// ── Capture: the page's own raw JSX ───────────────────────────────────────────
+//
+// AliJeVroceERA5.tsx renders displayed numbers INLINE, outside any component:
+// the distribution chart's title and footer (:100-111) and the map panel's
+// station count (:139-144). No component owns them, so no component mount
+// captures them, and the section-set assertion structurally cannot see them —
+// it matches capitalised JSX tags, and these are bare <div>s (that limitation is
+// documented at scripts/snapshot/main.mjs, where the assertion is defined).
+//
+// They are therefore MIRRORED here, character for character, and the mirror is
+// checked against the source: scripts/snapshot/main.mjs `assertMirroredCopy`
+// requires each template below to appear verbatim in AliJeVroceERA5.tsx, so
+// editing the page without editing the harness fails the run rather than
+// baselining a string the page no longer renders.
+
+const EN_MONTHS: Record<string, string> = {
+  Jan: "01", Feb: "02", Mar: "03", Apr: "04", May: "05", Jun: "06",
+  Jul: "07", Aug: "08", Sep: "09", Oct: "10", Nov: "11", Dec: "12",
+};
+
+/** AliJeVroceERA5.tsx:23-26. */
+function fmtDayLabel(dl: string): string {
+  const [mon, day] = dl.split(" ");
+  return `${(day ?? "").padStart(2, "0")}.${EN_MONTHS[mon ?? ""] ?? "??"}`;
+}
+
+/** Mirrors AliJeVroceERA5.tsx:99-112 — the today-chart title, explain and foot. */
+function TodayChartCopy(props: { data: TodayStatus; isNat: boolean }) {
+  const t = () => props.data;
+  return (
+    <div class="today-chart">
+      <div class="today-chart-title">
+        {props.isNat
+          ? `Dnevne najvišje temperature v Sloveniji za dva tedna okoli ${fmtDayLabel(t().day_label ?? "")} od ${t().year_min}`
+          : `Dnevne najvišje temperature na postaji ${t().loc!.replace(/_/g, " ")} za dva tedna okoli ${fmtDayLabel(t().day_label ?? "")} od ${t().year_min}`}
+      </div>
+      <p class="today-explain" style={{ "font-size": "12px", "padding-top": "6px" }}>
+        Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.
+      </p>
+      <div class="today-foot">
+        {`${props.isNat ? "Slovenija" : "Danes"}: ${t().today_temp!.toFixed(1)} °C · ${t().percentile!.toFixed(0)}. percentil · mediana ${t().cutoffs!.p50.toFixed(1)} °C · ${(t().n_samples ?? 0).toLocaleString()} opazovanj · ${t().year_min}–${t().year_max}`}
+      </div>
+    </div>
+  );
+}
+
+/** Mirrors AliJeVroceERA5.tsx:137-145 — the map panel header. */
+function MapPanelHeader(props: { mapLoc: string | null; stationCount: number }) {
+  return (
+    <div>
+      <div class="mirror-panel-title">
+        {props.mapLoc ? props.mapLoc.replace(/_/g, " ") : "Slovenija — vse postaje"}
+      </div>
+      <div class="mirror-panel-sub">{props.stationCount} postaj · ERA5</div>
+    </div>
+  );
 }
 
 // ── The run ───────────────────────────────────────────────────────────────────
@@ -467,19 +659,36 @@ export async function run(): Promise<RunResult> {
   const labelOf = (name: string) => era5Stations.find((s) => s.name === name)?.label ?? name;
 
   // ── global ──────────────────────────────────────────────────────────────────
-  const mapUnit = await mount("global.station_map", () => (
-    <StationMap meta={era5Meta()} loc={null} onSelect={() => {}} />
-  ));
+  const mapUnit = await mount(
+    "global.station_map",
+    () => <StationMap meta={era5Meta()} loc={null} onSelect={() => {}} />,
+    1, // the mapChart (StationMap.tsx:47)
+  );
+
+  // The map panel's own header, which the page renders as raw JSX around
+  // <StationMap> (AliJeVroceERA5.tsx:137-145) — `{era5Stations.length} postaj`
+  // is a displayed number no component owns.
+  const mapHeaderUnit = await mount(
+    "global.map_panel_header",
+    () => <MapPanelHeader mapLoc={null} stationCount={era5Stations.length} />,
+    0,
+  );
 
   const speiNational = await fetchSpeiHeatmap();
   assertNoMisses("global.spei_national (fetch)");
-  const speiUnit = await mount("global.spei_national", () => <SpeiHeatmap data={speiNational} />);
+  const speiUnit = await mount(
+    "global.spei_national",
+    () => <SpeiHeatmap data={speiNational} />,
+    0, // SeasonHeatmap-style CSS grid, no Highcharts
+  );
 
   const speiStation = await fetchSpeiStationSeasonal();
   assertNoMisses("global.spei_station (fetch)");
-  const speiStationUnit = await mount("global.spei_station", () => (
-    <SpeiTrendChart data={speiStation} />
-  ));
+  const speiStationUnit = await mount(
+    "global.spei_station",
+    () => <SpeiTrendChart data={speiStation} />,
+    1,
+  );
 
   const speiRows: Record<string, any> = {};
   for (const r of speiNational.data ?? []) {
@@ -548,6 +757,15 @@ export async function run(): Promise<RunResult> {
       marker_count:
         mapUnit.charts[0]?.seriesRef?.find((s: any) => s?.type === "mappoint")?.data?.length ?? null,
       charts: mapUnit.charts.map(extractChart),
+      panel_header: {
+        _note:
+          "Raw JSX in AliJeVroceERA5.tsx:137-145, owned by no component and therefore " +
+          "invisible to the section-set assertion. Mirrored by MapPanelHeader in " +
+          "harness.tsx and checked against the source by main.mjs assertMirroredCopy. " +
+          "`station_count` is the same figure the _size=50 cap would truncate (T-5.2).",
+        title: read(mapHeaderUnit).txt(".mirror-panel-title"),
+        station_count: read(mapHeaderUnit).txt(".mirror-panel-sub"),
+      },
     },
     spei_national: {
       available: speiNational.available,
@@ -556,7 +774,7 @@ export async function run(): Promise<RunResult> {
       baseline: speiNational.baseline,
       n_rows: speiNational.data?.length ?? 0,
       rows: speiRows,
-      rendered_legend: txtAll(speiUnit.el, "button"),
+      rendered_legend: read(speiUnit).all("button"),
     },
     spei_station: {
       available: speiStation.available,
@@ -568,7 +786,7 @@ export async function run(): Promise<RunResult> {
         _note: "What SpeiTrendChart.tsx:139-140 selects with no interaction.",
         station: Object.keys(speiStation.stations ?? {}).sort()[0] ?? null,
         period: "Summer",
-        rendered: txtAll(speiStationUnit.el, "p"),
+        rendered: read(speiStationUnit).all("p"),
       },
       trends: speiStationTrends,
       series_snapshot_stations: speiStationFull,
@@ -584,9 +802,11 @@ export async function run(): Promise<RunResult> {
 
     const heatRows = await fetchSeasonHeatmap(station);
     assertNoMisses(`by_station.${station}.season_heatmap (fetch)`);
-    const heatUnit = await mount(`by_station.${station}.season_heatmap`, () => (
-      <Era5SeasonHeatmap loc={station} label={label} />
-    ));
+    const heatUnit = await mount(
+      `by_station.${station}.season_heatmap`,
+      () => <Era5SeasonHeatmap loc={station} label={label} />,
+      0, // SeasonHeatmap.tsx draws a CSS grid, not a Highcharts chart
+    );
     const seasonRows: Record<string, any> = {};
     for (const r of heatRows) {
       seasonRows[`${(r as any).season}|${(r as any).y}`] = {
@@ -605,11 +825,15 @@ export async function run(): Promise<RunResult> {
     // `cases`. doy=1 only positions the selected-day marker.
     const cal = await fetchCalendar(station, defaults.variable, defaults.window_days, "raw", "theilsen");
     assertNoMisses(`by_station.${station}.calendar (fetch)`);
-    const calUnit = await mount(`by_station.${station}.calendar`, () => (
-      <RegressionPanel meta={era5Meta()} defaultDoy={1} syncLoc={() => station}>
-        <RegYearRoundCard />
-      </RegressionPanel>
-    ));
+    const calUnit = await mount(
+      `by_station.${station}.calendar`,
+      () => (
+        <RegressionPanel meta={era5Meta()} defaultDoy={1} syncLoc={() => station}>
+          <RegYearRoundCard />
+        </RegressionPanel>
+      ),
+      1, // YearRoundChart
+    );
     const calRows: Record<string, [number, number]> = {};
     for (const r of cal.rows) {
       calRows[`${String(r.month).padStart(2, "0")}-${String(r.day).padStart(2, "0")}`] = [
@@ -624,16 +848,21 @@ export async function run(): Promise<RunResult> {
         kind === "days" ? defaults.tropical_days_threshold : defaults.tropical_nights_threshold;
       const data = await fetchEra5Tropical(station, kind, threshold, defaults.tropical_streak);
       assertNoMisses(`by_station.${station}.tropical_${kind} (fetch)`);
-      const unit = await mount(`by_station.${station}.tropical_${kind}`, () => (
-        <Era5TropicalChart
-          loc={station}
-          label={label}
-          kind={kind}
-          threshold={threshold}
-          streak={defaults.tropical_streak}
-        />
-      ));
+      const unit = await mount(
+        `by_station.${station}.tropical_${kind}`,
+        () => (
+          <Era5TropicalChart
+            loc={station}
+            label={label}
+            kind={kind}
+            threshold={threshold}
+            streak={defaults.tropical_streak}
+          />
+        ),
+        1, // TropicalChart
+      );
       const charts = unit.charts.map(extractChart);
+      const tr = read(unit);
       tropical[kind] = {
         threshold,
         streak: defaults.tropical_streak,
@@ -644,11 +873,11 @@ export async function run(): Promise<RunResult> {
         counts: data?.counts ?? null,
         trend: data?.trend ?? null,
         rendered: {
-          header: txt(unit.el, "[style*='font-size: 14px']"),
-          coverage: txt(unit.el, "[style*='font-size: 10px']"),
-          paragraphs: txtAll(unit.el, "p"),
+          header: tr.txt("[style*='font-size: 14px']"),
+          coverage: tr.txt("[style*='font-size: 10px']"),
+          paragraphs: tr.all("p"),
         },
-        current_year_bar: charts.length ? highlightedBar(charts[0]) : null,
+        current_year_bar: highlightedBar(charts[0]),
         charts,
       };
     }
@@ -658,7 +887,18 @@ export async function run(): Promise<RunResult> {
       season_heatmap: {
         n_rows: heatRows.length,
         rows: seasonRows,
-        rendered: txtAll(heatUnit.el, "p"),
+        // SeasonHeatmap.tsx renders no <p> at all — the previous selector here
+        // matched nothing and baselined [] for both stations. The four stat
+        // tiles (SeasonHeatmap.tsx:204-213) are the numbers this section
+        // actually displays, and the legend and decade ticks are its labels.
+        rendered: {
+          modes: read(heatUnit).all(".shm-btn"),
+          stat_values: read(heatUnit).all(".shm-stat-num"),
+          stat_labels: read(heatUnit).all(".shm-stat-lbl"),
+          legend: read(heatUnit).all(".shm-leg-item"),
+          year_ticks: read(heatUnit).all(".shm-tick"),
+        },
+        charts: heatUnit.charts.map(extractChart),
       },
       year_round_calendar: {
         loc: cal.loc,
@@ -668,8 +908,8 @@ export async function run(): Promise<RunResult> {
         n_rows: cal.rows.length,
         rows: calRows,
         rendered: {
-          title: txt(calUnit.el, "[style*='font-size: 15px']"),
-          legend: txtAll(calUnit.el, "span"),
+          title: read(calUnit).txt("[style*='font-size: 15px']"),
+          legend: read(calUnit).all("span"),
         },
         charts: calUnit.charts.map(extractChart),
       },
@@ -693,39 +933,76 @@ export async function run(): Promise<RunResult> {
     const status = page.status;
     const last7 = page.last7;
 
-    const cardUnit = await mount(`${label}.today_card`, () => (
-      <TodayCard
-        data={status}
-        last7={last7}
-        meta={era5Meta()}
-        date={c.date}
-        today={today}
-        loading={false}
-        onDateChange={() => {}}
-        onLocChange={() => {}}
-        nationalLoc={ERA5_NATIONAL}
-      />
-    ));
+    // The gauge (TodayCard.tsx:141) always mounts when the data card renders;
+    // the last-7 strip (TodayCard.tsx:208-217) only when last7 has days — and
+    // both sit INSIDE the `available` Show (TodayCard.tsx:135), so an
+    // unavailable day draws nothing however much last-7 data came back.
+    const expectedCardCharts = !status.available
+      ? 0
+      : 1 + (last7?.available && (last7.days?.length ?? 0) > 0 ? 1 : 0);
+
+    const cardUnit = await mount(
+      `${label}.today_card`,
+      () => (
+        <TodayCard
+          data={status}
+          last7={last7}
+          meta={era5Meta()}
+          date={c.date}
+          today={today}
+          loading={false}
+          onDateChange={() => {}}
+          onLocChange={() => {}}
+          nationalLoc={ERA5_NATIONAL}
+        />
+      ),
+      expectedCardCharts,
+    );
 
     // Both are gated on todayData()?.available on the page
     // (AliJeVroceERA5.tsx:98 and :116), so on Feb 29 neither mounts.
     let distribution: any = null;
     let trendRendered: any = null;
+    let todayChartCopy: any = null;
     if (status.available) {
-      const distUnit = await mount(`${label}.distribution`, () => (
-        <DistributionChart data={status} chartId="dist-chart" />
-      ));
+      const distUnit = await mount(
+        `${label}.distribution`,
+        () => <DistributionChart data={status} chartId="dist-chart" />,
+        1,
+      );
       distribution = { charts: distUnit.charts.map(extractChart) };
 
+      // The title, explain and footer the page wraps around that chart as raw
+      // JSX (AliJeVroceERA5.tsx:99-112). The footer alone displays four numbers
+      // — median cutoff, sample count and both record years — that no component
+      // renders and nothing else here captures.
+      const copyUnit = await mount(
+        `${label}.today_chart_copy`,
+        () => <TodayChartCopy data={status} isNat={c.today_loc === ERA5_NATIONAL} />,
+        0,
+      );
+      const cr = read(copyUnit);
+      todayChartCopy = {
+        _note:
+          "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx " +
+          "and checked against the source by main.mjs assertMirroredCopy.",
+        title: cr.txt(".today-chart-title"),
+        explain: cr.txt(".today-explain"),
+        footer: cr.txt(".today-foot"),
+      };
+
       // loc is the TODAY-card station, not the analysis one (AliJeVroceERA5.tsx:117).
-      const trendUnit = await mount(`${label}.today_trend`, () => (
-        <TodayTrendChart date={c.date} loc={c.today_loc} />
-      ));
+      const trendUnit = await mount(
+        `${label}.today_trend`,
+        () => <TodayTrendChart date={c.date} loc={c.today_loc} />,
+        1,
+      );
+      const tr = read(trendUnit);
       const charts = trendUnit.charts.map(extractChart);
       trendRendered = {
-        title: txt(trendUnit.el, ".today-chart-title"),
-        explain: txt(trendUnit.el, ".today-explain"),
-        footer: txt(trendUnit.el, ".today-foot"),
+        title: tr.txt(".today-chart-title"),
+        explain: tr.txt(".today-explain"),
+        footer: tr.txt(".today-foot"),
         // The current-year plotline: a visible label that used to read the system
         // clock (TodayTrendChart.tsx:41) and now follows the pinned date.
         current_year_plotline: {
@@ -739,16 +1016,23 @@ export async function run(): Promise<RunResult> {
       };
     }
 
-    const analysisUnit = await mount(`${label}.analysis`, () => (
-      <RegressionPanel meta={era5Meta()} defaultDoy={doy} syncLoc={() => c.analysis_loc}>
-        <RegToolbar />
-        <RegScatterCard />
-      </RegressionPanel>
-    ));
+    const analysisUnit = await mount(
+      `${label}.analysis`,
+      () => (
+        <RegressionPanel meta={era5Meta()} defaultDoy={doy} syncLoc={() => c.analysis_loc}>
+          <RegToolbar />
+          <RegScatterCard />
+        </RegressionPanel>
+      ),
+      1, // RegressionChart
+    );
 
-    const heroUnit = await mount(`${label}.hero_cards`, () => (
-      <HeroCards loc={c.analysis_loc} doy={doy} />
-    ));
+    const heroUnit = await mount(
+      `${label}.hero_cards`,
+      () => <HeroCards loc={c.analysis_loc} doy={doy} />,
+      0,
+    );
+    const hr = read(heroUnit);
 
     caseOut.push({
       id: c.id,
@@ -760,6 +1044,7 @@ export async function run(): Promise<RunResult> {
       ...(c.verified ? { verified: c.verified } : {}),
       today_card: captureTodayCard(cardUnit, status, last7),
       distribution,
+      today_chart_copy: todayChartCopy,
       today_trend: {
         api: await captureTrendApi(month, day, c.today_loc),
         rendered: trendRendered,
@@ -767,11 +1052,11 @@ export async function run(): Promise<RunResult> {
       analysis: captureAnalysis(analysisUnit),
       hero_cards: {
         rendered: {
-          headline: txt(heroUnit.el, "[style*='font-size: 42px']"),
-          headline_color: styleOf(heroUnit.el, "[style*='font-size: 42px']", "color"),
-          category: txt(heroUnit.el, "[style*='border-radius: 20px']"),
-          paragraphs: txtAll(heroUnit.el, "p"),
-          stats: txtAll(heroUnit.el, "[style*='font-size: 11px']"),
+          headline: hr.txt("[style*='font-size: 42px']"),
+          headline_color: hr.style("[style*='font-size: 42px']", "color"),
+          category: hr.txt("[style*='border-radius: 20px']"),
+          paragraphs: hr.all("p"),
+          stats: hr.all("[style*='font-size: 11px']"),
         },
       },
     });

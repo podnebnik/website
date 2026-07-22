@@ -16,7 +16,7 @@
     "Selecting a station in the today card does NOT move the analysis panel and vice",
     "versa, so collapsing them into one field would snapshot a page state that cannot",
     "occur. On a default page load today_loc is the national average while analysis_loc",
-    "is already Ljubljana (fetchMeta default_location, api.ts:318) — that is case",
+    "is already Ljubljana (fetchMeta default_location, api.ts:319) — that is case",
     "`national-primary` below, and it is the literal default page.",
     "",
     "FIXTURES ARE VALID ONLY WITHIN A DATA GENERATION (CLAUDE.md). Every number this",
@@ -199,7 +199,7 @@
       "today_loc": "Kredarica",
       "analysis_loc": "Kredarica",
       "date": "1985-01-07",
-      "purpose": "Below p5 at the ALTITUDE station, and the reason 2012-02-07 alone is not enough (see ljubljana-p5 counter_check). January 1985 was a documented central-European cold wave; this is the second-coldest day in Kredarica's whole record, after 1968-01-13. Below p5 at BOTH stations, so it also doubles as a lowland cold control.",
+      "purpose": "Below p5 at the ALTITUDE station, and the reason 2012-02-07 alone is not enough (see ljubljana-p5 counter_check). January 1985 was a documented central-European cold wave. Below p5 at BOTH stations, so it also doubles as a lowland cold control. NOT a record claim: the committed fixtures hold this date and the +/-7-day climatology window, not the full daily series, so nothing here can rank the day against Kredarica's whole record.",
       "verified": {
         "source": "tests/fixtures/http/climate-si/daily__era5_name-{Kredarica,Ljubljana}__date-1985-01-07.json and daily_window__era5_name-{Kredarica,Ljubljana}__month-1__day-7.json, re-read 2026-07-22",
         "temperature_max_2m": -23.707,
