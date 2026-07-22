@@ -9,6 +9,13 @@ import EleventyVitePlugin from "@11ty/eleventy-plugin-vite";
 const IMG_DISABLED = process.env.ELEVENTY_DISABLE_IMG === "1";
 const EMULATE_PRODUCTION = process.env.ELEVENTY_EMULATE_PRODUCTION === "1";
 
+// T-1.2: `yarn fixtures:build` produces a build that is pinned to a fixed date and
+// carries 7 MB of recorded responses under /fixtures. That must never be mistaken
+// for a deployable build, so it goes to its own directory (dist-fixtures) rather
+// than overwriting the dist/ that `yarn build` and the deploy image use.
+// Default is unchanged: plain `yarn build` still writes dist/.
+const OUTPUT_DIR = process.env.ELEVENTY_OUTPUT_DIR || "dist";
+
 function monthToNumber(date) {
     return date.replace('januar', '1.')
         .replace('februar', '2.')
@@ -91,7 +98,7 @@ async function imageShortcode(src, alt, sizes) {
     const imageDir = imagePath.replace(/^pages\/(.*)\/.*$/, '$1');
 
     let metadata = await Image(imagePath, {
-        outputDir: "dist/img/" + imageDir,
+        outputDir: OUTPUT_DIR + "/img/" + imageDir,
         urlPath: "/img/" + imageDir,
         widths: [920, 1840],
         formats: ["webp"],
@@ -188,7 +195,7 @@ export default function (eleventyConfig) {
     return {
         dir: {
             input: 'pages',
-            output: 'dist',
+            output: OUTPUT_DIR,
         },
         htmlTemplateEngine: 'liquid',
         markdownTemplateEngine: 'liquid',

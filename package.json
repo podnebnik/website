@@ -10,8 +10,8 @@
     "build-debug": "dotnet fable code --extension .fs.jsx --run sh -c 'DEBUG=\"Eleventy*\" npx @11ty/eleventy'",
     "typecheck": "tsc --noEmit",
     "fixtures:record": "node scripts/fixtures/record.mjs",
-    "fixtures:start": "VITE_FIXTURES=1 VITE_PINNED_DATE=2026-07-21 yarn start",
-    "fixtures:build": "VITE_FIXTURES=1 VITE_PINNED_DATE=2026-07-21 yarn build"
+    "fixtures:start": "node scripts/fixtures/with-pinned-date.mjs yarn start",
+    "fixtures:build": "ELEVENTY_OUTPUT_DIR=dist-fixtures node scripts/fixtures/with-pinned-date.mjs yarn build"
   },
   "dependencies": {
     "@highcharts/map-collection": "^2.3.2",

@@ -51,6 +51,16 @@
       "purpose": "Day after the leap day, in a leap year. monthDayToDoy (api.ts:107-110) uses a fixed non-leap day table, so Mar 1 in a leap year is where a doy off-by-one would first show up."
     },
     {
+      "date": "2025-02-28",
+      "role": "t-1.1 boundary",
+      "purpose": "Last day of February in a NON-leap year. The leap pair above only proves the Feb 29 -> Mar 1 transition; this is the control that shows what Feb 28 -> Mar 1 does when there is no Feb 29 in between. monthDayToDoy (api.ts:107-110) reads a fixed non-leap table, so doy(2,28) and doy(3,1) must be consecutive here and NOT consecutive in 2024 — an off-by-one that is invisible with only the leap pair recorded."
+    },
+    {
+      "date": "2025-03-01",
+      "role": "t-1.1 boundary",
+      "purpose": "Mar 1 in a non-leap year, the counterpart to 2024-03-01. Same month/day, different year: the daily_window / annual_trend shapes are keyed on month+day and are therefore shared with the 2024 date (recorded once), but the date-keyed shapes (D5 daily station api.ts:457-459, D6 last7 api.ts:553-557) are distinct, and D6 is the one that matters — its 7-day lookback crosses Feb 28 rather than Feb 29."
+    },
+    {
       "date": "2025-01-01",
       "role": "t-1.1 boundary",
       "purpose": "Year boundary, low end. The +/-7-day climatology window (api.ts:56-61) has to wrap across the year end; Jan 1 is where wrap-around arithmetic breaks."
@@ -62,13 +72,18 @@
     },
     {
       "date": "2013-08-03",
-      "role": "t-1.1 extreme candidate",
-      "purpose": "CANDIDATE for the p95+ case — August 2013 was a documented Slovenian heat episode. Whether it actually ranks above p95 for a given station is verified after recording and reported in PROGRESS.md; T-1.1 may swap it for a better date without re-recording the rest of the matrix."
+      "role": "t-1.1 extreme (p95+, both snapshot stations)",
+      "purpose": "VERIFIED against the recorded fixtures, not assumed: Ljubljana 35.591 vs p5 19.35 / p95 31.36, and Kredarica 21.743 vs p5 5.99 / p95 16.79. Both are above p95, so this single date exercises the 'hell' branch (api.ts categorize) at the lowland station and the altitude station at once. August 2013 was a documented Slovenian heat episode."
     },
     {
       "date": "2012-02-07",
-      "role": "t-1.1 extreme candidate",
-      "purpose": "CANDIDATE for the p5- case — the February 2012 European cold wave. Same caveat as the p95+ candidate above: verified after recording, not assumed."
+      "role": "t-1.1 extreme (p5-, Ljubljana only)",
+      "purpose": "VERIFIED: Ljubljana -5.759 vs p5 -4.24 — below p5. NOT an extreme at Kredarica: -14.707 against a p5 of -15.97 is inside the band, i.e. an ordinary early-February day up there. The February 2012 European cold wave was a lowland event in this dataset. The Kredarica p5- case is 1985-01-07 below; this date is kept for Ljubljana."
+    },
+    {
+      "date": "1985-01-07",
+      "role": "t-1.1 extreme (p5-, both snapshot stations)",
+      "purpose": "VERIFIED against the live datasette before recording, and the reason the 2012 date is not enough: Kredarica -23.707 vs p5 -16.76 (second-coldest day in its whole record, after 1968-01-13) and Ljubljana -11.759 vs p5 -5.34. Both below p5, so the 'freezing' branch is exercised at altitude — which 2012-02-07 does not do. January 1985 was a documented central-European cold wave."
     }
   ],
 
@@ -86,8 +101,23 @@
   ],
   "snapshot_stations": ["Ljubljana", "Kredarica"],
 
-  "_variables_note": "The three options in the regression variable picker (RegressionPanel.tsx:11-13).",
-  "variables": ["temperature_max", "temperature_min", "temperature_mean"],
+  "_variables_note": [
+    "ALL FIVE options in the regression variable picker (RegressionPanel.tsx:10-16),",
+    "not just the temperature three. precipitation_sum and et0_evapotranspiration are",
+    "user-selectable from the same <select> (RegressionPanel.tsx:177-179) and reach",
+    "buildRegressionResult (api.ts:661) and fetchCalendar (api.ts:1378) with no filtering",
+    "on the way — so a run that omits them is one dropdown change away from a live",
+    "request. They are recorded for snapshot_stations, like the other non-default",
+    "variables.",
+    "",
+    "Note the units differ: for these two the page labels the axis mm, not °C",
+    "(RegressionPanel.tsx:70 isPrecip). That is a display concern, not a fixture one —",
+    "the recorded shapes are identical."
+  ],
+  "variables": [
+    "temperature_max", "temperature_min", "temperature_mean",
+    "precipitation_sum", "et0_evapotranspiration"
+  ],
 
   "_tropical_note": [
     "Slider bounds come from ERA5_CONFIGS (Era5TropicalChart.tsx:16 days 25-35,",

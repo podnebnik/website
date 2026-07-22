@@ -8,7 +8,7 @@ import { today as todayIso } from "./clock.ts";
 
 // podnebnik.org datasette serves each DB at the root (no /datasette prefix),
 // e.g. https://stage-data.podnebnik.org/climate-si — override with VITE_DATASETTE_URL for dev.
-const DS_BASE = (import.meta.env.VITE_DATASETTE_URL as string | undefined) ?? "https://stage-data.podnebnik.org";
+export const DS_BASE = (import.meta.env.VITE_DATASETTE_URL as string | undefined) ?? "https://stage-data.podnebnik.org";
 // ERA5 historical + precomputed stats
 const DS = `${DS_BASE}/climate-si`;
 // ARSO historical data (arso-si.db)

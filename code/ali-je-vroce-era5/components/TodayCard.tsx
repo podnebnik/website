@@ -1,6 +1,7 @@
 import { Show, For, createSignal, lazy, Suspense } from "solid-js";
 import type { TodayStatus, Last7, SiteMeta, RankInfo } from "../types.ts";
 import { isArsoLoc } from "../api.ts";
+import { todayYear } from "../clock.ts";
 import { TodayFlag } from "./TodayFlag.tsx";
 import { TodayGauge } from "../charts/TodayGauge.tsx";
 
@@ -35,7 +36,9 @@ function catDesc(catKey: string, r: TodayStatus): string {
   const tpl = (isArso ? CAT_DESCS : CAT_DESCS_ERA5)[catKey] ?? "";
   const d = fmtDayLabel(r.day_label ?? "");
   const yearMin = r.year_min ?? 1950;
-  const yearMax = r.year_max ?? new Date().getFullYear();
+  // Fallback path only (r.year_max is present in every recorded response), but it
+  // feeds {record_years} in visible copy, so it goes through the same clock.
+  const yearMax = r.year_max ?? todayYear();
   return tpl
     .replace("{d}", d)
     .replace("{year_min}", String(yearMin))
