@@ -133,6 +133,36 @@
     "default_streak": 1
   },
 
+  "_normalised": [
+    "Recorded bodies are byte-for-byte what the server sent, with ONE exception.",
+    "",
+    "Open-Meteo (shapes O1, O2) stamps every response with `generationtime_ms`, the",
+    "server's own timing for that request. It differs on every call even when the",
+    "forecast values are identical, so it alone made all 19 open-meteo/ files diff on",
+    "the 2026-07-22 re-record. That destroys the property that makes this fixture set",
+    "a control at all: re-running `yarn fixtures:record` against an unchanged upstream",
+    "must leave the working tree clean, so that a diff means THE DATA MOVED and not",
+    "THE RECORDER IS NOISY.",
+    "",
+    "The field is therefore DELETED at record time (scripts/fixtures/record.mjs,",
+    "stripGenerationTime), not preserved and ignored. Safe because the app never reads",
+    "it: the only consumers of an Open-Meteo body are openMeteoMax (api.ts:255-256)",
+    "and openMeteoNationalMax (api.ts:274-277), and both read exactly",
+    "`daily.temperature_2m_max[0]`. Nothing else in code/ali-je-vroce-era5 mentions",
+    "`generationtime` (grep, 2026-07-22). Entries in index.json carry a `normalised`",
+    "marker.",
+    "",
+    "Normalised responses are re-serialised with JSON.stringify, which also drops",
+    "whitespace and renormalises number literals — upstream `299.0` and `26.0` are",
+    "stored as `299` and `26`. Same values, and JSON.parse cannot tell the difference,",
+    "so the app sees identical numbers; but it does mean these 19 files are not a",
+    "byte-level record of the wire format. Verified 2026-07-22: two consecutive full",
+    "re-records produced ZERO diff across all 1258 files.",
+    "",
+    "NOT normalised, and still diffs every run by design: index.json's `recorded_at`.",
+    "The byte-identity claim is about tests/fixtures/http/ only."
+  ],
+
   "_uncapturable": [
     "VERIFIED BY MEASUREMENT, not assumption: with fixtures installed a default page",
     "load makes 51 requests, of which 48 are same-origin. The 3 that still leave the",

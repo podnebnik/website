@@ -1,1 +1,1 @@
-{"latitude":45.96,"longitude":13.639999,"generationtime_ms":0.035762786865234375,"utc_offset_seconds":0,"timezone":"GMT","timezone_abbreviation":"GMT","elevation":94.0,"daily_units":{"time":"iso8601","temperature_2m_max":"°C"},"daily":{"time":["2026-07-21"],"temperature_2m_max":[30.5]}}
+{"latitude":45.96,"longitude":13.639999,"utc_offset_seconds":0,"timezone":"GMT","timezone_abbreviation":"GMT","elevation":94,"daily_units":{"time":"iso8601","temperature_2m_max":"°C"},"daily":{"time":["2026-07-21"],"temperature_2m_max":[30.5]}}

@@ -6,40 +6,53 @@
 // Europe/Ljubljana is D-4, implemented in T-4.3a, and ships separately.
 //
 // "Single source" is a claim about READS OF THE SYSTEM CLOCK, not about every
-// `new Date(...)` in the island. Audited by grep over code/ali-je-vroce-era5 on
-// 2026-07-22; the complete set of remaining occurrences, and why each is not a
+// `new Date(...)` in the island. Re-audited by `grep -rn "new Date(" ` over
+// code/ali-je-vroce-era5 on 2026-07-22 after routing TropicalChart through here;
+// that grep returns 19 hits, 4 of which are in this file itself (3 in this
+// comment, 1 the fallback below). The other 15, and why each is or is not a
 // clock read:
 //
-//   PURE DATE ARITHMETIC on an explicit argument — deterministic, no clock:
+//   PURE DATE ARITHMETIC on an explicit argument — 13 hits, deterministic,
+//   no clock involved:
 //     api.ts:103                     doy table anchor, Date.UTC(2001,0,1)
 //     api.ts:505,507,535,537         parse the `date` argument and fixture rows
 //     AliJeVroceERA5.tsx:29,30       parse the passed dateStr
 //     charts/YearRoundChart.tsx:23,24,116  doy <-> month/day on a fixed 2001
-//     components/TodayCard.tsx:61    parse the passed dateStr
+//     components/TodayCard.tsx:64    parse the passed dateStr
 //     components/RegressionPanel.tsx:27    doy label anchor
 //     components/RegressionSection.tsx:18  doy label anchor
 //
-//   CLOCK READS, still present, NOT routed here in this pass:
+//   CLOCK READ, still present, deliberately not routed here — 1 hit:
+//     components/ArsoTrendChart.tsx:25 — genuinely orphaned (imported nowhere,
+//       confirmed by grep), deleted by T-2.1. Whoever revives it instead must
+//       switch it to todayYear() first.
 //
-//     components/ArsoTrendChart.tsx:25 — genuinely orphaned (imported nowhere),
-//       deleted by T-2.1. Whoever revives it must switch it to todayYear().
+//   CLOCK READ, not displayed — 1 hit. A wall-clock timestamp on a diagnostic
+//   record, in a module that only exists under VITE_FIXTURES=1:
+//     fixtures/install.ts:160 (miss timestamp)
 //
-//     charts/TropicalChart.tsx:101,197 — !! NOT DEAD CODE !! Both sit inside
-//       TropHighchart (TropicalChart.tsx:95-233), which is imported by
-//       charts/Era5TropicalChart.tsx:3 and mounted at AliJeVroceERA5.tsx:279,291.
-//       T-2.1 does not delete this file, and T-2.3 removes only the sidecar
-//       config at TropicalChart.tsx:44-63 — TropHighchart survives both. Line 101
-//       colours the current year's bar ACCENT at 0.4 opacity and line 197 appends
-//       "(leto v teku)" to its tooltip, so BOTH ARE VISIBLE OUTPUT DRIVEN BY THE
-//       SYSTEM CLOCK, on a chart a default page load renders twice (days and
-//       nights). They are the same defect this file exists to fix and they will
-//       flip the T-1.3 baseline on 1 January. Left untouched only because the
-//       T-1.2 review explicitly scoped them out on the (mistaken) grounds that
-//       they were orphaned; see PROGRESS.md 2026-07-22 review entry.
+//   ROUTED THROUGH todayYear() — no longer `new Date`, listed because the
+//   previous revision of this comment wrongly recorded them as left alone:
+//     components/TodayTrendChart.tsx:41   current-year plotline label
+//     components/TodayCard.tsx:41         year_max fallback in the blurb
+//     charts/TropicalChart.tsx:101,197    current-year bar colour + its tooltip
+//       (TropicalChart.tsx:102,198 after the import; :101,197 before it.)
+//       These last two sit inside TropHighchart (TropicalChart.tsx:96-234),
+//       imported by charts/Era5TropicalChart.tsx:3 and mounted twice on a default
+//       page load (AliJeVroceERA5.tsx:279,291 — tropical days and nights). The
+//       T-1.2 review scoped them out on the grounds that T-2.1/T-2.3 delete them;
+//       they do not (T-2.1 deletes five other files, T-2.3 removes only the
+//       sidecar config at TropicalChart.tsx:44-63), so they were live,
+//       clock-driven, visible output and would have flipped the T-1.3 baseline on
+//       1 January. Fixed in the follow-up commit.
 //
-//   CLOCK READ, not displayed — a wall-clock timestamp on a diagnostic record,
-//   in a module that only exists under VITE_FIXTURES=1:
-//     fixtures/install.ts (miss timestamp)
+//       ONE BEHAVIOURAL CAVEAT, deliberate: those two read
+//       `new Date().getFullYear()`, the viewer's LOCAL year, and now read
+//       today()'s UTC year. Identical all year except for the UTC-offset window
+//       around New Year (in Ljubljana, 00:00-01:00 or 02:00 CET on 1 January).
+//       Taking the UTC year is the correct end of that trade: it makes this chart
+//       agree with the rest of the page, which is UTC-day throughout until D-4
+//       moves the whole island to Europe/Ljubljana in T-4.3a.
 //
 //   CLOCK READ, intentional, inside this file:
 //     the production fallback in today() below
@@ -75,10 +88,16 @@ export function today(): string {
 }
 
 /**
- * The calendar year of `today()`. Rendered directly by TodayTrendChart.tsx:41
- * (the "current year" plotline label, on a component that mounts unconditionally)
- * and TodayCard.tsx:41 (the year_max fallback in the category blurb), so it must
- * move with the pinned date or the T-1.1 snapshot changes on 1 January.
+ * The calendar year of `today()`. Four call sites, all of them visible output on
+ * components that mount on a default page load, so this must move with the
+ * pinned date or the T-1.1 snapshot and T-1.3 baselines change on 1 January:
+ *
+ *   TodayTrendChart.tsx:41   the "current year" plotline label
+ *   TodayCard.tsx:41         the year_max fallback in the category blurb
+ *   TropicalChart.tsx:102    highlights the current year's bar (ACCENT, 0.4)
+ *   TropicalChart.tsx:198    appends "(leto v teku)" to that bar's tooltip
+ *
+ * The UTC year, not the local one — see the caveat in the header comment.
  */
 export function todayYear(): number {
   return Number(today().slice(0, 4));
