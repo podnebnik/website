@@ -104,6 +104,33 @@ const stations = manifest.stations;
 const snapshotStations = manifest.snapshot_stations;
 const variables = manifest.variables;
 
+/** D6's URL, shared with the second-pass planner below so the two cannot drift. */
+function last7Url(name, date) {
+  return (
+    `${DS}/daily.json?_shape=array&era5_name__exact=${enc(name)}&date__lte=${date}` +
+    `&_sort_desc=date&_size=7&_col=date&_col=temperature_max_2m&_col=month&_col=day`
+  );
+}
+
+/**
+ * The doy round-trip the analysis panel performs, reproduced exactly:
+ * dateToDoy (AliJeVroceERA5.tsx:28-32) on the real calendar, then doyToMonthDay
+ * (api.ts:102-104) on a fixed NON-LEAP 2001 calendar.
+ *
+ * The two calendars disagree after Feb 28 of a leap year, so selecting
+ * 2024-03-01 makes the regression panel and the hero cards query MARCH 2. That
+ * is the T-4.5 leap-year defect, and the fixtures have to cover it for the
+ * snapshot to be able to freeze it.
+ */
+function doyRoundTrip(date) {
+  const d = new Date(date + "T12:00:00Z");
+  const start = Date.UTC(d.getUTCFullYear(), 0, 0);
+  const doy = Math.floor((d.getTime() - start) / 86_400_000);
+  const back = new Date(Date.UTC(2001, 0, 1));
+  back.setUTCDate(back.getUTCDate() + doy - 1);
+  return { month: back.getUTCMonth() + 1, day: back.getUTCDate() };
+}
+
 /** month/day pairs implied by the date matrix, deduplicated. */
 const monthDays = [];
 {
@@ -198,8 +225,7 @@ for (const name of stations) {
     add(
       "D6 daily last7",
       "api.ts:553-557",
-      `${DS}/daily.json?_shape=array&era5_name__exact=${enc(name)}&date__lte=${date}` +
-        `&_sort_desc=date&_size=7&_col=date&_col=temperature_max_2m&_col=month&_col=day`,
+      last7Url(name, date),
       dsFile("daily", [["last7", "1"], ["era5_name", name], ["date_lte", date]]),
     );
 
@@ -245,6 +271,35 @@ for (const name of stations) {
           dsFile("tropical", [
             ["era5_name", name], ["kind", kind], ["threshold", threshold], ["streak", streak],
           ]),
+        );
+      }
+    }
+  }
+}
+
+// D8b — regression scatter at the DOY-ROUND-TRIPPED month/day. api.ts:661-663
+//
+// fetchRegression (api.ts:642) does not use the selected date's month/day: it
+// converts the panel's doy back through the fixed non-leap table at api.ts:102.
+// On a leap-year date after Feb 28 those disagree — 2024-03-01 is analysed as
+// March 2 — so without these the offline run misses on a date that is in the
+// matrix. Same variable rules as D8. Overlaps with D8 are deduplicated by add().
+{
+  const seen = new Set();
+  for (const date of dates) {
+    const { month, day } = doyRoundTrip(date);
+    const key = `${month}-${day}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    for (const name of stations) {
+      const regVars = snapshotStations.includes(name) ? variables : ["temperature_max"];
+      for (const v of regVars) {
+        add(
+          "D8b annual_trend regression (doy round-trip)",
+          "api.ts:642 -> api.ts:661-663",
+          `${DS}/annual_trend.json?_shape=array&era5_name__exact=${enc(name)}&variable__exact=${enc(v)}` +
+            `&month__exact=${month}&day__exact=${day}&_size=1`,
+          dsFile("annual_trend", [["era5_name", name], ["variable", v], ["month", month], ["day", day]]),
         );
       }
     }
@@ -315,6 +370,24 @@ add(
 );
 
 // ── Fetch ─────────────────────────────────────────────────────────────────────
+//
+// TWO PASSES. Pass 1 fetches everything planned above. Pass 2 plans and fetches
+// the last-7 climatology lookback, which cannot be planned in advance:
+//
+//   fetchLast7 (api.ts:561-567) calls fetchEra5WindowRow for the month/day of
+//   EVERY row the D6 query returns, not just the selected date — so picking a
+//   station in the today card fires seven daily_window requests, six of which
+//   are for days that are not in the matrix at all.
+//
+//   Those month/days are NOT derivable arithmetically. Outside the reanalysis
+//   lag they are the six preceding calendar days; inside it (the primary date,
+//   which is the whole point of that date) the seven most recent rows are weeks
+//   earlier. The only honest source is what the D6 query actually returned, so
+//   pass 2 reads the responses pass 1 just wrote.
+//
+// This gap was invisible to T-1.2 because the page opens on the national average
+// and fetchLast7 returns early for it (api.ts:494) — the strip only appears once
+// a station is selected. T-1.1 found it on the first station case.
 
 console.log(`Planned ${plan.length} requests across ${new Set(plan.map((p) => p.shape)).size} shapes.`);
 
@@ -324,6 +397,7 @@ const CONCURRENCY = 6;
 const results = [];
 let done = 0;
 let failed = 0;
+let total = plan.length;
 
 async function worker(queue) {
   for (;;) {
@@ -357,12 +431,57 @@ async function worker(queue) {
       }
     }
     done++;
-    if (done % 50 === 0) console.log(`  … ${done}/${plan.length}`);
+    if (done % 50 === 0) console.log(`  … ${done}/${total}`);
   }
 }
 
-const queue = [...plan];
-await Promise.all(Array.from({ length: CONCURRENCY }, () => worker(queue)));
+async function runPlan(items) {
+  const queue = [...items];
+  await Promise.all(Array.from({ length: CONCURRENCY }, () => worker(queue)));
+}
+
+// ── Pass 1 ────────────────────────────────────────────────────────────────────
+
+await runPlan(plan);
+
+// ── Pass 2 — D2b, the last-7 climatology lookback ─────────────────────────────
+
+{
+  const { readFile } = await import("node:fs/promises");
+  const before = plan.length;
+
+  for (const name of stations) {
+    const lookback = new Set();
+    for (const date of dates) {
+      const file = dsFile("daily", [["last7", "1"], ["era5_name", name], ["date_lte", date]]);
+      let rows;
+      try {
+        rows = JSON.parse(await readFile(join(HTTP_DIR, file), "utf8"));
+      } catch {
+        // Pass 1 failed for this URL; it is already counted in `failed` and the
+        // index will refuse to load. Nothing useful to plan from.
+        continue;
+      }
+      for (const r of rows) lookback.add(`${r.month}-${r.day}`);
+    }
+    for (const key of [...lookback].sort()) {
+      const [month, day] = key.split("-").map(Number);
+      add(
+        "D2b daily_window last7 lookback",
+        "api.ts:561-567 -> api.ts:204-206",
+        `${DS}/daily_window.json?_shape=array&era5_name__exact=${enc(name)}&month__exact=${month}&day__exact=${day}`,
+        dsFile("daily_window", [["era5_name", name], ["month", month], ["day", day]]),
+      );
+    }
+  }
+
+  const pass2 = plan.slice(before);
+  total = plan.length;
+  if (pass2.length) {
+    console.log(`Pass 2: ${pass2.length} last-7 climatology lookback request(s).`);
+    await runPlan(pass2);
+  }
+}
 
 // ── Index ─────────────────────────────────────────────────────────────────────
 

@@ -133,6 +133,30 @@
     "default_streak": 1
   },
 
+  "_derived_coverage": [
+    "TWO QUERY FAMILIES CANNOT BE PLANNED FROM THIS FILE ALONE. Both were found by",
+    "T-1.1 on the first (station, date) case it ran, because neither is reachable on",
+    "a default page load. They are planned in scripts/fixtures/record.mjs instead.",
+    "",
+    "D2b — the last-7 climatology lookback. fetchLast7 (api.ts:561-567) calls",
+    "fetchEra5WindowRow for the month/day of EVERY row the D6 query returns, so",
+    "selecting a station in the today card fires seven daily_window requests, six of",
+    "them for days that are not in the `dates` matrix. Those month/days are not",
+    "derivable arithmetically: outside the reanalysis lag they are the six preceding",
+    "calendar days, but ON THE PRIMARY DATE — which sits inside the lag by design —",
+    "the seven most recent rows are weeks earlier. record.mjs therefore fetches in two",
+    "passes and derives them from what D6 actually returned. T-1.2 missed this because",
+    "the page opens on the national average, for which fetchLast7 returns early",
+    "(api.ts:494) and the strip never appears.",
+    "",
+    "D8b — the doy round-trip. fetchRegression (api.ts:642) does not use the selected",
+    "date's month/day; it converts the analysis panel's doy back through the fixed",
+    "NON-LEAP table at api.ts:102. The two calendars disagree after Feb 28 of a leap",
+    "year, so selecting 2024-03-01 makes the regression panel and the hero cards query",
+    "MARCH 2. That is the T-4.5 defect, and the fixture set has to cover it for the",
+    "snapshot to freeze it. Derived arithmetically in record.mjs (doyRoundTrip)."
+  ],
+
   "_normalised": [
     "Recorded bodies are byte-for-byte what the server sent, with ONE exception.",
     "",

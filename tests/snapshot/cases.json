@@ -1,0 +1,220 @@
+{
+  "_readme": [
+    "T-1.1 output-snapshot case matrix. Parameters only; the capture logic lives in",
+    "tests/snapshot/harness.tsx and the runner in scripts/snapshot/.",
+    "",
+    "Every (station, date) pair here MUST already be covered by the T-1.2 fixture",
+    "matrix (tests/fixtures/manifest.json). The harness runs with the network",
+    "disabled through the app's own shim (code/ali-je-vroce-era5/fixtures/install.ts),",
+    "so an uncovered pair does not silently degrade — it lands in",
+    "window.__FIXTURE_MISSES__ and aborts the run.",
+    "",
+    "TWO LOCATIONS PER CASE, because the page has two INDEPENDENT station signals:",
+    "  today_loc    — the today-card picker      (AliJeVroceERA5.tsx:50, TodayCard.tsx:111)",
+    "  analysis_loc — the trend/analysis picker  (RegressionPanel.tsx:37, synced from",
+    "                 the map at AliJeVroceERA5.tsx:126)",
+    "Selecting a station in the today card does NOT move the analysis panel and vice",
+    "versa, so collapsing them into one field would snapshot a page state that cannot",
+    "occur. On a default page load today_loc is the national average while analysis_loc",
+    "is already Ljubljana (fetchMeta default_location, api.ts:318) — that is case",
+    "`national-primary` below, and it is the literal default page.",
+    "",
+    "FIXTURES ARE VALID ONLY WITHIN A DATA GENERATION (CLAUDE.md). Every number this",
+    "matrix pins encodes stage's committed-CSV data as of 2026-07-22. The D-4/D-5",
+    "regeneration invalidates all of it and Phase 4 must re-record and re-baseline",
+    "deliberately."
+  ],
+
+  "ticket": "T-1.1",
+
+  "analysis_defaults": {
+    "_note": [
+      "The analysis panel's own controls, at the values a default page load uses.",
+      "Held fixed across every case so a case diff is attributable to (station, date)",
+      "and nothing else. doy is NOT here — it is derived per case from the selected",
+      "date (AliJeVroceERA5.tsx:53 dateToDoy, passed to RegressionPanel.tsx:39)."
+    ],
+    "variable": "temperature_max",
+    "window_days": 30,
+    "method": "theilsen",
+    "elevation_correction": "raw",
+    "tropical_days_threshold": 30,
+    "tropical_nights_threshold": 20,
+    "tropical_streak": 1
+  },
+
+  "cases": [
+    {
+      "id": "national-primary",
+      "today_loc": "era5:national",
+      "analysis_loc": "Ljubljana",
+      "date": "2026-07-21",
+      "purpose": "THE DEFAULT PAGE LOAD, verbatim. Pinned 'today' sits inside the ERA5-Land reanalysis lag, so climate-si has no `daily` row and fetchTodayStatus falls through to the live Open-Meteo national average (api.ts:362-366) and marks the result preliminary — this is the case that pins the 'ERA5T · preliminarno' badge string (TodayCard.tsx:183), known inaccurate per D-11 and snapshotted as-is."
+    },
+    {
+      "id": "ljubljana-primary",
+      "today_loc": "Ljubljana",
+      "analysis_loc": "Ljubljana",
+      "date": "2026-07-21",
+      "purpose": "Lowland station on the preliminary branch: per-station Open-Meteo forecast downscaled to the station elevation (api.ts:466-468). The per-station counterpart to national-primary."
+    },
+    {
+      "id": "kredarica-primary",
+      "today_loc": "Kredarica",
+      "analysis_loc": "Kredarica",
+      "date": "2026-07-21",
+      "purpose": "Altitude station (D-5) on the preliminary branch. Kredarica is presented as an ERA5-Land grid cell at 1307 m; T-4.4 removes its lapse correction and this case is where that shows up first."
+    },
+    {
+      "id": "national-settled",
+      "today_loc": "era5:national",
+      "analysis_loc": "Ljubljana",
+      "date": "2025-07-15",
+      "purpose": "National average on the SETTLED branch: far enough back that the reanalysis is final, so the datasette daily rows are averaged client-side (api.ts:354-360) and Open-Meteo is never called. No preliminary badge. The control for national-primary."
+    },
+    {
+      "id": "ljubljana-settled",
+      "today_loc": "Ljubljana",
+      "analysis_loc": "Ljubljana",
+      "date": "2025-07-15",
+      "purpose": "Lowland station, datasette-authoritative branch (api.ts:458-462). Control for ljubljana-primary; the pair isolates the preliminary/Open-Meteo path from everything else."
+    },
+    {
+      "id": "kredarica-settled",
+      "today_loc": "Kredarica",
+      "analysis_loc": "Kredarica",
+      "date": "2025-07-15",
+      "purpose": "Altitude station, datasette-authoritative branch. Control for kredarica-primary."
+    },
+    {
+      "id": "ljubljana-leap-feb29",
+      "today_loc": "Ljubljana",
+      "analysis_loc": "Ljubljana",
+      "date": "2024-02-29",
+      "purpose": "LEAP DAY, and a documented current-behaviour defect rather than a healthy case. month=2 day=29 is absent from every month/day-keyed precomputed table, so daily_window returns zero rows, fetchTodayStatus returns {available:false} (api.ts:473) and the entire today section collapses; fetchAnnualTrend THROWS 'No annual trend row' (api.ts:1433) rather than degrading. Snapshotted as-is. NOT FIXED HERE — this is T-4.5."
+    },
+    {
+      "id": "kredarica-leap-feb29",
+      "today_loc": "Kredarica",
+      "analysis_loc": "Kredarica",
+      "date": "2024-02-29",
+      "purpose": "The same leap-day collapse at the altitude station, to show it is a calendar defect and not a per-station data gap."
+    },
+    {
+      "id": "national-leap-feb29",
+      "today_loc": "era5:national",
+      "analysis_loc": "Ljubljana",
+      "date": "2024-02-29",
+      "purpose": "The same leap-day collapse on the national path, which reaches it by a different route: the national daily_window query (api.ts:214-216) returns zero rows and fetchTodayStatus bails at api.ts:352, before any temperature lookup."
+    },
+    {
+      "id": "ljubljana-leap-mar01",
+      "today_loc": "Ljubljana",
+      "analysis_loc": "Ljubljana",
+      "date": "2024-03-01",
+      "purpose": "Mar 1 IN A LEAP YEAR. monthDayToDoy (api.ts:107-110) reads a fixed non-leap day table, so this is where a leap-year doy off-by-one first becomes visible in a rendered number. Pairs with ljubljana-nonleap-mar01."
+    },
+    {
+      "id": "ljubljana-nonleap-feb28",
+      "today_loc": "Ljubljana",
+      "analysis_loc": "Ljubljana",
+      "date": "2025-02-28",
+      "purpose": "Last day of February in a NON-leap year. The 2024 pair alone only proves the Feb 29 -> Mar 1 transition; this shows what Feb 28 -> Mar 1 does with no Feb 29 in between. Its 7-day lookback (api.ts:553-557) crosses Feb 28 rather than Feb 29."
+    },
+    {
+      "id": "ljubljana-nonleap-mar01",
+      "today_loc": "Ljubljana",
+      "analysis_loc": "Ljubljana",
+      "date": "2025-03-01",
+      "purpose": "Mar 1 in a non-leap year. Same month/day as ljubljana-leap-mar01 — so the month/day-keyed climatology is shared — but a different date, so the date-keyed today temperature and the last-7 strip differ. Any divergence beyond those two is a leap-year bug."
+    },
+    {
+      "id": "ljubljana-jan01",
+      "today_loc": "Ljubljana",
+      "analysis_loc": "Ljubljana",
+      "date": "2025-01-01",
+      "purpose": "Year boundary, low end. The +/-7-day climatology window (api.ts:56-61) and the +/-30-day trend window must wrap across the year end; Jan 1 is where wrap-around arithmetic breaks."
+    },
+    {
+      "id": "ljubljana-dec31",
+      "today_loc": "Ljubljana",
+      "analysis_loc": "Ljubljana",
+      "date": "2025-12-31",
+      "purpose": "Year boundary, high end. Same wrap-around exposure from the other side; the last-7-days strip also crosses into the previous year."
+    },
+    {
+      "id": "ljubljana-p95",
+      "today_loc": "Ljubljana",
+      "analysis_loc": "Ljubljana",
+      "date": "2013-08-03",
+      "purpose": "Above p95 at the lowland station — pins the 'hell' branch of categorizeEra5 (api.ts:140-153) and the top distribution zone. August 2013 was a documented Slovenian heat episode.",
+      "verified": {
+        "source": "tests/fixtures/http/climate-si/daily__era5_name-Ljubljana__date-2013-08-03.json and daily_window__era5_name-Ljubljana__month-8__day-3.json, re-read 2026-07-22",
+        "temperature_max_2m": 35.591,
+        "p5": 19.35,
+        "p95": 31.36,
+        "n_samples": 1140,
+        "verdict": "35.591 > p95 31.36 — above p95"
+      }
+    },
+    {
+      "id": "kredarica-p95",
+      "today_loc": "Kredarica",
+      "analysis_loc": "Kredarica",
+      "date": "2013-08-03",
+      "purpose": "Above p95 at the ALTITUDE station on the same day, so one date exercises the hot extreme at both elevations. Confirms the extreme is a synoptic event and not a lowland artefact.",
+      "verified": {
+        "source": "tests/fixtures/http/climate-si/daily__era5_name-Kredarica__date-2013-08-03.json and daily_window__era5_name-Kredarica__month-8__day-3.json, re-read 2026-07-22",
+        "temperature_max_2m": 21.743,
+        "p5": 5.99,
+        "p95": 16.79,
+        "n_samples": 1140,
+        "verdict": "21.743 > p95 16.79 — above p95"
+      }
+    },
+    {
+      "id": "ljubljana-p5",
+      "today_loc": "Ljubljana",
+      "analysis_loc": "Ljubljana",
+      "date": "2012-02-07",
+      "purpose": "Below p5 at the lowland station — pins the 'freezing' branch and the bottom distribution zone. LJUBLJANA ONLY: the February 2012 European cold wave was a lowland event in this dataset, and the same date at Kredarica is an ordinary early-February day (see the counter-check below). The altitude p5 case is kredarica-p5.",
+      "verified": {
+        "source": "tests/fixtures/http/climate-si/daily__era5_name-Ljubljana__date-2012-02-07.json and daily_window__era5_name-Ljubljana__month-2__day-7.json, re-read 2026-07-22",
+        "temperature_max_2m": -5.759,
+        "p5": -4.24,
+        "p95": 10.95,
+        "n_samples": 1155,
+        "verdict": "-5.759 < p5 -4.24 — below p5"
+      },
+      "counter_check": {
+        "_note": "Recorded so nobody re-derives this the hard way: the same date at Kredarica is NOT a p5 case and must not be used as one.",
+        "station": "Kredarica",
+        "temperature_max_2m": -14.707,
+        "p5": -15.97,
+        "verdict": "-14.707 > p5 -15.97 — INSIDE the band, an ordinary early-February day at 1307 m"
+      }
+    },
+    {
+      "id": "kredarica-p5",
+      "today_loc": "Kredarica",
+      "analysis_loc": "Kredarica",
+      "date": "1985-01-07",
+      "purpose": "Below p5 at the ALTITUDE station, and the reason 2012-02-07 alone is not enough (see ljubljana-p5 counter_check). January 1985 was a documented central-European cold wave; this is the second-coldest day in Kredarica's whole record, after 1968-01-13. Below p5 at BOTH stations, so it also doubles as a lowland cold control.",
+      "verified": {
+        "source": "tests/fixtures/http/climate-si/daily__era5_name-{Kredarica,Ljubljana}__date-1985-01-07.json and daily_window__era5_name-{Kredarica,Ljubljana}__month-1__day-7.json, re-read 2026-07-22",
+        "temperature_max_2m": -23.707,
+        "p5": -16.76,
+        "p95": -2.96,
+        "n_samples": 1173,
+        "verdict": "-23.707 < p5 -16.76 — below p5",
+        "also_below_p5_at_ljubljana": {
+          "temperature_max_2m": -11.759,
+          "p5": -5.34,
+          "verdict": "-11.759 < p5 -5.34 — below p5"
+        }
+      }
+    }
+  ],
+
+  "snapshot_stations": ["Ljubljana", "Kredarica"]
+}

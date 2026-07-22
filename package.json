@@ -11,7 +11,9 @@
     "typecheck": "tsc --noEmit",
     "fixtures:record": "node scripts/fixtures/record.mjs",
     "fixtures:start": "node scripts/fixtures/with-pinned-date.mjs yarn start",
-    "fixtures:build": "ELEVENTY_OUTPUT_DIR=dist-fixtures node scripts/fixtures/with-pinned-date.mjs yarn build"
+    "fixtures:build": "ELEVENTY_OUTPUT_DIR=dist-fixtures node scripts/fixtures/with-pinned-date.mjs yarn build",
+    "snapshot": "node scripts/snapshot/run.mjs",
+    "snapshot:verify": "node scripts/snapshot/run.mjs --verify"
   },
   "dependencies": {
     "@highcharts/map-collection": "^2.3.2",
@@ -40,6 +42,7 @@
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "http-proxy-middleware": "^3.0.5",
+    "jsdom": "^29.1.1",
     "sass": "^1.99.0",
     "sharp": "^0.34.5",
     "typescript": "^6.0.3",

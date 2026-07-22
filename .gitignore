@@ -25,3 +25,6 @@ dist-fixtures
 
 
 .claude/
+
+# T-1.1 snapshot harness build output
+.snapshot-build/
