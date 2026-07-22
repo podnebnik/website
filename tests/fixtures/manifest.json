@@ -1,0 +1,134 @@
+{
+  "_readme": [
+    "T-1.2 network-fixture matrix. This file holds ONLY the parameters; the set of",
+    "query shapes is derived by reading the code and lives in scripts/fixtures/record.mjs,",
+    "each shape carrying a file:line citation back to its call site.",
+    "",
+    "To extend coverage (e.g. T-1.1 adding a station/date pair), edit this file and",
+    "re-run `yarn fixtures:record`. The recorder is idempotent: unchanged URLs are",
+    "re-fetched and rewritten, and index.json records what was captured when."
+  ],
+
+  "ticket": "T-1.2",
+
+  "bases": {
+    "datasette": "https://stage-data.podnebnik.org",
+    "openmeteo": "https://api.open-meteo.com/v1/forecast",
+    "highcharts": "https://code.highcharts.com"
+  },
+
+  "_dates_note": [
+    "`primary` is what VITE_PINNED_DATE should be set to when running the app offline.",
+    "It is deliberately inside the ERA5-Land reanalysis lag (~5-10 days) so that the",
+    "Open-Meteo preliminary branch (api.ts:363, api.ts:466) is the one exercised on a",
+    "default page load — that branch is the main source of day-to-day non-determinism",
+    "T-1.1 needs frozen.",
+    "",
+    "The remaining dates are the T-1.1 (station, date) matrix, folded in now so that",
+    "ticket does not need a second recording pass."
+  ],
+  "primary_date": "2026-07-21",
+
+  "dates": [
+    {
+      "date": "2026-07-21",
+      "role": "primary",
+      "purpose": "Pinned 'today'. One day before the T-1.2 recording date, so it falls inside the ERA5-Land reanalysis lag: climate-si has no `daily` row, and the page falls through to the live Open-Meteo forecast (api.ts:363 national, api.ts:466 per-station) and renders as preliminary. Freezing this is the whole point of the ticket."
+    },
+    {
+      "date": "2025-07-15",
+      "role": "settled",
+      "purpose": "Mid-summer date far enough in the past that ERA5-Land reanalysis is final, so the datasette-authoritative branch (api.ts:460) is exercised and Open-Meteo is never called. The counterpart to the primary date."
+    },
+    {
+      "date": "2024-02-29",
+      "role": "t-1.1 boundary",
+      "purpose": "Leap day. month=2 day=29 is the case most likely to be missing from precomputed per-day tables (daily_window, annual_trend), because a doy-indexed pipeline built on a 365-day year has nowhere to put it. 2024 is the most recent leap year."
+    },
+    {
+      "date": "2024-03-01",
+      "role": "t-1.1 boundary",
+      "purpose": "Day after the leap day, in a leap year. monthDayToDoy (api.ts:107-110) uses a fixed non-leap day table, so Mar 1 in a leap year is where a doy off-by-one would first show up."
+    },
+    {
+      "date": "2025-01-01",
+      "role": "t-1.1 boundary",
+      "purpose": "Year boundary, low end. The +/-7-day climatology window (api.ts:56-61) has to wrap across the year end; Jan 1 is where wrap-around arithmetic breaks."
+    },
+    {
+      "date": "2025-12-31",
+      "role": "t-1.1 boundary",
+      "purpose": "Year boundary, high end. Same wrap-around exposure as Jan 1, from the other side; also the last-7-days strip (api.ts:553-557) crosses into the previous year."
+    },
+    {
+      "date": "2013-08-03",
+      "role": "t-1.1 extreme candidate",
+      "purpose": "CANDIDATE for the p95+ case — August 2013 was a documented Slovenian heat episode. Whether it actually ranks above p95 for a given station is verified after recording and reported in PROGRESS.md; T-1.1 may swap it for a better date without re-recording the rest of the matrix."
+    },
+    {
+      "date": "2012-02-07",
+      "role": "t-1.1 extreme candidate",
+      "purpose": "CANDIDATE for the p5- case — the February 2012 European cold wave. Same caveat as the p95+ candidate above: verified after recording, not assumed."
+    }
+  ],
+
+  "_stations_note": [
+    "All 18 ERA5 stations, as returned by stations.json (api.ts:292). Per-station",
+    "shapes that are cheap (one row, or one small table) are recorded for all of them.",
+    "`snapshot_stations` are the two T-1.1 names it over-samples: Ljubljana as the",
+    "lowland case and the page default (fetchMeta's default_location, api.ts:318), and",
+    "Kredarica as the altitude case (D-5)."
+  ],
+  "stations": [
+    "Ljubljana", "Maribor", "Celje", "Kranj", "Koper", "Novo_Mesto",
+    "Murska_Sobota", "Nova_Gorica", "Postojna", "Ptuj", "Velenje", "Trbovlje",
+    "Tolmin", "Kocevje", "Ilirska_Bistrica", "Domzale", "Ratece", "Kredarica"
+  ],
+  "snapshot_stations": ["Ljubljana", "Kredarica"],
+
+  "_variables_note": "The three options in the regression variable picker (RegressionPanel.tsx:11-13).",
+  "variables": ["temperature_max", "temperature_min", "temperature_mean"],
+
+  "_tropical_note": [
+    "Slider bounds come from ERA5_CONFIGS (Era5TropicalChart.tsx:16 days 25-35,",
+    "Era5TropicalChart.tsx:29 nights 15-25); streak is the 1/2/3 select",
+    "(AliJeVroceERA5.tsx:198-200). The full 11x3 sweep is recorded only for",
+    "snapshot_stations; every other station gets the default threshold at streak 1,",
+    "which is what a default page load requests."
+  ],
+  "tropical": {
+    "days":   { "min": 25, "max": 35, "default": 30 },
+    "nights": { "min": 15, "max": 25, "default": 20 },
+    "streaks": [1, 2, 3],
+    "default_streak": 1
+  },
+
+  "_uncapturable": [
+    "VERIFIED BY MEASUREMENT, not assumption: with fixtures installed a default page",
+    "load makes 51 requests, of which 48 are same-origin. The 3 that still leave the",
+    "machine are listed below. NONE of them go through fetch(), which is why the shim",
+    "in code/ali-je-vroce-era5/fixtures/install.ts structurally cannot stop them — it",
+    "can only wrap fetch. Blocking these needs request interception at the browser",
+    "level (Playwright page.route), which is T-1.3's job.",
+    "",
+    "1. fonts.googleapis.com — a <link rel=stylesheet> in the SITE-WIDE layout",
+    "   (pages/_includes/base.html:9,12) plus an @import in styles/era5.css:9. Not an",
+    "   ERA5 call at all; it affects every page on the site. Offline the browser falls",
+    "   back to system fonts, which CHANGES TEXT METRICS — this is the one that will",
+    "   make T-1.3 screenshots unstable if it is not blocked or self-hosted.",
+    "",
+    "2/3. {a,b}.tile.opentopomap.org — Leaflet raster basemap tiles",
+    "   (SeaLevelWidget.tsx:296), loaded as <img>. Not recorded: the",
+    "   tile set is unbounded (depends on Leaflet pan/zoom) and they are PNGs, not JSON.",
+    "   Offline the basemap renders blank; the flood overlay, divider, legend and stats",
+    "   still render, because those are same-origin assets (/data/flood-stats.json",
+    "   SeaLevelWidget.tsx:312, /data/flood/*.png SeaLevelWidget.tsx:58).",
+    "",
+    "The arso-si datasette (saGet, api.ts:43-47) and Vremenar (api.ts:236) are NOT",
+    "recorded because no UI path reaches them: fetchMeta never populates",
+    "arsoStationIds (api.ts:26) and builds station names from era5_name only",
+    "(api.ts:306-313), so no loc can start with 'arso:'. Slated for deletion in T-2.2",
+    "per D-2. Likewise the sidecar /api/live/tropical_* call (TropicalChart.tsx:253):",
+    "the component owning it is imported nowhere. T-2.3."
+  ]
+}

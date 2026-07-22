@@ -4,6 +4,7 @@ import type {
 } from "./types.ts";
 import type { SpeiData } from "./charts/SpeiHeatmap.tsx";
 import type { SpeiStationData } from "./charts/SpeiTrendChart.tsx";
+import { today as todayIso } from "./clock.ts";
 
 // podnebnik.org datasette serves each DB at the root (no /datasette prefix),
 // e.g. https://stage-data.podnebnik.org/climate-si — override with VITE_DATASETTE_URL for dev.
@@ -379,7 +380,7 @@ export async function fetchTodayStatus(date: string, loc: string | null): Promis
   }
 
   if (era5Name === ARSO_NATIONAL) {
-    const todayStr = new Date().toISOString().slice(0, 10);
+    const todayStr = todayIso();
     const isToday  = date === todayStr;
 
     let todayTempPromise: Promise<number | null>;
@@ -420,7 +421,7 @@ export async function fetchTodayStatus(date: string, loc: string | null): Promis
 
   if (isArsoLoc(era5Name)) {
     const stationId = arsoStationId(era5Name);
-    const todayStr  = new Date().toISOString().slice(0, 10);
+    const todayStr  = todayIso();
     const isToday   = date === todayStr;
     const year      = Number(date.slice(0, 4));
 

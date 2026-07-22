@@ -154,6 +154,16 @@ export default function (eleventyConfig) {
 		}
 	});
 
+    // T-1.2: expose the recorded network fixtures at /fixtures so the page can
+    // run with the network disabled (see code/ali-je-vroce-era5/fixtures/install.ts).
+    // Strictly opt-in — a production build never copies them.
+    if (process.env.VITE_FIXTURES === "1") {
+        // Must land under `public/`: eleventy-plugin-vite makes that Vite's
+        // publicDir, and Vite only emits publicDir verbatim — anything else is
+        // dropped unless an HTML entry references it.
+        eleventyConfig.addPassthroughCopy({ 'tests/fixtures': 'public/fixtures' });
+    }
+
     eleventyConfig.addPassthroughCopy('code')
     eleventyConfig.addPassthroughCopy('styles')
     eleventyConfig.addPassthroughCopy('assets')
