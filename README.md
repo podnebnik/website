@@ -185,7 +185,7 @@ For the second case we provide a [Datasette](https://datasette.io/) API that ser
 
 The `/ali-je-vroce-era5/` page shows ERA5-Land climate trends for 18 Slovenian stations. It is a browser-side SolidJS island with **no server component of its own**: all history and statistics come from the `climate-si` Datasette described above, and the current-day figure is fetched directly from [Open-Meteo](https://open-meteo.com/) by the browser.
 
-There used to be a Flask sidecar (`scripts/era5/mk_api.py`) serving the same data at `/api/live/*` behind an nginx proxy, with its own SQLite database, PVC and nightly CronJob. It was superseded by the `climate-si` Datasette and received no traffic from the page; it has been removed. Recoverable from git history if ever needed.
+There used to be a Flask sidecar (`scripts/era5/mk_api.py`) serving the same data at `/api/live/*` behind an nginx proxy, with its own SQLite database, PVC and nightly CronJob. It was superseded by the `climate-si` Datasette and received no traffic from the page; it has been removed, and with it the whole `scripts/era5/` tree — its `mk_collect.py` and `si.yaml` were byte-identical copies of the canonical ones in `data/climate-si/sources/`. Recoverable from git history if ever needed.
 
 ### Where the ERA5 data comes from
 
