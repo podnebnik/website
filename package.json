@@ -30,7 +30,7 @@
     "tailwindcss": "^4.2.2"
   },
   "devDependencies": {
-    "@11ty/eleventy": "^3.1.5",
+    "@11ty/eleventy": "^3.1.6",
     "@11ty/eleventy-img": "^6.0.4",
     "@11ty/eleventy-plugin-vite": "^7.0.0",
     "@types/node": "^25.6.0",
