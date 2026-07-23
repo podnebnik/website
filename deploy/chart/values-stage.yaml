@@ -4,7 +4,3 @@ host: stage.podnebnik.org
 image:
   tag: main-2c34c05-1784721306
   repository: ghcr.io/podnebnik/website
-era5:
-  image:
-    # seeded with latest; image-updater takes over after the first main build
-    tag: latest

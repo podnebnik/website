@@ -26,26 +26,6 @@ resources:
 # Empty = none (the site is static nginx and needs no secrets today).
 existingSecret: ""
 
-# ERA5 live-data API (scripts/era5): own Deployment + Service `era5-api`,
-# a PVC for the collected Open-Meteo data, and a nightly refresh CronJob.
-# The website's nginx proxies /api/live/* to it (ERA5_API_HOST env).
-era5:
-  image:
-    repository: ghcr.io/podnebnik/era5-api
-    # stage: bumped automatically by argocd-image-updater (values-stage.yaml);
-    # prod: pinned in values-prod.yaml — edit there to promote
-    tag: latest
-  # 18 stations × ~50 MB CSVs + precomputed SQLite
-  storage: 3Gi
-  # nightly Open-Meteo refresh (mk_collect + mk_precompute), UTC
-  refreshSchedule: "0 2 * * *"
-  resources:
-    requests:
-      cpu: 200m
-      memory: 512Mi
-    limits:
-      memory: 2Gi
-
 # Extra annotations for the HTTPRoute. The podnebnik/infrastructure preview
 # ApplicationSet sets external-dns.alpha.kubernetes.io/cloudflare-proxied:
 # "false" here so preview DNS records stay grey-cloud; stage/prod leave it empty
