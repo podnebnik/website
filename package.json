@@ -18,7 +18,7 @@
     "snapshot:verify": "node scripts/snapshot/run.mjs --verify"
   },
   "dependencies": {
-    "@highcharts/map-collection": "^2.3.2",
+    "@highcharts/map-collection": "^2.3.3",
     "@kobalte/core": "^0.13.10",
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.2.2",
