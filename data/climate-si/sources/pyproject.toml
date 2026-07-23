@@ -19,6 +19,8 @@ dependencies = [
     # both
     "pandas == 2.*",
     "PyYAML == 6.*",
+    # T-3.6: pipeline output validation (schema/dtype/bounds/continuity).
+    "pandera == 0.26.*",
 ]
 
 # Dev-only tooling (T-3.3): the pytest runner. Not needed to run the pipeline,

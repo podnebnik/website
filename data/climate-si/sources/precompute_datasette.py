@@ -28,6 +28,8 @@ import statsmodels.api as sm
 import sqlite3
 import yaml
 
+import validate as pipeline_validate
+
 warnings.filterwarnings("ignore")
 
 # ── Config ─────────────────────────────────────────────────────────────────────
@@ -759,55 +761,59 @@ def main():
     print(f"  {len(data):,} rows · {data['location'].nunique()} stations · "
           f"{data['year'].min()}–{data['year'].max()}")
 
-    print("\n[1/6] Building stations table…")
+    # Build every table in memory first. Nothing is written to the database until
+    # validation (T-3.6) has passed, so a broken regeneration cannot publish a
+    # subtly-wrong table quietly — it aborts non-zero before the first to_sql.
+    print("\n[1/9] Building stations table…")
     stations_df = build_stations(data)
     print(f"  {len(stations_df)} stations "
           f"({stations_df['station_id'].notna().sum()} with Vremenar ID)")
 
-    conn = sqlite3.connect(DB_PATH)
-
-    stations_df.to_sql("stations", conn, if_exists="replace", index=False)
-    print(f"  wrote {len(stations_df)} rows → stations")
-
-    print("\n[2/6] Building daily table…")
+    print("\n[2/9] Building daily table…")
     daily_df = build_daily(data, stations_df)
-    daily_df.to_sql("daily", conn, if_exists="replace", index=False)
-    print(f"  wrote {len(daily_df):,} rows → daily")
 
-    print("\n[3/6] Computing daily_percentiles (per station × DOY, mean temp)…")
+    print("\n[3/9] Computing daily_percentiles (per station × DOY, mean temp)…")
     perc_df = build_daily_percentiles(data, stations_df)
-    perc_df.to_sql("daily_percentiles", conn, if_exists="replace", index=False)
-    print(f"  wrote {len(perc_df):,} rows → daily_percentiles")
 
-    print("\n[4/6] Computing daily_window (per station × DOY, KDE of max temp)…")
+    print("\n[4/9] Computing daily_window (per station × DOY, KDE of max temp)…")
     dw_df = build_daily_window(data, stations_df)
-    dw_df.to_sql("daily_window", conn, if_exists="replace", index=False)
-    print(f"  wrote {len(dw_df):,} rows → daily_window")
 
-    print("\n[5/6] Computing annual_trend (per station × variable × DOY)…")
+    print("\n[5/9] Computing annual_trend (per station × variable × DOY)…")
     at_df = build_annual_trend(data, stations_df)
-    at_df.to_sql("annual_trend", conn, if_exists="replace", index=False)
-    print(f"  wrote {len(at_df):,} rows → annual_trend")
 
-    print("\n[6/7] Computing season_heatmap (per station × year × season)…")
+    print("\n[6/9] Computing season_heatmap (per station × year × season)…")
     sh_df = build_season_heatmap(data, stations_df)
-    sh_df.to_sql("season_heatmap", conn, if_exists="replace", index=False)
-    print(f"  wrote {len(sh_df):,} rows → season_heatmap")
 
     print("\n[7/9] Computing tropical (days/nights × threshold × streak, NB GLM)…")
     tr_df = build_tropical(data, stations_df)
-    tr_df.to_sql("tropical", conn, if_exists="replace", index=False)
-    print(f"  wrote {len(tr_df):,} rows → tropical")
 
     print("\n[8/9] Computing spei (national seasonal drought heatmap)…")
     spei_df = build_spei_heatmap(data)
-    spei_df.to_sql("spei", conn, if_exists="replace", index=False)
-    print(f"  wrote {len(spei_df):,} rows → spei")
 
     print("\n[9/9] Computing spei_station (per-station SPEI-3/SPEI-30 trends)…")
     ss_df = build_spei_station(data, stations_df)
-    ss_df.to_sql("spei_station", conn, if_exists="replace", index=False)
-    print(f"  wrote {len(ss_df):,} rows → spei_station")
+
+    tables = {
+        "stations": stations_df,
+        "daily": daily_df,
+        "daily_percentiles": perc_df,
+        "daily_window": dw_df,
+        "annual_trend": at_df,
+        "season_heatmap": sh_df,
+        "tropical": tr_df,
+        "spei": spei_df,
+        "spei_station": ss_df,
+    }
+
+    # ── Validate before publishing (T-3.6) ─────────────────────────────────────
+    print("\nValidating output tables…")
+    pipeline_validate.validate_tables(tables, CONFIG)
+    print("  all tables valid")
+
+    conn = sqlite3.connect(DB_PATH)
+    for name, df in tables.items():
+        df.to_sql(name, conn, if_exists="replace", index=False)
+        print(f"  wrote {len(df):,} rows → {name}")
 
     # Create indexes for common query patterns
     print("\nCreating indexes…")
