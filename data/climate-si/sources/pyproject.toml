@@ -20,3 +20,16 @@ dependencies = [
     "pandas == 2.*",
     "PyYAML == 6.*",
 ]
+
+# Dev-only tooling (T-3.3): the pytest runner. Not needed to run the pipeline,
+# so it stays out of `dependencies`; installed by `uv sync` and locked in
+# uv.lock alongside the runtime deps.
+[dependency-groups]
+dev = [
+    "pytest == 8.*",
+]
+
+# T-3.3: pytest looks here for its test tree, so `uv run pytest` behaves the same
+# regardless of cwd. Real pipeline tests (T-3.5) go under tests/.
+[tool.pytest.ini_options]
+testpaths = ["tests"]

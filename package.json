@@ -9,6 +9,7 @@
     "build": "dotnet fable code --extension .fs.jsx --run npx @11ty/eleventy",
     "build-debug": "dotnet fable code --extension .fs.jsx --run sh -c 'DEBUG=\"Eleventy*\" npx @11ty/eleventy'",
     "typecheck": "tsc --noEmit",
+    "test": "vitest run",
     "fixtures:record": "node scripts/fixtures/record.mjs",
     "fixtures:start": "node scripts/fixtures/with-pinned-date.mjs yarn start",
     "fixtures:build": "ELEVENTY_OUTPUT_DIR=dist-fixtures node scripts/fixtures/with-pinned-date.mjs yarn build",
@@ -49,7 +50,8 @@
     "sharp": "^0.34.5",
     "typescript": "~6.0.3",
     "vite": "~8.0.16",
-    "vite-plugin-solid": "^2.11.12"
+    "vite-plugin-solid": "^2.11.12",
+    "vitest": "^4.1.10"
   },
   "resolutions": {
     "vite": "~8.0.16"
