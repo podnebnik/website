@@ -3,7 +3,7 @@ name: "Docker: preview images"
 # Preview environments (sledilnik/infrastructure, podnebnik-website-preview
 # ApplicationSet) deploy PRs labeled `preview-deploy` and expect
 # ghcr.io/podnebnik/<image>:pr-<number> to exist. This workflow builds and
-# pushes BOTH images for every labeled PR — deliberately no `paths` filter,
+# pushes every preview image for a labeled PR — deliberately no `paths` filter,
 # so the preview never misses an image the PR didn't touch.
 # Fork PRs are excluded: they run without a packages:write token.
 
@@ -28,8 +28,6 @@ jobs:
         include:
           - image: website
             dockerfile: ./deployment/Dockerfile.website
-          - image: era5-api
-            dockerfile: ./deployment/Dockerfile.era5-api
     steps:
       -
         name: Checkout
