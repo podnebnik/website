@@ -1,0 +1,22 @@
+[project]
+name = "podnebnik-climate-si-source"
+version = "0.1"
+description = "Podnebnik climate-si (ERA5-Land) data source"
+readme = "README.md"
+requires-python = ">=3.12"
+# Generated from the imports in mk_collect.py and precompute_datasette.py.
+dependencies = [
+    # mk_collect.py
+    "openmeteo-requests",
+    "requests-cache",
+    "retry-requests",
+    "urllib3 == 2.*",
+    # precompute_datasette.py
+    "numpy == 2.*",
+    "scipy == 1.*",
+    "statsmodels == 0.14.*",
+    "pymannkendall",
+    # both
+    "pandas == 2.*",
+    "PyYAML == 6.*",
+]
