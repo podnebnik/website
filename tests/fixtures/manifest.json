@@ -1,0 +1,218 @@
+{
+  "_readme": [
+    "T-1.2 network-fixture matrix. This file holds ONLY the parameters; the set of",
+    "query shapes is derived by reading the code and lives in scripts/fixtures/record.mjs,",
+    "each shape carrying a file:line citation back to its call site.",
+    "",
+    "To extend coverage (e.g. T-1.1 adding a station/date pair), edit this file and",
+    "re-run `yarn fixtures:record`. The recorder is idempotent: unchanged URLs are",
+    "re-fetched and rewritten, and index.json records what was captured when."
+  ],
+
+  "ticket": "T-1.2",
+
+  "bases": {
+    "datasette": "https://stage-data.podnebnik.org",
+    "openmeteo": "https://api.open-meteo.com/v1/forecast",
+    "highcharts": "https://code.highcharts.com"
+  },
+
+  "_dates_note": [
+    "`primary` is what VITE_PINNED_DATE should be set to when running the app offline.",
+    "It is deliberately inside the ERA5-Land reanalysis lag (~5-10 days) so that the",
+    "Open-Meteo preliminary branch (api.ts:363, api.ts:466) is the one exercised on a",
+    "default page load — that branch is the main source of day-to-day non-determinism",
+    "T-1.1 needs frozen.",
+    "",
+    "The remaining dates are the T-1.1 (station, date) matrix, folded in now so that",
+    "ticket does not need a second recording pass."
+  ],
+  "primary_date": "2026-07-21",
+
+  "dates": [
+    {
+      "date": "2026-07-21",
+      "role": "primary",
+      "purpose": "Pinned 'today'. One day before the T-1.2 recording date, so it falls inside the ERA5-Land reanalysis lag: climate-si has no `daily` row, and the page falls through to the live Open-Meteo forecast (api.ts:363 national, api.ts:466 per-station) and renders as preliminary. Freezing this is the whole point of the ticket."
+    },
+    {
+      "date": "2025-07-15",
+      "role": "settled",
+      "purpose": "Mid-summer date far enough in the past that ERA5-Land reanalysis is final, so the datasette-authoritative branch (api.ts:460) is exercised and Open-Meteo is never called. The counterpart to the primary date."
+    },
+    {
+      "date": "2024-02-29",
+      "role": "t-1.1 boundary",
+      "purpose": "Leap day. month=2 day=29 is the case most likely to be missing from precomputed per-day tables (daily_window, annual_trend), because a doy-indexed pipeline built on a 365-day year has nowhere to put it. 2024 is the most recent leap year."
+    },
+    {
+      "date": "2024-03-01",
+      "role": "t-1.1 boundary",
+      "purpose": "Day after the leap day, in a leap year. monthDayToDoy (api.ts:107-110) uses a fixed non-leap day table, so Mar 1 in a leap year is where a doy off-by-one would first show up."
+    },
+    {
+      "date": "2025-02-28",
+      "role": "t-1.1 boundary",
+      "purpose": "Last day of February in a NON-leap year. The leap pair above only proves the Feb 29 -> Mar 1 transition; this is the control that shows what Feb 28 -> Mar 1 does when there is no Feb 29 in between. monthDayToDoy (api.ts:107-110) reads a fixed non-leap table, so doy(2,28) and doy(3,1) must be consecutive here and NOT consecutive in 2024 — an off-by-one that is invisible with only the leap pair recorded."
+    },
+    {
+      "date": "2025-03-01",
+      "role": "t-1.1 boundary",
+      "purpose": "Mar 1 in a non-leap year, the counterpart to 2024-03-01. Same month/day, different year: the daily_window / annual_trend shapes are keyed on month+day and are therefore shared with the 2024 date (recorded once), but the date-keyed shapes (D5 daily station api.ts:457-459, D6 last7 api.ts:553-557) are distinct, and D6 is the one that matters — its 7-day lookback crosses Feb 28 rather than Feb 29."
+    },
+    {
+      "date": "2025-01-01",
+      "role": "t-1.1 boundary",
+      "purpose": "Year boundary, low end. The +/-7-day climatology window (api.ts:56-61) has to wrap across the year end; Jan 1 is where wrap-around arithmetic breaks."
+    },
+    {
+      "date": "2025-12-31",
+      "role": "t-1.1 boundary",
+      "purpose": "Year boundary, high end. Same wrap-around exposure as Jan 1, from the other side; also the last-7-days strip (api.ts:553-557) crosses into the previous year."
+    },
+    {
+      "date": "2013-08-03",
+      "role": "t-1.1 extreme (p95+, both snapshot stations)",
+      "purpose": "VERIFIED against the recorded fixtures, not assumed: Ljubljana 35.591 vs p5 19.35 / p95 31.36, and Kredarica 21.743 vs p5 5.99 / p95 16.79. Both are above p95, so this single date exercises the 'hell' branch (api.ts categorize) at the lowland station and the altitude station at once. August 2013 was a documented Slovenian heat episode."
+    },
+    {
+      "date": "2012-02-07",
+      "role": "t-1.1 extreme (p5-, Ljubljana only)",
+      "purpose": "VERIFIED: Ljubljana -5.759 vs p5 -4.24 — below p5. NOT an extreme at Kredarica: -14.707 against a p5 of -15.97 is inside the band, i.e. an ordinary early-February day up there. The February 2012 European cold wave was a lowland event in this dataset. The Kredarica p5- case is 1985-01-07 below; this date is kept for Ljubljana."
+    },
+    {
+      "date": "1985-01-07",
+      "role": "t-1.1 extreme (p5-, both snapshot stations)",
+      "purpose": "VERIFIED against the live datasette before recording, and the reason the 2012 date is not enough: Kredarica -23.707 vs p5 -16.76 and Ljubljana -11.759 vs p5 -5.34. Both below p5, so the 'freezing' branch is exercised at altitude — which 2012-02-07 does not do. January 1985 was a documented central-European cold wave."
+    }
+  ],
+
+  "_stations_note": [
+    "All 18 ERA5 stations, as returned by stations.json (api.ts:292). Per-station",
+    "shapes that are cheap (one row, or one small table) are recorded for all of them.",
+    "`snapshot_stations` are the two T-1.1 names it over-samples: Ljubljana as the",
+    "lowland case and the page default (fetchMeta's default_location, api.ts:318), and",
+    "Kredarica as the altitude case (D-5)."
+  ],
+  "stations": [
+    "Ljubljana", "Maribor", "Celje", "Kranj", "Koper", "Novo_Mesto",
+    "Murska_Sobota", "Nova_Gorica", "Postojna", "Ptuj", "Velenje", "Trbovlje",
+    "Tolmin", "Kocevje", "Ilirska_Bistrica", "Domzale", "Ratece", "Kredarica"
+  ],
+  "snapshot_stations": ["Ljubljana", "Kredarica"],
+
+  "_variables_note": [
+    "ALL FIVE options in the regression variable picker (RegressionPanel.tsx:10-16),",
+    "not just the temperature three. precipitation_sum and et0_evapotranspiration are",
+    "user-selectable from the same <select> (RegressionPanel.tsx:177-179) and reach",
+    "buildRegressionResult (api.ts:661) and fetchCalendar (api.ts:1378) with no filtering",
+    "on the way — so a run that omits them is one dropdown change away from a live",
+    "request. They are recorded for snapshot_stations, like the other non-default",
+    "variables.",
+    "",
+    "Note the units differ: for these two the page labels the axis mm, not °C",
+    "(RegressionPanel.tsx:70 isPrecip). That is a display concern, not a fixture one —",
+    "the recorded shapes are identical."
+  ],
+  "variables": [
+    "temperature_max", "temperature_min", "temperature_mean",
+    "precipitation_sum", "et0_evapotranspiration"
+  ],
+
+  "_tropical_note": [
+    "Slider bounds come from ERA5_CONFIGS (Era5TropicalChart.tsx:16 days 25-35,",
+    "Era5TropicalChart.tsx:29 nights 15-25); streak is the 1/2/3 select",
+    "(AliJeVroceERA5.tsx:198-200). The full 11x3 sweep is recorded only for",
+    "snapshot_stations; every other station gets the default threshold at streak 1,",
+    "which is what a default page load requests."
+  ],
+  "tropical": {
+    "days":   { "min": 25, "max": 35, "default": 30 },
+    "nights": { "min": 15, "max": 25, "default": 20 },
+    "streaks": [1, 2, 3],
+    "default_streak": 1
+  },
+
+  "_derived_coverage": [
+    "TWO QUERY FAMILIES CANNOT BE PLANNED FROM THIS FILE ALONE. Both were found by",
+    "T-1.1 on the first (station, date) case it ran, because neither is reachable on",
+    "a default page load. They are planned in scripts/fixtures/record.mjs instead.",
+    "",
+    "D2b — the last-7 climatology lookback. fetchLast7 (api.ts:561-567) calls",
+    "fetchEra5WindowRow for the month/day of EVERY row the D6 query returns, so",
+    "selecting a station in the today card fires seven daily_window requests, six of",
+    "them for days that are not in the `dates` matrix. Those month/days are not",
+    "derivable arithmetically: outside the reanalysis lag they are the six preceding",
+    "calendar days, but ON THE PRIMARY DATE — which sits inside the lag by design —",
+    "the seven most recent rows are weeks earlier. record.mjs therefore fetches in two",
+    "passes and derives them from what D6 actually returned. T-1.2 missed this because",
+    "the page opens on the national average, for which fetchLast7 returns early",
+    "(api.ts:494) and the strip never appears.",
+    "",
+    "D8b — the doy round-trip. fetchRegression (api.ts:642) does not use the selected",
+    "date's month/day; it converts the analysis panel's doy back through the fixed",
+    "NON-LEAP table at api.ts:102. The two calendars disagree after Feb 28 of a leap",
+    "year, so selecting 2024-03-01 makes the regression panel and the hero cards query",
+    "MARCH 2. That is the T-4.5 defect, and the fixture set has to cover it for the",
+    "snapshot to freeze it. Derived arithmetically in record.mjs (doyRoundTrip)."
+  ],
+
+  "_normalised": [
+    "Recorded bodies are byte-for-byte what the server sent, with ONE exception.",
+    "",
+    "Open-Meteo (shapes O1, O2) stamps every response with `generationtime_ms`, the",
+    "server's own timing for that request. It differs on every call even when the",
+    "forecast values are identical, so it alone made all 19 open-meteo/ files diff on",
+    "the 2026-07-22 re-record. That destroys the property that makes this fixture set",
+    "a control at all: re-running `yarn fixtures:record` against an unchanged upstream",
+    "must leave the working tree clean, so that a diff means THE DATA MOVED and not",
+    "THE RECORDER IS NOISY.",
+    "",
+    "The field is therefore DELETED at record time (scripts/fixtures/record.mjs,",
+    "stripGenerationTime), not preserved and ignored. Safe because the app never reads",
+    "it: the only consumers of an Open-Meteo body are openMeteoMax (api.ts:255-256)",
+    "and openMeteoNationalMax (api.ts:274-277), and both read exactly",
+    "`daily.temperature_2m_max[0]`. Nothing else in code/ali-je-vroce-era5 mentions",
+    "`generationtime` (grep, 2026-07-22). Entries in index.json carry a `normalised`",
+    "marker.",
+    "",
+    "Normalised responses are re-serialised with JSON.stringify, which also drops",
+    "whitespace and renormalises number literals — upstream `299.0` and `26.0` are",
+    "stored as `299` and `26`. Same values, and JSON.parse cannot tell the difference,",
+    "so the app sees identical numbers; but it does mean these 19 files are not a",
+    "byte-level record of the wire format. Verified 2026-07-22: two consecutive full",
+    "re-records produced ZERO diff across all 1258 files.",
+    "",
+    "NOT normalised, and still diffs every run by design: index.json's `recorded_at`.",
+    "The byte-identity claim is about tests/fixtures/http/ only."
+  ],
+
+  "_uncapturable": [
+    "VERIFIED BY MEASUREMENT, not assumption: with fixtures installed a default page",
+    "load makes 51 requests, of which 48 are same-origin. The 3 that still leave the",
+    "machine are listed below. NONE of them go through fetch(), which is why the shim",
+    "in code/ali-je-vroce-era5/fixtures/install.ts structurally cannot stop them — it",
+    "can only wrap fetch. Blocking these needs request interception at the browser",
+    "level (Playwright page.route), which is T-1.3's job.",
+    "",
+    "1. fonts.googleapis.com — a <link rel=stylesheet> in the SITE-WIDE layout",
+    "   (pages/_includes/base.html:9,12) plus an @import in styles/era5.css:9. Not an",
+    "   ERA5 call at all; it affects every page on the site. Offline the browser falls",
+    "   back to system fonts, which CHANGES TEXT METRICS — this is the one that will",
+    "   make T-1.3 screenshots unstable if it is not blocked or self-hosted.",
+    "",
+    "2/3. {a,b}.tile.opentopomap.org — Leaflet raster basemap tiles",
+    "   (SeaLevelWidget.tsx:296), loaded as <img>. Not recorded: the",
+    "   tile set is unbounded (depends on Leaflet pan/zoom) and they are PNGs, not JSON.",
+    "   Offline the basemap renders blank; the flood overlay, divider, legend and stats",
+    "   still render, because those are same-origin assets (/data/flood-stats.json",
+    "   SeaLevelWidget.tsx:312, /data/flood/*.png SeaLevelWidget.tsx:58).",
+    "",
+    "The arso-si datasette (saGet, api.ts:43-47) and Vremenar (api.ts:236) are NOT",
+    "recorded because no UI path reaches them: fetchMeta never populates",
+    "arsoStationIds (api.ts:26) and builds station names from era5_name only",
+    "(api.ts:306-313), so no loc can start with 'arso:'. Slated for deletion in T-2.2",
+    "per D-2. Likewise the sidecar /api/live/tropical_* call (TropicalChart.tsx:253):",
+    "the component owning it is imported nowhere. T-2.3."
+  ]
+}

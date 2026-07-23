@@ -9,6 +9,15 @@ import EleventyVitePlugin from "@11ty/eleventy-plugin-vite";
 const IMG_DISABLED = process.env.ELEVENTY_DISABLE_IMG === "1";
 const EMULATE_PRODUCTION = process.env.ELEVENTY_EMULATE_PRODUCTION === "1";
 
+// T-1.2: `yarn fixtures:build` produces a build that is pinned to a fixed date and
+// copies the whole of tests/fixtures (14 MB as of T-1.1 — recorded responses plus
+// the 2 MB output snapshot, which the page has no use for) under /fixtures. That
+// must never be mistaken for a deployable build, so it goes to its own directory
+// (dist-fixtures) rather than overwriting the dist/ that `yarn build` and the
+// deploy image use.
+// Default is unchanged: plain `yarn build` still writes dist/.
+const OUTPUT_DIR = process.env.ELEVENTY_OUTPUT_DIR || "dist";
+
 function monthToNumber(date) {
     return date.replace('januar', '1.')
         .replace('februar', '2.')
@@ -91,7 +100,7 @@ async function imageShortcode(src, alt, sizes) {
     const imageDir = imagePath.replace(/^pages\/(.*)\/.*$/, '$1');
 
     let metadata = await Image(imagePath, {
-        outputDir: "dist/img/" + imageDir,
+        outputDir: OUTPUT_DIR + "/img/" + imageDir,
         urlPath: "/img/" + imageDir,
         widths: [920, 1840],
         formats: ["webp"],
@@ -154,6 +163,16 @@ export default function (eleventyConfig) {
 		}
 	});
 
+    // T-1.2: expose the recorded network fixtures at /fixtures so the page can
+    // run with the network disabled (see code/ali-je-vroce-era5/fixtures/install.ts).
+    // Strictly opt-in — a production build never copies them.
+    if (process.env.VITE_FIXTURES === "1") {
+        // Must land under `public/`: eleventy-plugin-vite makes that Vite's
+        // publicDir, and Vite only emits publicDir verbatim — anything else is
+        // dropped unless an HTML entry references it.
+        eleventyConfig.addPassthroughCopy({ 'tests/fixtures': 'public/fixtures' });
+    }
+
     eleventyConfig.addPassthroughCopy('code')
     eleventyConfig.addPassthroughCopy('styles')
     eleventyConfig.addPassthroughCopy('assets')
@@ -178,7 +197,7 @@ export default function (eleventyConfig) {
     return {
         dir: {
             input: 'pages',
-            output: 'dist',
+            output: OUTPUT_DIR,
         },
         htmlTemplateEngine: 'liquid',
         markdownTemplateEngine: 'liquid',

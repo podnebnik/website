@@ -1,5 +1,6 @@
 import { createResource, Show, onMount, onCleanup, createEffect } from "solid-js";
 import { fetchAnnualTrend } from "../api.ts";
+import { todayYear } from "../clock.ts";
 import type { AnnualTrend } from "../types.ts";
 
 const INK      = "#0E0E0C";
@@ -34,7 +35,10 @@ function TrendHighchart(props: ChartProps) {
     await import("highcharts/highcharts-more");
 
     const d = props.trend;
-    const currentYear = new Date().getFullYear();
+    // Rendered as a visible plotline label below, on a component that mounts on
+    // every page load — so it has to follow the injected date, not the system
+    // clock, or the T-1.1 snapshot rolls over on 1 January.
+    const currentYear = todayYear();
     const { histLine, histBand, fcLine, fcBand, fcMilestones } = buildTrendSeries(d);
 
     chart = Highcharts.chart(container, {

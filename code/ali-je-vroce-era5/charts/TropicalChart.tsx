@@ -1,4 +1,5 @@
 import { createSignal, createEffect, For, Show, onMount, onCleanup } from "solid-js";
+import { todayYear } from "../clock";
 
 export interface TropTrend {
   model_used:      boolean | "nb";
@@ -98,7 +99,7 @@ export function TropHighchart(props: ChartProps) {
 
   const buildSeries = () => {
     const { years, counts, trend } = props.series;
-    const currentYear = new Date().getFullYear();
+    const currentYear = todayYear();
 
     const barData = years.map((y, i) => ({
       x: y, y: counts[i]!,
@@ -194,7 +195,7 @@ export function TropHighchart(props: ChartProps) {
         formatter(this: any) {
           if (this.series.type === "line") return `<b>${Math.round(this.x)}</b><br>Trend: <b>${this.y!.toFixed(1)}</b> ${props.cfg.unitLabel}`;
           if (this.series.type === "arearange") return false as any;
-          const partial = this.x === new Date().getFullYear() ? " <i>(leto v teku)</i>" : "";
+          const partial = this.x === todayYear() ? " <i>(leto v teku)</i>" : "";
           return `<b>${this.x}</b>${partial}<br>${props.cfg.tooltipNoun}: <b>${this.y}</b>`;
         },
       },

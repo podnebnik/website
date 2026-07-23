@@ -1,0 +1,118 @@
+{
+  "_readme": [
+    "T-1.1 SECTION-SET ASSERTION.",
+    "",
+    "The harness cannot mount AliJeVroceERA5 itself — the selected date and the two",
+    "station signals are internal signals with no external entry point (the only date",
+    "control is prev/next-day buttons, TodayCard.tsx:90-110). So the harness mirrors",
+    "the page's composition instead, and a section added to the page would otherwise",
+    "be silently absent from the snapshot: no error, no miss, just a number that stops",
+    "being watched.",
+    "",
+    "This file closes that hole. scripts/snapshot/main.mjs extracts every capitalised",
+    "JSX tag from code/ali-je-vroce-era5/AliJeVroceERA5.tsx and requires each one to",
+    "appear in exactly one bucket below. An unclassified tag FAILS THE RUN and no",
+    "snapshot is written.",
+    "",
+    "Adding a section to the page is therefore a two-line change here plus whatever",
+    "capture it needs — and forgetting is not an option the harness allows.",
+    "",
+    "`covered` entries name the harness unit that renders them, so the mirror is",
+    "auditable against the page rather than taken on trust.",
+    "",
+    "LIMIT: this assertion sees CAPITALISED TAGS ONLY, so it is blind to numbers the",
+    "page renders itself in bare <div>/<p> — the distribution chart's title and footer",
+    "(AliJeVroceERA5.tsx:99-112) and the station count (:137-145). Those are covered",
+    "instead by the mirrored-source assertion in scripts/snapshot/main.mjs, which is",
+    "where both limits are written up in full."
+  ],
+
+  "source": "code/ali-je-vroce-era5/AliJeVroceERA5.tsx",
+
+  "covered": {
+    "TodayCard": {
+      "mounted_at": "AliJeVroceERA5.tsx:84",
+      "harness_unit": "case.today_card",
+      "captures": "category, percentile, temperature, sample count, year range, the ERA5T/preliminarno badge, explain + footer copy, gauge and last-7 chart options"
+    },
+    "DistributionChart": {
+      "mounted_at": "AliJeVroceERA5.tsx:105",
+      "harness_unit": "case.distribution",
+      "captures": "distribution curve points, percentile zone bands, cutoff plotlines"
+    },
+    "TodayTrendChart": {
+      "mounted_at": "AliJeVroceERA5.tsx:117",
+      "harness_unit": "case.today_trend",
+      "captures": "Theil-Sen slope, p-value, tau, n years, projection endpoints, and the current-year plotline label (TodayTrendChart.tsx:69-80) — a former clock leak that must now follow the pinned date"
+    },
+    "RegToolbar": {
+      "mounted_at": "AliJeVroceERA5.tsx:131",
+      "harness_unit": "case.analysis",
+      "captures": "the control state the rest of the analysis panel is computed from (variable, method, window, day label)"
+    },
+    "RegScatterCard": {
+      "mounted_at": "AliJeVroceERA5.tsx:165",
+      "harness_unit": "case.analysis",
+      "captures": "trend per decade, total change over record, significance label, fit description, per-year scatter and anomalies"
+    },
+    "RegYearRoundCard": {
+      "mounted_at": "AliJeVroceERA5.tsx:170",
+      "harness_unit": "by_station.year_round_calendar",
+      "captures": "trend10 and p_val for all 365 days of the year, keyed MM-DD"
+    },
+    "StationMap": {
+      "mounted_at": "AliJeVroceERA5.tsx:148",
+      "harness_unit": "global.station_map",
+      "captures": "station marker set. Displays no numbers of its own; rendered so the Highcharts topology fixture (StationMap.tsx:45-46) is actually exercised rather than merely recorded"
+    },
+    "HeroCardsPanel": {
+      "mounted_at": "AliJeVroceERA5.tsx:228",
+      "harness_unit": "case.hero_cards",
+      "captures": "impact category, trend headline number, verdict copy, significance stars, sample counts"
+    },
+    "Era5SeasonHeatmapChart": {
+      "mounted_at": "AliJeVroceERA5.tsx:240",
+      "harness_unit": "by_station.season_heatmap",
+      "captures": "per-season per-year average, percentile, category, rank"
+    },
+    "SpeiHeatmapChart": {
+      "mounted_at": "AliJeVroceERA5.tsx:251",
+      "harness_unit": "global.spei_national",
+      "captures": "national SPEI per season-year, category, water balance, rank"
+    },
+    "SpeiTrendChartLazy": {
+      "mounted_at": "AliJeVroceERA5.tsx:266",
+      "harness_unit": "global.spei_station",
+      "captures": "per-station SPEI-3/SPEI-30 series and Theil-Sen trend parameters"
+    },
+    "Era5TropicalChart": {
+      "mounted_at": "AliJeVroceERA5.tsx:279 (days), :291 (nights)",
+      "harness_unit": "by_station.tropical_days / by_station.tropical_nights",
+      "captures": "per-year counts, NB-GLM trend, and the highlighted current-year bar (TropicalChart.tsx:104-107) — the second former clock leak"
+    }
+  },
+
+  "structural": {
+    "Dashboard": "Local layout wrapper for the whole page (AliJeVroceERA5.tsx:43). The harness mirrors its composition; it renders no numbers itself.",
+    "Era5Charts": "Local layout wrapper for the lower sections (AliJeVroceERA5.tsx:207). Renders no numbers itself.",
+    "TropControls": "Threshold and streak inputs (AliJeVroceERA5.tsx:181). Their VALUES are pinned in cases.json analysis_defaults and drive the tropical captures; the control markup itself displays no data.",
+    "RegressionPanel": "Context provider only (RegressionPanel.tsx:121). Supplies the analysis store to the cards, renders no DOM of its own.",
+    "Show": "solid-js control flow.",
+    "Suspense": "solid-js control flow.",
+    "SiteMeta": "NOT a component. A type argument in createResource<SiteMeta> (AliJeVroceERA5.tsx:35) that the tag regex cannot distinguish from JSX. Classified explicitly rather than special-cased in the extractor, so the extractor stays dumb and auditable."
+  },
+
+  "excluded": {
+    "SeaLevelChart": {
+      "mounted_at": "AliJeVroceERA5.tsx:304",
+      "reason": "NOT SNAPSHOTTED. Its displayed figures — flooded hectares and affected buildings per sea-level increment — come from the same-origin /data/flood-stats.json plus the per-cm factors 20.77 ha and 14.13 buildings (SeaLevelWidget.tsx:56-57,109), none of which are part of the T-1.2 ERA5 fixture set. It also eagerly constructs 24 image preloads and a Leaflet map against external tiles.",
+      "consequence": "Every number the sea-level widget displays is currently OUTSIDE the regression net. A Phase 2 or Phase 3 change that moved one of them would produce an empty T-1.1 diff.",
+      "tickets": [
+        "T-4.11 (D-10c) — BLOCKING: the widget renders 10 cm increments from a SRTM-derived DEM whose vertical error is metre-scale, so the lower half of its range sits inside the DEM's own error. The widget does not launch on the current DEM, and may be cut from v1 entirely.",
+        "T-4.10 (D-10b) — the 20.77 / 14.13 factors and the AR6 per-SSP tables are unattributed.",
+        "T-5.6 — the widget is 162 KB and is to be lazy-loaded on interaction."
+      ],
+      "if_the_widget_ships": "Extend the T-1.2 fixture matrix to cover /data/flood-stats.json, then add a global.sea_level unit here. Do not baseline it before T-4.11 resolves — the numbers are expected to change or disappear."
+    }
+  }
+}

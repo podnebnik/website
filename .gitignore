@@ -14,6 +14,9 @@ node_modules
 
 var
 dist
+# T-1.2: output of `yarn fixtures:build` — a date-pinned build with the recorded
+# fixtures baked in. Deliberately not dist/, so it can never be deployed.
+dist-fixtures
 
 ~$*
 
@@ -22,3 +25,6 @@ dist
 
 
 .claude/settings.local.json
+
+# T-1.1 snapshot harness build output
+.snapshot-build/

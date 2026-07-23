@@ -1,5 +1,6 @@
 import { createSignal, createResource, createMemo, Show, Suspense, lazy } from "solid-js";
 import { fetchMeta, fetchPageData, fetchSpeiHeatmap, fetchSpeiStationSeasonal, ERA5_NATIONAL } from "./api.ts";
+import { today as todayIso } from "./clock.ts";
 import { TodayCard } from "./components/TodayCard.tsx";
 import { DistributionChart } from "./charts/DistributionChart.tsx";
 import { TodayTrendChart } from "./components/TodayTrendChart.tsx";
@@ -40,7 +41,7 @@ export function AliJeVroceERA5() {
 }
 
 function Dashboard(props: { meta: SiteMeta }) {
-  const today = new Date().toISOString().slice(0, 10);
+  const today = todayIso();
   const [date, setDate] = createSignal(today);
 
   const era5Stations = props.meta.stations.filter(s => s.source === "era5");
