@@ -50,20 +50,19 @@ async function dsGet<T>(path: string): Promise<T> {
 }
 
 
-function doyToMonthDay(doy: number): { month: number; day: number } {
+export function doyToMonthDay(doy: number): { month: number; day: number } {
   const d = new Date(Date.UTC(2001, 0, 1));
   d.setUTCDate(d.getUTCDate() + doy - 1);
   return { month: d.getUTCMonth() + 1, day: d.getUTCDate() };
 }
 
-// UNREFERENCED as of T-2.2 — its only callers were in the deleted ARSO path.
-// Left in place rather than deleted because it is a named target of T-4.5 (the
-// leap-year doy fix) and is cited by tests/snapshot/cases.json:115. See PROGRESS.md.
-// Suppressed rather than deleted — and with `@ts-expect-error` rather than
-// `@ts-ignore`, so the suppression itself errors the moment the function is used
-// again or removed by T-2.9, instead of quietly outliving its reason.
-// @ts-expect-error TS6133: deliberately unreferenced until T-4.5 / T-2.9.
-function monthDayToDoy(month: number, day: number): number {
+// Its ARSO-path callers were deleted in T-2.2; it survives as a named target of
+// T-4.5 (the leap-year doy fix) and is cited by tests/snapshot/cases.json:115.
+// EXPORTED for the T-3.4 doy unit tests (tests/unit/doy.test.ts), which pin the
+// FIXED non-leap day table it reads — exactly the thing T-4.5 will change. The
+// `@ts-expect-error TS6133` that previously guarded its unreferenced state is now
+// obsolete (the test import references it) and was removed with the export.
+export function monthDayToDoy(month: number, day: number): number {
   const DAYS = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
   return (DAYS[month - 1] ?? 0) + day;
 }
@@ -114,7 +113,7 @@ async function fetchEra5WindowRow(era5Name: string, month: number, day: number):
 // rows for this month/day. Distribution is synthesised from the averaged
 // p5/p50/p95 (syntheticDistribution, not the empirical curve the per-station
 // daily_window rows carry — see T-4.7).
-async function fetchEra5NationalWindowRow(month: number, day: number): Promise<DailyWindowRow | null> {
+export async function fetchEra5NationalWindowRow(month: number, day: number): Promise<DailyWindowRow | null> {
   const rows = await dsGet<DailyWindowRow[]>(
     `daily_window.json?_shape=array&month__exact=${month}&day__exact=${day}&_size=50`
   );

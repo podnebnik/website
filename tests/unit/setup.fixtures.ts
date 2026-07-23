@@ -21,11 +21,15 @@
 
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { fileURLToPath } from "node:url";
 
 import { installFixtures } from "../../code/ali-je-vroce-era5/fixtures/install.ts";
 
-const FIXTURE_DIR = fileURLToPath(new URL("../fixtures/", import.meta.url));
+// Anchored on the working directory (repo root under `yarn test`) rather than
+// import.meta.url: T-3.4's doy suite runs under the jsdom environment (it imports
+// AliJeVroceERA5.tsx, whose Solid JSX transform needs a DOM), and there Vitest
+// rewrites import.meta.url to a non-file URL that fileURLToPath() rejects. The
+// working directory is stable across the node and jsdom environments.
+const FIXTURE_DIR = join(process.cwd(), "tests", "fixtures");
 
 function requestUrl(input: RequestInfo | URL): string {
   if (typeof input === "string") return input;

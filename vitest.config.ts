@@ -1,4 +1,5 @@
 import { defineConfig } from "vitest/config";
+import solid from "vite-plugin-solid";
 
 // T-3.3 — the TypeScript regression runner.
 //
@@ -10,7 +11,15 @@ import { defineConfig } from "vitest/config";
 //     Dashboard composition against the recorded fixtures and diffs
 //     tests/fixtures/snapshot.json. Untouched by this ticket.
 // T-3.7 gates on BOTH.
+//
+// T-3.4 added vite-plugin-solid so the unit tests can import the real doy helper
+// dateToDoy from AliJeVroceERA5.tsx (a .tsx that needs the Solid JSX transform to
+// load). Only the module's top-level function/const definitions are evaluated on
+// import — the components are never rendered and the chart deps (highcharts,
+// leaflet) are behind lazy()/dynamic import, so no DOM or browser global is
+// touched. Pure .ts imports (api.ts, percentile.ts) are unaffected by the plugin.
 export default defineConfig({
+  plugins: [solid()],
   test: {
     include: ["tests/unit/**/*.test.ts"],
     environment: "node",

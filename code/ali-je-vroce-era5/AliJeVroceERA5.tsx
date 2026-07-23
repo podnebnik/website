@@ -25,7 +25,7 @@ function fmtDayLabel(dl: string): string {
   return `${(day ?? "").padStart(2, "0")}.${EN_MONTHS[mon ?? ""] ?? "??"}`;
 }
 
-function dateToDoy(dateStr: string): number {
+export function dateToDoy(dateStr: string): number {
   const d = new Date(dateStr + "T12:00:00Z");
   const start = new Date(Date.UTC(d.getUTCFullYear(), 0, 0));
   return Math.floor((d.getTime() - start.getTime()) / 86_400_000);
