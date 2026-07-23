@@ -88,8 +88,7 @@
         "zoom": 7
       },
       "branding": {
-        "site_title": "Podnebnik · Ali je vroče?",
-        "domain": "podnebnik.kesma.wtf"
+        "site_title": "Podnebnik · Ali je vroče?"
       },
       "strings": {
         "explain_reg": "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija",

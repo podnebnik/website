@@ -204,7 +204,7 @@ export async function fetchMeta(): Promise<SiteMeta> {
     languages:        ["en"],
     default_language: "en",
     map:      { center_lat: 46.1, center_lon: 14.8, zoom: 7 },
-    branding: { site_title: "Podnebnik · Ali je vroče?", domain: "podnebnik.kesma.wtf" },
+    branding: { site_title: "Podnebnik · Ali je vroče?" },
     stations,
     strings: {
       explain_reg: "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija",

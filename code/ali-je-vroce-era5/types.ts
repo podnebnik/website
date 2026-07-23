@@ -91,7 +91,7 @@ export interface SiteMeta {
   languages:        string[];
   default_language: string;
   map:              { center_lat: number; center_lon: number; zoom: number };
-  branding:         { site_title: string; domain: string };
+  branding:         { site_title: string };
   stations: Array<{ name: string; label: string; source: "era5" | "arso"; lat: number; lon: number; elevation: number }>;
   strings:          { explain_reg: string; explain_cal: string };
 }
