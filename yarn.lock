@@ -804,10 +804,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@highcharts/map-collection@npm:^2.3.2":
-  version: 2.3.2
-  resolution: "@highcharts/map-collection@npm:2.3.2"
-  checksum: 10c0/8007095c81fd7abeabb9345ed9988d468b33084e0c55e40447ea60cb9dc70dbc64e3dd4566e50c08799f520c2a7a4a8c39acdfd0dfc0bb5103308e1093ceb68f
+"@highcharts/map-collection@npm:^2.3.3":
+  version: 2.3.3
+  resolution: "@highcharts/map-collection@npm:2.3.3"
+  checksum: 10c0/ef45ae8920628e408c34be2a01cbeb19567cd2b06415fbdfb9d66798fbf76ddabd5d2d5db7d4787614f707b39b226638a7ffca55f0d075dd93c0d14c9c0f8d23
   languageName: node
   linkType: hard
 
@@ -5109,7 +5109,7 @@ __metadata:
     "@11ty/eleventy": "npm:^3.1.5"
     "@11ty/eleventy-img": "npm:^6.0.4"
     "@11ty/eleventy-plugin-vite": "npm:^7.0.0"
-    "@highcharts/map-collection": "npm:^2.3.2"
+    "@highcharts/map-collection": "npm:^2.3.3"
     "@kobalte/core": "npm:^0.13.10"
     "@tailwindcss/typography": "npm:^0.5.19"
     "@tailwindcss/vite": "npm:^4.2.2"
