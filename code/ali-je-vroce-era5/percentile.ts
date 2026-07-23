@@ -30,7 +30,14 @@
 // `rankPercentile` needs. Sourcing that sample is part of T-4.1, not of this
 // extraction.
 
-export const CAT_COLORS: Record<string, string> = {
+/**
+ * The five category keys, in one place. Typing the lookup tables by this union
+ * instead of `string` makes `CAT_COLORS.hell` a total lookup — `noUncheckedIndexedAccess`
+ * only widens to `| undefined` for index signatures, not for a finite key set.
+ */
+export type CategoryKey = "hell" | "hot" | "nope" | "cold" | "freezing";
+
+export const CAT_COLORS: Record<CategoryKey, string> = {
   hell:     "#962c1a",
   hot:      "#c25a2c",
   nope:     "#e7d9b8",

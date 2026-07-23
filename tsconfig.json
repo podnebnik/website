@@ -41,8 +41,7 @@
         /* Additional Checks */
         "noUnusedLocals": true,
         "noUnusedParameters": true,
-        /* Path Mapping for Vite */
-        "baseUrl": ".",
+        /* Path Mapping for Vite — paths are resolved relative to this file (no baseUrl) */
         "paths": {
             "/code/*": [
                 "./code/*"
@@ -65,7 +64,9 @@
         "code/**/*.ts",
         "code/**/*.tsx",
         "code/**/*.js",
-        "code/**/*.jsx"
+        "code/**/*.jsx",
+        "tests/**/*.ts",
+        "tests/**/*.tsx"
     ],
     "exclude": [
         "node_modules",

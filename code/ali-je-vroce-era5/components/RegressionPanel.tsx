@@ -1,7 +1,8 @@
 import { createSignal, createResource, createEffect, createMemo, createContext, useContext,
          Show, Suspense, For, lazy } from "solid-js";
 import type { JSXElement } from "solid-js";
-import type { SiteMeta, RegressionResponse } from "../types.ts";
+import type { SiteMeta } from "../types.ts";
+import type { RegressionParams } from "../api.ts";
 import { fetchRegression, fetchCalendar } from "../api.ts";
 
 const RegressionChart = lazy(() => import("../charts/RegressionChart.tsx").then(m => ({ default: m.RegressionChart })));
@@ -47,13 +48,13 @@ function createStore(props: ProviderProps) {
     if (ext) setSelLocs([ext]);
   });
 
-  const params = createMemo(() => ({
+  const params = createMemo((): RegressionParams => ({
     locs:   selLocs(),
     var:    selVar(),
     doy:    doy(),
     window: window_(),
-    corr:   corr() ? "corr" : "raw" as const,
-    method: useOls() ? "ols" : "theilsen" as const,
+    corr:   corr() ? "corr" : "raw",
+    method: useOls() ? "ols" : "theilsen",
   }));
   const [regData] = createResource(params, fetchRegression);
 
@@ -89,7 +90,7 @@ function createStore(props: ProviderProps) {
     return locs.length === 1 ? stationLabel(locs[0]!) : `${locs.length} locations`;
   };
   const varLabel   = () => VARIABLES.find(([k]) => k === selVar())?.[1] ?? selVar();
-  const chartTitle = () => `${varLabel().split("(")[0].trim()} · ${doyToLabel(doy())} ±${window_()}d`;
+  const chartTitle = () => `${varLabel().split("(")[0]!.trim()} · ${doyToLabel(doy())} ±${window_()}d`;
   const chartSub   = () => selLocs().map(stationLabel).join(", ");
 
   function toggleLoc(name: string) {
@@ -324,7 +325,7 @@ export function RegYearRoundCard() {
         <div style={{ "min-width": "0" }}>
           <div style={panelTitleStyle}>Year-round trend · {s.selLocs()[0]?.replace(/_/g, " ")}</div>
           <div style={{ ...panelSubStyle, "margin-top": "3px" }}>
-            {(s.VARIABLES.find(([k]) => k === s.selVar())?.[1] ?? s.selVar()).split("(")[0].trim()}
+            {(s.VARIABLES.find(([k]) => k === s.selVar())?.[1] ?? s.selVar()).split("(")[0]!.trim()}
             {" · Theil-Sen + MK · ±"}{s.window_()}{"d window"}
           </div>
         </div>

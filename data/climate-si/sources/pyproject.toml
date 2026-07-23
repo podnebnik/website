@@ -1,0 +1,37 @@
+[project]
+name = "podnebnik-climate-si-source"
+version = "0.1"
+description = "Podnebnik climate-si (ERA5-Land) data source"
+readme = "README.md"
+requires-python = ">=3.12"
+# Generated from the imports in mk_collect.py and precompute_datasette.py.
+dependencies = [
+    # mk_collect.py
+    "openmeteo-requests",
+    "requests-cache",
+    "retry-requests",
+    "urllib3 == 2.*",
+    # precompute_datasette.py
+    "numpy == 2.*",
+    "scipy == 1.*",
+    "statsmodels == 0.14.*",
+    "pymannkendall",
+    # both
+    "pandas == 2.*",
+    "PyYAML == 6.*",
+    # T-3.6: pipeline output validation (schema/dtype/bounds/continuity).
+    "pandera == 0.26.*",
+]
+
+# Dev-only tooling (T-3.3): the pytest runner. Not needed to run the pipeline,
+# so it stays out of `dependencies`; installed by `uv sync` and locked in
+# uv.lock alongside the runtime deps.
+[dependency-groups]
+dev = [
+    "pytest == 8.*",
+]
+
+# T-3.3: pytest looks here for its test tree, so `uv run pytest` behaves the same
+# regardless of cwd. Real pipeline tests (T-3.5) go under tests/.
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -25,7 +25,7 @@ function fmtDayLabel(dl: string): string {
   return `${(day ?? "").padStart(2, "0")}.${EN_MONTHS[mon ?? ""] ?? "??"}`;
 }
 
-function dateToDoy(dateStr: string): number {
+export function dateToDoy(dateStr: string): number {
   const d = new Date(dateStr + "T12:00:00Z");
   const start = new Date(Date.UTC(d.getUTCFullYear(), 0, 0));
   return Math.floor((d.getTime() - start.getTime()) / 86_400_000);
@@ -147,15 +147,15 @@ function Dashboard(props: { meta: SiteMeta }) {
             <Suspense fallback={<div style={{ height: "280px" }} class="animate-pulse bg-[var(--color-paper-2)]" />}>
               <StationMap meta={era5Meta()} loc={mapLoc()} onSelect={setMapLoc} />
             </Suspense>
-            <div style={{ padding: "8px 12px 10px", borderTop: "1px solid var(--color-rule)", display: "flex", gap: "10px", flexWrap: "wrap", background: "var(--color-card)" }}>
+            <div style={{ padding: "8px 12px 10px", "border-top": "1px solid var(--color-rule)", display: "flex", gap: "10px", "flex-wrap": "wrap", background: "var(--color-card)" }}>
               {([
                 ["#7bafd4", "Alpska (>1500m)"],
                 ["#a3c4a0", "Gorska (800–1500m)"],
                 ["#c8b97a", "Predgorska (400–800m)"],
                 ["#c25a2c", "Nižinska (<400m)"],
               ] as [string, string][]).map(([color, label]) => (
-                <span style={{ display: "flex", alignItems: "center", gap: "5px", fontFamily: "var(--font-mono)", fontSize: "9px", letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--color-ink-soft)" }}>
-                  <span style={{ width: "10px", height: "10px", borderRadius: "50%", background: color, display: "inline-block", border: "1px solid rgba(0,0,0,0.15)", flexShrink: "0" }} />
+                <span style={{ display: "flex", "align-items": "center", gap: "5px", "font-family": "var(--font-mono)", "font-size": "9px", "letter-spacing": "0.06em", "text-transform": "uppercase", color: "var(--color-ink-soft)" }}>
+                  <span style={{ width: "10px", height: "10px", "border-radius": "50%", background: color, display: "inline-block", border: "1px solid rgba(0,0,0,0.15)", "flex-shrink": "0" }} />
                   {label}
                 </span>
               ))}

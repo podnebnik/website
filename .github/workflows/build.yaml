@@ -85,3 +85,69 @@ jobs:
       # re-asserted inside, so a runner with different settings fails loudly
       # instead of reporting a spurious diff.
       - run: yarn snapshot:check
+
+  # T-3.7 — TypeScript regression gate. Separate from `build`/`snapshot`: a
+  # failure here means a type regression or a broken unit test, not a broken
+  # bundle or a moved number.
+  #
+  # NOTE on `yarn install`: locally it exits 1 because the transitive
+  # `sharp@0.33.5` (via @11ty/eleventy-img) fails its native build without
+  # libvips. On this ubuntu runner sharp installs from its prebuilt linux-x64
+  # binary, so the install is clean — this gate is therefore STRONGER in CI than
+  # it can be locally. Fixing the local install is a separate ticket (sharp bump).
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      # Only because the root `postinstall` is `dotnet tool restore`.
+      - name: Install dotnet
+        uses: actions/setup-dotnet@9a946fdbd5fb07b82b2f5a4466058b876ab72bb2 # v5.3.0
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Checkout repo
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - run: corepack enable
+
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: '24'
+          cache: 'yarn'
+
+      - run: yarn install
+
+      # `tsc --noEmit` exits 2 on exactly 8 Highcharts typings errors that are
+      # deliberately NOT suppressed (T-5.8). The gate asserts the live error set
+      # is EXACTLY the allowlist in tests/typecheck-allowlist.txt — a 9th error,
+      # a different one, OR one of the 8 disappearing all fail the build. Do not
+      # replace this with a bare `yarn typecheck`; that always exits non-zero.
+      - run: yarn typecheck:gate
+
+      - run: yarn test
+
+  # T-3.7 — Python pipeline gate. Runs the pytest suite and validates the
+  # committed output CSVs (structural + bounds invariants) via Pandera. Needs
+  # only uv + the checked-out data (regular git blobs, not LFS).
+  data-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
+        with:
+          version: 'latest'
+
+      - name: Pipeline unit tests
+        run: uv run pytest
+        working-directory: data/climate-si/sources
+
+      # Validates climate-si.<table>.csv under data/climate-si/data against the
+      # invariants in validate.py; exits non-zero on any violation.
+      - name: Validate pipeline output
+        run: uv run --project data/climate-si/sources python data/climate-si/sources/validate.py
