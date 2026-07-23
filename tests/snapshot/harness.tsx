@@ -387,7 +387,7 @@ function extractChart(c: RecordedChart): any {
 
 /**
  * The one bar a tropical chart draws differently: the current year, coloured
- * ACCENT at 0.4 opacity (TropicalChart.tsx:104-107). It used to come from
+ * ACCENT at 0.4 opacity (TropicalChart.tsx:73-76). It used to come from
  * `new Date().getFullYear()` and now comes from todayYear(), so pinning it here
  * is what stops the T-1.1 snapshot rolling over on 1 January.
  */

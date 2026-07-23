@@ -34,14 +34,16 @@
 //   previous revision of this comment wrongly recorded them as left alone:
 //     components/TodayTrendChart.tsx:41   current-year plotline label
 //     components/TodayCard.tsx:41         year_max fallback in the blurb
-//     charts/TropicalChart.tsx:101,197    current-year bar colour + its tooltip
-//       (TropicalChart.tsx:102,198 after the import; :101,197 before it.)
-//       These last two sit inside TropHighchart (TropicalChart.tsx:96-234),
+//     charts/TropicalChart.tsx:71,167     current-year bar colour + its tooltip
+//       (:101,197 before the clock import; :102,198 after it; :71,167 after
+//       T-2.3 deleted the sidecar client above them.)
+//       These last two sit inside TropHighchart (TropicalChart.tsx:65-203),
 //       imported by charts/Era5TropicalChart.tsx:3 and mounted twice on a default
 //       page load (AliJeVroceERA5.tsx:279,291 — tropical days and nights). The
 //       T-1.2 review scoped them out on the grounds that T-2.1/T-2.3 delete them;
-//       they do not (T-2.1 deletes five other files, T-2.3 removes only the
-//       sidecar config at TropicalChart.tsx:44-63), so they were live,
+//       they do not (T-2.1 deleted five other files; T-2.3 removed the sidecar
+//       client — SIDECAR_BASE, CONFIGS, TropData and the unimported
+//       `TropicalChart` component — but not TropHighchart), so they were live,
 //       clock-driven, visible output and would have flipped the T-1.3 baseline on
 //       1 January. Fixed in the follow-up commit.
 //
@@ -93,8 +95,8 @@ export function today(): string {
  *
  *   TodayTrendChart.tsx:41   the "current year" plotline label
  *   TodayCard.tsx:41         the year_max fallback in the category blurb
- *   TropicalChart.tsx:102    highlights the current year's bar (ACCENT, 0.4)
- *   TropicalChart.tsx:198    appends "(leto v teku)" to that bar's tooltip
+ *   TropicalChart.tsx:71     highlights the current year's bar (ACCENT, 0.4)
+ *   TropicalChart.tsx:167    appends "(leto v teku)" to that bar's tooltip
  *
  * The UTC year, not the local one — see the caveat in the header comment.
  */

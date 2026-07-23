@@ -7,7 +7,7 @@
 //
 // CLIENT MODE, NOT SSR, on purpose. Solid's SSR codegen never runs onMount, and
 // onMount is exactly where the two former clock leaks live
-// (TodayTrendChart.tsx:41, TropicalChart.tsx:102) — the values the T-1.2 review
+// (TodayTrendChart.tsx:41, TropicalChart.tsx:71) — the values the T-1.2 review
 // requires this snapshot to pin. So the harness renders the real client-side
 // component code, with a DOM under it.
 
@@ -54,7 +54,9 @@ export default defineConfig({
     // is the base the fixtures were recorded from. install.ts:127 fails the run
     // if these ever diverge.
     "import.meta.env.VITE_DATASETTE_URL": "undefined",
-    "import.meta.env.VITE_ERA5_SIDECAR_URL": "undefined",
+    // VITE_ERA5_SIDECAR_URL was defined here too, for TropicalChart.tsx's
+    // SIDECAR_BASE. T-2.3 deleted that client; the island now reads no other
+    // env var, so there is nothing left to pin.
   },
 
   build: {
