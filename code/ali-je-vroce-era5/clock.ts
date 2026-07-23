@@ -2,20 +2,21 @@
 //
 // Production behaviour is deliberately IDENTICAL to the inline
 // `new Date().toISOString().slice(0, 10)` this replaces (AliJeVroceERA5.tsx:43,
-// api.ts:382, api.ts:423): still a UTC calendar day. Moving the day boundary to
-// Europe/Ljubljana is D-4, implemented in T-4.3a, and ships separately.
+// and — until T-2.2 deleted them — the two ARSO branches of api.ts): still a UTC
+// calendar day. Moving the day boundary to Europe/Ljubljana is D-4, implemented
+// in T-4.3a, and ships separately. NOTE: api.ts no longer imports this module at
+// all; its only two `today()` calls were inside the deleted ARSO path.
 //
 // "Single source" is a claim about READS OF THE SYSTEM CLOCK, not about every
 // `new Date(...)` in the island. Re-audited by `grep -rn "new Date(" ` over
-// code/ali-je-vroce-era5 on 2026-07-23 after T-2.1 deleted the five orphaned
-// components; that grep returns 17 hits, 4 of which are in this file itself
-// (3 in this comment, 1 the fallback below). The other 13, and why each is or
+// code/ali-je-vroce-era5 on 2026-07-23 after T-2.2 deleted the ARSO subsystem
+// from api.ts; that grep returns 13 hits, 4 of which are in this file itself
+// (3 in this comment, 1 the fallback below). The other 9, and why each is or
 // is not a clock read:
 //
-//   PURE DATE ARITHMETIC on an explicit argument — 12 hits, deterministic,
+//   PURE DATE ARITHMETIC on an explicit argument — 8 hits, deterministic,
 //   no clock involved:
-//     api.ts:103                     doy table anchor, Date.UTC(2001,0,1)
-//     api.ts:505,507,535,537         parse the `date` argument and fixture rows
+//     api.ts:54                      doy table anchor, Date.UTC(2001,0,1)
 //     AliJeVroceERA5.tsx:29,30       parse the passed dateStr
 //     charts/YearRoundChart.tsx:23,24,116  doy <-> month/day on a fixed 2001
 //     components/TodayCard.tsx:64    parse the passed dateStr

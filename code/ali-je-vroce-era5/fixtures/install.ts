@@ -17,8 +17,8 @@
 // make the T-1.1 snapshot and the T-1.3 baselines lie.
 //
 // ...except the throw alone does NOT guarantee visibility. Six call sites catch
-// and swallow their own fetch errors: api.ts:257, api.ts:279, api.ts:1059,
-// api.ts:1324, api.ts:1352 and components/StationMap.tsx:119. A miss inside any
+// and swallow their own fetch errors: api.ts:140, api.ts:162, api.ts:464,
+// api.ts:504, api.ts:532 and components/StationMap.tsx:119. A miss inside any
 // of those degrades to an empty section instead of a crash. Those catches are
 // pre-existing and belong to T-5.1 (kill silent failures), so this file does not
 // touch them; instead every miss is APPENDED TO A MODULE-LEVEL ARRAY BEFORE the
