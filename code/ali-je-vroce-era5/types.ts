@@ -1,4 +1,4 @@
-/** Today's status for one location — assembled in api.ts:229 from datasette rows
+/** Today's status for one location — assembled in api.ts:218 from datasette rows
  *  plus the Open-Meteo live max. Never a sidecar payload (T-2.3, D-1). */
 export interface TodayStatus {
   available:    boolean;
@@ -30,7 +30,7 @@ export interface RankInfo {
   top5:      Array<{ year: number; date: string; temp: number; is_today?: boolean }>;
 }
 
-/** Last seven days — assembled in api.ts:302 from the same datasette rows. */
+/** Last seven days — assembled in api.ts:291 from the same datasette rows. */
 export interface Last7 {
   available: boolean;
   days: Array<{
@@ -111,7 +111,7 @@ export interface SeasonHeatmapRow {
 }
 
 /** Regression result for one location — built from an
- *  annual_trend row (buildRegressionResult, api.ts:387). */
+ *  annual_trend row (buildRegressionResult, api.ts:376). */
 export interface RegressionResult {
   loc:      string;
   year_min: number;
@@ -135,7 +135,7 @@ export interface RegressionResult {
   };
 }
 
-/** Regression response — assembled in api.ts:372 over the selected locations. */
+/** Regression response — assembled in api.ts:361 over the selected locations. */
 export interface RegressionResponse {
   results:    RegressionResult[];
   date_label: string;

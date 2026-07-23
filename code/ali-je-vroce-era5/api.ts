@@ -26,10 +26,10 @@ export const ERA5_NATIONAL = "era5:national";
 
 // The ARSO/Vremenar subsystem was deleted under D-2 (T-2.2). This predicate is
 // all that remains of it in api.ts, and only because three live components still
-// branch on it: Era5SeasonHeatmap.tsx:13, Era5TropicalChart.tsx:52 and
+// branch on it: Era5SeasonHeatmap.tsx:13, Era5TropicalChart.tsx:50 and
 // TodayCard.tsx:35,165,168,195,222. Nothing can make it return true any more —
 // fetchMeta builds every station name from `era5_name` with source "era5"
-// (:187-194 below), so no loc can start with "arso:". Removing the component
+// (:191-198 below), so no loc can start with "arso:". Removing the component
 // branches is component work and touches copy frozen by D-11; see PROGRESS.md.
 export function isArsoLoc(loc: string): boolean {
   return loc.startsWith("arso:");

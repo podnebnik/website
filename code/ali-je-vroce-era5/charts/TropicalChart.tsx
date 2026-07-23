@@ -5,7 +5,7 @@
 // `TropData` response shape and the `TropicalChart` component that fetched
 // them. Nothing imported that component; the live page composes `TropHighchart`
 // below from `charts/Era5TropicalChart.tsx:118`, which gets its series from
-// `fetchEra5Tropical` (`api.ts:433`) over datasette.
+// `fetchEra5Tropical` (`api.ts:444`) over datasette.
 import { createEffect, onMount, onCleanup } from "solid-js";
 import { todayYear } from "../clock";
 
