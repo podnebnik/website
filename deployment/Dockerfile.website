@@ -18,9 +18,9 @@ RUN dotnet tool restore && yarn install && yarn run build
 
 FROM nginx:1.31
 
-# Hostname of the era5-api service; the nginx image's envsubst renders the
-# template below into /etc/nginx/conf.d/default.conf at container start.
-ENV ERA5_API_HOST=era5-api
-
+# The nginx image's envsubst renders the template below into
+# /etc/nginx/conf.d/default.conf at container start. It no longer substitutes
+# anything — the site is static — but the templates/ mechanism is kept so
+# adding a variable later needs no Dockerfile change.
 COPY --from=builder /build/dist/ /usr/share/nginx/html/
 COPY deployment/default.conf.template /etc/nginx/templates/default.conf.template

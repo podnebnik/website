@@ -21,7 +21,7 @@
 //
 //   * TodayTrendChart.tsx:68-81  — xAxis.plotLines[0].{value,label.text}, the
 //     current-year marker. Was `new Date().getFullYear()`.
-//   * TropicalChart.tsx:104-107  — the one bar carrying an explicit `color` and
+//   * TropicalChart.tsx:73-76    — the one bar carrying an explicit `color` and
 //     `opacity`, i.e. the current year. Also was `new Date().getFullYear()`.
 //
 // ── Fidelity ──────────────────────────────────────────────────────────────────
@@ -33,7 +33,7 @@
 //   DistributionChart.tsx:143-150 setData + chart.update — the zone thresholds
 //   RegressionChart.tsx:101,129  addPlotLine — the baseline temperature
 //   YearRoundChart.tsx:137-138   remove/addPlotLine — the selected day marker
-//   TropicalChart.tsx:225-228    remove-all + addSeries — the whole series set
+//   TropicalChart.tsx:193-196    remove-all + addSeries — the whole series set
 //
 // The surface implemented here is exactly the surface the island touches (grep
 // for `chart\.` over code/ali-je-vroce-era5). Anything else throws rather than
@@ -58,7 +58,7 @@ export interface RecordedChart {
   axes: { x: RecordedAxis; y: RecordedAxis };
   /**
    * The chart's LIVE series list, not the construction-time `options.series`.
-   * TropicalChart.tsx:225-226 removes every series and re-adds them on the first
+   * TropicalChart.tsx:194-195 removes every series and re-adds them on the first
    * effect run, so reading the options array would snapshot a set the chart no
    * longer holds.
    */
@@ -168,7 +168,7 @@ function makeChart(kind: "chart" | "mapChart", options: any): any {
 
   function mkSeries(s: any) {
     // `w` is captured by identity so remove() stays correct as the array is
-    // spliced — TropicalChart.tsx:225 and RegressionChart.tsx:122 both do
+    // spliced — TropicalChart.tsx:194 and RegressionChart.tsx:122 both do
     // `while (chart.series.length) chart.series[0].remove(false)`, and index-based
     // removal would go out of sync after the first splice and loop forever.
     const w: any = {

@@ -1,4 +1,5 @@
-/** ERA5 sidecar /api/live/today_status response */
+/** Today's status for one location — assembled in api.ts:218 from datasette rows
+ *  plus the Open-Meteo live max. Never a sidecar payload (T-2.3, D-1). */
 export interface TodayStatus {
   available:    boolean;
   date?:        string;
@@ -29,7 +30,7 @@ export interface RankInfo {
   top5:      Array<{ year: number; date: string; temp: number; is_today?: boolean }>;
 }
 
-/** ERA5 sidecar /api/live/today_status/last7 response */
+/** Last seven days — assembled in api.ts:291 from the same datasette rows. */
 export interface Last7 {
   available: boolean;
   days: Array<{
@@ -81,16 +82,16 @@ export interface DailyWindowRow {
   distribution_json: string;
 }
 
-/** ERA5 sidecar /api/live/meta response */
+/** Site metadata — built client-side in api.ts:173 from the datasette stations
+ *  table plus literals defined in that function. */
 export interface SiteMeta {
   country:          string;
   name:             string;
   default_location: string;
   languages:        string[];
   default_language: string;
-  features:         Record<string, boolean>;
   map:              { center_lat: number; center_lon: number; zoom: number };
-  branding:         { site_title: string; domain: string };
+  branding:         { site_title: string };
   stations: Array<{ name: string; label: string; source: "era5" | "arso"; lat: number; lon: number; elevation: number }>;
   strings:          { explain_reg: string; explain_cal: string };
 }
@@ -109,7 +110,8 @@ export interface SeasonHeatmapRow {
   n_days:     number;
 }
 
-/** ERA5 sidecar /api/live/regression — single location result */
+/** Regression result for one location — built from an
+ *  annual_trend row (buildRegressionResult, api.ts:376). */
 export interface RegressionResult {
   loc:      string;
   year_min: number;
@@ -133,7 +135,7 @@ export interface RegressionResult {
   };
 }
 
-/** ERA5 sidecar /api/live/regression response */
+/** Regression response — assembled in api.ts:361 over the selected locations. */
 export interface RegressionResponse {
   results:    RegressionResult[];
   date_label: string;

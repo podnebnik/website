@@ -10,7 +10,6 @@ function pFmt(p: number): string {
 const ERA5_CONFIGS: Record<string, Config> = {
   days: {
     kind:             "days",
-    endpoint:         "",
     unitLabel:        "dni",
     defaultThreshold: 30,
     minT: 25, maxT: 35,
@@ -23,7 +22,6 @@ const ERA5_CONFIGS: Record<string, Config> = {
   },
   nights: {
     kind:             "nights",
-    endpoint:         "",
     unitLabel:        "noči",
     defaultThreshold: 20,
     minT: 15, maxT: 25,

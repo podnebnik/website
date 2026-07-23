@@ -69,7 +69,7 @@ if (!argv.includes("--verify")) {
   //      real system clock. Run 2 replaces the global Date with one frozen at
   //      2027-01-01T03:00:00Z — a different day, a different YEAR, and
   //      specifically the New Year rollover that the two clock leaks fixed
-  //      during T-1.2 (TodayTrendChart.tsx:41, TropicalChart.tsx:102) would have
+  //      during T-1.2 (TodayTrendChart.tsx:41, TropicalChart.tsx:71) would have
   //      flipped. Both runs write to a temp file, never to the baseline.
   //
   //   2. AGREEMENT WITH THE COMMITTED BASELINE (--check). Two fresh runs

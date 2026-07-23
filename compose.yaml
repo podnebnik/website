@@ -16,14 +16,11 @@ services:
   website:
     depends_on:
       - base # website needs to have base image built before
-      - era5-api
     build:
       context: .
       dockerfile: deployment/Dockerfile.dev.website
     volumes:
       - .:/build
-    environment:
-      - ERA5_API_URL=http://era5-api:5052
     command:
       bash -c "yarn install && yarn run start"
     ports:
@@ -40,19 +37,3 @@ services:
       dockerfile: deployment/Dockerfile.datasette
     ports:
       - "8001:8001"
-
-  # ERA5 live-data API service — serves /api/live/* for the ali-je-vroce-era5 page
-  era5-api:
-    build:
-      context: .
-      dockerfile: deployment/Dockerfile.era5-api
-    volumes:
-      # Persistent store for collected ERA5 CSV files and precomputed SQLite
-      - era5-data:/app/data/si
-    environment:
-      - COUNTRY=si
-    ports:
-      - "5052:5052"
-
-volumes:
-  era5-data:

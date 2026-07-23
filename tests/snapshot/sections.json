@@ -88,7 +88,7 @@
     "Era5TropicalChart": {
       "mounted_at": "AliJeVroceERA5.tsx:279 (days), :291 (nights)",
       "harness_unit": "by_station.tropical_days / by_station.tropical_nights",
-      "captures": "per-year counts, NB-GLM trend, and the highlighted current-year bar (TropicalChart.tsx:104-107) — the second former clock leak"
+      "captures": "per-year counts, NB-GLM trend, and the highlighted current-year bar (TropicalChart.tsx:73-76) — the second former clock leak"
     }
   },
 

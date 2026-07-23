@@ -1,4 +1,12 @@
-import { createSignal, createEffect, For, Show, onMount, onCleanup } from "solid-js";
+// Shared tropical-days/nights renderer.
+//
+// T-2.3 (D-1) removed this file's own sidecar client — the `SIDECAR_BASE`
+// `/api/live/tropical_*` endpoints, the `CONFIGS` table that carried them, the
+// `TropData` response shape and the `TropicalChart` component that fetched
+// them. Nothing imported that component; the live page composes `TropHighchart`
+// below from `charts/Era5TropicalChart.tsx:118`, which gets its series from
+// `fetchEra5Tropical` (`api.ts:444`) over datasette.
+import { createEffect, onMount, onCleanup } from "solid-js";
 import { todayYear } from "../clock";
 
 export interface TropTrend {
@@ -24,14 +32,8 @@ export interface TropStation {
   trend:         TropTrend;
 }
 
-interface TropData {
-  stations:  Record<string, TropStation>;
-  era5_last: string;
-}
-
 export interface Config {
   kind:             "days" | "nights";
-  endpoint:         string;
   unitLabel:        string;
   defaultThreshold: number;
   minT:             number;
@@ -41,39 +43,6 @@ export interface Config {
   plainDesc:        (th: number) => string;
   plainNoun:        string;
 }
-
-const SIDECAR_BASE = (import.meta.env.VITE_ERA5_SIDECAR_URL as string | undefined) ?? "";
-
-const CONFIGS: Record<string, Config> = {
-  days: {
-    kind:             "days",
-    endpoint:         `${SIDECAR_BASE}/api/live/tropical_days`,
-    unitLabel:        "dni",
-    defaultThreshold: 30,
-    minT:             15,
-    maxT:             45,
-    subLabel:         (th, st) => `Število dni z najvišjo temperaturo nad ${th} °C` +
-      (st > 1 ? `, v nizih ${st}+ zaporednih dni` : "") +
-      ` na leto · lapsna korekcija nadmorske višine · ERA5-Land`,
-    tooltipNoun:      "Tropski dnevi",
-    plainDesc:        (th) => `Tropski dan — ko dnevna temperatura preseže ${th} °C — povečuje toplotni stres in zdravstvena tveganja.`,
-    plainNoun:        "tropski dan",
-  },
-  nights: {
-    kind:             "nights",
-    endpoint:         `${SIDECAR_BASE}/api/live/tropical_nights`,
-    unitLabel:        "noči",
-    defaultThreshold: 20,
-    minT:             5,
-    maxT:             35,
-    subLabel:         (th, st) => `Število noči z najnižjo temperaturo nad ${th} °C` +
-      (st > 1 ? `, v nizih ${st}+ zaporednih noči` : "") +
-      ` na leto · lapsna korekcija nadmorske višine · ERA5-Land`,
-    tooltipNoun:      "Tropske noči",
-    plainDesc:        (th) => `Tropska noč — ko temperatura čez noč ostane nad ${th} °C — preprečuje telesu okrevanje po dnevni vročini.`,
-    plainNoun:        "tropska noč",
-  },
-};
 
 const INK      = "#0E0E0C";
 const INK_SOFT = "#6B655B";
@@ -231,200 +200,4 @@ export function TropHighchart(props: ChartProps) {
   onCleanup(() => { chart?.destroy(); chart = null; });
 
   return <div ref={container} />;
-}
-
-// ── Main component ────────────────────────────────────────────────────────────
-
-interface Props { kind: "days" | "nights"; }
-
-export function TropicalChart(props: Props) {
-  const cfg = CONFIGS[props.kind]!;
-
-  const [threshold, setThreshold] = createSignal(cfg.defaultThreshold);
-  const [streak,    setStreak]    = createSignal(1);
-  const [station,   setStation]   = createSignal<string | null>(null);
-  const [data,      setData]      = createSignal<TropData | null>(null);
-  const [loading,   setLoading]   = createSignal(false);
-  const [error,     setError]     = createSignal(false);
-
-  const load = async () => {
-    setLoading(true);
-    setError(false);
-    try {
-      const resp = await fetch(`${cfg.endpoint}?threshold=${threshold()}&streak=${streak()}`);
-      if (!resp.ok) throw new Error();
-      const d: TropData = await resp.json();
-      if (!d.stations) throw new Error();
-      setData(d);
-      const stations = Object.keys(d.stations).sort();
-      if (!station() || !stations.includes(station()!)) {
-        setStation(stations[0] ?? null);
-      }
-    } catch {
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  onMount(load);
-
-  const stations = () => Object.keys(data()?.stations ?? {}).sort();
-  const series   = () => data()?.stations[station() ?? ""] ?? null;
-  const trend    = () => series()?.trend;
-
-  const trendDesc = () => {
-    const tr = trend();
-    if (!tr?.model_used) return null;
-    const dpd  = tr.days_per_decade;
-    const p    = tr.p_value;
-    const nz   = series()?.nonzero_count ?? 0;
-
-    const techLine =
-      `NB GLM: ${tr.rate_per_year >= 0 ? "+" : ""}${tr.rate_per_year.toFixed(2)}%/leto · ` +
-      `${dpd >= 0 ? "+" : ""}${dpd.toFixed(1)} ${cfg.unitLabel}/desetletje · ` +
-      `95% CI · ${p < 0.05 ? `statistično značilen (${pFmt(p)})` : `ni značilen (${pFmt(p)})`} · ` +
-      `AIC ${tr.aic.toFixed(0)} · α=${tr.alpha}.`;
-
-    const fittedLast = tr.y_line[tr.y_line.length - 1]!;
-    const proj2050   = Math.round(fittedLast * Math.pow(1 + tr.rate_per_year / 100, 2050 - tr.fit_year_max));
-    const dir        = dpd > 0 ? "več" : "manj";
-    const sig        = p < 0.05 ? "statistično značilen trend" : "trend, ki še ni statistično značilen";
-    const forward    = p < 0.05 && proj2050 > 0
-      ? `Če trend nadaljuje, bi bilo do 2050 tipičnih okoli ${proj2050} ${cfg.unitLabel} na leto.`
-      : `Podatki ne kažejo jasnega signala, a smer spremembe je vredna pozornosti.`;
-
-    const plainLine = `${cfg.plainDesc(threshold())} Postaja kaže ${sig}: grobe ${Math.abs(dpd).toFixed(1)} ${dir} ${cfg.unitLabel} na desetletje. ${forward}`;
-
-    return { tech: techLine, plain: plainLine };
-  };
-
-  const noTrendReason = () => {
-    const tr = trend();
-    if (tr?.model_used) return null;
-    const nz = series()?.nonzero_count ?? 0;
-    return nz < 10
-      ? `Premalo let z ${cfg.plainNoun}i za izračun trenda (${nz} let z vrednostjo > 0). Potrebnih je vsaj 10.`
-      : null;
-  };
-
-  const INPUT_STYLE = { width: "52px", border: "1px solid var(--color-rule-2)", "border-radius": "6px", padding: "3px 6px", "font-family": "var(--font-mono)", "font-size": "11px", background: "var(--color-card)", color: "var(--color-ink)", "text-align": "center" } as const;
-  const LABEL_STYLE = { display: "flex", "align-items": "center", gap: "6px", "font-family": "var(--font-mono)", "font-size": "10px", color: "var(--color-ink-soft)", "letter-spacing": "0.08em", "text-transform": "uppercase" } as const;
-
-  return (
-    <div>
-
-      {/* ── Station picker ── */}
-      <Show when={stations().length > 0}>
-        <div style={{ display: "flex", "flex-wrap": "wrap", gap: "6px", margin: "0 40px 12px" }}>
-          <For each={stations()}>
-            {(s) => (
-              <button
-                style={{
-                  "font-family": "var(--font-sans)", "font-size": "11px", padding: "4px 10px",
-                  "border-radius": "20px", border: "1px solid var(--color-rule-2)", cursor: "pointer",
-                  background: station() === s ? "var(--color-ink)" : "var(--color-card)",
-                  color: station() === s ? "#fff" : "var(--color-ink-soft)",
-                }}
-                onClick={() => setStation(s)}
-              >
-                {s.replace(/_/g, " ")}
-              </button>
-            )}
-          </For>
-        </div>
-      </Show>
-
-      {/* ── Parameter controls ── */}
-      <div style={{ display: "flex", gap: "16px", "align-items": "center", margin: "0 40px 8px", "flex-wrap": "wrap" }}>
-        <label style={LABEL_STYLE}>
-          Prag:
-          <input
-            type="number" value={threshold()} min={cfg.minT} max={cfg.maxT} step={0.5}
-            style={INPUT_STYLE}
-            onBlur={(e) => { const v = parseFloat(e.currentTarget.value); if (!isNaN(v)) { setThreshold(Math.max(cfg.minT, Math.min(cfg.maxT, v))); load(); } }}
-            onKeyDown={(e) => { if (e.key === "Enter") { const v = parseFloat(e.currentTarget.value); if (!isNaN(v)) { setThreshold(Math.max(cfg.minT, Math.min(cfg.maxT, v))); load(); } } }}
-          />
-          °C
-        </label>
-
-        <label style={LABEL_STYLE}>
-          Min. zap. {cfg.unitLabel}:
-          <input
-            type="number" value={streak()} min={1} max={60} step={1}
-            style={INPUT_STYLE}
-            onBlur={(e) => { const v = parseInt(e.currentTarget.value, 10); if (!isNaN(v)) { setStreak(Math.max(1, Math.min(60, v))); load(); } }}
-            onKeyDown={(e) => { if (e.key === "Enter") { const v = parseInt(e.currentTarget.value, 10); if (!isNaN(v)) { setStreak(Math.max(1, Math.min(60, v))); load(); } } }}
-          />
-        </label>
-
-        <span style={{ "font-family": "var(--font-mono)", "font-size": "9px", color: "var(--color-ink-soft)", "line-height": "1.4" }}>
-          {cfg.subLabel(threshold(), streak())}
-        </span>
-      </div>
-
-      {/* ── Chart card ── */}
-      <div style={{ margin: "0 40px" }}>
-        <div style={{ background: "var(--color-card)", border: "1px solid var(--color-rule)", "border-radius": "var(--radius,10px)", overflow: "hidden" }}>
-
-          <div style={{ padding: "12px 16px 10px", "border-bottom": "1px solid var(--color-rule)", display: "flex", "align-items": "baseline", "justify-content": "space-between" }}>
-            <div style={{ "font-family": "var(--font-sans)", "font-weight": "500", "font-size": "14px", color: "var(--color-ink)" }}>
-              {station()?.replace(/_/g, " ") ?? "—"}
-            </div>
-            <Show when={series()}>
-              {(s) => (
-                <div style={{ "font-family": "var(--font-mono)", "font-size": "10px", color: "var(--color-ink-soft)", "letter-spacing": "0.06em", "text-transform": "uppercase" }}>
-                  {s().years.length} let · {s().years[0]}–{s().years[s().years.length - 1]}
-                </div>
-              )}
-            </Show>
-          </div>
-
-          <div style={{ padding: "0 8px" }}>
-            <Show when={loading()}>
-              <div style={{ height: "300px" }} class="animate-pulse bg-[var(--color-paper-2)] rounded" />
-            </Show>
-            <Show when={!loading() && error()}>
-              <div style={{ height: "200px", display: "flex", "align-items": "center", "justify-content": "center", color: "var(--color-ink-soft)", "font-size": "13px" }}>
-                Podatkov ni mogoče naložiti.
-              </div>
-            </Show>
-            <Show when={!loading() && !error() && series()}>
-              {(s) => (
-                <TropHighchart
-                  station={station() ?? ""}
-                  series={s()}
-                  cfg={cfg}
-                  threshold={threshold()}
-                />
-              )}
-            </Show>
-          </div>
-
-          {/* Trend description */}
-          <Show when={trendDesc()}>
-            {(td) => (
-              <div style={{ margin: "0", padding: "0 16px 12px", "font-size": "12px", "line-height": "1.55", "border-top": "1px solid var(--color-rule)" }}>
-                <p style={{ margin: "8px 0 4px", "font-family": "var(--font-mono)", "font-size": "10px", color: "var(--color-ink-soft)" }}>
-                  {td().tech}
-                </p>
-                <p style={{ margin: "0", "font-family": "var(--font-sans)", color: "var(--color-ink-soft)" }}>
-                  {td().plain}
-                </p>
-              </div>
-            )}
-          </Show>
-          <Show when={noTrendReason()}>
-            {(r) => (
-              <p style={{ margin: "0", padding: "0 16px 12px", "font-family": "var(--font-sans)", "font-size": "12px", color: "var(--color-ink-soft)", "line-height": "1.55", "border-top": "1px solid var(--color-rule)" }}>
-                {r()}
-              </p>
-            )}
-          </Show>
-
-        </div>
-      </div>
-
-    </div>
-  );
 }

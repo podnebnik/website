@@ -112,7 +112,7 @@
       "today_loc": "Ljubljana",
       "analysis_loc": "Ljubljana",
       "date": "2024-03-01",
-      "purpose": "Mar 1 IN A LEAP YEAR. monthDayToDoy (api.ts:107-110) reads a fixed non-leap day table, so this is where a leap-year doy off-by-one first becomes visible in a rendered number. Pairs with ljubljana-nonleap-mar01."
+      "purpose": "Mar 1 IN A LEAP YEAR. monthDayToDoy (api.ts:62-65) reads a fixed non-leap day table, so this is where a leap-year doy off-by-one first becomes visible in a rendered number. Pairs with ljubljana-nonleap-mar01. NOTE: since T-2.2 deleted the ARSO path monthDayToDoy has no callers at all; it survives only as a named target of T-4.5 and as the subject of this citation (api.ts:59-61), and will trip noUnusedLocals when T-3.1 turns the compiler on."
     },
     {
       "id": "ljubljana-nonleap-feb28",

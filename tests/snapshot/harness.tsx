@@ -387,7 +387,7 @@ function extractChart(c: RecordedChart): any {
 
 /**
  * The one bar a tropical chart draws differently: the current year, coloured
- * ACCENT at 0.4 opacity (TropicalChart.tsx:104-107). It used to come from
+ * ACCENT at 0.4 opacity (TropicalChart.tsx:73-76). It used to come from
  * `new Date().getFullYear()` and now comes from todayYear(), so pinning it here
  * is what stops the T-1.1 snapshot rolling over on 1 January.
  */
@@ -735,7 +735,6 @@ export async function run(): Promise<RunResult> {
       default_location: meta.default_location,
       languages: meta.languages,
       default_language: meta.default_language,
-      features: meta.features,
       map: meta.map,
       branding: meta.branding,
       strings: meta.strings,
@@ -1040,7 +1039,16 @@ export async function run(): Promise<RunResult> {
       today_loc: c.today_loc,
       analysis_loc: c.analysis_loc,
       analysis_doy: doy,
-      purpose: c.purpose,
+      // `c.purpose` is deliberately NOT captured. It is harness INPUT — prose in
+      // cases.json explaining why a case exists — not page OUTPUT. Mirroring it
+      // made the baseline fail whenever someone improved a case description or
+      // corrected a file:line citation inside one, which is a false positive: no
+      // rendered value moved. That is the third such capture in Phase 2, after
+      // global.meta.features and global.meta.branding.domain, both also removed
+      // for being recorded but never displayed. A baseline that fires on
+      // documentation trains people to re-baseline casually, which is exactly
+      // what ground rule 3 exists to prevent. The case is identified by id, date
+      // and the two locs; nothing assertable is lost.
       ...(c.verified ? { verified: c.verified } : {}),
       today_card: captureTodayCard(cardUnit, status, last7),
       distribution,

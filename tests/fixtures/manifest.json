@@ -212,7 +212,8 @@
     "recorded because no UI path reaches them: fetchMeta never populates",
     "arsoStationIds (api.ts:26) and builds station names from era5_name only",
     "(api.ts:306-313), so no loc can start with 'arso:'. Slated for deletion in T-2.2",
-    "per D-2. Likewise the sidecar /api/live/tropical_* call (TropicalChart.tsx:253):",
-    "the component owning it is imported nowhere. T-2.3."
+    "per D-2. Likewise the sidecar /api/live/tropical_* call that used to live at",
+    "TropicalChart.tsx:254: the component owning it was imported nowhere, and T-2.3",
+    "deleted it. Nothing in the island fetches a non-datasette, non-Open-Meteo URL."
   ]
 }

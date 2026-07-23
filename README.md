@@ -181,51 +181,34 @@ For the second case we provide a [Datasette](https://datasette.io/) API that ser
 
 > TODO: provide the infrastructure and examples of how to load data from the Datasette API.
 
-## ERA5 Live Climate Data (Ali je vroče? — ERA5)
+## ERA5 Climate Data (Ali je vroče? — ERA5)
 
-The `/ali-je-vroce-era5/` page shows live ERA5-Land climate trends for Slovenia powered by a Python API service (`scripts/era5/`). The service fetches daily ERA5-Land data from [Open-Meteo](https://open-meteo.com/), pre-computes statistics into SQLite, and serves them at `/api/live/*` — proxied through the website's nginx so the frontend needs no separate origin.
+The `/ali-je-vroce-era5/` page shows ERA5-Land climate trends for 18 Slovenian stations. It is a browser-side SolidJS island with **no server component of its own**: all history and statistics come from the `climate-si` Datasette described above, and the current-day figure is fetched directly from [Open-Meteo](https://open-meteo.com/) by the browser.
 
-### ERA5 API service files
+There used to be a Flask sidecar (`scripts/era5/mk_api.py`) serving the same data at `/api/live/*` behind an nginx proxy, with its own SQLite database, PVC and nightly CronJob. It was superseded by the `climate-si` Datasette and received no traffic from the page; it has been removed, and with it the whole `scripts/era5/` tree — its `mk_collect.py` and `si.yaml` were byte-identical copies of the canonical ones in `data/climate-si/sources/`. Recoverable from git history if ever needed.
+
+### Where the ERA5 data comes from
 
 | File | Purpose |
 |------|---------|
-| `scripts/era5/mk_collect.py` | Fetches ERA5-Land CSVs from Open-Meteo (18 Slovenian stations) |
-| `scripts/era5/mk_precompute.py` | Builds `era5-slovenia.db` SQLite from CSVs |
-| `scripts/era5/mk_api.py` | Flask API on port 5052 — all `/api/live/*` routes |
-| `scripts/era5/si.yaml` | Station list and feature flags |
-| `scripts/era5/pyproject.toml` | Python dependencies (managed by `uv`) |
-| `deployment/Dockerfile.era5-api` | ERA5 API container image |
-| `deployment/default.conf.template` | nginx config — proxies `/api/live/` to the ERA5 API |
+| `data/climate-si/sources/mk_collect.py` | Fetches ERA5-Land daily CSVs from the Open-Meteo archive API (18 Slovenian stations) |
+| `data/climate-si/sources/si.yaml` | Station list (name, coordinates, elevation) |
+| `data/climate-si/sources/precompute_datasette.py` | Builds the derived tables (trends, percentiles, tropical days, SPEI, season heatmap) from the collected CSVs |
+| `data/climate-si/data/*.csv` | The committed collection and derived output — both scripts are run by hand today, and the result is committed |
+| `deployment/Dockerfile.datasette` | Turns those CSVs into the `climate-si` Datasette image (`invoke create-databases`) |
 
-In Kubernetes the service is deployed by the Helm chart in `deploy/chart/` (Deployment + Service
-`era5-api`, a persistent volume for the collected data, and a nightly refresh CronJob) — see
-`deploy/chart/values.yaml` (`era5:` block).
-
-### Running the full ERA5 stack locally with Docker
+### Running the page locally
 
 ```bash
-# Build both images
-docker build -f deployment/Dockerfile.era5-api -t podnebnik/era5-api .
-docker build -f deployment/Dockerfile.website  -t podnebnik/website  .
-
-# Shared network + persistent data volume
-docker network create era5-net
-docker volume create era5-data
-
-# Start the ERA5 API (collects data on first run — ~10 min)
-docker run -d --name era5-api \
-  --network era5-net \
-  -v era5-data:/app/data/si \
-  podnebnik/era5-api
-
-# Start the website (proxies /api/live/* to the ERA5 API)
-docker run -d --name website \
-  --network era5-net -p 8090:80 \
-  -e ERA5_API_HOST=era5-api \
-  podnebnik/website
+yarn install
+yarn start
 ```
 
-Open http://localhost:8090/ali-je-vroce-era5/.
+Open http://localhost:8080/ali-je-vroce-era5/.
+
+The page reads `https://stage-data.podnebnik.org` by default. Point it elsewhere — a
+locally built Datasette, for instance — with `VITE_DATASETTE_URL`. **If neither is
+reachable the page renders empty**, which looks like a build failure but is not.
 
 ### Charts
 
