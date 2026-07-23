@@ -735,7 +735,6 @@ export async function run(): Promise<RunResult> {
       default_location: meta.default_location,
       languages: meta.languages,
       default_language: meta.default_language,
-      features: meta.features,
       map: meta.map,
       branding: meta.branding,
       strings: meta.strings,

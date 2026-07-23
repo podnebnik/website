@@ -90,7 +90,6 @@ export interface SiteMeta {
   default_location: string;
   languages:        string[];
   default_language: string;
-  features:         Record<string, boolean>;
   map:              { center_lat: number; center_lon: number; zoom: number };
   branding:         { site_title: string; domain: string };
   stations: Array<{ name: string; label: string; source: "era5" | "arso"; lat: number; lon: number; elevation: number }>;
