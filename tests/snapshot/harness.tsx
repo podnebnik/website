@@ -1039,7 +1039,16 @@ export async function run(): Promise<RunResult> {
       today_loc: c.today_loc,
       analysis_loc: c.analysis_loc,
       analysis_doy: doy,
-      purpose: c.purpose,
+      // `c.purpose` is deliberately NOT captured. It is harness INPUT — prose in
+      // cases.json explaining why a case exists — not page OUTPUT. Mirroring it
+      // made the baseline fail whenever someone improved a case description or
+      // corrected a file:line citation inside one, which is a false positive: no
+      // rendered value moved. That is the third such capture in Phase 2, after
+      // global.meta.features and global.meta.branding.domain, both also removed
+      // for being recorded but never displayed. A baseline that fires on
+      // documentation trains people to re-baseline casually, which is exactly
+      // what ground rule 3 exists to prevent. The case is identified by id, date
+      // and the two locs; nothing assertable is lost.
       ...(c.verified ? { verified: c.verified } : {}),
       today_card: captureTodayCard(cardUnit, status, last7),
       distribution,
