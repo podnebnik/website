@@ -7,12 +7,12 @@
 //
 // "Single source" is a claim about READS OF THE SYSTEM CLOCK, not about every
 // `new Date(...)` in the island. Re-audited by `grep -rn "new Date(" ` over
-// code/ali-je-vroce-era5 on 2026-07-22 after routing TropicalChart through here;
-// that grep returns 19 hits, 4 of which are in this file itself (3 in this
-// comment, 1 the fallback below). The other 15, and why each is or is not a
-// clock read:
+// code/ali-je-vroce-era5 on 2026-07-23 after T-2.1 deleted the five orphaned
+// components; that grep returns 17 hits, 4 of which are in this file itself
+// (3 in this comment, 1 the fallback below). The other 13, and why each is or
+// is not a clock read:
 //
-//   PURE DATE ARITHMETIC on an explicit argument — 13 hits, deterministic,
+//   PURE DATE ARITHMETIC on an explicit argument — 12 hits, deterministic,
 //   no clock involved:
 //     api.ts:103                     doy table anchor, Date.UTC(2001,0,1)
 //     api.ts:505,507,535,537         parse the `date` argument and fixture rows
@@ -20,16 +20,14 @@
 //     charts/YearRoundChart.tsx:23,24,116  doy <-> month/day on a fixed 2001
 //     components/TodayCard.tsx:64    parse the passed dateStr
 //     components/RegressionPanel.tsx:27    doy label anchor
-//     components/RegressionSection.tsx:18  doy label anchor
 //
-//   CLOCK READ, still present, deliberately not routed here — 1 hit:
-//     components/ArsoTrendChart.tsx:25 — genuinely orphaned (imported nowhere,
-//       confirmed by grep), deleted by T-2.1. Whoever revives it instead must
-//       switch it to todayYear() first.
+//   The one remaining un-routed CLOCK READ recorded here before T-2.1 was
+//   components/ArsoTrendChart.tsx:25, in a file imported nowhere. T-2.1 deleted
+//   it, so the island now has no un-routed clock read outside this file.
 //
 //   CLOCK READ, not displayed — 1 hit. A wall-clock timestamp on a diagnostic
 //   record, in a module that only exists under VITE_FIXTURES=1:
-//     fixtures/install.ts:160 (miss timestamp)
+//     fixtures/install.ts:176 (miss timestamp)
 //
 //   ROUTED THROUGH todayYear() — no longer `new Date`, listed because the
 //   previous revision of this comment wrongly recorded them as left alone:
