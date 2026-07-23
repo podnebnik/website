@@ -59,9 +59,13 @@ function doyToMonthDay(doy: number): { month: number; day: number } {
 // UNREFERENCED as of T-2.2 — its only callers were in the deleted ARSO path.
 // Left in place rather than deleted because it is a named target of T-4.5 (the
 // leap-year doy fix) and is cited by tests/snapshot/cases.json:115. See PROGRESS.md.
+// Suppressed rather than deleted — and with `@ts-expect-error` rather than
+// `@ts-ignore`, so the suppression itself errors the moment the function is used
+// again or removed by T-2.9, instead of quietly outliving its reason.
+// @ts-expect-error TS6133: deliberately unreferenced until T-4.5 / T-2.9.
 function monthDayToDoy(month: number, day: number): number {
   const DAYS = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
-  return DAYS[month - 1] + day;
+  return (DAYS[month - 1] ?? 0) + day;
 }
 
 // Generate approximate normal distribution from known percentile values.
@@ -545,7 +549,7 @@ export interface CalendarData {
 }
 
 export async function fetchCalendar(
-  loc: string, variable: string, window_: number,
+  loc: string, variable: string, _window: number,
   _corr: "raw" | "corr", _method: "theilsen" | "ols"
 ): Promise<CalendarData> {
   const rows = await dsGet<CalendarRow[]>(

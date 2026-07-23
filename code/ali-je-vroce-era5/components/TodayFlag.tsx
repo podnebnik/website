@@ -54,7 +54,18 @@ const FLAG_BASE = [
   '</g>',
 ].join('');
 
-const FLAG_CONFIGS: Record<string, { bg: string; defs: string; body: string }> = {
+interface FlagConfig { bg: string; defs: string; body: string }
+
+// `nope` is both an entry and the fallback for an unrecognised key. Bound to its
+// own name so the fallback is statically known to exist: `FLAG_CONFIGS.nope` on a
+// `Record<string, …>` is itself `| undefined`, so it cannot rescue the `??`.
+const NOPE_FLAG: FlagConfig = {
+  bg: '#FFFFFF',
+  defs: '',
+  body: `${FLAG_BASE}<g transform="translate(100,-50)"><circle r="16" fill="#FFD700" opacity="0.9"/><g stroke="#FFD700" stroke-width="1.5" stroke-linecap="round"><line x1="0" y1="-22" x2="0" y2="-19"/><line x1="15.6" y1="-11" x2="13.4" y2="-9.4"/><line x1="15.6" y1="11" x2="13.4" y2="9.4"/><line x1="0" y1="22" x2="0" y2="19"/><line x1="-15.6" y1="11" x2="-13.4" y2="9.4"/><line x1="-15.6" y1="-11" x2="-13.4" y2="-9.4"/></g></g>`,
+};
+
+const FLAG_CONFIGS: Record<string, FlagConfig> = {
   freezing: {
     bg: '#FFFFFF',
     defs: '<radialGradient id="tf-frost-vgn" cx="50%" cy="50%" r="58%"><stop offset="0%" stop-color="#c8e6ff" stop-opacity="0"/><stop offset="100%" stop-color="#c8e6ff" stop-opacity="0.35"/></radialGradient>',
@@ -65,11 +76,7 @@ const FLAG_CONFIGS: Record<string, { bg: string; defs: string; body: string }> =
     defs: '',
     body: `${FLAG_BASE}<rect x="-140" y="-70" width="280" height="140" fill="rgba(160,190,220,0.18)"/>`,
   },
-  nope: {
-    bg: '#FFFFFF',
-    defs: '',
-    body: `${FLAG_BASE}<g transform="translate(100,-50)"><circle r="16" fill="#FFD700" opacity="0.9"/><g stroke="#FFD700" stroke-width="1.5" stroke-linecap="round"><line x1="0" y1="-22" x2="0" y2="-19"/><line x1="15.6" y1="-11" x2="13.4" y2="-9.4"/><line x1="15.6" y1="11" x2="13.4" y2="9.4"/><line x1="0" y1="22" x2="0" y2="19"/><line x1="-15.6" y1="11" x2="-13.4" y2="9.4"/><line x1="-15.6" y1="-11" x2="-13.4" y2="-9.4"/></g></g>`,
-  },
+  nope: NOPE_FLAG,
   hot: {
     bg: '#FFFFFF',
     defs: '<filter id="tf-hot-glow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur in="SourceGraphic" stdDeviation="8"/></filter>',
@@ -99,7 +106,7 @@ function buildFlagSVG(catKey: string): string {
       ).join("")
     : "";
 
-  const cfg = FLAG_CONFIGS[catKey] ?? FLAG_CONFIGS.nope;
+  const cfg = FLAG_CONFIGS[catKey] ?? NOPE_FLAG;
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-140 -70 280 140"><defs>${cfg.defs}</defs><rect x="-140" y="-70" width="280" height="140" fill="${cfg.bg}"/>${cfg.body}${clouds}${snow}</svg>`;
   _flagCache.set(catKey, svg);
   return svg;

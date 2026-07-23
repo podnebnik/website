@@ -78,8 +78,10 @@ export function SpeiHeatmap(props: SpeiHeatmapProps) {
   const lookup = createMemo((): Record<string, Record<number, SpeiRow>> => {
     const m: Record<string, Record<number, SpeiRow>> = {};
     for (const row of props.data.data) {
-      if (!m[row.season]) m[row.season] = {};
-      m[row.season][row.y] = row;
+      // Bind the inner map to a local: assigning through `m[row.season]` twice
+      // does not narrow the second lookup, and re-reading it would.
+      const bySeason = m[row.season] ?? (m[row.season] = {});
+      bySeason[row.y] = row;
     }
     return m;
   });
@@ -123,7 +125,7 @@ export function SpeiHeatmap(props: SpeiHeatmapProps) {
     animRef = true;
     animYear = props.data.year_min;
     setAnimating(true);
-    setRevealedYears(new Set());
+    setRevealedYears(new Set<number>());
     step();
   }
   function step() {

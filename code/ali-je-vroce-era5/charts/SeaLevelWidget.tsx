@@ -7,6 +7,13 @@ import "leaflet/dist/leaflet.css";
 type ProjTable = Record<number, number>;
 interface Scenario { median: ProjTable; low: ProjTable; high: ProjTable; }
 
+// The scenario and probability keys are a closed set, not arbitrary strings: the
+// only writers are the two `as const` button lists below (:337, :352). Typing them
+// as unions rather than `string` makes `DATA.projections[scn()]` a total lookup, so
+// `noUncheckedIndexedAccess` correctly stops adding `| undefined` to it.
+type Scn  = "ssp245" | "ssp585";
+type Prob = "p70" | "p20" | "p01";
+
 const DATA = {
   projections: {
     ssp245: {
@@ -19,8 +26,8 @@ const DATA = {
       low:    { 2030:8,  2040:14, 2050:21, 2060:30, 2070:40, 2080:50, 2090:58, 2100:66  },
       high:   { 2030:14, 2040:24, 2050:36, 2060:52, 2070:70, 2080:88, 2090:100,2100:108 },
     },
-  } as Record<string, Scenario>,
-  surcharge: { p70: 58, p20: 76, p01: 98 } as Record<string, number>,
+  } as Record<Scn, Scenario>,
+  surcharge: { p70: 58, p20: 76, p01: 98 } as Record<Prob, number>,
 };
 
 const FLOOD_RISK_ZONES = [
@@ -37,19 +44,34 @@ const GAUGE_MAX = 200;
 
 // ── Math helpers ──────────────────────────────────────────────────────────────
 
+// Materialise the table as sorted [year, cm] pairs once, instead of carrying a
+// separate key array and indexing `obj` by a computed key on every read. Same
+// order (integer-like keys already enumerate ascending; the sort is unchanged)
+// and the same arithmetic — but each pair is destructured after a single guard,
+// so there is one narrowing point rather than eleven unchecked lookups.
 function interp(obj: ProjTable, year: number): number {
-  const keys = Object.keys(obj).map(Number).sort((a, b) => a - b);
-  if (year <= keys[0]) return obj[keys[0]];
-  if (year >= keys[keys.length - 1]) return obj[keys[keys.length - 1]];
-  for (let i = 0; i < keys.length - 1; i++) {
-    if (year >= keys[i] && year <= keys[i + 1])
-      return obj[keys[i]] + ((year - keys[i]) / (keys[i + 1] - keys[i])) * (obj[keys[i + 1]] - obj[keys[i]]);
+  const pts = Object.entries(obj)
+    .map(([k, v]) => [Number(k), v] as const)
+    .sort((a, b) => a[0] - b[0]);
+  const first = pts[0];
+  const last  = pts[pts.length - 1];
+  // Unreachable: both call sites pass a DATA literal with eight entries. The old
+  // code returned `obj[keys[0]]` — i.e. `undefined` typed as `number` — here.
+  if (!first || !last) throw new Error("interp: empty projection table");
+
+  if (year <= first[0]) return first[1];
+  if (year >= last[0])  return last[1];
+  for (let i = 0; i < pts.length - 1; i++) {
+    const a = pts[i], b = pts[i + 1];
+    if (!a || !b) continue;
+    if (year >= a[0] && year <= b[0])
+      return a[1] + ((year - a[0]) / (b[0] - a[0])) * (b[1] - a[1]);
   }
-  return obj[keys[0]];
+  return first[1];
 }
 
-const getMeanRise = (scn: string, year: number) => interp(DATA.projections[scn].median, year);
-const getRange    = (scn: string, year: number) => ({
+const getMeanRise = (scn: Scn, year: number) => interp(DATA.projections[scn].median, year);
+const getRange    = (scn: Scn, year: number) => ({
   lo: interp(DATA.projections[scn].low, year),
   hi: interp(DATA.projections[scn].high, year),
 });
@@ -63,8 +85,8 @@ interface FloodStats { levels: Record<string, { ha: number; buildings: number }>
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export function SeaLevelWidget() {
-  const [scn,     setScn]     = createSignal("ssp245");
-  const [prob,    setProb]    = createSignal("p70");
+  const [scn,     setScn]     = createSignal<Scn>("ssp245");
+  const [prob,    setProb]    = createSignal<Prob>("p70");
   const [year,    setYear]    = createSignal(2050);
   const [playing, setPlaying] = createSignal(false);
   const [divPct,  setDivPct]  = createSignal(50);
@@ -281,7 +303,10 @@ export function SeaLevelWidget() {
   // ── Effects ───────────────────────────────────────────────────────────────
 
   createEffect(() => {
-    const _ = [scn(), year(), prob(), divPct()];  // track all state
+    // Track all four signals here, not just inside renderFloodCanvas(): that
+    // function returns early when the map is null, before it reads any of them,
+    // so relying on its reads would drop the subscription on the first run.
+    scn(); year(); prob(); divPct();
     if (leafletMap) { updateDividerPos(); renderFloodCanvas(); }
   });
 

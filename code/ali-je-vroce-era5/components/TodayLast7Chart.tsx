@@ -6,7 +6,6 @@ const CAT_COLORS = ["#3a5a8a", "#6c8fb6", "#e7d9b8", "#c25a2c", "#962c1a"];
 const CAT_LABELS = ["Zmrzujoče", "Hladno", "Normalno", "Vroče", "Peklensko"];
 
 const INK      = "#0E0E0C";
-const INK_SOFT = "#6B655B";
 const MONO     = { fontFamily: "'JetBrains Mono', monospace", fontSize: "11px", fontWeight: "600" };
 
 interface Props {

@@ -103,7 +103,7 @@ export function SeasonHeatmap(props: Props) {
     animRef = true;
     animYear = allYears()[0] ?? 1950;
     setAnimating(true);
-    setRevealedYears(new Set());
+    setRevealedYears(new Set<number>());
     step();
   }
   function step() {

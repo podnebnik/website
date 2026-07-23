@@ -64,7 +64,9 @@
         "code/**/*.ts",
         "code/**/*.tsx",
         "code/**/*.js",
-        "code/**/*.jsx"
+        "code/**/*.jsx",
+        "tests/**/*.ts",
+        "tests/**/*.tsx"
     ],
     "exclude": [
         "node_modules",
