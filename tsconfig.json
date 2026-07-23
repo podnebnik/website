@@ -41,8 +41,7 @@
         /* Additional Checks */
         "noUnusedLocals": true,
         "noUnusedParameters": true,
-        /* Path Mapping for Vite */
-        "baseUrl": ".",
+        /* Path Mapping for Vite (paths resolve relative to this config under bundler resolution; no baseUrl needed) */
         "paths": {
             "/code/*": [
                 "./code/*"

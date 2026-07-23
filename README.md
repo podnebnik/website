@@ -77,6 +77,13 @@ Also, in case of major changes to the JavaScript dependencies, you may need to r
 
 > NOTE: The development server is configured to watch for changes in the `code`, `pages` and `styles` folders. If you make changes to any of these folders, the server will automatically rebuild the site and reload the browser. However, there may be cases where the server does not detect the changes. In that case, you can force the server to rebuild the site by pressing `Ctrl + C` and then run `yarn start` again. In some cases it may help to run `yarn clean` before running `yarn start` again. If you want to emulate production setup locally, export `ELEVENTY_EMULATE_PRODUCTION=1`.
 
+## Agent skills
+
+Reusable instructions for AI coding agents (code review, debugging, docs, etc.) live in `.agents/skills/` — this is the canonical, tool-neutral location. Claude Code only auto-discovers skills from `.claude/skills/`, so a copy is kept there. That copy is generated and git-ignored.
+
+- Edit skills **only** in `.agents/skills/`.
+- Re-sync the Claude Code copy with `yarn sync-skills` (this also runs automatically during `yarn install` via `postinstall`).
+
 ## Developing data
 
 ### Importing data into datasette and running it
