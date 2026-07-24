@@ -13,6 +13,9 @@ node_modules
 .11ty-vite
 
 var
+# T-5.9: the datasette DB is generated once by the `generate-db` CI job and
+# downloaded here for the multi-arch image build. CI-only; never committed.
+deployment/generated-sqlite
 dist
 # T-1.2: output of `yarn fixtures:build` — a date-pinned build with the recorded
 # fixtures baked in. Deliberately not dist/, so it can never be deployed.
