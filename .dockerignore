@@ -6,3 +6,11 @@ node_modules
 
 var
 dist
+
+# T-5.7b: the datasette image build now runs `uv sync` for the climate-si
+# pipeline project (data/climate-si/sources). Keep host-built virtualenvs and
+# Python caches out of the build context so a macOS .venv cannot poison the
+# in-image sync, and to trim the context.
+**/.venv
+**/__pycache__
+**/.pytest_cache
