@@ -45,6 +45,7 @@ export interface Last7 {
 
 /** Datasette climate-si annual_trend row (slim: line params, not point arrays) */
 export interface AnnualTrendRow {
+  era5_name:       string;
   month:           number;
   day:             number;
   day_label:       string;

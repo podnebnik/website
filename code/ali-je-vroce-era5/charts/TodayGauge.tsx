@@ -11,8 +11,13 @@ const BOUNDS     = [0, 10, 20, 80, 95, 101] as const;
 
 function dialPosition(catKey: string, pct: number): number {
   const idx = Math.max(0, CAT_ORDER.indexOf(catKey as typeof CAT_ORDER[number]));
+  // BOUNDS has exactly one entry more than CAT_ORDER, so idx and idx+1 are both in
+  // range for every idx that indexOf can return — an invariant tsc cannot read off
+  // the indexing. Default to the same 0.5 the `hi > lo` guard already yields.
   const lo = BOUNDS[idx], hi = BOUNDS[idx + 1];
-  const frac = hi > lo ? Math.min(1, Math.max(0, (pct - lo) / (hi - lo))) : 0.5;
+  const frac = lo !== undefined && hi !== undefined && hi > lo
+    ? Math.min(1, Math.max(0, (pct - lo) / (hi - lo)))
+    : 0.5;
   return idx + frac;
 }
 

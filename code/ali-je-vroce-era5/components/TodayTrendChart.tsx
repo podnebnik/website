@@ -21,7 +21,12 @@ function buildTrendSeries(d: AnnualTrend) {
   const fcMilestones = milestoneYears.map((yr) => {
     let best = 0, bestDiff = Infinity;
     d.projLine.x.forEach((x, i) => { const diff = Math.abs(x - yr); if (diff < bestDiff) { bestDiff = diff; best = i; } });
-    return { x: yr, y: +d.projLine.y[best].toFixed(1) };
+    const yAtBest = d.projLine.y[best];
+    // `best` indexes projLine.x; the two arrays are parallel. If they ever are not,
+    // the old code threw here on `.toFixed` of undefined — keep it a hard failure
+    // rather than quietly rendering NaN.
+    if (yAtBest === undefined) throw new Error(`projLine.y has no entry at index ${best}`);
+    return { x: yr, y: +yAtBest.toFixed(1) };
   });
   return { histLine, histBand, fcLine, fcBand, fcMilestones };
 }
@@ -147,7 +152,12 @@ export function TodayTrendChart(props: Props) {
           const d = () => t();
           const sign     = () => d().trend10 >= 0 ? "+" : "";
           const sig      = () => { const p = d().pVal; return p < 0.001 ? "p < 0.001" : p < 0.01 ? "p < 0.01" : p < 0.05 ? `p = ${p}` : `p = ${p} (ns)`; };
-          const proj2050 = () => d().projLine.y[d().projLine.y.length - 1].toFixed(1);
+          const proj2050 = () => {
+            const y = d().projLine.y;
+            const lastY = y[y.length - 1];
+            if (lastY === undefined) throw new Error("projLine.y is empty");
+            return lastY.toFixed(1);
+          };
           const trendStr = () => `${sign()}${d().trend10.toFixed(2)}`;
           return (
             <>

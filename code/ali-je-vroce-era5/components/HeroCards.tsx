@@ -1,6 +1,6 @@
 import { createResource, Show } from "solid-js";
 import { fetchRegression } from "../api.ts";
-import type { RegressionResponse, RegressionResult } from "../types.ts";
+import type { RegressionResult } from "../types.ts";
 
 // ── Inlined locale (from sl_default.json hero / hero_category / hero_context / climate_risks) ──
 
@@ -221,8 +221,6 @@ interface Props {
   dateLabel?: string;
 }
 
-const ACCENT   = "var(--color-ink)";
-const INK_SOFT = "var(--color-ink-soft)";
 const MONO     = { "font-family": "var(--font-mono)" };
 const SANS     = { "font-family": "var(--font-sans)" };
 

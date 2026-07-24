@@ -1,0 +1,27 @@
+# Typecheck allowlist — the ONLY TypeScript errors CI tolerates.
+#
+# `yarn typecheck` (tsc --noEmit, strict, noUncheckedIndexedAccess,
+# exactOptionalPropertyTypes) exits 2 on exactly these 8 errors. They are
+# Highcharts 12.6.0 typings-vs-runtime mismatches, deliberately NOT suppressed
+# (no `any`, no `@ts-ignore`) — see ticket T-5.8, which fixes them properly.
+#
+# The CI gate (`yarn typecheck:gate`, scripts/typecheck-gate.mjs) asserts the
+# live error set is EXACTLY this list — keyed by file, line, column and error
+# code. Any difference fails the build:
+#   * a 9th error, or a different error, is a regression — fix your code;
+#   * fixing/moving one of the 8 (e.g. a Highcharts bump, or T-5.8) also fails,
+#     ON PURPOSE — update this file in the same commit so the gate tracks reality.
+#
+# Format: one entry per line, `path(line,col): TSxxxx`. Blank lines and lines
+# starting with `#` are ignored. Regenerate the canonical list with:
+#   yarn typecheck 2>&1 | grep -E '^\S.*\([0-9]+,[0-9]+\): error TS' \
+#     | sed -E 's/: error (TS[0-9]+).*/: \1/'
+
+code/ali-je-vroce-era5/charts/DistributionChart.tsx(41,10): TS2352
+code/ali-je-vroce-era5/charts/RegressionChart.tsx(37,23): TS2724
+code/ali-je-vroce-era5/charts/RegressionChart.tsx(74,33): TS2352
+code/ali-je-vroce-era5/charts/RegressionChart.tsx(90,36): TS2694
+code/ali-je-vroce-era5/charts/TodayGauge.tsx(37,41): TS2352
+code/ali-je-vroce-era5/charts/YearRoundChart.tsx(55,41): TS2352
+code/ali-je-vroce-era5/components/TodayLast7Chart.tsx(34,41): TS2352
+code/ali-je-vroce-era5/components/TodayTrendChart.tsx(49,41): TS2352

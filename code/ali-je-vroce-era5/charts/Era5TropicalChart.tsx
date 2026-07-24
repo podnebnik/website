@@ -36,7 +36,7 @@ const ERA5_CONFIGS: Record<string, Config> = {
 
 interface Props {
   loc:       string | null;
-  label?:    string;
+  label?:    string | undefined;
   kind:      "days" | "nights";
   threshold: number;
   streak:    number;

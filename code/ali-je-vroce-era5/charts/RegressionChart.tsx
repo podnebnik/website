@@ -6,6 +6,12 @@ interface Props {
   chartId: string;
 }
 
+// `Axis.plotLinesAndBands` is a live runtime property that highcharts 12.6 does not
+// declare, although it declares both addPlotLine (:187106) and removePlotLine
+// (:187269). Describing the one field this file reads keeps the rest of Axis checked,
+// rather than casting the axis to `any`.
+type AxisWithBands = Highcharts.Axis & { plotLinesAndBands?: Array<{ id?: string }> };
+
 export function RegressionChart(props: Props) {
   let container!: HTMLDivElement;
   let chart: Highcharts.Chart | null = null;
@@ -119,14 +125,22 @@ export function RegressionChart(props: Props) {
   createEffect(() => {
     const d = props.data;
     if (!chart) return;
-    while (chart.series.length) chart.series[0].remove(false);
+    // Bind the primary axis once. `chart.yAxis[0]` was read five times, and every
+    // read is an unchecked array access; a chart always has one yAxis, but the
+    // loop below also needs the same object each time. The `as any` that used to
+    // wrap addPlotLine was unnecessary — highcharts.d.ts:187106 declares it.
+    let first;
+    while ((first = chart.series[0])) first.remove(false);
     for (const s of buildSeries(d.results)) chart.addSeries(s, false);
-    chart.yAxis[0].setTitle({ text: d.ylabel });
-    (chart.yAxis[0].plotLinesAndBands ?? [])
-      .filter((pl: any) => pl.id?.startsWith("baseline-"))
-      .forEach((pl: any) => chart!.yAxis[0].removePlotLine(pl.id));
+    const yAxis = chart.yAxis[0] as AxisWithBands | undefined;
+    if (!yAxis) return;
+    yAxis.setTitle({ text: d.ylabel });
+    // .filter() first, as before: removePlotLine mutates plotLinesAndBands, so
+    // iterating it live would skip entries.
+    const stale = (yAxis.plotLinesAndBands ?? []).filter(pl => pl.id?.startsWith("baseline-"));
+    for (const pl of stale) if (pl.id) yAxis.removePlotLine(pl.id);
     for (const res of d.results) {
-      (chart.yAxis[0] as any).addPlotLine({
+      yAxis.addPlotLine({
         id: `baseline-${res.loc}`, value: res.baseline, color: res.color ?? "#999",
         width: 1, dashStyle: "Dash", zIndex: 2,
         label: { text: `${res.stats.n_years}-YR MEAN ${res.baseline.toFixed(1)}`,

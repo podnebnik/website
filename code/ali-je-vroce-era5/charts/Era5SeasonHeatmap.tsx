@@ -4,7 +4,7 @@ import { SeasonHeatmap } from "./SeasonHeatmap.tsx";
 
 interface Props {
   loc:   string | null;
-  label?: string;
+  label?: string | undefined;
 }
 
 export function Era5SeasonHeatmap(props: Props) {

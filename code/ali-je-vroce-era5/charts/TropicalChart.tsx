@@ -187,8 +187,7 @@ export function TropHighchart(props: ChartProps) {
 
   // ── KEY FIX: read reactive props BEFORE early return so deps are always tracked ──
   createEffect(() => {
-    const _series    = props.series;    // establish reactive dependency
-    const _threshold = props.threshold; // establish reactive dependency
+    props.series; props.threshold; // establish reactive dependencies
     if (!chart) return;
     const series = buildSeries();
     while (chart.series.length) chart.series[0].remove(false);
