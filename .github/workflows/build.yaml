@@ -127,9 +127,18 @@ jobs:
 
       - run: yarn test
 
-  # T-3.7 — Python pipeline gate. Runs the pytest suite and validates the
-  # committed output CSVs (structural + bounds invariants) via Pandera. Needs
-  # only uv + the checked-out data (regular git blobs, not LFS).
+  # T-3.7 — Python pipeline gate. Runs the pytest suite (pipeline logic in
+  # test_precompute.py + the validate.py safety-net guard in test_validate.py).
+  # Needs only uv + the checked-out sources; no committed data.
+  #
+  # T-5.7c note: this used to also run validate.py standalone against the
+  # committed climate-si.<table>.csv. Those are now generated at datasette
+  # image-build time (untracked), so there is nothing to validate standalone in a
+  # clean checkout. The same invariants run at build time — precompute_datasette.
+  # main() calls validate_tables on the real frames before writing, aborting the
+  # image build on any violation (see deployment/Dockerfile.datasette) — and
+  # test_validate.py here guards validate.py's own logic. So the standalone step
+  # was removed as redundant, not skipped.
   data-checks:
     runs-on: ubuntu-latest
     steps:
@@ -146,8 +155,3 @@ jobs:
       - name: Pipeline unit tests
         run: uv run pytest
         working-directory: data/climate-si/sources
-
-      # Validates climate-si.<table>.csv under data/climate-si/data against the
-      # invariants in validate.py; exits non-zero on any violation.
-      - name: Validate pipeline output
-        run: uv run --project data/climate-si/sources python data/climate-si/sources/validate.py

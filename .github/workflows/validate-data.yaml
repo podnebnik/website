@@ -32,6 +32,13 @@ jobs:
         with:
           version: "latest"
 
+      # T-5.7c: climate-si is excluded here. Its nine resources are generated at
+      # datasette image-build time (not committed), so a clean checkout has no
+      # files for frictionless to load — it would exit non-zero on missing sources.
+      # Those tables are validated by data/climate-si/sources/validate.py during the
+      # image build (precompute_datasette.main() calls validate_tables before writing,
+      # aborting the build on any violation), so this is redundant, not a gap.
+      # Emissions and temperature keep their committed CSVs and are still validated.
       - name: Validate data
-        run: find ./data -name '*package.yaml' -print0 | xargs -0 -I {} sh -c 'echo "\nValidating {}:"; uvx frictionless validate {}'
+        run: find ./data -name '*package.yaml' -not -path '*/climate-si/*' -print0 | xargs -0 -I {} sh -c 'echo "\nValidating {}:"; uvx frictionless validate {}'
         # run: uv run --group=build invoke validate
