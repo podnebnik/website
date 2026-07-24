@@ -13,6 +13,34 @@ RUN apt-get update && \
 
 # -----------------------------------------------------------------------------
 
+# ── T-5.9: the numpy-heavy pipeline runs ONCE, in a separate CI job ────────────
+# The builder stage computes the shipped SQLite (the .db files plus datasette
+# inspect/metadata JSON under /build/var/sqlite). That output is a set of plain
+# files, architecture-independent by construction, yet it is expensive to compute
+# (numpy/scipy/statsmodels). The previous approach let the multi-arch image build
+# generate it per target platform, which meant a second run under QEMU arm64
+# emulation — measured on PR #456 as a multi-hour job (amd64 imported everything
+# in 174 s; emulated arm64 took ~25 min for daily_window alone and was still early
+# in annual_trend at 36 min). T-5.9's first attempt (761f520) tried to collapse
+# that to one run by pinning this stage to $BUILDPLATFORM; it did NOT dedup — the
+# arm64 sub-graph still executed `builder` under emulation (CI run 30094685030,
+# `[linux/arm64 builder 7/9] RUN ... precompute_datasette.py`), because `builder`
+# is based on the internal, un-pinned `uv_setup` stage and BuildKit does not
+# reliably share such a vertex across target sub-graphs.
+#
+# The fix does not rely on BuildKit inference at all. generation is now driven by
+# the CI: the `generate-db` job in .github/workflows/docker-data.yaml builds ONLY
+# the `db-export` target below, on amd64, and exports /build/var/sqlite to a file
+# it uploads as an artifact. The multi-arch image build (the `docker` job) never
+# touches this stage — it downloads that artifact and COPYs it (see the runtime
+# stage). There is exactly one generation step by construction, so the emulated
+# run cannot come back.
+#
+# This does NOT reintroduce the arm64 skip T-5.7c removed: generation still runs
+# unconditionally and still feeds both the amd64 and the arm64 image — it simply
+# runs once on amd64 for both, instead of being recomputed under emulation for
+# arm64. There is no committed derived CSV to fall back on, so a skip would ship an
+# empty database; nothing here skips.
 FROM uv_setup AS builder
 
 WORKDIR /build
@@ -28,11 +56,59 @@ RUN uv sync --group build --locked
 
 RUN ls -al /build/
 
+# ── T-5.7c: the shipped climate-si tables are GENERATED from raw, not committed ──
+# The derived climate-si.*.csv are no longer in git (T-5.7c untracked them); the
+# only committed climate-si inputs are the raw per-station CSVs under
+# data/climate-si/data/raw/. So generation now runs BEFORE `invoke create-databases`
+# and defines the shipped climate-si tables, where T-5.7b merely exercised it in
+# parallel with the committed CSVs.
+#
+# precompute_datasette.py runs validate.py (pandera) in memory BEFORE it writes to
+# SQLite, so a broken pipeline fails this build step — and because generation lives
+# in the `generate-db` job that the `docker` job depends on, a failure here aborts
+# the workflow and ships nothing rather than publishing a half-built DB.
+# export_datasette_csv.py then materialises the nine derived CSVs at their
+# datapackage.yaml paths, and `invoke create-databases` imports them (plus the
+# still-committed emissions/temperature packages) exactly as before — building
+# var/sqlite and the datasette metadata/inspect files unchanged.
+RUN uv sync --project data/climate-si/sources --locked
+RUN DATA_DIR=/build/data/climate-si/data/raw \
+    uv run --project data/climate-si/sources --no-sync \
+        python data/climate-si/sources/precompute_datasette.py
+RUN DB_PATH=/build/data/climate-si/data/raw/climate-si.db \
+    OUT_DIR=/build/data/climate-si/data \
+    uv run --project data/climate-si/sources --no-sync \
+        python data/climate-si/sources/export_datasette_csv.py
+
+# --no-validate-arch=aarch64 skips the slow frictionless validation only under
+# arm64 emulation. This stage now always runs natively on amd64 (platform.machine()
+# == x86_64), so the guard is a no-op and the full validation runs — unchanged from
+# the pre-T-5.9 amd64 behaviour.
 RUN uv run invoke create-databases --no-validate-arch=aarch64
 
 # -----------------------------------------------------------------------------
 
-FROM uv_setup
+# ── T-5.9: export-only stage — the artifact the `generate-db` job ships ─────────
+# `docker buildx build --target db-export --output type=local,dest=<dir>` writes
+# just the generated var/sqlite contents (the .db files and the datasette
+# metadata/inspect JSON) to <dir>. FROM scratch keeps the artifact minimal: it is
+# the pipeline output and nothing else.
+FROM scratch AS db-export
+COPY --from=builder /build/var/sqlite /
+
+# -----------------------------------------------------------------------------
+
+# ── T-5.9: runtime image — built multi-arch, COPYs the pre-generated DB ─────────
+# This is the only stage the multi-arch `docker` job builds (target: runtime). It
+# does NOT depend on `builder`, so building it for arm64 never runs the numpy
+# pipeline under emulation. The `uv sync` here installs datasette itself and is the
+# legitimately per-arch work.
+#
+# /datasette/sqlite comes from deployment/generated-sqlite/ in the build context —
+# the `generate-db` job's artifact, downloaded before this build. The directory is
+# absent on a plain checkout, so the runtime target is NOT standalone-buildable by
+# design; it is only ever built by the `docker` job after the artifact download.
+FROM uv_setup AS runtime
 
 WORKDIR /datasette
 
@@ -40,7 +116,7 @@ COPY pyproject.toml .python-version uv.lock ./
 
 RUN uv sync --locked
 
-COPY --from=builder /build/var/sqlite /datasette/sqlite
+COPY deployment/generated-sqlite /datasette/sqlite
 
 EXPOSE 8001
 # TODO: remove custom setting when no longer needed

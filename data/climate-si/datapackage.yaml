@@ -26,7 +26,12 @@ sources:
 - title: Open-Meteo ERA5-Land reanalysis
   url: https://open-meteo.com/
   author: Open-Meteo / Copernicus Climate Change Service (C3S)
-  code: sources/mk_collect.py, sources/precompute_datasette.py
+  code: sources/mk_collect.py, sources/precompute_datasette.py, sources/export_datasette_csv.py
+# T-5.7c: only the raw per-station inputs (data/climate-si/data/raw/) are committed.
+# The nine derived resources below are NOT in git — they are regenerated at
+# datasette-image build time by precompute_datasette.py (validated by validate.py)
+# and written to these paths by export_datasette_csv.py, then imported by
+# `invoke create-databases`. A clone must run that build to materialise them.
 resources:
 - name: annual_trend
   type: table

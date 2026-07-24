@@ -28,13 +28,57 @@ on:
       - '**.py'
       - 'data/**'
 
-permissions:
-  contents: read # to allow the action to read the repository contents
-  packages: write # to allow the action to push Docker images to GitHub Packages
+permissions: {}
 
 jobs:
-  docker:
+  # ── T-5.9: generate the shipped SQLite ONCE, on a native amd64 runner ──────────
+  # The numpy-heavy precompute pipeline runs here and nowhere else. Building only
+  # the Dockerfile's `db-export` target on linux/amd64 exports /build/var/sqlite —
+  # the .db files plus datasette metadata/inspect JSON — to the local filesystem,
+  # which is uploaded as an artifact for the multi-arch image build to consume. The
+  # generated DB is architecture-independent, so a single amd64 generation feeds
+  # both image variants; the previous per-arch generation (a multi-hour arm64 run
+  # under QEMU) is removed by construction. precompute_datasette.py validates the
+  # tables in memory before writing, so a broken pipeline fails this job — and the
+  # `docker` job below `needs:` it, so nothing is built or pushed on failure.
+  generate-db:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read # to allow the action to read the repository contents
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5 # v4.1.0
+      -
+        name: Generate datasette SQLite (amd64, once)
+        uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf # v7.2.0
+        with:
+          context: .
+          file: ./deployment/Dockerfile.datasette
+          target: db-export
+          platforms: linux/amd64
+          push: false
+          outputs: type=local,dest=generated-sqlite
+      -
+        name: Upload generated SQLite artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: datasette-sqlite
+          path: generated-sqlite
+          if-no-files-found: error
+          retention-days: 1
+
+  docker:
+    needs: generate-db
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # to allow the action to read the repository contents
+      packages: write # to allow the action to push Docker images to GitHub Packages
     steps:
       -
         name: Checkout
@@ -66,6 +110,16 @@ jobs:
             type=semver,pattern={{version}}
             type=sha
       -
+        # ── T-5.9: pull in the single amd64-generated SQLite ──────────────────────
+        # Placed at deployment/generated-sqlite/ so the runtime stage's
+        # `COPY deployment/generated-sqlite /datasette/sqlite` finds it in the build
+        # context. .dockerignore excludes `var/` but not this path, so it ships.
+        name: Download generated SQLite artifact
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: datasette-sqlite
+          path: deployment/generated-sqlite
+      -
         name: Set up QEMU
         uses: docker/setup-qemu-action@06116385d9baf250c9f4dcb4858b16962ea869c3 # v4.1.0
       -
@@ -81,11 +135,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       -
+        # ── T-5.9: multi-arch image, no generation ────────────────────────────────
+        # Builds only the `runtime` target, which COPYs the downloaded DB and never
+        # depends on `builder`. The arm64 variant therefore installs datasette under
+        # emulation (fast) but runs no numpy pipeline.
         name: Build and push
         uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf # v7.2.0
         with:
           context: .
           file: ./deployment/Dockerfile.datasette
+          target: runtime
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

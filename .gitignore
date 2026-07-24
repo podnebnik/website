@@ -13,6 +13,9 @@ node_modules
 .11ty-vite
 
 var
+# T-5.9: the datasette DB is generated once by the `generate-db` CI job and
+# downloaded here for the multi-arch image build. CI-only; never committed.
+deployment/generated-sqlite
 dist
 # T-1.2: output of `yarn fixtures:build` — a date-pinned build with the recorded
 # fixtures baked in. Deliberately not dist/, so it can never be deployed.
@@ -28,3 +31,10 @@ dist-fixtures
 
 # T-1.1 snapshot harness build output
 .snapshot-build/
+
+# T-5.7c: the climate-si derived tables are generated at datasette-image build
+# time from the committed raw per-station CSVs (data/climate-si/data/raw/), not
+# committed. Keep them (and the intermediate DB) out of git so history stops
+# growing. The raw inputs under data/climate-si/data/raw/ stay tracked.
+data/climate-si/data/climate-si.*.csv
+data/climate-si/data/raw/climate-si.db
