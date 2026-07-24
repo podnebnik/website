@@ -114,6 +114,10 @@ def load_all() -> pd.DataFrame:
     data = data[data["source"] != "era5t"]   # exclude preliminary ERA5T rows
     data["year"]  = data["date"].dt.year
     data["month"] = data["date"].dt.month
+    # Fixed-lapse elevation correction, applied UNIFORMLY to every station
+    # incl. Kredarica (D-5 reversed 2026-07-24 — the correction is kept, not
+    # removed). LAPSE_RATE (6.5 °C/km) is the single source for the rate; do
+    # not special-case any station here.
     for col in ("temperature_max", "temperature_min", "temperature_mean"):
         data[f"{col}_corr"] = data[col] + data["elevation_diff_m"] * LAPSE_RATE
     return data
