@@ -356,7 +356,6 @@ export interface RegressionParams {
   locs:   string[];
   var:    string;
   doy:    number;
-  window: number;
   corr:   "raw" | "corr";
   method: "theilsen" | "ols";
 }
@@ -548,7 +547,7 @@ export interface CalendarData {
 }
 
 export async function fetchCalendar(
-  loc: string, variable: string, _window: number,
+  loc: string, variable: string,
   _corr: "raw" | "corr", _method: "theilsen" | "ols"
 ): Promise<CalendarData> {
   const rows = await dsGet<CalendarRow[]>(

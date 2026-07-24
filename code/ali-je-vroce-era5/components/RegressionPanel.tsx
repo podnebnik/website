@@ -38,7 +38,6 @@ function createStore(props: ProviderProps) {
   const [selLocs,  setSelLocs]  = createSignal<string[]>([defaultLoc()]);
   const [selVar,   setSelVar]   = createSignal("temperature_max");
   const [doy,      setDoy]      = createSignal(props.defaultDoy);
-  const [window_,  setWindow]   = createSignal(30);
   const [corr,     setCorr]     = createSignal(false);
   const [useOls,   setUseOls]   = createSignal(false);
   const [locOpen,  setLocOpen]  = createSignal(false);
@@ -52,7 +51,6 @@ function createStore(props: ProviderProps) {
     locs:   selLocs(),
     var:    selVar(),
     doy:    doy(),
-    window: window_(),
     corr:   corr() ? "corr" : "raw",
     method: useOls() ? "ols" : "theilsen",
   }));
@@ -61,11 +59,10 @@ function createStore(props: ProviderProps) {
   const calParams = createMemo(() => ({
     loc:     selLocs()[0] ?? defaultLoc(),
     var:     selVar(),
-    window_: window_(),
   }));
   const [calData] = createResource(
     calParams,
-    p => fetchCalendar(p.loc, p.var, p.window_, "raw", "theilsen"),
+    p => fetchCalendar(p.loc, p.var, "raw", "theilsen"),
   );
 
   const isPrecip   = () => selVar() === "precipitation_sum" || selVar() === "et0_evapotranspiration";
@@ -90,7 +87,7 @@ function createStore(props: ProviderProps) {
     return locs.length === 1 ? stationLabel(locs[0]!) : `${locs.length} locations`;
   };
   const varLabel   = () => VARIABLES.find(([k]) => k === selVar())?.[1] ?? selVar();
-  const chartTitle = () => `${varLabel().split("(")[0]!.trim()} · ${doyToLabel(doy())} ±${window_()}d`;
+  const chartTitle = () => `${varLabel().split("(")[0]!.trim()} · ${doyToLabel(doy())}`;
   const chartSub   = () => selLocs().map(stationLabel).join(", ");
 
   function toggleLoc(name: string) {
@@ -103,7 +100,7 @@ function createStore(props: ProviderProps) {
   return {
     meta: props.meta,
     selLocs, setSelLocs, selVar, setSelVar,
-    doy, setDoy, window_, setWindow,
+    doy, setDoy,
     corr, setCorr, useOls, setUseOls,
     locOpen, setLocOpen,
     regData, calData,
@@ -210,18 +207,6 @@ export function RegToolbar() {
         </div>
       </Show>
 
-      {/* Window */}
-      <div style={pillGroupStyle}>
-        <span style={pgkStyle}>Window</span>
-        <div style={{ ...pillStyle, gap: "4px" }}>
-          ±<input
-            type="number" value={s.window_()} min="1" max="90"
-            style={{ width: "36px", border: "none", background: "transparent", "font-size": "12px", color: "var(--color-ink)", "text-align": "center", "font-family": "var(--font-sans)" }}
-            onInput={(e) => s.setWindow(Number(e.currentTarget.value) || 7)}
-          /> days
-        </div>
-      </div>
-
       <div class="reg-doy-spacer" />
 
       {/* DOY control */}
@@ -326,7 +311,7 @@ export function RegYearRoundCard() {
           <div style={panelTitleStyle}>Year-round trend · {s.selLocs()[0]?.replace(/_/g, " ")}</div>
           <div style={{ ...panelSubStyle, "margin-top": "3px" }}>
             {(s.VARIABLES.find(([k]) => k === s.selVar())?.[1] ?? s.selVar()).split("(")[0]!.trim()}
-            {" · Theil-Sen + MK · ±"}{s.window_()}{"d window"}
+            {" · Theil-Sen + MK"}
           </div>
         </div>
         <div style={panelSubStyle}>trend/decade per day of year · red line = selected day</div>
