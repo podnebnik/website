@@ -28,35 +28,33 @@ RUN uv sync --group build --locked
 
 RUN ls -al /build/
 
-RUN uv run invoke create-databases --no-validate-arch=aarch64
-
-# ── T-5.7b: teach the image build to generate the derived tables from raw ───────
-# The step above (invoke create-databases) is the committed-CSV path: it imports
-# data/climate-si/data/climate-si.*.csv into var/sqlite and defines what the image
-# ships. The step below ADDS the generation path — it runs precompute_datasette.py
-# against the raw per-station inputs (data/climate-si/data/raw/), using the
-# T-3.8-pinned pipeline deps in data/climate-si/sources/uv.lock. Both paths
-# coexist by design (D-9): generation is exercised and validated here, but the
-# shipped DBs still come from the committed CSVs above. Switching the source of
-# truth (and untracking the derived CSVs) is T-5.7c, not this ticket.
+# ── T-5.7c: the shipped climate-si tables are GENERATED from raw, not committed ──
+# The derived climate-si.*.csv are no longer in git (T-5.7c untracked them); the
+# only committed climate-si inputs are the raw per-station CSVs under
+# data/climate-si/data/raw/. So generation now runs BEFORE `invoke create-databases`
+# and defines the shipped climate-si tables, where T-5.7b merely exercised it in
+# parallel with the committed CSVs.
 #
-# The generator writes its DB into the raw dir (DATA_DIR/climate-si.db); it never
-# touches /build/var/sqlite, so it cannot alter the shipped data. precompute runs
-# validate.py before writing, so a broken pipeline fails the build here.
+# Generation runs on EVERY arch. The production cluster is arm64 and there is no
+# committed CSV left to fall back on, so the T-5.7b arm64 skip is gone: skipping it
+# would ship an arm64 image with an empty climate-si database. This makes the
+# emulated-arm64 build slower — the correctness cost of untracking the data.
 #
-# Skipped on emulated arm64 to bound CI cost — mirroring the existing
-# --no-validate-arch=aarch64 pragma above. The shipped data is identical across
-# arches (it comes from the committed CSVs), so exercising generation on the
-# native amd64 build is sufficient.
-ARG TARGETARCH
+# precompute_datasette.py runs validate.py before it writes, so a broken pipeline
+# fails the build here. export_datasette_csv.py then materialises the nine derived
+# CSVs at their datapackage.yaml paths, and `invoke create-databases` imports them
+# (plus the still-committed emissions/temperature packages) exactly as before —
+# building var/sqlite and the datasette metadata/inspect files unchanged.
 RUN uv sync --project data/climate-si/sources --locked
-RUN if [ "$TARGETARCH" = "arm64" ]; then \
-        echo "T-5.7b: skipping raw->DB generation on emulated $TARGETARCH; committed-CSV path already built."; \
-    else \
-        DATA_DIR=/build/data/climate-si/data/raw \
-        uv run --project data/climate-si/sources --no-sync \
-            python data/climate-si/sources/precompute_datasette.py; \
-    fi
+RUN DATA_DIR=/build/data/climate-si/data/raw \
+    uv run --project data/climate-si/sources --no-sync \
+        python data/climate-si/sources/precompute_datasette.py
+RUN DB_PATH=/build/data/climate-si/data/raw/climate-si.db \
+    OUT_DIR=/build/data/climate-si/data \
+    uv run --project data/climate-si/sources --no-sync \
+        python data/climate-si/sources/export_datasette_csv.py
+
+RUN uv run invoke create-databases --no-validate-arch=aarch64
 
 # -----------------------------------------------------------------------------
 
