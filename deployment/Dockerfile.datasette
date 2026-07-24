@@ -13,7 +13,26 @@ RUN apt-get update && \
 
 # -----------------------------------------------------------------------------
 
-FROM uv_setup AS builder
+# ── T-5.9: generate the shipped SQLite ONCE, on the native build platform ──────
+# The builder runs the numpy-heavy precompute pipeline. Its whole output — the
+# .db files plus the datasette inspect/metadata JSON under /build/var/sqlite — is
+# a set of plain files, architecture-independent by construction. Pinning this
+# stage to $BUILDPLATFORM makes BuildKit resolve it to the *same* (native amd64
+# CI runner) vertex for every requested target platform, so it is computed once
+# and reused, rather than once per arch. Before T-5.9 this heavy stage ran per
+# target platform, which meant a full second run under QEMU arm64 emulation:
+# measured on PR #456, amd64 imported everything in 174 s while emulated arm64
+# took ~25 min for daily_window alone and was still early in annual_trend at 36
+# min — a multi-hour job for a byte-identical file. Both image variants now COPY
+# the single generated var/sqlite (see the final stage), so the emulated run is
+# gone rather than merely faster.
+#
+# This does NOT reintroduce the arm64 skip T-5.7c removed: generation still runs
+# unconditionally and still feeds both the amd64 and the arm64 image — it simply
+# runs on amd64 for both, instead of being recomputed under emulation for arm64.
+# There is no committed derived CSV to fall back on, so a skip would ship an
+# empty database; nothing here skips.
+FROM --platform=$BUILDPLATFORM uv_setup AS builder
 
 WORKDIR /build
 
@@ -35,10 +54,10 @@ RUN ls -al /build/
 # and defines the shipped climate-si tables, where T-5.7b merely exercised it in
 # parallel with the committed CSVs.
 #
-# Generation runs on EVERY arch. The production cluster is arm64 and there is no
-# committed CSV left to fall back on, so the T-5.7b arm64 skip is gone: skipping it
-# would ship an arm64 image with an empty climate-si database. This makes the
-# emulated-arm64 build slower — the correctness cost of untracking the data.
+# Generation is unconditional (no arch skip — T-5.7c removed that, T-5.9 keeps it
+# removed). Because this whole stage is pinned to $BUILDPLATFORM above, it runs
+# once natively on amd64 and its var/sqlite feeds both the amd64 and the arm64
+# image; the arm64 image no longer regenerates anything under emulation.
 #
 # precompute_datasette.py runs validate.py before it writes, so a broken pipeline
 # fails the build here. export_datasette_csv.py then materialises the nine derived
