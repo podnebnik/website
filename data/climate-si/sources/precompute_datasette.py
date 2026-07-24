@@ -53,8 +53,17 @@ TREND_START_YEAR = CONFIG.get("trend_start_year", 1950)
 PROJ_END_YEAR    = CONFIG.get("projection_end_year", 2050)
 WINDOW_HALF      = 7    # days either side of target DOY for distribution/percentile
 TREND_WINDOW     = 30   # days either side for annual trend aggregation
+# Anomaly reference period (D-3): 1991-2020, the single baseline for season
+# categories and every anomaly/label on the page. NOT used by SPEI (see below) or
+# by the absolute tropical thresholds, which are baseline-independent.
 BASELINE_START   = CONFIG["baseline"]["start"]
 BASELINE_END     = CONFIG["baseline"]["end"]
+# SPEI calibration window (D-3 carve-out): the drought-index log-logistic fit runs
+# over a separate, longer historical window, deliberately NOT the 1991-2020 anomaly
+# baseline — a recent normal would measure drought against an already-drier baseline.
+# Frozen at 1950-1980; keep it decoupled from BASELINE_START/END.
+SPEI_BASELINE_START = CONFIG["spei_baseline"]["start"]
+SPEI_BASELINE_END   = CONFIG["spei_baseline"]["end"]
 
 MONTH_NAMES = ["Jan","Feb","Mar","Apr","May","Jun",
                "Jul","Aug","Sep","Oct","Nov","Dec"]
@@ -594,8 +603,9 @@ def build_tropical(data: pd.DataFrame, stations_df: pd.DataFrame) -> pd.DataFram
 
 # ── 8. SPEI drought index (national heatmap + per-station seasonal/monthly) ────
 # Standardised Precipitation-Evapotranspiration Index: seasonal/monthly water
-# balance (precip − ET0), fitted to a log-logistic distribution over the
-# 1950–1980 baseline and mapped to a normal deviate. Ported from the sidecar.
+# balance (precip − ET0), fitted to a log-logistic distribution over the SPEI
+# calibration window (SPEI_BASELINE_START/END = 1950–1980, D-3 carve-out — NOT the
+# 1991–2020 anomaly baseline) and mapped to a normal deviate. Ported from the sidecar.
 
 def _spei_cat(spei):
     if   spei < -1.5: return "extreme_dry"
@@ -675,7 +685,7 @@ def build_spei_heatmap(data: pd.DataFrame) -> pd.DataFrame:
             continue
         all_vals = sub["balance"].values
         n_total  = len(all_vals)
-        b_sub    = sub[(sub["year"] >= BASELINE_START) & (sub["year"] <= BASELINE_END)]
+        b_sub    = sub[(sub["year"] >= SPEI_BASELINE_START) & (sub["year"] <= SPEI_BASELINE_END)]
         speis    = _spei_from_balances(all_vals, b_sub["balance"].values)
         sorted_asc = np.sort(all_vals)
         for (_, row), spei_val in zip(sub.iterrows(), speis):
@@ -718,7 +728,7 @@ def build_spei_station(data: pd.DataFrame, stations_df: pd.DataFrame) -> pd.Data
             if len(recs) < 10:
                 continue
             rd = pd.DataFrame(recs)
-            b  = rd[(rd["year"] >= BASELINE_START) & (rd["year"] <= BASELINE_END)]
+            b  = rd[(rd["year"] >= SPEI_BASELINE_START) & (rd["year"] <= SPEI_BASELINE_END)]
             speis = [round(v, 2) for v in _spei_from_balances(rd["balance"].values, b["balance"].values)]
             years = [int(y) for y in rd["year"].tolist()]
             series[s_name] = {"years": years, "spei": speis, "trend": _spei_trend(speis, years)}
@@ -744,7 +754,7 @@ def build_spei_station(data: pd.DataFrame, stations_df: pd.DataFrame) -> pd.Data
             if len(recs) < 10:
                 continue
             rd = pd.DataFrame(recs)
-            b  = rd[(rd["year"] >= BASELINE_START) & (rd["year"] <= BASELINE_END)]
+            b  = rd[(rd["year"] >= SPEI_BASELINE_START) & (rd["year"] <= SPEI_BASELINE_END)]
             speis = [round(v, 2) for v in _spei_from_balances(rd["balance"].values, b["balance"].values)]
             years = [int(y) for y in rd["year"].tolist()]
             series[m_name] = {"years": years, "spei": speis, "trend": _spei_trend(speis, years)}

@@ -14,6 +14,15 @@ export const DS_BASE = (import.meta.env.VITE_DATASETTE_URL as string | undefined
 // ERA5 historical + precomputed stats
 const DS = `${DS_BASE}/climate-si`;
 
+// Single anomaly reference period (D-3): the 1991-2020 WMO climatological normal,
+// matching the Python pipeline's `baseline` key in si.yaml. This is the one source
+// for every anomaly and period label on the frontend — no bare year literals. The
+// SPEI drought index is a deliberate carve-out and keeps its own 1950-1980 window
+// (labelled server-side), so it is not derived from this constant.
+export const BASELINE_YEAR_MIN = 1991;
+export const BASELINE_YEAR_MAX = 2020;
+export const BASELINE_LABEL = `${BASELINE_YEAR_MIN}–${BASELINE_YEAR_MAX}`;
+
 // era5_name → {lat, lon, elevation}; used for Open-Meteo live temps. Elevation is
 // REQUIRED: the datasette climatology is lapse-corrected to the true station
 // elevation, so Open-Meteo must be downscaled to the same elevation (otherwise
@@ -385,7 +394,7 @@ async function buildRegressionResult(
   if (!r) return null;
 
   const scatter = JSON.parse(r.scatter_json) as Array<{ x: number; y: number }>;
-  const baselineYears = scatter.filter(pt => pt.x >= 1961 && pt.x <= 1990);
+  const baselineYears = scatter.filter(pt => pt.x >= BASELINE_YEAR_MIN && pt.x <= BASELINE_YEAR_MAX);
   const baseline = baselineYears.length > 5
     ? baselineYears.reduce((s, pt) => s + pt.y, 0) / baselineYears.length
     : scatter.reduce((s, pt) => s + pt.y, 0) / scatter.length;

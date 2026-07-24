@@ -10,7 +10,16 @@ languages: [en, sl]
 default_language: sl
 
 data_start_date: "1950-01-01"
-baseline:          { start: 1950, end: 1980 }
+# Single reference period for anomalies, season categories and all labels (D-3).
+# The 1991-2020 WMO climatological normal, used everywhere EXCEPT the two carve-outs
+# below.
+baseline:          { start: 1991, end: 2020 }
+# SPEI carve-out (D-3): the drought index calibrates its log-logistic fit on a
+# separate, longer window, NOT the 1991-2020 anomaly baseline. Calibrating a drought
+# index on a recent, already-drier 30-year normal would measure drought against a
+# drier baseline and understate recent droughts. Frozen at the current 1950-1980
+# window; do NOT point this at `baseline`.
+spei_baseline:     { start: 1950, end: 1980 }
 trend_start_year:  1950
 projection_end_year: 2050
 
