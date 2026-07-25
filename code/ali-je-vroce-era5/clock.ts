@@ -5,20 +5,22 @@
 // `new Date().toISOString().slice(0, 10)` (AliJeVroceERA5.tsx:43, and — until
 // T-2.2 deleted them — the two ARSO branches of api.ts); a UTC day boundary told
 // a Slovenian reader between local midnight and 01:00 CET / 02:00 CEST that today
-// was yesterday. NOTE: api.ts no longer imports this module at all; its only two
-// `today()` calls were inside the deleted ARSO path.
+// was yesterday. NOTE: since T-4.5 api.ts imports calendarDateIn/LJUBLJANA_TZ from
+// here (for dateToDoy's Europe/Ljubljana day boundary) — a pure date-parts read, NOT
+// a `today()`/system-clock read; its only two `today()` calls were inside the deleted
+// ARSO path.
 //
 // "Single source" is a claim about READS OF THE SYSTEM CLOCK, not about every
 // `new Date(...)` in the island. Re-audited by `grep -rn "new Date(" ` over
-// code/ali-je-vroce-era5 on 2026-07-23 after T-2.2 deleted the ARSO subsystem
-// from api.ts; that grep returns 13 hits, 4 of which are in this file itself
-// (3 in this comment, 1 the fallback below). The other 9, and why each is or
-// is not a clock read:
+// code/ali-je-vroce-era5 on 2026-07-23 (updated 2026-07-25 when T-4.5 moved
+// dateToDoy into api.ts) after T-2.2 deleted the ARSO subsystem from api.ts; that
+// grep returns 12 hits, 4 of which are in this file itself (3 in this comment, 1 the
+// fallback below). The other 8, and why each is or is not a clock read:
 //
-//   PURE DATE ARITHMETIC on an explicit argument — 8 hits, deterministic,
+//   PURE DATE ARITHMETIC on an explicit argument — 7 hits, deterministic,
 //   no clock involved:
-//     api.ts:54                      doy table anchor, Date.UTC(2001,0,1)
-//     AliJeVroceERA5.tsx:29,30       parse the passed dateStr
+//     api.ts:66                      doy table anchor, Date.UTC(2001,0,1)
+//     api.ts:96                      dateToDoy parses the passed dateStr (T-4.5)
 //     charts/YearRoundChart.tsx:23,24,116  doy <-> month/day on a fixed 2001
 //     components/TodayCard.tsx:64    parse the passed dateStr
 //     components/RegressionPanel.tsx:27    doy label anchor

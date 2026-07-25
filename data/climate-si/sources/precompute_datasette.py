@@ -136,12 +136,26 @@ def _is_leap(y: int) -> bool:
 
 # ── Window filter ──────────────────────────────────────────────────────────────
 
+# Cumulative days before each month on the FIXED non-leap year — the same table
+# monthDayToDoy uses in api.ts. Used to give every row a non-leap day-of-year so it
+# shares the target_doy's 2001 calendar.
+_CUM_DAYS = np.array([0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334])
+
 def window_filter(loc_data: pd.DataFrame, month: int, day: int, half: int) -> pd.DataFrame:
     try:
         target_doy = pd.Timestamp(2001, month, day).dayofyear
     except ValueError:
         target_doy = pd.Timestamp(2001, month, 28).dayofyear
-    row_doy   = loc_data["date"].dt.dayofyear.to_numpy()
+    # T-4.5: build each row's doy on the SAME non-leap 2001 calendar as target_doy,
+    # not from the row's real (leap-aware) calendar. Previously `dt.dayofyear` gave a
+    # leap year's 1 March doy 61 while target 1 March was 60, so with half=0 the target
+    # matched that year's 29 Feb (real doy 60) instead of its 1 March. D-12: 29 Feb
+    # folds into 28 Feb (doy 59), pooling into the Feb 28 window rather than a distinct
+    # bin — matching target_doy's own Feb-29 fallback above.
+    row_month = loc_data["date"].dt.month.to_numpy()
+    row_day   = np.where((loc_data["date"].dt.day.to_numpy() == 29) & (row_month == 2),
+                         28, loc_data["date"].dt.day.to_numpy())
+    row_doy   = _CUM_DAYS[row_month - 1] + row_day
     raw_diff  = (row_doy - target_doy).astype(int)
     circ_diff = ((raw_diff + 182) % 365) - 182
     mask      = np.abs(circ_diff) <= half
