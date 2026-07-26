@@ -33203,8 +33203,8 @@
           ]
         },
         "rendered": {
-          "title": "Najvišje temperature na postaji era5:national okoli Jul 21 · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je 90. percentil lapsno popravljene dnevne najvišje temperature na postaji era5:national v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0.45 °C/desetletje (p < 0.001). Po tem tempu projekcija kaže 26.7 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "title": "Najvišje temperature v Sloveniji okoli Jul 21 · 1950–2026 · trend s projekcijo do 2050",
+          "explain": "Vsaka pika je 90. percentil nacionalne povprečne dnevne najvišje temperature vseh 18 postaj v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0.45 °C/desetletje (p < 0.001). Po tem tempu projekcija kaže 26.7 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + TFPW MK: +0.45 °C/desetletje · p < 0.001 · τ = 0.426 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
@@ -43659,8 +43659,8 @@
           ]
         },
         "rendered": {
-          "title": "Najvišje temperature na postaji era5:national okoli Jul 15 · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je 90. percentil lapsno popravljene dnevne najvišje temperature na postaji era5:national v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0.42 °C/desetletje (p < 0.001). Po tem tempu projekcija kaže 26.3 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "title": "Najvišje temperature v Sloveniji okoli Jul 15 · 1950–2026 · trend s projekcijo do 2050",
+          "explain": "Vsaka pika je 90. percentil nacionalne povprečne dnevne najvišje temperature vseh 18 postaj v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0.42 °C/desetletje (p < 0.001). Po tem tempu projekcija kaže 26.3 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + TFPW MK: +0.42 °C/desetletje · p < 0.001 · τ = 0.401 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
