@@ -1,9 +1,10 @@
 import { createSignal, createResource, createEffect, createMemo, createContext, useContext,
-         Show, Suspense, For, lazy } from "solid-js";
+         Show, Suspense, ErrorBoundary, For, lazy } from "solid-js";
 import type { JSXElement } from "solid-js";
 import type { SiteMeta } from "../types.ts";
 import type { RegressionParams } from "../api.ts";
 import { fetchRegression, fetchCalendar } from "../api.ts";
+import { sectionErrorFallback } from "./SectionError.tsx";
 
 const RegressionChart = lazy(() => import("../charts/RegressionChart.tsx").then(m => ({ default: m.RegressionChart })));
 const YearRoundChart  = lazy(() => import("../charts/YearRoundChart.tsx").then(m => ({ default: m.YearRoundChart })));
@@ -55,13 +56,13 @@ function createStore(props: ProviderProps) {
     corr:   "raw",
     method: "theilsen",
   }));
-  const [regData] = createResource(params, fetchRegression);
+  const [regData, { refetch: refetchReg }] = createResource(params, fetchRegression);
 
   const calParams = createMemo(() => ({
     loc:     selLocs()[0] ?? defaultLoc(),
     var:     selVar(),
   }));
-  const [calData] = createResource(
+  const [calData, { refetch: refetchCal }] = createResource(
     calParams,
     p => fetchCalendar(p.loc, p.var, "raw", "theilsen"),
   );
@@ -103,7 +104,7 @@ function createStore(props: ProviderProps) {
     selLocs, setSelLocs, selVar, setSelVar,
     doy, setDoy,
     locOpen, setLocOpen,
-    regData, calData,
+    regData, calData, refetchReg, refetchCal,
     isPrecip, stats0, trend10, trendColor, totalChange,
     locLabel, varLabel, chartTitle, chartSub,
     toggleLoc, doyToLabel, VARIABLES,
@@ -220,6 +221,7 @@ export function RegScatterCard() {
   const s = useReg();
   return (
     <div class="reg-card">
+      <ErrorBoundary fallback={sectionErrorFallback(s.refetchReg, "280px")}>
 
       <div style={panelHStyle}>
         <div style={{ "min-width": "0" }}>
@@ -277,6 +279,7 @@ export function RegScatterCard() {
         <p style={panelExplainStyle}>{s.meta.strings.explain_reg}</p>
       </Show>
 
+      </ErrorBoundary>
     </div>
   );
 }
@@ -300,11 +303,13 @@ export function RegYearRoundCard() {
       </div>
 
       <div style={{ padding: "8px 16px 12px", background: "var(--color-paper)" }}>
-        <Suspense fallback={<div class="animate-pulse rounded-lg bg-[var(--color-paper-2)]" style={{ height: "180px" }} />}>
-          <Show when={s.calData()} keyed>
-            {(d) => <YearRoundChart data={d} doy={s.doy()} var={s.selVar()} />}
-          </Show>
-        </Suspense>
+        <ErrorBoundary fallback={sectionErrorFallback(s.refetchCal, "180px")}>
+          <Suspense fallback={<div class="animate-pulse rounded-lg bg-[var(--color-paper-2)]" style={{ height: "180px" }} />}>
+            <Show when={s.calData()} keyed>
+              {(d) => <YearRoundChart data={d} doy={s.doy()} var={s.selVar()} />}
+            </Show>
+          </Suspense>
+        </ErrorBoundary>
       </div>
 
       <div style={{ ...chartFooterStyle, "justify-content": "flex-start", gap: "16px" }}>

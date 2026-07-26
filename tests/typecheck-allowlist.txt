@@ -24,4 +24,4 @@ code/ali-je-vroce-era5/charts/RegressionChart.tsx(90,36): TS2694
 code/ali-je-vroce-era5/charts/TodayGauge.tsx(37,41): TS2352
 code/ali-je-vroce-era5/charts/YearRoundChart.tsx(55,41): TS2352
 code/ali-je-vroce-era5/components/TodayLast7Chart.tsx(34,41): TS2352
-code/ali-je-vroce-era5/components/TodayTrendChart.tsx(49,41): TS2352
+code/ali-je-vroce-era5/components/TodayTrendChart.tsx(50,41): TS2352

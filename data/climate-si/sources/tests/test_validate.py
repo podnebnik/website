@@ -294,3 +294,67 @@ def test_extra_column_is_schema_drift(tables):
     s["surprise"] = 1
     t["spei"] = s
     _expect_error(t, "column_in_schema")
+
+
+# ── SPEI fabrication / degradation tripwire (D-16, T-5.1 part 4) ──────────────
+#
+# _check_spei_consistency fails the build if SPEI stops being a monotone, non-
+# degenerate transform of the water balance — the shape a fabricated or collapsed
+# fit produces, which every per-table pandera schema otherwise passes (fabricated
+# values still clip to [-3,3] with a valid cat/colour/rank). The valid `tables`
+# fixture has one row per x group, so it never exercises the check; these build a
+# multi-row national-heatmap group for one season (x=0).
+
+
+def _spei_group(speis: list[float]) -> pd.DataFrame:
+    """A one-season (x=0) national heatmap group, balance ascending, five years.
+    `cat`/`color` are held at 'normal' — the pandera schema only checks their mutual
+    consistency, not that they match the spei value, so these stay valid there and
+    isolate _check_spei_consistency."""
+    balances = [-50.0, -10.0, 5.0, 30.0, 80.0]
+    assert len(speis) == len(balances)
+    return pd.DataFrame([
+        {"x": 0, "y": 1990 + i, "spei": sp, "balance": b, "cat": "normal",
+         "rank": i + 1, "total": len(balances), "color": v.SPEI_CAT_COLOR["normal"],
+         "season": "Winter", "n_days": 90}
+        for i, (b, sp) in enumerate(zip(balances, speis))
+    ])
+
+
+def test_spei_valid_multirow_group_passes(tables):
+    # A genuinely monotone SPEI series (what a real fit produces) must pass — proves
+    # the tripwire does not false-positive on valid multi-row data.
+    t = dict(tables)
+    t["spei"] = _spei_group([-2.0, -0.8, 0.1, 0.9, 2.1])
+    v.validate_tables(t)
+
+
+def test_spei_non_monotone_rejected(tables):
+    # SPEI decoupled from / not ordered by balance — a scrambled or fabricated fit.
+    t = dict(tables)
+    t["spei"] = _spei_group([1.5, -2.0, 0.9, -0.5, 0.3])
+    _expect_error(t, "not monotone in water balance")
+
+
+def test_spei_constant_across_balances_rejected(tables):
+    # SPEI collapsed to a single value across wet-to-dry years — a degenerate fit.
+    t = dict(tables)
+    t["spei"] = _spei_group([0.0, 0.0, 0.0, 0.0, 0.0])
+    _expect_error(t, "constant across")
+
+
+def test_spei_station_length_mismatch_rejected(tables):
+    t = dict(tables)
+    s = tables["spei_station"].copy()
+    s.loc[0, "spei_json"] = "[0.1,0.2,0.3]"   # 3 SPEI vs 2 years
+    t["spei_station"] = s
+    _expect_error(t, "years/SPEI length mismatch")
+
+
+def test_spei_station_constant_series_rejected(tables):
+    t = dict(tables)
+    s = tables["spei_station"].copy()
+    s.loc[0, "years_json"] = "[2000,2001,2002]"
+    s.loc[0, "spei_json"] = "[0.5,0.5,0.5]"    # flat across years -> collapsed fit
+    t["spei_station"] = s
+    _expect_error(t, "constant across")

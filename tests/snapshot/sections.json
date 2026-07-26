@@ -99,6 +99,7 @@
     "RegressionPanel": "Context provider only (RegressionPanel.tsx:121). Supplies the analysis store to the cards, renders no DOM of its own.",
     "Show": "solid-js control flow.",
     "Suspense": "solid-js control flow.",
+    "ErrorBoundary": "solid-js control flow (T-5.1). Wraps each section's fetch consumer so a failed fetch shows a visible SectionError instead of vanishing or blanking the page. Renders its children unchanged on success (no DOM wrapper), so it is transparent to the happy-path snapshot; the error branch is never exercised by the fixtures.",
     "SiteMeta": "NOT a component. A type argument in createResource<SiteMeta> (AliJeVroceERA5.tsx:35) that the tag regex cannot distinguish from JSX. Classified explicitly rather than special-cased in the extractor, so the extractor stays dumb and auditable."
   },
 

@@ -8,6 +8,7 @@ calendar / the formula, never read back from the code, so a Phase 4 edit that
 moves a value fails loudly.
 """
 
+import numpy as np
 import pandas as pd
 from pytest import approx
 
@@ -157,3 +158,42 @@ def test_spei_baseline_is_decoupled_and_frozen_1950_1980():
     # The carve-out is meaningless if the two windows are ever pointed at the same
     # thing — that would silently drag SPEI onto the anomaly baseline.
     assert (pc.SPEI_BASELINE_START, pc.SPEI_BASELINE_END) != (pc.BASELINE_START, pc.BASELINE_END)
+
+
+# ── SPEI fit failure withholds, never fabricates (D-16, T-5.1 part 4) ─────────
+#
+# _spei_from_balances used to invent c_par=1.0, scale_par=mean on a Fisk-fit
+# failure and emit SPEI from those fabricated parameters silently. D-16 replaced
+# that with the tropical failure pattern (_tropical_trend): log to stderr + return
+# a sentinel, so the caller WITHHOLDS the series rather than shipping fabricated
+# drought numbers. The failure fires 0x on real data, so these force it directly.
+
+
+def test_spei_fit_failure_returns_sentinel_not_fabricated(monkeypatch, capsys):
+    # Force stats.fisk.fit to raise — the fabrication branch this replaces would
+    # have returned a full list of SPEI values from invented parameters.
+    def _boom(*args, **kwargs):
+        raise RuntimeError("forced Fisk fit failure")
+
+    monkeypatch.setattr(pc.stats.fisk, "fit", _boom)
+    all_vals = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0])
+    baseline = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
+
+    result = pc._spei_from_balances(all_vals, baseline)
+
+    assert result is None, "fit failure must withhold (None), not fabricate a series"
+    err = capsys.readouterr().err
+    assert "Fisk fit failed" in err and "withholding" in err
+
+
+def test_spei_fit_success_returns_monotone_values(monkeypatch):
+    # Sanity for the happy path: a real fit yields one SPEI per balance, and SPEI is
+    # a monotone transform of balance (ascending input -> non-decreasing output).
+    all_vals = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0])
+    baseline = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
+
+    result = pc._spei_from_balances(all_vals, baseline)
+
+    assert result is not None
+    assert len(result) == len(all_vals)
+    assert all(result[i] <= result[i + 1] + 1e-9 for i in range(len(result) - 1))
