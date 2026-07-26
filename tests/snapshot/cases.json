@@ -35,8 +35,6 @@
       "date (AliJeVroceERA5.tsx:53 dateToDoy, passed to RegressionPanel.tsx:39)."
     ],
     "variable": "temperature_max",
-    "method": "theilsen",
-    "elevation_correction": "raw",
     "tropical_days_threshold": 30,
     "tropical_nights_threshold": 20,
     "tropical_streak": 1

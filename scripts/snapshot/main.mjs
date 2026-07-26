@@ -269,8 +269,10 @@ function assertMirroredCopy() {
  */
 const DEFAULT_SOURCES = [
   { key: "variable", file: PANEL_SRC, cite: "RegressionPanel.tsx:39", from: /const \[selVar,\s*setSelVar\]\s*=\s*createSignal\("([^"]+)"\)/, cast: String },
-  { key: "method", file: PANEL_SRC, cite: "RegressionPanel.tsx:42 (useOls)", from: /const \[useOls,\s*setUseOls\]\s*=\s*createSignal\((true|false)\)/, cast: (v) => (v === "true" ? "ols" : "theilsen") },
-  { key: "elevation_correction", file: PANEL_SRC, cite: "RegressionPanel.tsx:41 (corr)", from: /const \[corr,\s*setCorr\]\s*=\s*createSignal\((true|false)\)/, cast: (v) => (v === "true" ? "corr" : "raw") },
+  // "method" and "elevation_correction" removed with their toolbar controls in T-4.15:
+  // both were dead (fetchRegression ignores RegressionParams.corr/method), the harness
+  // read neither, and the values are now fixed literals in the params memo — there is no
+  // control default left to guard.
   { key: "tropical_days_threshold", file: PAGE_SRC, cite: "AliJeVroceERA5.tsx:212", from: /const \[daysThr,\s*setDaysThr\]\s*=\s*createSignal\((\d+)\)/, cast: Number },
   { key: "tropical_nights_threshold", file: PAGE_SRC, cite: "AliJeVroceERA5.tsx:213", from: /const \[nightsThr,\s*setNightsThr\]\s*=\s*createSignal\((\d+)\)/, cast: Number },
   { key: "tropical_streak", file: PAGE_SRC, cite: "AliJeVroceERA5.tsx:214", from: /const \[streak,\s*setStreak\]\s*=\s*createSignal\((\d+)\)/, cast: Number },

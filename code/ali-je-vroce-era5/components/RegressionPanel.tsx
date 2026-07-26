@@ -38,8 +38,6 @@ function createStore(props: ProviderProps) {
   const [selLocs,  setSelLocs]  = createSignal<string[]>([defaultLoc()]);
   const [selVar,   setSelVar]   = createSignal("temperature_max");
   const [doy,      setDoy]      = createSignal(props.defaultDoy);
-  const [corr,     setCorr]     = createSignal(false);
-  const [useOls,   setUseOls]   = createSignal(false);
   const [locOpen,  setLocOpen]  = createSignal(false);
 
   createEffect(() => {
@@ -51,8 +49,11 @@ function createStore(props: ProviderProps) {
     locs:   selLocs(),
     var:    selVar(),
     doy:    doy(),
-    corr:   corr() ? "corr" : "raw",
-    method: useOls() ? "ols" : "theilsen",
+    // Retained to satisfy RegressionParams; fetchRegression ignores both (the
+    // annual_trend table is always Theil-Sen + TFPW MK with elevation correction
+    // baked in). The toolbar controls that once varied them were dead — see T-4.15.
+    corr:   "raw",
+    method: "theilsen",
   }));
   const [regData] = createResource(params, fetchRegression);
 
@@ -101,7 +102,6 @@ function createStore(props: ProviderProps) {
     meta: props.meta,
     selLocs, setSelLocs, selVar, setSelVar,
     doy, setDoy,
-    corr, setCorr, useOls, setUseOls,
     locOpen, setLocOpen,
     regData, calData,
     isPrecip, stats0, trend10, trendColor, totalChange,
@@ -179,33 +179,15 @@ export function RegToolbar() {
         </div>
       </div>
 
-      {/* Method */}
-      <div style={pillGroupStyle}>
-        <span style={pgkStyle}>Method</span>
-        <div style={{ display: "flex", gap: "2px" }}>
-          <button
-            style={{ ...pillStyle, background: !s.useOls() ? "var(--color-card)" : "transparent", "border-color": !s.useOls() ? "var(--color-rule-2)" : "transparent", color: !s.useOls() ? "var(--color-ink)" : "var(--color-ink-soft)" }}
-            onClick={() => s.setUseOls(false)}
-          >Theil-Sen + MK</button>
-          <button
-            style={{ ...pillStyle, background: s.useOls() ? "var(--color-card)" : "transparent", "border-color": s.useOls() ? "var(--color-rule-2)" : "transparent", color: s.useOls() ? "var(--color-ink)" : "var(--color-ink-soft)" }}
-            onClick={() => s.setUseOls(true)}
-          >OLS</button>
-        </div>
-      </div>
-
-      {/* Elevation correction */}
-      <Show when={!s.isPrecip()}>
-        <div style={pillGroupStyle}>
-          <span style={pgkStyle}>Elevation corr.</span>
-          <label style={{ position: "relative", width: "28px", height: "16px", "flex-shrink": "0", display: "inline-block" }}>
-            <input type="checkbox" checked={s.corr()} onChange={(e) => s.setCorr(e.currentTarget.checked)} style={{ position: "absolute", opacity: "0", width: "0", height: "0" }} />
-            <div style={{ position: "absolute", inset: "0", background: s.corr() ? "var(--color-accent)" : "var(--color-ink-faint)", "border-radius": "999px", cursor: "pointer", transition: "background 0.2s" }}>
-              <div style={{ position: "absolute", width: "12px", height: "12px", "border-radius": "50%", background: "#fff", top: "2px", left: s.corr() ? "14px" : "2px", transition: "left 0.2s" }} />
-            </div>
-          </label>
-        </div>
-      </Show>
+      {/* NB: former "Method" (Theil-Sen/OLS) and "Elevation corr." toolbar controls
+          were removed in T-4.15 — they were dead. Their signals fed
+          RegressionParams.corr/method, but fetchRegression reads the precomputed
+          annual_trend table and ignores both; the values never reached a request or
+          computation. The controls also carried false labels: the data is always
+          Theil-Sen + TFPW MK with elevation correction baked in (D-5), so "OLS" and
+          the toggle promised a switch that never happened. The genuine method/colour
+          readouts (stats.method footer, precip-vs-temp trend colour) are sourced
+          elsewhere and are untouched. */}
 
       <div class="reg-doy-spacer" />
 

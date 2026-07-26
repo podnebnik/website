@@ -491,7 +491,7 @@ async function buildRegressionResult(
 // ── Tropical days / nights ───────────────────────────────────────────────────
 
 // Matches TropStation from TropicalChart.tsx so TropHighchart can be reused directly
-export interface ArsoTropicalData {
+export interface Era5TropicalData {
   years:         number[];
   counts:        number[];
   nonzero_count: number;
@@ -517,7 +517,7 @@ export async function fetchEra5Tropical(
   kind:      "days" | "nights",
   threshold: number,
   streak:    number = 1,
-): Promise<ArsoTropicalData | null> {
+): Promise<Era5TropicalData | null> {
   if (loc === ERA5_NATIONAL) return null;
   let rows: Array<{ years_json: string; counts_json: string; nonzero_count: number; trend_json: string }>;
   try {
@@ -533,8 +533,8 @@ export async function fetchEra5Tropical(
   if (!r) return null;
   const years  = JSON.parse(r.years_json)  as number[];
   const counts = JSON.parse(r.counts_json) as number[];
-  const t = JSON.parse(r.trend_json) as ArsoTropicalData["trend"] | Record<string, never>;
-  const trend = (t && (t as any).model_used) ? (t as ArsoTropicalData["trend"]) : {
+  const t = JSON.parse(r.trend_json) as Era5TropicalData["trend"] | Record<string, never>;
+  const trend = (t && (t as any).model_used) ? (t as Era5TropicalData["trend"]) : {
     model_used: false as const, rate_per_year: 0, days_per_decade: 0, p_value: 1,
     x_line: [], y_line: [], ci_low: [], ci_high: [],
     fit_year_max: years[years.length - 1] ?? 0, aic: 0, alpha: 0,
