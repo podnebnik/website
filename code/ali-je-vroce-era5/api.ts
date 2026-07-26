@@ -97,19 +97,45 @@ export function dateToDoy(dateStr: string): number {
   return monthDayToDoy(Number(local.slice(5, 7)), Number(local.slice(8, 10)));
 }
 
-// Generate approximate normal distribution from known percentile values.
-// Temperature data is roughly normal; this gives DistributionChart a curve to draw.
-function syntheticDistribution(p05: number, p50: number, p95: number): [number, number][] {
-  const sigma = Math.max((p95 - p05) / 3.29, 0.5); // 90-pct span ÷ 3.29σ
-  const mu    = p50;
-  const lo    = mu - 4 * sigma;
-  const hi    = mu + 4 * sigma;
-  const norm  = 1 / (sigma * Math.sqrt(2 * Math.PI));
+// Linear interpolation of one sorted [x, density] KDE curve; 0 outside its
+// support (the stored KDE tails already decay to ~0 at the padded grid edges).
+function interpDensity(curve: [number, number][], x: number): number {
+  const n = curve.length;
+  if (n === 0 || x <= curve[0]![0] || x >= curve[n - 1]![0]) return 0;
+  let lo = 0, hi = n - 1;
+  while (hi - lo > 1) {
+    const mid = (lo + hi) >> 1;
+    if (curve[mid]![0] <= x) lo = mid; else hi = mid;
+  }
+  const [x0, y0] = curve[lo]!;
+  const [x1, y1] = curve[hi]!;
+  if (x1 === x0) return y0;
+  return y0 + (y1 - y0) * (x - x0) / (x1 - x0);
+}
+
+// National ±window distribution curve (D-15 / T-4.7): the UNWEIGHTED MEAN of the
+// 18 stations' empirical KDE densities — NOT a synthetic Gaussian. Each station's
+// daily_window row already carries a scipy gaussian_kde curve in `distribution_json`
+// (built once in precompute_datasette.py:284); we resample all of them onto one
+// common grid spanning the union range and average — reusing the existing KDE, not
+// computing a second one. This keeps the per-station and national curves the same
+// KIND of curve (real, possibly skewed) rather than imposing a symmetric bell that
+// misrepresents the tails where "how extreme is today" is judged. The averaging is
+// unweighted, matching D-7's one-station-one-vote treatment of the national series;
+// percentiles are averaged separately (see fetchEra5NationalWindowRow), so the
+// cutoffs/category are unchanged — only the curve shape moves.
+function averageDistributions(curves: [number, number][][]): [number, number][] {
+  const valid = curves.filter(c => c.length >= 2);
+  if (valid.length === 0) return [];
+  const xmin = Math.min(...valid.map(c => c[0]![0]));
+  const xmax = Math.max(...valid.map(c => c[c.length - 1]![0]));
+  const N   = 200;                                    // matches the per-station grid
   const pts: [number, number][] = [];
-  for (let i = 0; i <= 60; i++) {
-    const x = lo + (hi - lo) * i / 60;
-    const y = norm * Math.exp(-0.5 * ((x - mu) / sigma) ** 2);
-    pts.push([parseFloat(x.toFixed(2)), parseFloat(y.toFixed(6))]);
+  for (let i = 0; i < N; i++) {
+    const x = xmin + (xmax - xmin) * i / (N - 1);
+    let sum = 0;
+    for (const c of valid) sum += interpDensity(c, x);
+    pts.push([parseFloat(x.toFixed(3)), parseFloat((sum / valid.length).toFixed(6))]);
   }
   return pts;
 }
@@ -140,9 +166,11 @@ async function fetchEra5WindowRow(era5Name: string, month: number, day: number):
 }
 
 // Slovenia national ±window climatology = mean of the 18 stations' daily_window
-// rows for this month/day. Distribution is synthesised from the averaged
-// p5/p50/p95 (syntheticDistribution, not the empirical curve the per-station
-// daily_window rows carry — see T-4.7).
+// rows for this month/day. Percentiles are the unweighted mean of the per-station
+// p5..p95; the distribution curve is the unweighted mean of the per-station
+// empirical KDE curves (averageDistributions, D-15 / T-4.7) — the fitted-Gaussian
+// synthesis was removed. Percentiles are unchanged from before, so cutoffs and the
+// today-card category do not move; only the curve shape does.
 export async function fetchEra5NationalWindowRow(month: number, day: number): Promise<DailyWindowRow | null> {
   const rows = await dsGet<DailyWindowRow[]>(
     `daily_window.json?_shape=array&month__exact=${month}&day__exact=${day}&_size=50`
@@ -152,6 +180,9 @@ export async function fetchEra5NationalWindowRow(month: number, day: number): Pr
     rows.reduce((s, r) => s + (f(r) ?? 0), 0) / rows.length;
   const p5  = avg(r => r.p5),  p10 = avg(r => r.p10), p20 = avg(r => r.p20);
   const p50 = avg(r => r.p50), p80 = avg(r => r.p80), p95 = avg(r => r.p95);
+  const curves = rows
+    .filter(r => r.distribution_json)
+    .map(r => JSON.parse(r.distribution_json) as [number, number][]);
   return {
     station: ERA5_NATIONAL,
     month, day,
@@ -159,7 +190,7 @@ export async function fetchEra5NationalWindowRow(month: number, day: number): Pr
     n_samples: rows.reduce((s, r) => s + (r.n_samples ?? 0), 0),
     year_min:  Math.min(...rows.map(r => r.year_min)),
     year_max:  Math.max(...rows.map(r => r.year_max)),
-    distribution_json: JSON.stringify(syntheticDistribution(p5, p50, p95)),
+    distribution_json: JSON.stringify(averageDistributions(curves)),
   } as DailyWindowRow;
 }
 
