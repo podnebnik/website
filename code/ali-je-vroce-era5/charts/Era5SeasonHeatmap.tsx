@@ -1,5 +1,6 @@
-import { createResource, Show, Suspense } from "solid-js";
+import { createResource, Show, Suspense, ErrorBoundary } from "solid-js";
 import { fetchSeasonHeatmap, isArsoLoc } from "../api.ts";
+import { sectionErrorFallback } from "../components/SectionError.tsx";
 import { SeasonHeatmap } from "./SeasonHeatmap.tsx";
 
 interface Props {
@@ -13,7 +14,7 @@ export function Era5SeasonHeatmap(props: Props) {
     return l && !isArsoLoc(l) ? l : null;
   };
 
-  const [data] = createResource(
+  const [data, { refetch }] = createResource(
     era5Loc,
     (loc) => fetchSeasonHeatmap(loc),
   );
@@ -21,13 +22,15 @@ export function Era5SeasonHeatmap(props: Props) {
   const display = () => data() ?? data.latest;
 
   return (
-    <Suspense fallback={<div class="h-40 animate-pulse bg-[var(--color-paper-2)] rounded-xl" />}>
-      <Show when={(display()?.length ?? 0) > 0}>
-        <SeasonHeatmap data={display()!} />
-      </Show>
-      <Show when={data.loading && !display()}>
-        <div class="h-40 animate-pulse bg-[var(--color-paper-2)] rounded-xl" />
-      </Show>
-    </Suspense>
+    <ErrorBoundary fallback={sectionErrorFallback(refetch, "160px")}>
+      <Suspense fallback={<div class="h-40 animate-pulse bg-[var(--color-paper-2)] rounded-xl" />}>
+        <Show when={(display()?.length ?? 0) > 0}>
+          <SeasonHeatmap data={display()!} />
+        </Show>
+        <Show when={data.loading && !display()}>
+          <div class="h-40 animate-pulse bg-[var(--color-paper-2)] rounded-xl" />
+        </Show>
+      </Suspense>
+    </ErrorBoundary>
   );
 }

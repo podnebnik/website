@@ -1,5 +1,6 @@
-import { createResource, createMemo, Show } from "solid-js";
+import { createResource, createMemo, Show, ErrorBoundary } from "solid-js";
 import { fetchEra5Tropical, isArsoLoc, ERA5_NATIONAL } from "../api.ts";
+import { sectionErrorFallback } from "../components/SectionError.tsx";
 import { TropHighchart } from "./TropicalChart.tsx";
 import type { Config } from "./TropicalChart.tsx";
 
@@ -50,7 +51,7 @@ export function Era5TropicalChart(props: Props) {
     return l && !isArsoLoc(l) && l !== ERA5_NATIONAL ? l : null;
   });
 
-  const [data] = createResource(
+  const [data, { refetch }] = createResource(
     () => {
       const loc = era5Loc();
       return loc ? { loc, kind: props.kind, threshold: props.threshold, streak: props.streak } : null;
@@ -95,6 +96,7 @@ export function Era5TropicalChart(props: Props) {
 
   return (
     <div style={{ margin: "0 40px" }}>
+      <ErrorBoundary fallback={sectionErrorFallback(refetch, "300px")}>
       <div style={{ background: "var(--color-card)", border: "1px solid var(--color-rule)", "border-radius": "var(--radius,10px)", overflow: "hidden" }}>
 
         <div style={{ padding: "12px 16px 10px", "border-bottom": "1px solid var(--color-rule)", display: "flex", "align-items": "baseline", "justify-content": "space-between" }}>
@@ -147,6 +149,7 @@ export function Era5TropicalChart(props: Props) {
         </Show>
 
       </div>
+      </ErrorBoundary>
     </div>
   );
 }

@@ -62,6 +62,20 @@ async function dsGet<T>(path: string): Promise<T> {
   return resp.json() as Promise<T>;
 }
 
+// T-5.1: guard for the datasette `*_json` columns (distribution_json, scatter_json,
+// years_json, counts_json, trend_json, spei_json). An unguarded JSON.parse throws a
+// bare SyntaxError ("Unexpected token …") on malformed data that names neither the
+// column nor the section. This wraps the parse so the failure is descriptive and,
+// crucially, still an error — it propagates to the section's ErrorBoundary (T-5.1
+// Part 1) and renders as a visible error state rather than blanking the section.
+export function parseJsonColumn<T>(raw: string, column: string): T {
+  try {
+    return JSON.parse(raw) as T;
+  } catch (err) {
+    throw new Error(`Malformed JSON in datasette column ${column}: ${(err as Error).message}`);
+  }
+}
+
 
 export function doyToMonthDay(doy: number): { month: number; day: number } {
   const d = new Date(Date.UTC(2001, 0, 1));
@@ -183,7 +197,7 @@ export async function fetchEra5NationalWindowRow(month: number, day: number): Pr
   const p50 = avg(r => r.p50), p80 = avg(r => r.p80), p95 = avg(r => r.p95);
   const curves = rows
     .filter(r => r.distribution_json)
-    .map(r => JSON.parse(r.distribution_json) as [number, number][]);
+    .map(r => parseJsonColumn<[number, number][]>(r.distribution_json, "daily_window.distribution_json"));
   return {
     station: ERA5_NATIONAL,
     month, day,
@@ -308,7 +322,7 @@ export async function fetchTodayStatus(date: string, loc: string | null): Promis
     // only the DISPLAYED percentile becomes the honest CDF of the served KDE
     // (T-4.1 / D-6). Reuse the parsed curve for both the percentile and the chart.
     const cat  = categorizeEra5(todayTemp, w);
-    const dist = JSON.parse(w.distribution_json) as [number, number][];
+    const dist = parseJsonColumn<[number, number][]>(w.distribution_json, "daily_window.distribution_json");
     return {
       available: true, date,
       today_temp: parseFloat(todayTemp.toFixed(1)), is_preliminary: isPreliminary,
@@ -345,7 +359,7 @@ export async function fetchTodayStatus(date: string, loc: string | null): Promis
   // Band/category/color from the p5..p95 cutoffs (categorizeEra5); the DISPLAYED
   // percentile is the honest CDF of the served KDE at today's value (T-4.1 / D-6).
   const cat  = categorizeEra5(todayTemp, w);
-  const dist = JSON.parse(w.distribution_json) as [number, number][];
+  const dist = parseJsonColumn<[number, number][]>(w.distribution_json, "daily_window.distribution_json");
   return {
     available: true, date,
     today_temp: todayTemp, is_preliminary: isPreliminary,
@@ -453,7 +467,7 @@ async function buildRegressionResult(
   const r = rows[0];
   if (!r) return null;
 
-  const scatter = JSON.parse(r.scatter_json) as Array<{ x: number; y: number }>;
+  const scatter = parseJsonColumn<Array<{ x: number; y: number }>>(r.scatter_json, "annual_trend.scatter_json");
   const baselineYears = scatter.filter(pt => pt.x >= BASELINE_YEAR_MIN && pt.x <= BASELINE_YEAR_MAX);
   const baseline = baselineYears.length > 5
     ? baselineYears.reduce((s, pt) => s + pt.y, 0) / baselineYears.length
@@ -519,21 +533,19 @@ export async function fetchEra5Tropical(
   streak:    number = 1,
 ): Promise<Era5TropicalData | null> {
   if (loc === ERA5_NATIONAL) return null;
-  let rows: Array<{ years_json: string; counts_json: string; nonzero_count: number; trend_json: string }>;
-  try {
-    rows = await dsGet(
-      `tropical.json?_shape=array&era5_name__exact=${encodeURIComponent(loc)}` +
-      `&kind__exact=${kind}&threshold__exact=${threshold}&streak__exact=${streak}&_size=1`
-    );
-  } catch {
-    // tropical table not yet published on this datasette
-    return null;
-  }
+  // T-5.1: a fetch failure (HTTP error, missing `tropical` table) now propagates so
+  // the section's ErrorBoundary can show a visible error, instead of being swallowed
+  // into `null` and rendering as an empty section. A genuinely empty result set
+  // (no matching row) still returns null — that is legitimate "no data", not a fault.
+  const rows = await dsGet<Array<{ years_json: string; counts_json: string; nonzero_count: number; trend_json: string }>>(
+    `tropical.json?_shape=array&era5_name__exact=${encodeURIComponent(loc)}` +
+    `&kind__exact=${kind}&threshold__exact=${threshold}&streak__exact=${streak}&_size=1`
+  );
   const r = rows[0];
   if (!r) return null;
-  const years  = JSON.parse(r.years_json)  as number[];
-  const counts = JSON.parse(r.counts_json) as number[];
-  const t = JSON.parse(r.trend_json) as Era5TropicalData["trend"] | Record<string, never>;
+  const years  = parseJsonColumn<number[]>(r.years_json,  "tropical.years_json");
+  const counts = parseJsonColumn<number[]>(r.counts_json, "tropical.counts_json");
+  const t = parseJsonColumn<Era5TropicalData["trend"] | Record<string, never>>(r.trend_json, "tropical.trend_json");
   const trend = (t && (t as any).model_used) ? (t as Era5TropicalData["trend"]) : {
     model_used: false as const, rate_per_year: 0, days_per_decade: 0, p_value: 1,
     x_line: [], y_line: [], ci_low: [], ci_high: [],
@@ -547,55 +559,56 @@ export async function fetchEra5Tropical(
 // SPEI national heatmap — read the precomputed climate-si `spei` table.
 export async function fetchSpeiHeatmap(): Promise<SpeiData> {
   const empty: SpeiData = { available: false, data: [], year_min: 0, year_max: 0, baseline: null, era5_last: "" };
-  try {
-    const rows = await dsGet<Array<{
-      y: number; spei: number; balance: number; cat: string; rank: number;
-      total: number; color: string; season: string; n_days: number;
-    }>>(
-      `spei.json?_shape=array&_col=y&_col=spei&_col=balance&_col=cat&_col=rank&_col=total&_col=color&_col=season&_col=n_days&_size=2000`
-    );
-    if (!rows.length) return empty;
-    const years = rows.map(r => r.y);
-    return {
-      available: true,
-      data: rows.map(r => ({
-        season: r.season, y: r.y, spei: r.spei, cat: r.cat, color: r.color,
-        balance: r.balance, n_days: r.n_days, rank: r.rank, total: r.total,
-      })),
-      year_min: Math.min(...years), year_max: Math.max(...years),
-      baseline: "1950–1980", era5_last: "",
-    };
-  } catch {
-    return empty;
-  }
+  // T-5.1: no try/catch — a fetch/parse failure propagates to the section's
+  // ErrorBoundary (visible error) instead of being swallowed into `available:false`,
+  // which the page renders as a silently absent section. An empty result set still
+  // returns `empty` — that is legitimate "no data", not a fault.
+  const rows = await dsGet<Array<{
+    y: number; spei: number; balance: number; cat: string; rank: number;
+    total: number; color: string; season: string; n_days: number;
+  }>>(
+    `spei.json?_shape=array&_col=y&_col=spei&_col=balance&_col=cat&_col=rank&_col=total&_col=color&_col=season&_col=n_days&_size=2000`
+  );
+  if (!rows.length) return empty;
+  const years = rows.map(r => r.y);
+  return {
+    available: true,
+    data: rows.map(r => ({
+      season: r.season, y: r.y, spei: r.spei, cat: r.cat, color: r.color,
+      balance: r.balance, n_days: r.n_days, rank: r.rank, total: r.total,
+    })),
+    year_min: Math.min(...years), year_max: Math.max(...years),
+    baseline: "1950–1980", era5_last: "",
+  };
 }
 
 // SPEI per-station SPEI-3/SPEI-30 series — read the `spei_station` table.
 export async function fetchSpeiStationSeasonal(): Promise<SpeiStationData> {
   const empty: SpeiStationData = { available: false, stations: {}, era5_last: "", baseline: "", year_min: 0, year_max: 0 };
-  try {
-    const rows = await dsGet<Array<{
-      era5_name: string; series: string; years_json: string; spei_json: string; trend_json: string;
-    }>>(
-      `spei_station.json?_shape=array&_col=era5_name&_col=series&_col=years_json&_col=spei_json&_col=trend_json&_size=1000`
-    );
-    if (!rows.length) return empty;
-    const stations: SpeiStationData["stations"] = {};
-    let ymin = Infinity, ymax = -Infinity;
-    for (const r of rows) {
-      const years = JSON.parse(r.years_json) as number[];
-      const spei  = JSON.parse(r.spei_json)  as number[];
-      const trend = JSON.parse(r.trend_json);
-      (stations[r.era5_name] ??= {})[r.series] = { years, spei, trend };
-      if (years.length) { ymin = Math.min(ymin, years[0]!); ymax = Math.max(ymax, years[years.length - 1]!); }
-    }
-    return {
-      available: true, stations, era5_last: "", baseline: "1950–1980",
-      year_min: ymin === Infinity ? 0 : ymin, year_max: ymax === -Infinity ? 0 : ymax,
-    };
-  } catch {
-    return empty;
+  // T-5.1: no try/catch — a fetch/parse failure propagates to the section's
+  // ErrorBoundary (visible error) instead of being swallowed into `available:false`.
+  // A previously-swallowed malformed *_json row was the worst case: it silently
+  // blanked the whole SPEI-trend section. An empty result set still returns `empty`.
+  const rows = await dsGet<Array<{
+    era5_name: string; series: string; years_json: string; spei_json: string; trend_json: string;
+  }>>(
+    `spei_station.json?_shape=array&_col=era5_name&_col=series&_col=years_json&_col=spei_json&_col=trend_json&_size=1000`
+  );
+  if (!rows.length) return empty;
+  const stations: SpeiStationData["stations"] = {};
+  let ymin = Infinity, ymax = -Infinity;
+  for (const r of rows) {
+    const years = parseJsonColumn<number[]>(r.years_json, "spei_station.years_json");
+    const spei  = parseJsonColumn<number[]>(r.spei_json,  "spei_station.spei_json");
+    const trend = parseJsonColumn<SpeiStationData["stations"][string][string]["trend"]>(
+      r.trend_json, "spei_station.trend_json");
+    (stations[r.era5_name] ??= {})[r.series] = { years, spei, trend };
+    if (years.length) { ymin = Math.min(ymin, years[0]!); ymax = Math.max(ymax, years[years.length - 1]!); }
   }
+  return {
+    available: true, stations, era5_last: "", baseline: "1950–1980",
+    year_min: ymin === Infinity ? 0 : ymin, year_max: ymax === -Infinity ? 0 : ymax,
+  };
 }
 
 // ── fetchCalendar ──────────────────────────────────────────────────────────────
@@ -640,7 +653,7 @@ async function fetchNationalAnnualTrendRow(month: number, day: number): Promise<
   // Average scatter y per year across stations
   const perYear = new Map<number, { sum: number; n: number }>();
   for (const r of rows) {
-    for (const pt of JSON.parse(r.scatter_json) as Array<{ x: number; y: number }>) {
+    for (const pt of parseJsonColumn<Array<{ x: number; y: number }>>(r.scatter_json, "annual_trend.scatter_json")) {
       const e = perYear.get(pt.x) ?? { sum: 0, n: 0 };
       e.sum += pt.y; e.n += 1; perYear.set(pt.x, e);
     }
@@ -683,7 +696,7 @@ export async function fetchAnnualTrend(month: number, day: number, loc?: string 
     dayLabel: r.day_label, monthNum: r.month, dayNum: r.day,
     yearMin: r.year_min, yearMax: r.year_max,
     trend10: r.trend10, pVal: r.p_val, tau: r.tau, nYears: r.n_years,
-    scatter: JSON.parse(r.scatter_json) as Array<{ x: number; y: number }>,
+    scatter: parseJsonColumn<Array<{ x: number; y: number }>>(r.scatter_json, "annual_trend.scatter_json"),
     // Reconstruct the straight hist/proj lines + CI bands from the stored line
     // parameters (slope/intercept per central + CI bounds). Two endpoints each,
     // since the lines are straight — visually identical to the old point arrays.

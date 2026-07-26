@@ -1,6 +1,7 @@
-import { createSignal, createResource, createMemo, Show, Suspense, lazy } from "solid-js";
+import { createSignal, createResource, createMemo, Show, Suspense, ErrorBoundary, lazy } from "solid-js";
 import { fetchMeta, fetchPageData, fetchSpeiHeatmap, fetchSpeiStationSeasonal, dateToDoy, ERA5_NATIONAL, BASELINE_LABEL } from "./api.ts";
 import { today as todayIso } from "./clock.ts";
+import { sectionErrorFallback } from "./components/SectionError.tsx";
 import { TodayCard } from "./components/TodayCard.tsx";
 import { DistributionChart } from "./charts/DistributionChart.tsx";
 import { TodayTrendChart } from "./components/TodayTrendChart.tsx";
@@ -26,11 +27,17 @@ function fmtDayLabel(dl: string): string {
 }
 
 export function AliJeVroceERA5() {
-  const [meta] = createResource<SiteMeta>(fetchMeta);
+  const [meta, { refetch: refetchMeta }] = createResource<SiteMeta>(fetchMeta);
+  // A failed site-meta fetch used to leave the page spinning "Nalaganje…" forever:
+  // Show read meta(), which throws when the resource errored, and with no boundary
+  // the throw unmounted the whole island (blank). The boundary turns that into a
+  // visible page-level error (T-5.1).
   return (
-    <Show when={meta()} fallback={<div class="px-10 py-8 text-[var(--color-ink-soft)]">Nalaganje…</div>}>
-      {(m) => <Dashboard meta={m()} />}
-    </Show>
+    <ErrorBoundary fallback={sectionErrorFallback(refetchMeta, "480px")}>
+      <Show when={meta()} fallback={<div class="px-10 py-8 text-[var(--color-ink-soft)]">Nalaganje…</div>}>
+        {(m) => <Dashboard meta={m()} />}
+      </Show>
+    </ErrorBoundary>
   );
 }
 
@@ -47,7 +54,7 @@ function Dashboard(props: { meta: SiteMeta }) {
   const defaultDoy = createMemo(() => dateToDoy(date()));
   const era5Meta = (): SiteMeta => ({ ...props.meta, stations: era5Stations, default_location: defaultLoc });
 
-  const [pageData] = createResource(
+  const [pageData, { refetch: refetchPageData }] = createResource(
     () => ({ date: date(), loc: loc() }),
     ({ date, loc }) => fetchPageData(date, loc),
   );
@@ -70,6 +77,7 @@ function Dashboard(props: { meta: SiteMeta }) {
         </div>
 
         <div class="today-grid">
+          <ErrorBoundary fallback={sectionErrorFallback(refetchPageData, "480px")}>
           <Show
             when={todayData()}
             fallback={<div style={{ "min-height": "480px", "grid-column": "1 / -1" }} class="animate-pulse rounded-xl bg-[var(--color-paper-2)]" />}
@@ -110,6 +118,7 @@ function Dashboard(props: { meta: SiteMeta }) {
           <Show when={todayData()?.available}>
             <TodayTrendChart date={date()} loc={loc()} stationCount={era5Stations.length} />
           </Show>
+          </ErrorBoundary>
         </div>
       </section>
 
@@ -208,8 +217,8 @@ function Era5Charts() {
   const [streak,    setStreak]    = createSignal(1);
 
   // SPEI is national (heatmap) / has its own station picker (trend) — load once
-  const [speiData]        = createResource(fetchSpeiHeatmap);
-  const [speiStationData] = createResource(fetchSpeiStationSeasonal);
+  const [speiData,        { refetch: refetchSpei }]        = createResource(fetchSpeiHeatmap);
+  const [speiStationData, { refetch: refetchSpeiStation }] = createResource(fetchSpeiStationSeasonal);
 
   return (
     <Show when={loc()}>
@@ -240,11 +249,13 @@ function Era5Charts() {
         <div class="sec-h" style={{ "padding-inline": "0", "padding-top": "8px" }}>
           Sezonski sušni indeks (SPEI)
         </div>
-        <Suspense fallback={<div class="h-40 animate-pulse bg-[var(--color-paper-2)] rounded-xl" />}>
-          <Show when={speiData()?.available}>
-            <SpeiHeatmapChart data={speiData()!} />
-          </Show>
-        </Suspense>
+        <ErrorBoundary fallback={sectionErrorFallback(refetchSpei, "160px")}>
+          <Suspense fallback={<div class="h-40 animate-pulse bg-[var(--color-paper-2)] rounded-xl" />}>
+            <Show when={speiData()?.available}>
+              <SpeiHeatmapChart data={speiData()!} />
+            </Show>
+          </Suspense>
+        </ErrorBoundary>
       </section>
 
       {/* SPEI drought trend per station */}
@@ -255,11 +266,13 @@ function Era5Charts() {
         <div class="sec-hs2">
           Sezonski (SPEI-3) in mesečni (SPEI-30) indeks vodne bilance · Theil-Sen · ERA5-Land
         </div>
-        <Suspense fallback={<div class="animate-pulse rounded-xl bg-[var(--color-paper-2)]" style={{ height: "400px" }} />}>
-          <Show when={speiStationData()?.available}>
-            <SpeiTrendChartLazy data={speiStationData()!} />
-          </Show>
-        </Suspense>
+        <ErrorBoundary fallback={sectionErrorFallback(refetchSpeiStation, "400px")}>
+          <Suspense fallback={<div class="animate-pulse rounded-xl bg-[var(--color-paper-2)]" style={{ height: "400px" }} />}>
+            <Show when={speiStationData()?.available}>
+              <SpeiTrendChartLazy data={speiStationData()!} />
+            </Show>
+          </Suspense>
+        </ErrorBoundary>
       </section>
 
       {/* Tropical days */}

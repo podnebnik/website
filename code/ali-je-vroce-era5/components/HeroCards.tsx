@@ -1,5 +1,6 @@
-import { createResource, Show } from "solid-js";
+import { createResource, Show, ErrorBoundary } from "solid-js";
 import { fetchRegression } from "../api.ts";
+import { sectionErrorFallback } from "./SectionError.tsx";
 import type { RegressionResult } from "../types.ts";
 
 // ── Inlined locale (from sl_default.json hero / hero_category / hero_context / climate_risks) ──
@@ -227,16 +228,18 @@ const SANS     = { "font-family": "var(--font-sans)" };
 export function HeroCards(props: Props) {
   const loc = () => props.loc ?? "Ljubljana";
 
-  const [resp] = createResource(
+  const [resp, { refetch }] = createResource(
     () => ({ loc: loc(), doy: props.doy }),
     ({ loc, doy }) =>
       fetchRegression({ locs: [loc], var: "temperature_max", doy, corr: "corr", method: "theilsen" }),
   );
 
   return (
-    <Show when={resp()?.results?.length}>
-      <HeroCard res={resp()!.results[0]!} unit={resp()!.unit} dateLabel={resp()!.date_label} />
-    </Show>
+    <ErrorBoundary fallback={sectionErrorFallback(refetch, "180px")}>
+      <Show when={resp()?.results?.length}>
+        <HeroCard res={resp()!.results[0]!} unit={resp()!.unit} dateLabel={resp()!.date_label} />
+      </Show>
+    </ErrorBoundary>
   );
 }
 

@@ -1,6 +1,7 @@
-import { createResource, Show, onMount, onCleanup, createEffect } from "solid-js";
+import { createResource, Show, ErrorBoundary, onMount, onCleanup, createEffect } from "solid-js";
 import { fetchAnnualTrend, ERA5_NATIONAL } from "../api.ts";
 import { todayYear } from "../clock.ts";
+import { sectionErrorFallback } from "./SectionError.tsx";
 import type { AnnualTrend } from "../types.ts";
 
 const INK      = "#0E0E0C";
@@ -142,7 +143,7 @@ export function TodayTrendChart(props: Props) {
   const month = () => Number(props.date.split("-")[1]);
   const day   = () => Number(props.date.split("-")[2]);
 
-  const [trend] = createResource(
+  const [trend, { refetch }] = createResource(
     () => ({ month: month(), day: day(), loc: props.loc }),
     ({ month, day, loc }) => fetchAnnualTrend(month, day, loc),
   );
@@ -152,6 +153,7 @@ export function TodayTrendChart(props: Props) {
 
   return (
     <div class="today-chart">
+      <ErrorBoundary fallback={sectionErrorFallback(refetch, "240px")}>
       <Show when={trendDisplay()}>
         {(t) => {
           const d = () => t();
@@ -189,6 +191,7 @@ export function TodayTrendChart(props: Props) {
       <Show when={trend.loading && !trendDisplay()}>
         <div style={{ height: "240px" }} class="animate-pulse bg-[var(--color-paper-2)] rounded" />
       </Show>
+      </ErrorBoundary>
     </div>
   );
 }
