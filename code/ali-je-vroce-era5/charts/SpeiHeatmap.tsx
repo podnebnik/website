@@ -32,6 +32,14 @@ const MODES = [
   { key: "Winter",   label: "Zima" },
 ];
 
+// T-5.4a — visually-hidden (screen-reader-only) style. Kebab-case keys because
+// Solid's style() calls setProperty() and silently drops camelCase.
+const SR_ONLY = {
+  position: "absolute", width: "1px", height: "1px", padding: "0",
+  margin: "-1px", overflow: "hidden", clip: "rect(0,0,0,0)",
+  "white-space": "nowrap", border: "0",
+} as const;
+
 interface SpeiRow {
   season:  string;
   y:       number;
@@ -87,6 +95,16 @@ export function SpeiHeatmap(props: SpeiHeatmapProps) {
   });
 
   const decadeTicks = createMemo(() => allYears().filter(y => y % 10 === 0));
+
+  // T-5.4a — the same data the colour grid encodes, in a form assistive tech can
+  // read: one row per (season, year). Sorted season-then-year for stable reading.
+  const tableRows = createMemo(() =>
+    [...props.data.data].sort((a, b) =>
+      a.season === b.season ? a.y - b.y : a.season.localeCompare(b.season))
+  );
+  const gridLabel = createMemo(() =>
+    `Toplotna karta sušnega indeksa SPEI po letnih časih in letih od ${props.data.year_min} do ${props.data.year_max}: vsak stolpec je eno leto, vsaka vrstica en letni čas, barva pa označuje razmere od hude suše do zelo mokrega. Celotni podatki so v tabeli pod grafom.`
+  );
 
   function isExtreme(cat: string) { return cat === "extreme_dry" || cat === "extreme_wet"; }
 
@@ -162,8 +180,10 @@ export function SpeiHeatmap(props: SpeiHeatmapProps) {
         </button>
       </div>
 
-      {/* Grid */}
-      <div class="shm-grid">
+      {/* Grid — decorative colour encoding; announced as one labelled image so a
+          screen reader gets the summary and skips the unlabeled cells. The numbers
+          live in the visually-hidden table below (T-5.4a). */}
+      <div class="shm-grid" role="img" aria-label={gridLabel()}>
         <For each={SEASON_ORDER}>
           {(season) => (
             <>
@@ -258,6 +278,36 @@ export function SpeiHeatmap(props: SpeiHeatmapProps) {
           );
         }}
       </Show>
+
+      {/* T-5.4a — screen-reader data-table fallback (visually hidden). Slovenian
+          caption/headers awaiting operator review. */}
+      <table style={SR_ONLY}>
+        <caption>Podatki toplotne karte sušnega indeksa SPEI po letnih časih in letih</caption>
+        <thead>
+          <tr>
+            <th scope="col">Letni čas</th>
+            <th scope="col">Leto</th>
+            <th scope="col">Kategorija</th>
+            <th scope="col">SPEI</th>
+            <th scope="col">Vodna bilanca (mm)</th>
+            <th scope="col">Uvrstitev</th>
+          </tr>
+        </thead>
+        <tbody>
+          <For each={tableRows()}>
+            {(r) => (
+              <tr>
+                <td>{SEASON_LABEL[r.season as Season] ?? r.season}</td>
+                <td>{r.y}</td>
+                <td>{CAT_LABELS[r.cat] ?? r.cat}</td>
+                <td>{r.spei >= 0 ? "+" : ""}{r.spei.toFixed(2)}</td>
+                <td>{r.balance.toFixed(0)}</td>
+                <td>{r.rank}. od {r.total}</td>
+              </tr>
+            )}
+          </For>
+        </tbody>
+      </table>
     </div>
   );
 }

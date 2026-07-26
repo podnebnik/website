@@ -257,7 +257,10 @@ function HeroCard(props: { res: RegressionResult; unit: string; dateLabel: strin
   const risk = () => CLIMATE_RISKS[res().loc];
 
   return (
-    <div style={{
+    <div
+      role="group"
+      aria-label={`Podrobnosti lokacije ${res().loc.replace(/_/g, " ")}: stoletni temperaturni trend, kategorija tveganja in vpliv podnebne spremembe.`}
+      style={{
       background:    "var(--color-card)",
       border:        "1px solid var(--color-rule)",
       "border-radius": "var(--radius, 10px)",

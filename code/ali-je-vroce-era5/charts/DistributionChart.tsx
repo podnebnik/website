@@ -1,5 +1,6 @@
 import { onMount, onCleanup, createEffect } from "solid-js";
 import type { TodayStatus } from "../types.ts";
+import { enableChartA11y } from "./highcharts-a11y.ts";
 
 interface Props {
   data:    TodayStatus;
@@ -50,6 +51,11 @@ function buildOptions(r: TodayStatus): Highcharts.Options {
     title:   { text: undefined },
     credits: { enabled: false },
     legend:  { enabled: false },
+    // T-5.4a — screen-reader summary (Slovenian copy awaiting operator review)
+    accessibility: {
+      enabled: true,
+      description: "Porazdelitev najvišjih dnevnih temperatur na dneve okoli izbranega datuma v vseh letih zabeleženega obdobja. Navpična črta označuje današnjo vrednost; barvni pasovi ločijo klimatološke cone od hladne do ekstremne.",
+    },
     tooltip: {
       formatter(this: any) {
         const temp: number = this.x;
@@ -130,6 +136,7 @@ export function DistributionChart(props: Props) {
 
   onMount(async () => {
     const Highcharts = (await import("highcharts")).default;
+    await enableChartA11y(Highcharts);
     const r = props.data;
     if (!r.available || !r.distribution?.length || !r.cutoffs) return;
     chart = Highcharts.chart(container, buildOptions(r));

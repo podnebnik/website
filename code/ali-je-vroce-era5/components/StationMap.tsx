@@ -1,4 +1,5 @@
 import { onMount, onCleanup, createEffect } from "solid-js";
+import { enableChartA11y } from "../charts/highcharts-a11y.ts";
 import type { SiteMeta } from "../types.ts";
 
 interface Props {
@@ -41,6 +42,7 @@ export function StationMap(props: Props) {
     const mapMod = await import("highcharts/modules/map") as any;
     const initFn = mapMod.default ?? mapMod;
     if (typeof initFn === 'function') initFn(Highcharts);
+    await enableChartA11y(Highcharts);
 
     const topoUrl = `https://code.highcharts.com/mapdata/countries/${props.meta.country}/${props.meta.country}-all.topo.json`;
     const topo = await fetch(topoUrl).then(r => r.json());
@@ -59,6 +61,11 @@ export function StationMap(props: Props) {
       subtitle: { text: null },
       credits:  { enabled: false },
       legend:   { enabled: false },
+      // T-5.4a — screen-reader summary (Slovenian copy awaiting operator review)
+      accessibility: {
+        enabled: true,
+        description: "Zemljevid Slovenije z merilnimi postajami; barva točke označuje višinski pas postaje. Postajo lahko izberete tudi s spustnim seznamom v analizi trendov.",
+      },
       mapNavigation: {
         enabled: true,
         buttonOptions: { verticalAlign: "bottom" },

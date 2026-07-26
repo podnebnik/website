@@ -1,5 +1,6 @@
 import { onMount, onCleanup, createEffect } from "solid-js";
 import type { TodayStatus } from "../types.ts";
+import { enableChartA11y } from "./highcharts-a11y.ts";
 
 interface Props {
   data: TodayStatus;
@@ -28,6 +29,11 @@ export function TodayGauge(props: Props) {
   onMount(async () => {
     const Highcharts = (await import("highcharts")).default;
     await import("highcharts/highcharts-more");
+    // T-5.4a — load the a11y module so this decorative gauge is deterministically
+    // marked aria-hidden (accessibility.enabled stays false below): its value is
+    // already announced by the "°C" text under it and by TodayCard, so a second
+    // screen-reader region would only duplicate.
+    await enableChartA11y(Highcharts);
 
     const r = props.data;
     const catKey = r.category_key ?? "nope";

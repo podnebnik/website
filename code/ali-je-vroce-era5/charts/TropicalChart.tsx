@@ -8,6 +8,7 @@
 // `fetchEra5Tropical` (`api.ts:444`) over datasette.
 import { createEffect, onMount, onCleanup } from "solid-js";
 import { todayYear } from "../clock";
+import { enableChartA11y } from "./highcharts-a11y.ts";
 
 export interface TropTrend {
   model_used:      boolean | "nb";
@@ -154,12 +155,19 @@ export function TropHighchart(props: ChartProps) {
   onMount(async () => {
     const Highcharts = (await import("highcharts")).default;
     await import("highcharts/highcharts-more");
+    await enableChartA11y(Highcharts);
 
     chart = Highcharts.chart(container, {
       chart: { type: "column", height: 300, backgroundColor: "transparent", animation: false, style: { fontFamily: "Space Grotesk, sans-serif" } },
       title:   { text: undefined },
       credits: { enabled: false },
       legend:  { enabled: true, itemStyle: { fontSize: "10px", fontWeight: "400", color: INK } },
+      // T-5.4a — screen-reader summary (Slovenian copy awaiting operator review).
+      // Parameterised by cfg so days vs nights each get their own wording.
+      accessibility: {
+        enabled: true,
+        description: `Stolpčni prikaz letnega števila — ${props.cfg.tooltipNoun.toLowerCase()}, torej koliko ${props.cfg.unitLabel} na leto preseže izbrani temperaturni prag — z modelom trenda negativne binomske regresije in intervalom zaupanja; zadnji stolpec je leto v teku.`,
+      },
       tooltip: {
         formatter(this: any) {
           if (this.series.type === "line") return `<b>${Math.round(this.x)}</b><br>Trend: <b>${this.y!.toFixed(1)}</b> ${props.cfg.unitLabel}`;

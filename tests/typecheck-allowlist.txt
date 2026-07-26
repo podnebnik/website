@@ -17,11 +17,11 @@
 #   yarn typecheck 2>&1 | grep -E '^\S.*\([0-9]+,[0-9]+\): error TS' \
 #     | sed -E 's/: error (TS[0-9]+).*/: \1/'
 
-code/ali-je-vroce-era5/charts/DistributionChart.tsx(41,10): TS2352
-code/ali-je-vroce-era5/charts/RegressionChart.tsx(37,23): TS2724
-code/ali-je-vroce-era5/charts/RegressionChart.tsx(74,33): TS2352
-code/ali-je-vroce-era5/charts/RegressionChart.tsx(90,36): TS2694
-code/ali-je-vroce-era5/charts/TodayGauge.tsx(37,41): TS2352
-code/ali-je-vroce-era5/charts/YearRoundChart.tsx(55,41): TS2352
-code/ali-je-vroce-era5/components/TodayLast7Chart.tsx(34,41): TS2352
-code/ali-je-vroce-era5/components/TodayTrendChart.tsx(50,41): TS2352
+code/ali-je-vroce-era5/charts/DistributionChart.tsx(42,10): TS2352
+code/ali-je-vroce-era5/charts/RegressionChart.tsx(38,23): TS2724
+code/ali-je-vroce-era5/charts/RegressionChart.tsx(76,33): TS2352
+code/ali-je-vroce-era5/charts/RegressionChart.tsx(97,36): TS2694
+code/ali-je-vroce-era5/charts/TodayGauge.tsx(43,41): TS2352
+code/ali-je-vroce-era5/charts/YearRoundChart.tsx(57,41): TS2352
+code/ali-je-vroce-era5/components/TodayLast7Chart.tsx(36,41): TS2352
+code/ali-je-vroce-era5/components/TodayTrendChart.tsx(52,41): TS2352

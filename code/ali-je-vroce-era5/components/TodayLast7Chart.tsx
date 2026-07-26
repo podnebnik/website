@@ -1,5 +1,6 @@
 import { onMount, onCleanup, createEffect } from "solid-js";
 import type { Last7 } from "../types.ts";
+import { enableChartA11y } from "../charts/highcharts-a11y.ts";
 
 const CAT_ORDER  = ["freezing", "cold", "nope", "hot", "hell"];
 const CAT_COLORS = ["#3a5a8a", "#6c8fb6", "#e7d9b8", "#c25a2c", "#962c1a"];
@@ -18,6 +19,7 @@ export function TodayLast7Chart(props: Props) {
 
   onMount(async () => {
     const Highcharts = (await import("highcharts")).default;
+    await enableChartA11y(Highcharts);
 
     const points = props.days.map((d) => {
       const [, mm, dd] = d.date.split("-");
@@ -43,6 +45,11 @@ export function TodayLast7Chart(props: Props) {
       title:   { text: null },
       credits: { enabled: false },
       legend:  { enabled: false },
+      // T-5.4a — screen-reader summary (Slovenian copy awaiting operator review)
+      accessibility: {
+        enabled: true,
+        description: "Gibanje toplotne kategorije v zadnjih sedmih dneh — vsaka točka je en dan, uvrščen od zmrzujoče do peklensko glede na zgodovinske percentile.",
+      },
       tooltip: {
         formatter(this: any) {
           const p = this.point as any;
