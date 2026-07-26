@@ -660,14 +660,25 @@ def _spei_color(spei):
             "wet": "#4a80b0", "extreme_wet": "#1e4d78"}[_spei_cat(spei)]
 
 def _spei_from_balances(all_vals, baseline_vals):
-    """SPEI for all_vals, log-logistic fitted on baseline_vals (>=5 else all)."""
+    """SPEI for all_vals, log-logistic fitted on baseline_vals (>=5 else all).
+
+    Returns None if the Fisk fit fails — the series is WITHHELD, not fabricated
+    (D-16). This mirrors _tropical_trend's failure path (log to stderr, return the
+    sentinel, let the caller drop the series): a failed fit yields "no data", never
+    invented distribution parameters. The previous code fabricated c_par=1.0,
+    scale_par=mean and emitted SPEI from them silently, which would corrupt every
+    SPEI value/category/colour/rank/trend on the drought heatmap and per-station
+    charts while passing validate.py (fabricated values still clip to [-3,3]). It
+    fires 0x on current data (all 292 series fit); the change defuses a landmine.
+    """
     b_vals = baseline_vals if len(baseline_vals) >= 5 else all_vals
     b_vals = np.asarray(b_vals, dtype=float)
     gamma_shift = float(b_vals.min()) - 1e-6
     try:
         c_par, _, scale_par = stats.fisk.fit(b_vals - gamma_shift, floc=0)
-    except Exception:
-        c_par, scale_par = 1.0, max(float((b_vals - gamma_shift).mean()), 1e-6)
+    except Exception as e:
+        print(f"  SPEI Fisk fit failed ({e}) — withholding series", file=sys.stderr)
+        return None
     out = []
     for bal in all_vals:
         sv = max(float(bal) - gamma_shift, 1e-9)
@@ -728,6 +739,8 @@ def build_spei_heatmap(data: pd.DataFrame) -> pd.DataFrame:
         n_total  = len(all_vals)
         b_sub    = sub[(sub["year"] >= SPEI_BASELINE_START) & (sub["year"] <= SPEI_BASELINE_END)]
         speis    = _spei_from_balances(all_vals, b_sub["balance"].values)
+        if speis is None:   # Fisk fit failed → withhold this season (D-16), don't fabricate
+            continue
         sorted_asc = np.sort(all_vals)
         for (_, row), spei_val in zip(sub.iterrows(), speis):
             rank = int(np.searchsorted(sorted_asc, row["balance"])) + 1
@@ -770,7 +783,10 @@ def build_spei_station(data: pd.DataFrame, stations_df: pd.DataFrame) -> pd.Data
                 continue
             rd = pd.DataFrame(recs)
             b  = rd[(rd["year"] >= SPEI_BASELINE_START) & (rd["year"] <= SPEI_BASELINE_END)]
-            speis = [round(v, 2) for v in _spei_from_balances(rd["balance"].values, b["balance"].values)]
+            raw = _spei_from_balances(rd["balance"].values, b["balance"].values)
+            if raw is None:   # Fisk fit failed → withhold this seasonal series (D-16)
+                continue
+            speis = [round(v, 2) for v in raw]
             years = [int(y) for y in rd["year"].tolist()]
             series[s_name] = {"years": years, "spei": speis, "trend": _spei_trend(speis, years)}
         # Annual = mean of seasonal SPEI per year
@@ -796,7 +812,10 @@ def build_spei_station(data: pd.DataFrame, stations_df: pd.DataFrame) -> pd.Data
                 continue
             rd = pd.DataFrame(recs)
             b  = rd[(rd["year"] >= SPEI_BASELINE_START) & (rd["year"] <= SPEI_BASELINE_END)]
-            speis = [round(v, 2) for v in _spei_from_balances(rd["balance"].values, b["balance"].values)]
+            raw = _spei_from_balances(rd["balance"].values, b["balance"].values)
+            if raw is None:   # Fisk fit failed → withhold this monthly series (D-16)
+                continue
+            speis = [round(v, 2) for v in raw]
             years = [int(y) for y in rd["year"].tolist()]
             series[m_name] = {"years": years, "spei": speis, "trend": _spei_trend(speis, years)}
 

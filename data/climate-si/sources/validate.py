@@ -40,6 +40,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import pandera.pandas as pa
 import yaml
@@ -448,6 +449,65 @@ def _check_percentile_stations_subset(daily_percentiles: pd.DataFrame,
         if unknown else []
 
 
+def _check_spei_consistency(spei: pd.DataFrame,
+                            spei_station: pd.DataFrame | None) -> list[str]:
+    """Tripwire for fabricated / degraded SPEI (D-16, T-5.1 part 4).
+
+    Correct SPEI is ``norm_ppf(fisk_cdf(balance − shift))`` under ONE log-logistic
+    fit per group, and both transforms are strictly increasing. Two invariants
+    follow, and both hold *by construction* on every valid series (so this passes on
+    current data) yet break the moment SPEI is not a real fit of the balance:
+
+      1. Ordering a group's rows by water balance orders SPEI non-decreasingly.
+         Violated by SPEI that is scrambled, decoupled from balance, inverted, or
+         produced by a different/degenerate distribution per row.
+      2. A group spanning many wet-to-dry years cannot collapse to a single SPEI
+         value. Violated by a fit that collapsed to a constant or pinned every row
+         to a clip boundary.
+
+    Why this exists: `_spei_from_balances` used to FABRICATE `c_par=1.0,
+    scale_par=mean` on a Fisk-fit failure and emit SPEI from them silently. Those
+    values still clip to [-3,3] with a valid cat/colour/rank, so every per-table
+    pandera schema passed them. D-16 removed the fabrication at source (the series is
+    now withheld, not invented); this is the second line of defence so that any
+    *future* fabrication or degradation fails the image build (validate runs at build
+    time, D-9) instead of shipping corrupt drought numbers.
+
+    Scope, stated honestly: it catches SPEI that is decoupled, scrambled, inverted or
+    collapsed — the shapes a broken fit or a wiring bug actually produce. It does NOT
+    catch an arbitrary monotone-but-miscalibrated curve (the old c=1 fabrication was
+    itself monotone); guarding that would need a fuzzy statistical threshold that
+    could false-positive on legitimately extreme drought decades, which is why the
+    primary defence is removal-at-source, not this check. Withheld series (absent
+    rows, or an empty SPEI array) are the honest sentinel and are deliberately NOT
+    flagged. Narrow by design — SPEI integrity only, no unrelated assertions.
+    """
+    errs: list[str] = []
+    # (1)+(2) national heatmap: monotone in balance, non-degenerate, per season x.
+    for x, g in spei.groupby("x"):
+        s = g.sort_values("balance", kind="stable")["spei"].to_numpy()
+        if len(s) >= 2 and (np.diff(s) < 0).any():
+            errs.append(f"spei[x={x}]: SPEI not monotone in water balance "
+                        f"— decoupled/scrambled/fabricated fit")
+        if len(s) >= 2 and float(np.ptp(s)) == 0.0:
+            errs.append(f"spei[x={x}]: SPEI constant across {len(s)} varying "
+                        f"balances — collapsed/degenerate fit")
+    # (2) per-station series: years/SPEI arrays equal length; a multi-year SPEI array
+    #     must vary. Empty arrays (the withhold sentinel) are intentionally allowed.
+    if spei_station is not None:
+        for _, r in spei_station.iterrows():
+            years = json.loads(r["years_json"])
+            spei_arr = json.loads(r["spei_json"])
+            tag = f"spei_station[{r['era5_name']}/{r['series']}]"
+            if len(years) != len(spei_arr):
+                errs.append(f"{tag}: years/SPEI length mismatch "
+                            f"({len(years)} vs {len(spei_arr)})")
+            if len(spei_arr) >= 2 and len(set(spei_arr)) == 1:
+                errs.append(f"{tag}: SPEI constant across {len(spei_arr)} years "
+                            f"— collapsed/degenerate fit")
+    return errs
+
+
 # ── Orchestration ───────────────────────────────────────────────────────────────
 
 def validate_tables(tables: dict[str, pd.DataFrame], config: dict | None = None) -> None:
@@ -509,6 +569,8 @@ def validate_tables(tables: dict[str, pd.DataFrame], config: dict | None = None)
     if "daily_percentiles" in tables and "stations" in tables:
         errors += _check_percentile_stations_subset(tables["daily_percentiles"],
                                                     tables["stations"])
+    if "spei" in tables:
+        errors += _check_spei_consistency(tables["spei"], tables.get("spei_station"))
 
     if errors:
         raise PipelineValidationError(
