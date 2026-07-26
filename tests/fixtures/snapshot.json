@@ -33621,8 +33621,6 @@
           "toolbar": [
             "LocationLjubljana",
             "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "MethodTheil-Sen + MKOLS",
-            "Elevation corr.",
             "Day21 Jul◀▶"
           ],
           "day_label": "21 Jul",
@@ -37138,8 +37136,6 @@
           "toolbar": [
             "LocationLjubljana",
             "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "MethodTheil-Sen + MKOLS",
-            "Elevation corr.",
             "Day21 Jul◀▶"
           ],
           "day_label": "21 Jul",
@@ -40655,8 +40651,6 @@
           "toolbar": [
             "LocationKredarica",
             "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "MethodTheil-Sen + MKOLS",
-            "Elevation corr.",
             "Day21 Jul◀▶"
           ],
           "day_label": "21 Jul",
@@ -43981,8 +43975,6 @@
           "toolbar": [
             "LocationLjubljana",
             "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "MethodTheil-Sen + MKOLS",
-            "Elevation corr.",
             "Day15 Jul◀▶"
           ],
           "day_label": "15 Jul",
@@ -47498,8 +47490,6 @@
           "toolbar": [
             "LocationLjubljana",
             "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "MethodTheil-Sen + MKOLS",
-            "Elevation corr.",
             "Day15 Jul◀▶"
           ],
           "day_label": "15 Jul",
@@ -51015,8 +51005,6 @@
           "toolbar": [
             "LocationKredarica",
             "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "MethodTheil-Sen + MKOLS",
-            "Elevation corr.",
             "Day15 Jul◀▶"
           ],
           "day_label": "15 Jul",
@@ -51851,8 +51839,6 @@
           "toolbar": [
             "LocationLjubljana",
             "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "MethodTheil-Sen + MKOLS",
-            "Elevation corr.",
             "Day28 Feb◀▶"
           ],
           "day_label": "28 Feb",
@@ -52687,8 +52673,6 @@
           "toolbar": [
             "LocationKredarica",
             "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "MethodTheil-Sen + MKOLS",
-            "Elevation corr.",
             "Day28 Feb◀▶"
           ],
           "day_label": "28 Feb",
@@ -53474,8 +53458,6 @@
           "toolbar": [
             "LocationLjubljana",
             "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "MethodTheil-Sen + MKOLS",
-            "Elevation corr.",
             "Day28 Feb◀▶"
           ],
           "day_label": "28 Feb",
@@ -56973,8 +56955,6 @@
           "toolbar": [
             "LocationLjubljana",
             "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "MethodTheil-Sen + MKOLS",
-            "Elevation corr.",
             "Day1 Mar◀▶"
           ],
           "day_label": "1 Mar",
@@ -60490,8 +60470,6 @@
           "toolbar": [
             "LocationLjubljana",
             "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "MethodTheil-Sen + MKOLS",
-            "Elevation corr.",
             "Day28 Feb◀▶"
           ],
           "day_label": "28 Feb",
@@ -64007,8 +63985,6 @@
           "toolbar": [
             "LocationLjubljana",
             "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "MethodTheil-Sen + MKOLS",
-            "Elevation corr.",
             "Day1 Mar◀▶"
           ],
           "day_label": "1 Mar",
@@ -67524,8 +67500,6 @@
           "toolbar": [
             "LocationLjubljana",
             "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "MethodTheil-Sen + MKOLS",
-            "Elevation corr.",
             "Day1 Jan◀▶"
           ],
           "day_label": "1 Jan",
@@ -71033,8 +71007,6 @@
           "toolbar": [
             "LocationLjubljana",
             "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "MethodTheil-Sen + MKOLS",
-            "Elevation corr.",
             "Day31 Dec◀▶"
           ],
           "day_label": "31 Dec",
@@ -74542,8 +74514,6 @@
           "toolbar": [
             "LocationLjubljana",
             "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "MethodTheil-Sen + MKOLS",
-            "Elevation corr.",
             "Day3 Aug◀▶"
           ],
           "day_label": "3 Aug",
@@ -78051,8 +78021,6 @@
           "toolbar": [
             "LocationKredarica",
             "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "MethodTheil-Sen + MKOLS",
-            "Elevation corr.",
             "Day3 Aug◀▶"
           ],
           "day_label": "3 Aug",
@@ -81568,8 +81536,6 @@
           "toolbar": [
             "LocationLjubljana",
             "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "MethodTheil-Sen + MKOLS",
-            "Elevation corr.",
             "Day7 Feb◀▶"
           ],
           "day_label": "7 Feb",
@@ -85098,8 +85064,6 @@
           "toolbar": [
             "LocationKredarica",
             "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "MethodTheil-Sen + MKOLS",
-            "Elevation corr.",
             "Day7 Jan◀▶"
           ],
           "day_label": "7 Jan",
