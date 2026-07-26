@@ -6,7 +6,8 @@ import type { SpeiData } from "./charts/SpeiHeatmap.tsx";
 import type { SpeiStationData } from "./charts/SpeiTrendChart.tsx";
 // The category palette lives with the percentile helpers salvaged from the
 // deleted ARSO path (T-2.2 / D-2); see percentile.ts for why they were kept.
-import { CAT_COLORS } from "./percentile.ts";
+// `cdfPercentile` is the T-4.1 / D-6 honest percentile (CDF of the served KDE).
+import { CAT_COLORS, cdfPercentile } from "./percentile.ts";
 // T-4.5 (D-4): dateToDoy reads the calendar day in Europe/Ljubljana, the same day
 // boundary clock.ts uses. This is a PURE date-parts read, not a system-clock read.
 import { calendarDateIn, LJUBLJANA_TZ } from "./clock.ts";
@@ -303,13 +304,17 @@ export async function fetchTodayStatus(date: string, loc: string | null): Promis
     }
     if (todayTemp == null) return { available: false };
 
-    const cat = categorizeEra5(todayTemp, w);
+    // Band/category/color still come from the p5..p95 cutoffs (categorizeEra5);
+    // only the DISPLAYED percentile becomes the honest CDF of the served KDE
+    // (T-4.1 / D-6). Reuse the parsed curve for both the percentile and the chart.
+    const cat  = categorizeEra5(todayTemp, w);
+    const dist = JSON.parse(w.distribution_json) as [number, number][];
     return {
       available: true, date,
       today_temp: parseFloat(todayTemp.toFixed(1)), is_preliminary: isPreliminary,
-      percentile: cat.percentile, category_key: cat.category_key, color: cat.color,
+      percentile: cdfPercentile(dist, todayTemp), category_key: cat.category_key, color: cat.color,
       n_samples: w.n_samples, year_min: w.year_min, year_max: w.year_max,
-      distribution: JSON.parse(w.distribution_json) as [number, number][],
+      distribution: dist,
       cutoffs: { p5: w.p5, p10: w.p10, p20: w.p20, p50: w.p50, p80: w.p80, p95: w.p95 },
       day_label: dayLabel(month, day), month_num: month, day_num: day,
       rank_info: null, loc: ERA5_NATIONAL,
@@ -337,13 +342,16 @@ export async function fetchTodayStatus(date: string, loc: string | null): Promis
   const w = await fetchEra5WindowRow(era5Name, month, day);
   if (!w) return { available: false };
 
-  const cat = categorizeEra5(todayTemp, w);
+  // Band/category/color from the p5..p95 cutoffs (categorizeEra5); the DISPLAYED
+  // percentile is the honest CDF of the served KDE at today's value (T-4.1 / D-6).
+  const cat  = categorizeEra5(todayTemp, w);
+  const dist = JSON.parse(w.distribution_json) as [number, number][];
   return {
     available: true, date,
     today_temp: todayTemp, is_preliminary: isPreliminary,
-    percentile: cat.percentile, category_key: cat.category_key, color: cat.color,
+    percentile: cdfPercentile(dist, todayTemp), category_key: cat.category_key, color: cat.color,
     n_samples: w.n_samples, year_min: w.year_min, year_max: w.year_max,
-    distribution: JSON.parse(w.distribution_json) as [number, number][],
+    distribution: dist,
     cutoffs: { p5: w.p5, p10: w.p10, p20: w.p20, p50: w.p50, p80: w.p80, p95: w.p95 },
     day_label: dayLabel(month, day), month_num: month, day_num: day,
     rank_info: null, loc: era5Name,
