@@ -591,6 +591,16 @@ def build_tropical(data: pd.DataFrame, stations_df: pd.DataFrame) -> pd.DataFram
             vals = loc[col].to_numpy()
             yrs  = loc["year"].to_numpy()
             for threshold in thresholds:
+                # Strict `>` is deliberate, not incidental (T-4.9). It follows the
+                # ETCCDI / ECA&D climate-index convention (summer days = TX > 25 °C,
+                # tropical nights = TN > 20 °C), so a day exactly on the threshold is
+                # NOT counted. Some national services (e.g. DWD Tropennacht) use `≥`;
+                # this project endorses `>`. The frontend carries no independent count
+                # comparison — it reads these precomputed counts — and every UI label
+                # already phrases the boundary as "nad"/"preseže" (above/exceeds),
+                # i.e. `>`, so Python and TS agree. Do not change to `≥` without a
+                # DECISIONS.md entry: it moves published counts on boundary days and
+                # inverts all six of those labels.
                 base_qual = vals > threshold
                 for streak in streaks:
                     qual = _streak_filter(base_qual, streak) if streak > 1 else base_qual
