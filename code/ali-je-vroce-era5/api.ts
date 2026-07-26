@@ -628,10 +628,16 @@ async function fetchNationalAnnualTrendRow(month: number, day: number): Promise<
 
 export async function fetchAnnualTrend(month: number, day: number, loc?: string | null): Promise<AnnualTrend> {
   const era5Name = loc ?? "Ljubljana";
+  // Tmax is the default headline variable everywhere (D-14 / T-4.8): the today
+  // card, the national trend above, and this per-station trend all lead with
+  // temperature_max, so the chart's "najvišje temperature" label is honest and
+  // the page never leads with the urban-heat-island-biased Tmin/Tmean. Tmean/Tmin
+  // stay reachable via the RegressionPanel selector, they are just no longer the
+  // default. Do not flip back to temperature_mean.
   const r = era5Name === ERA5_NATIONAL
     ? await fetchNationalAnnualTrendRow(month, day)
     : (await dsGet<AnnualTrendRow[]>(
-        `annual_trend.json?_shape=array&era5_name__exact=${encodeURIComponent(era5Name)}&variable__exact=temperature_mean&month__exact=${month}&day__exact=${day}&_size=1`
+        `annual_trend.json?_shape=array&era5_name__exact=${encodeURIComponent(era5Name)}&variable__exact=temperature_max&month__exact=${month}&day__exact=${day}&_size=1`
       ))[0];
   if (!r) throw new Error("No annual trend row");
   return {
