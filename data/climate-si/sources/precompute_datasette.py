@@ -30,7 +30,24 @@ import yaml
 
 import validate as pipeline_validate
 
-warnings.filterwarnings("ignore")
+# T-5.1 Part 3: the global `warnings.filterwarnings("ignore")` was removed. It hid
+# every warning the pipeline raised — including real numerical issues (degenerate NB
+# fits, divide-by-zero, overflow) that a public data pipeline should not hide. They
+# now surface at build time. The NB-GLM ConvergenceWarning/HessianInversionWarning and
+# the RuntimeWarnings from the optimizer are deliberately LEFT VISIBLE: they mark the
+# tropical fits that genuinely fail and are already degraded to `{}` (see
+# `_tropical_trend`, which also logs "tropical NB fit failed").
+#
+# The single exception below is narrow and benign: statsmodels emits one UserWarning
+# per get_prediction() call telling us it used its default log-link — which is exactly
+# the correct link for the NegativeBinomial model we fit. It is purely informational
+# and fired 793×/run, drowning the warnings that matter. Suppress only that one
+# message; never re-add a blanket ignore.
+warnings.filterwarnings(
+    "ignore",
+    message="using default log-link in get_prediction",
+    category=UserWarning,
+)
 
 # ── Config ─────────────────────────────────────────────────────────────────────
 
