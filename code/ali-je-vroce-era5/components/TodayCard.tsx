@@ -46,6 +46,20 @@ function catDesc(catKey: string, r: TodayStatus): string {
     .replace("{record_years}", String(yearMax - yearMin + 1));
 }
 
+// National/default view = unweighted mean of the ERA5 stations (D-7,
+// "povprečje 18 postaj"). Count + elevation range are derived from meta rather
+// than hardcoded so the sentence cannot go stale if the station set changes —
+// the failure mode T-4.6 fixed (the old copy claimed ARSO data this page has
+// never carried). ERA5-Land climatology, same ±7-day window as the per-station
+// explain below.
+function nationalExplain(stations: SiteMeta["stations"], yearMin: number): string {
+  const era5 = stations.filter(s => s.source === "era5");
+  const elevs = era5.map(s => s.elevation);
+  const elMin = Math.min(...elevs);
+  const elMax = Math.max(...elevs);
+  return `Povprečje najvišjih dnevnih temperatur ${era5.length} slovenskih postaj (nadmorska višina ${elMin}–${elMax} m), razvrščeno glede na zapise ERA5-Land od leta ${yearMin} za isto ±7-dnevno okno.`;
+}
+
 function fmtDate(dateStr: string): string {
   const parts = dateStr.split("-");
   return `${parts[2]}.${parts[1]}.`;
@@ -191,7 +205,7 @@ export function TodayCard(props: Props) {
           <p class="today-explain">
             {r().loc
               ? r().loc === props.nationalLoc
-                ? `Povprečna najvišja temperatura vseh ARSO postaj v Sloveniji, razvrstena glede na percentilne zapise ARSO meritev (${r().year_min}–${r().year_max}).`
+                ? nationalExplain(props.meta.stations, r().year_min ?? 1950)
                 : isArsoLoc(r().loc!)
                   ? `Temperatura na ARSO postaji ${props.meta.stations.find(s => s.name === r().loc)?.label ?? r().loc!.replace("arso:", "")}, razvrstena glede na percentilne zapise ARSO meritev.`
                   : `Temperatura na postaji ${r().loc!.replace(/_/g, " ")}, razvrstena glede na zapise ERA5-Land od leta ${r().year_min} za isto ±7-dnevno okno.`
