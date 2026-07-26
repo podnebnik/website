@@ -204,9 +204,9 @@ const MIRRORED = [
   },
   {
     file: PAGE_SRC,
-    cite: "AliJeVroceERA5.tsx:140",
+    cite: "AliJeVroceERA5.tsx:134",
     mirror: "harness.tsx MapPanelHeader — title",
-    fragment: '{mapLoc() ? mapLoc()!.replace(/_/g, " ") : "Slovenija — vse postaje"}',
+    fragment: '{mapLoc() ? mapLoc()!.replace(/_/g, " ") : `Slovenija — vseh ${era5Stations.length} postaj`}',
   },
   {
     file: PAGE_SRC,

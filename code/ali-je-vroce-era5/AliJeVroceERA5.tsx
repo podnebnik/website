@@ -108,7 +108,7 @@ function Dashboard(props: { meta: SiteMeta }) {
 
           {/* National (pooled) or per-station annual trend with projection */}
           <Show when={todayData()?.available}>
-            <TodayTrendChart date={date()} loc={loc()} />
+            <TodayTrendChart date={date()} loc={loc()} stationCount={era5Stations.length} />
           </Show>
         </div>
       </section>
@@ -131,7 +131,7 @@ function Dashboard(props: { meta: SiteMeta }) {
             <div style={{ ...panelHStyle, background: "var(--color-card)" }}>
               <div>
                 <div style={panelTitleStyle}>
-                  {mapLoc() ? mapLoc()!.replace(/_/g, " ") : "Slovenija — vse postaje"}
+                  {mapLoc() ? mapLoc()!.replace(/_/g, " ") : `Slovenija — vseh ${era5Stations.length} postaj`}
                 </div>
                 <div style={{ ...panelSubStyle, "margin-top": "3px" }}>
                   {era5Stations.length} postaj · ERA5

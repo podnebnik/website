@@ -617,7 +617,7 @@ function MapPanelHeader(props: { mapLoc: string | null; stationCount: number }) 
   return (
     <div>
       <div class="mirror-panel-title">
-        {props.mapLoc ? props.mapLoc.replace(/_/g, " ") : "Slovenija — vse postaje"}
+        {props.mapLoc ? props.mapLoc.replace(/_/g, " ") : `Slovenija — vseh ${props.stationCount} postaj`}
       </div>
       <div class="mirror-panel-sub">{props.stationCount} postaj · ERA5</div>
     </div>
@@ -989,7 +989,7 @@ export async function run(): Promise<RunResult> {
       // loc is the TODAY-card station, not the analysis one (AliJeVroceERA5.tsx:117).
       const trendUnit = await mount(
         `${label}.today_trend`,
-        () => <TodayTrendChart date={c.date} loc={c.today_loc} />,
+        () => <TodayTrendChart date={c.date} loc={c.today_loc} stationCount={era5Stations.length} />,
         1,
       );
       const tr = read(trendUnit);

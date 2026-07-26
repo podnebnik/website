@@ -499,7 +499,7 @@
       ],
       "panel_header": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:137-145, owned by no component and therefore invisible to the section-set assertion. Mirrored by MapPanelHeader in harness.tsx and checked against the source by main.mjs assertMirroredCopy. `station_count` is the same figure the _size=50 cap would truncate (T-5.2).",
-        "title": "Slovenija — vse postaje",
+        "title": "Slovenija — vseh 18 postaj",
         "station_count": "18 postaj · ERA5"
       }
     },

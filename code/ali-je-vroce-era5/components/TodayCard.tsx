@@ -127,7 +127,7 @@ export function TodayCard(props: Props) {
           value={r().loc === props.nationalLoc ? (props.nationalLoc ?? "") : r().loc ?? ""}
           onChange={(e) => props.onLocChange(e.currentTarget.value)}
         >
-          <option value={props.nationalLoc ?? ""}>Slovenija</option>
+          <option value={props.nationalLoc ?? ""}>Slovenija — povprečje {props.meta.stations.filter(s => s.source === "era5").length} postaj</option>
           <Show when={props.meta.stations.some(s => s.source === "arso")}>
             <optgroup label="ARSO postaje">
               <For each={props.meta.stations.filter(s => s.source === "arso")}>
