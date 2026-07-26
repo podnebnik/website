@@ -7,12 +7,24 @@ import type { SpeiStationData } from "./charts/SpeiTrendChart.tsx";
 // The category palette lives with the percentile helpers salvaged from the
 // deleted ARSO path (T-2.2 / D-2); see percentile.ts for why they were kept.
 import { CAT_COLORS } from "./percentile.ts";
+// T-4.5 (D-4): dateToDoy reads the calendar day in Europe/Ljubljana, the same day
+// boundary clock.ts uses. This is a PURE date-parts read, not a system-clock read.
+import { calendarDateIn, LJUBLJANA_TZ } from "./clock.ts";
 
 // podnebnik.org datasette serves each DB at the root (no /datasette prefix),
 // e.g. https://stage-data.podnebnik.org/climate-si — override with VITE_DATASETTE_URL for dev.
 export const DS_BASE = (import.meta.env.VITE_DATASETTE_URL as string | undefined) ?? "https://stage-data.podnebnik.org";
 // ERA5 historical + precomputed stats
 const DS = `${DS_BASE}/climate-si`;
+
+// Single anomaly reference period (D-3): the 1991-2020 WMO climatological normal,
+// matching the Python pipeline's `baseline` key in si.yaml. This is the one source
+// for every anomaly and period label on the frontend — no bare year literals. The
+// SPEI drought index is a deliberate carve-out and keeps its own 1950-1980 window
+// (labelled server-side), so it is not derived from this constant.
+export const BASELINE_YEAR_MIN = 1991;
+export const BASELINE_YEAR_MAX = 2020;
+export const BASELINE_LABEL = `${BASELINE_YEAR_MIN}–${BASELINE_YEAR_MAX}`;
 
 // era5_name → {lat, lon, elevation}; used for Open-Meteo live temps. Elevation is
 // REQUIRED: the datasette climatology is lapse-corrected to the true station
@@ -64,7 +76,25 @@ export function doyToMonthDay(doy: number): { month: number; day: number } {
 // obsolete (the test import references it) and was removed with the export.
 export function monthDayToDoy(month: number, day: number): number {
   const DAYS = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+  // D-12: 29 Feb folds into 28 Feb's slot (DOY 59). The year is 365 DOY slots, so
+  // Feb 29 has no distinct bin; its observations pool into the Feb 28 window. Without
+  // this fold monthDayToDoy(2,29) would collide with 1 March (both 60).
+  if (month === 2 && day === 29) return 59;
   return (DAYS[month - 1] ?? 0) + day;
+}
+
+// T-4.5: forward calendar-date → day-of-year. Moved here from AliJeVroceERA5.tsx so
+// all three DOY conversions live together and cannot drift apart again — they had:
+// this used to count real days from 31 Dec, i.e. it was LEAP-AWARE (1 March = doy 61
+// in 2024), while monthDayToDoy / doyToMonthDay walk a FIXED non-leap 2001 calendar
+// (1 March = 60). The panel fed this leap-aware doy straight into doyToMonthDay's
+// non-leap inverse, so 2024-03-01 was analysed as 2 March (T-1.1 witness). Now it
+// derives month/day in Europe/Ljubljana (D-4) and folds to the non-leap slot via
+// monthDayToDoy, so the round-trip is exact and 29 Feb lands on DOY 59 (D-12).
+export function dateToDoy(dateStr: string): number {
+  // calendarDateIn returns "YYYY-MM-DD" (fixed offsets, so no split/undefined).
+  const local = calendarDateIn(new Date(dateStr + "T12:00:00Z"), LJUBLJANA_TZ);
+  return monthDayToDoy(Number(local.slice(5, 7)), Number(local.slice(8, 10)));
 }
 
 // Generate approximate normal distribution from known percentile values.
@@ -356,7 +386,6 @@ export interface RegressionParams {
   locs:   string[];
   var:    string;
   doy:    number;
-  window: number;
   corr:   "raw" | "corr";
   method: "theilsen" | "ols";
 }
@@ -386,7 +415,7 @@ async function buildRegressionResult(
   if (!r) return null;
 
   const scatter = JSON.parse(r.scatter_json) as Array<{ x: number; y: number }>;
-  const baselineYears = scatter.filter(pt => pt.x >= 1961 && pt.x <= 1990);
+  const baselineYears = scatter.filter(pt => pt.x >= BASELINE_YEAR_MIN && pt.x <= BASELINE_YEAR_MAX);
   const baseline = baselineYears.length > 5
     ? baselineYears.reduce((s, pt) => s + pt.y, 0) / baselineYears.length
     : scatter.reduce((s, pt) => s + pt.y, 0) / scatter.length;
@@ -548,7 +577,7 @@ export interface CalendarData {
 }
 
 export async function fetchCalendar(
-  loc: string, variable: string, _window: number,
+  loc: string, variable: string,
   _corr: "raw" | "corr", _method: "theilsen" | "ols"
 ): Promise<CalendarData> {
   const rows = await dsGet<CalendarRow[]>(

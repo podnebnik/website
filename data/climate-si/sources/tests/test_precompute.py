@@ -2,7 +2,8 @@
 
 Scope is deliberately narrow: window_filter (T-4.5's leap/doy fix), the lapse
 correction (T-4.4 removes it for Kredarica) and the baseline period constant
-(T-4.2 unifies it to 1991-2020). Each expectation is hand-computed from the
+(T-4.2 unified it to 1991-2020, with SPEI carved out at 1950-1980). Each
+expectation is hand-computed from the
 calendar / the formula, never read back from the code, so a Phase 4 edit that
 moves a value fails loudly.
 """
@@ -29,23 +30,25 @@ def _result(out):
 
 # ── window_filter ────────────────────────────────────────────────────────────
 #
-# window_filter centres a ±half-day circular window on a target day-of-year, but
-# the target doy is computed on the FIXED non-leap year 2001 while each row's doy
-# comes from its own real calendar. In a leap year those disagree after 28 Feb —
-# the mod-365 vs non-leap-2001 mismatch these tests pin. T-4.5 will fix it.
+# window_filter centres a ±half-day circular window on a target day-of-year. Both
+# the target doy AND each row's doy are now built on the FIXED non-leap 2001
+# calendar (T-4.5), with 29 Feb folded into 28 Feb (doy 59, D-12). Before T-4.5 the
+# target was 2001-based while each row's doy came from its own real (leap-aware)
+# calendar, so in a leap year they disagreed after 28 Feb — the mismatch these tests
+# used to pin, now inverted to the corrected behaviour.
 
 
-def test_window_leap_mismatch_matches_feb29_not_mar1():
+def test_window_leap_target_mar1_matches_mar1_not_feb29():
     # Target = 1 March, half = 0 (only exact-doy rows survive).
     # target_doy = pd.Timestamp(2001, 3, 1).dayofyear = 60.
-    #   2003-03-01 doy 60  -> raw 0  -> circ 0   -> KEPT  (window_year 2003)
-    #   2004-03-01 doy 61  -> raw 1  -> circ 1   -> dropped (leap shifts it off)
-    #   2004-02-29 doy 60  -> raw 0  -> circ 0   -> KEPT  (window_year 2004) — the
-    #                                               leap day matches "1 March"
-    #   2003-03-02 doy 61  -> raw 1  -> circ 1   -> dropped
+    #   2003-03-01 -> non-leap doy 60 -> raw 0  -> circ 0 -> KEPT (window_year 2003)
+    #   2004-03-01 -> non-leap doy 60 -> raw 0  -> circ 0 -> KEPT (window_year 2004) —
+    #                                              the leap year's 1 March now matches
+    #   2004-02-29 -> folds to 28 Feb, doy 59 -> raw -1 -> dropped (no longer "1 March")
+    #   2003-03-02 -> non-leap doy 61 -> raw 1  -> circ 1 -> dropped
     df = _make_df(["2003-03-01", "2004-03-01", "2004-02-29", "2003-03-02"])
     out = pc.window_filter(df, 3, 1, 0)
-    assert _result(out) == {"2003-03-01": 2003, "2004-02-29": 2004}
+    assert _result(out) == {"2003-03-01": 2003, "2004-03-01": 2004}
 
 
 def test_window_wraps_forward_across_year_start():
@@ -72,16 +75,17 @@ def test_window_wraps_backward_across_year_end():
     assert _result(out) == {"2010-12-31": 2010, "2011-01-02": 2010}
 
 
-def test_window_feb29_target_falls_back_to_feb28():
+def test_window_feb29_target_pools_with_feb28():
     # pd.Timestamp(2001, 2, 29) is invalid (2001 non-leap) -> the except clause
-    # retargets on 28 Feb (doy 59). So asking for 29 Feb, half=0, actually keeps
-    # the 28 Feb rows and NOT the real 29 Feb.
-    #   2003-02-28 doy 59 -> raw 0 -> KEPT (window_year 2003)
-    #   2004-02-28 doy 59 -> raw 0 -> KEPT (window_year 2004)
-    #   2004-02-29 doy 60 -> raw 1 -> dropped
+    # retargets on 28 Feb (doy 59). Under T-4.5 the real 29 Feb rows ALSO fold to
+    # doy 59 (D-12), so asking for 29 Feb, half=0, keeps the 28 Feb rows AND the
+    # 29 Feb rows — they share one slot.
+    #   2003-02-28 -> doy 59            -> raw 0 -> KEPT (window_year 2003)
+    #   2004-02-28 -> doy 59            -> raw 0 -> KEPT (window_year 2004)
+    #   2004-02-29 -> folds to doy 59   -> raw 0 -> KEPT (window_year 2004)
     df = _make_df(["2003-02-28", "2004-02-28", "2004-02-29"])
     out = pc.window_filter(df, 2, 29, 0)
-    assert _result(out) == {"2003-02-28": 2003, "2004-02-28": 2004}
+    assert _result(out) == {"2003-02-28": 2003, "2004-02-28": 2004, "2004-02-29": 2004}
 
 
 # ── lapse correction ─────────────────────────────────────────────────────────
@@ -128,12 +132,28 @@ def test_lapse_rate_constant():
 
 # ── baseline period constant ─────────────────────────────────────────────────
 #
-# BASELINE_START/END are read from si.yaml (currently 1950-1980). D-3 mandates a
-# single 1991-2020 baseline everywhere; T-4.2 will make that change. Pinning the
-# CURRENT values so that unification trips this test and re-baselines consciously
+# BASELINE_START/END are read from si.yaml. D-3 mandates a single 1991-2020 anomaly
+# baseline everywhere; T-4.2 made that change. Pinning the unified value so any
+# future drift back to another window trips this test and re-baselines consciously
 # rather than silently moving every anomaly.
 
 
-def test_baseline_period_is_current_pre_t4_2_value():
-    assert pc.BASELINE_START == 1950
-    assert pc.BASELINE_END == 1980
+def test_baseline_period_is_unified_1991_2020():
+    assert pc.BASELINE_START == 1991
+    assert pc.BASELINE_END == 2020
+
+
+# ── SPEI calibration carve-out (D-3) ─────────────────────────────────────────
+#
+# The SPEI drought index deliberately does NOT use the 1991-2020 anomaly baseline:
+# calibrating a drought index on a recent, already-drier normal understates recent
+# droughts. Its window is decoupled (SPEI_BASELINE_START/END) and frozen at
+# 1950-1980. Pinning it so a future re-coupling to BASELINE_START/END trips loudly.
+
+
+def test_spei_baseline_is_decoupled_and_frozen_1950_1980():
+    assert pc.SPEI_BASELINE_START == 1950
+    assert pc.SPEI_BASELINE_END == 1980
+    # The carve-out is meaningless if the two windows are ever pointed at the same
+    # thing — that would silently drag SPEI onto the anomaly baseline.
+    assert (pc.SPEI_BASELINE_START, pc.SPEI_BASELINE_END) != (pc.BASELINE_START, pc.BASELINE_END)

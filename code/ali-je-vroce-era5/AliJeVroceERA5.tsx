@@ -1,5 +1,5 @@
 import { createSignal, createResource, createMemo, Show, Suspense, lazy } from "solid-js";
-import { fetchMeta, fetchPageData, fetchSpeiHeatmap, fetchSpeiStationSeasonal, ERA5_NATIONAL } from "./api.ts";
+import { fetchMeta, fetchPageData, fetchSpeiHeatmap, fetchSpeiStationSeasonal, dateToDoy, ERA5_NATIONAL, BASELINE_LABEL } from "./api.ts";
 import { today as todayIso } from "./clock.ts";
 import { TodayCard } from "./components/TodayCard.tsx";
 import { DistributionChart } from "./charts/DistributionChart.tsx";
@@ -23,12 +23,6 @@ const EN_MONTHS: Record<string, string> = {
 function fmtDayLabel(dl: string): string {
   const [mon, day] = dl.split(" ");
   return `${(day ?? "").padStart(2, "0")}.${EN_MONTHS[mon ?? ""] ?? "??"}`;
-}
-
-export function dateToDoy(dateStr: string): number {
-  const d = new Date(dateStr + "T12:00:00Z");
-  const start = new Date(Date.UTC(d.getUTCFullYear(), 0, 0));
-  return Math.floor((d.getTime() - start.getTime()) / 86_400_000);
 }
 
 export function AliJeVroceERA5() {
@@ -234,7 +228,7 @@ function Era5Charts() {
           Sezonski pregled
         </div>
         <div class="sec-hs2">
-          Povprečna najvišja temperatura po sezonah · ERA5-Land · barve glede na referenčno obdobje
+          Povprečna najvišja temperatura po sezonah · ERA5-Land · barve glede na referenčno obdobje {BASELINE_LABEL}
         </div>
         <Suspense fallback={<div class="h-40 animate-pulse bg-[var(--color-paper-2)] rounded-xl" />}>
           <Era5SeasonHeatmapChart loc={loc()} label={st()?.label} />

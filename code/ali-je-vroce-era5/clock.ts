@@ -1,23 +1,26 @@
 // Single source of "today" for the ERA5 page.
 //
-// Production behaviour is deliberately IDENTICAL to the inline
-// `new Date().toISOString().slice(0, 10)` this replaces (AliJeVroceERA5.tsx:43,
-// and — until T-2.2 deleted them — the two ARSO branches of api.ts): still a UTC
-// calendar day. Moving the day boundary to Europe/Ljubljana is D-4, implemented
-// in T-4.3a, and ships separately. NOTE: api.ts no longer imports this module at
-// all; its only two `today()` calls were inside the deleted ARSO path.
+// T-4.3a (D-4): production reads the calendar day in Europe/Ljubljana, the same
+// timezone the ERA5 aggregation uses. It previously read the inline UTC
+// `new Date().toISOString().slice(0, 10)` (AliJeVroceERA5.tsx:43, and — until
+// T-2.2 deleted them — the two ARSO branches of api.ts); a UTC day boundary told
+// a Slovenian reader between local midnight and 01:00 CET / 02:00 CEST that today
+// was yesterday. NOTE: since T-4.5 api.ts imports calendarDateIn/LJUBLJANA_TZ from
+// here (for dateToDoy's Europe/Ljubljana day boundary) — a pure date-parts read, NOT
+// a `today()`/system-clock read; its only two `today()` calls were inside the deleted
+// ARSO path.
 //
 // "Single source" is a claim about READS OF THE SYSTEM CLOCK, not about every
 // `new Date(...)` in the island. Re-audited by `grep -rn "new Date(" ` over
-// code/ali-je-vroce-era5 on 2026-07-23 after T-2.2 deleted the ARSO subsystem
-// from api.ts; that grep returns 13 hits, 4 of which are in this file itself
-// (3 in this comment, 1 the fallback below). The other 9, and why each is or
-// is not a clock read:
+// code/ali-je-vroce-era5 on 2026-07-23 (updated 2026-07-25 when T-4.5 moved
+// dateToDoy into api.ts) after T-2.2 deleted the ARSO subsystem from api.ts; that
+// grep returns 12 hits, 4 of which are in this file itself (3 in this comment, 1 the
+// fallback below). The other 8, and why each is or is not a clock read:
 //
-//   PURE DATE ARITHMETIC on an explicit argument — 8 hits, deterministic,
+//   PURE DATE ARITHMETIC on an explicit argument — 7 hits, deterministic,
 //   no clock involved:
-//     api.ts:54                      doy table anchor, Date.UTC(2001,0,1)
-//     AliJeVroceERA5.tsx:29,30       parse the passed dateStr
+//     api.ts:66                      doy table anchor, Date.UTC(2001,0,1)
+//     api.ts:96                      dateToDoy parses the passed dateStr (T-4.5)
 //     charts/YearRoundChart.tsx:23,24,116  doy <-> month/day on a fixed 2001
 //     components/TodayCard.tsx:64    parse the passed dateStr
 //     components/RegressionPanel.tsx:27    doy label anchor
@@ -47,13 +50,14 @@
 //       clock-driven, visible output and would have flipped the T-1.3 baseline on
 //       1 January. Fixed in the follow-up commit.
 //
-//       ONE BEHAVIOURAL CAVEAT, deliberate: those two read
-//       `new Date().getFullYear()`, the viewer's LOCAL year, and now read
-//       today()'s UTC year. Identical all year except for the UTC-offset window
-//       around New Year (in Ljubljana, 00:00-01:00 or 02:00 CET on 1 January).
-//       Taking the UTC year is the correct end of that trade: it makes this chart
-//       agree with the rest of the page, which is UTC-day throughout until D-4
-//       moves the whole island to Europe/Ljubljana in T-4.3a.
+//       HISTORY: those two once read `new Date().getFullYear()`, the viewer's
+//       LOCAL year. A follow-up routed them through todayYear() so they took
+//       today()'s year and agreed with the rest of the page. T-4.3a (D-4) then
+//       moved today() itself to Europe/Ljubljana, so this chart's current-year
+//       highlight now flips at the Ljubljana New Year boundary (00:00 local, i.e.
+//       23:00 UTC on 31 December in winter) — the correct convention, matching
+//       the data and the rest of the island. No edit to TropicalChart was needed:
+//       it already reads todayYear(), which follows today() by construction.
 //
 //   CLOCK READ, intentional, inside this file:
 //     the production fallback in today() below
@@ -77,6 +81,26 @@ const PINNED_DATE = (import.meta.env.VITE_PINNED_DATE as string | undefined) ?? 
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
+// T-4.3a (D-4): the ERA5 day boundary. Kept as a PURE function of its arguments
+// — no clock read — so it can be unit-tested at both the CET (+01:00, one-hour
+// divergence window) and CEST (+02:00, two-hour window) offsets without faking
+// the system clock. `en-CA` yields ISO-ordered YYYY / MM / DD parts; we read the
+// parts rather than the formatted string so a locale surprise cannot reorder them.
+export const LJUBLJANA_TZ = "Europe/Ljubljana";
+
+export function calendarDateIn(now: Date, timeZone: string): string {
+  const parts: Record<string, string> = {};
+  for (const { type, value } of new Intl.DateTimeFormat("en-CA", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(now)) {
+    parts[type] = value;
+  }
+  return `${parts.year}-${parts.month}-${parts.day}`;
+}
+
 export function today(): string {
   if (OVERRIDES_ALLOWED) {
     // Build-time pin (VITE_PINNED_DATE) wins; the window global is the escape
@@ -85,7 +109,7 @@ export function today(): string {
     const injected = typeof window !== "undefined" ? window.__PODNEBNIK_TODAY__ : undefined;
     if (injected && ISO_DATE.test(injected)) return injected;
   }
-  return new Date().toISOString().slice(0, 10);
+  return calendarDateIn(new Date(), LJUBLJANA_TZ);
 }
 
 /**
@@ -98,7 +122,8 @@ export function today(): string {
  *   TropicalChart.tsx:71     highlights the current year's bar (ACCENT, 0.4)
  *   TropicalChart.tsx:167    appends "(leto v teku)" to that bar's tooltip
  *
- * The UTC year, not the local one — see the caveat in the header comment.
+ * The Europe/Ljubljana year (T-4.3a, D-4), not the viewer's local one — see the
+ * caveat in the header comment.
  */
 export function todayYear(): number {
   return Number(today().slice(0, 4));

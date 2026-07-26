@@ -53,6 +53,7 @@ import {
   fetchSpeiHeatmap,
   fetchSpeiStationSeasonal,
   fetchCalendar,
+  dateToDoy,
   ERA5_NATIONAL,
 } from "../../code/ali-je-vroce-era5/api.ts";
 import { installFixtures, misses } from "../../code/ali-je-vroce-era5/fixtures/install.ts";
@@ -625,14 +626,9 @@ function MapPanelHeader(props: { mapLoc: string | null; stationCount: number }) 
 
 // ── The run ───────────────────────────────────────────────────────────────────
 
-const DAY_MS = 86_400_000;
-
-/** AliJeVroceERA5.tsx:28-32, reproduced so the analysis doy matches the page. */
-function dateToDoy(dateStr: string): number {
-  const d = new Date(dateStr + "T12:00:00Z");
-  const start = new Date(Date.UTC(d.getUTCFullYear(), 0, 0));
-  return Math.floor((d.getTime() - start.getTime()) / DAY_MS);
-}
+// T-4.5: the analysis doy is imported from api.ts (not reproduced) so the harness
+// cannot drift from the page. It now folds to a fixed non-leap slot; the leap cases'
+// derived doy moves at the batch re-record (2024-03-01: 61 → 60).
 
 export interface RunResult {
   environment: Record<string, any>;
@@ -822,7 +818,7 @@ export async function run(): Promise<RunResult> {
     // The year-round calendar is keyed on station + variable only; its 365 rows
     // do not move with the selected date, which is why it lives here and not in
     // `cases`. doy=1 only positions the selected-day marker.
-    const cal = await fetchCalendar(station, defaults.variable, defaults.window_days, "raw", "theilsen");
+    const cal = await fetchCalendar(station, defaults.variable, "raw", "theilsen");
     assertNoMisses(`by_station.${station}.calendar (fetch)`);
     const calUnit = await mount(
       `by_station.${station}.calendar`,

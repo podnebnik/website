@@ -53,8 +53,17 @@ TREND_START_YEAR = CONFIG.get("trend_start_year", 1950)
 PROJ_END_YEAR    = CONFIG.get("projection_end_year", 2050)
 WINDOW_HALF      = 7    # days either side of target DOY for distribution/percentile
 TREND_WINDOW     = 30   # days either side for annual trend aggregation
+# Anomaly reference period (D-3): 1991-2020, the single baseline for season
+# categories and every anomaly/label on the page. NOT used by SPEI (see below) or
+# by the absolute tropical thresholds, which are baseline-independent.
 BASELINE_START   = CONFIG["baseline"]["start"]
 BASELINE_END     = CONFIG["baseline"]["end"]
+# SPEI calibration window (D-3 carve-out): the drought-index log-logistic fit runs
+# over a separate, longer historical window, deliberately NOT the 1991-2020 anomaly
+# baseline — a recent normal would measure drought against an already-drier baseline.
+# Frozen at 1950-1980; keep it decoupled from BASELINE_START/END.
+SPEI_BASELINE_START = CONFIG["spei_baseline"]["start"]
+SPEI_BASELINE_END   = CONFIG["spei_baseline"]["end"]
 
 MONTH_NAMES = ["Jan","Feb","Mar","Apr","May","Jun",
                "Jul","Aug","Sep","Oct","Nov","Dec"]
@@ -114,6 +123,10 @@ def load_all() -> pd.DataFrame:
     data = data[data["source"] != "era5t"]   # exclude preliminary ERA5T rows
     data["year"]  = data["date"].dt.year
     data["month"] = data["date"].dt.month
+    # Fixed-lapse elevation correction, applied UNIFORMLY to every station
+    # incl. Kredarica (D-5 reversed 2026-07-24 — the correction is kept, not
+    # removed). LAPSE_RATE (6.5 °C/km) is the single source for the rate; do
+    # not special-case any station here.
     for col in ("temperature_max", "temperature_min", "temperature_mean"):
         data[f"{col}_corr"] = data[col] + data["elevation_diff_m"] * LAPSE_RATE
     return data
@@ -123,12 +136,26 @@ def _is_leap(y: int) -> bool:
 
 # ── Window filter ──────────────────────────────────────────────────────────────
 
+# Cumulative days before each month on the FIXED non-leap year — the same table
+# monthDayToDoy uses in api.ts. Used to give every row a non-leap day-of-year so it
+# shares the target_doy's 2001 calendar.
+_CUM_DAYS = np.array([0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334])
+
 def window_filter(loc_data: pd.DataFrame, month: int, day: int, half: int) -> pd.DataFrame:
     try:
         target_doy = pd.Timestamp(2001, month, day).dayofyear
     except ValueError:
         target_doy = pd.Timestamp(2001, month, 28).dayofyear
-    row_doy   = loc_data["date"].dt.dayofyear.to_numpy()
+    # T-4.5: build each row's doy on the SAME non-leap 2001 calendar as target_doy,
+    # not from the row's real (leap-aware) calendar. Previously `dt.dayofyear` gave a
+    # leap year's 1 March doy 61 while target 1 March was 60, so with half=0 the target
+    # matched that year's 29 Feb (real doy 60) instead of its 1 March. D-12: 29 Feb
+    # folds into 28 Feb (doy 59), pooling into the Feb 28 window rather than a distinct
+    # bin — matching target_doy's own Feb-29 fallback above.
+    row_month = loc_data["date"].dt.month.to_numpy()
+    row_day   = np.where((loc_data["date"].dt.day.to_numpy() == 29) & (row_month == 2),
+                         28, loc_data["date"].dt.day.to_numpy())
+    row_doy   = _CUM_DAYS[row_month - 1] + row_day
     raw_diff  = (row_doy - target_doy).astype(int)
     circ_diff = ((raw_diff + 182) % 365) - 182
     mask      = np.abs(circ_diff) <= half
@@ -590,8 +617,9 @@ def build_tropical(data: pd.DataFrame, stations_df: pd.DataFrame) -> pd.DataFram
 
 # ── 8. SPEI drought index (national heatmap + per-station seasonal/monthly) ────
 # Standardised Precipitation-Evapotranspiration Index: seasonal/monthly water
-# balance (precip − ET0), fitted to a log-logistic distribution over the
-# 1950–1980 baseline and mapped to a normal deviate. Ported from the sidecar.
+# balance (precip − ET0), fitted to a log-logistic distribution over the SPEI
+# calibration window (SPEI_BASELINE_START/END = 1950–1980, D-3 carve-out — NOT the
+# 1991–2020 anomaly baseline) and mapped to a normal deviate. Ported from the sidecar.
 
 def _spei_cat(spei):
     if   spei < -1.5: return "extreme_dry"
@@ -671,7 +699,7 @@ def build_spei_heatmap(data: pd.DataFrame) -> pd.DataFrame:
             continue
         all_vals = sub["balance"].values
         n_total  = len(all_vals)
-        b_sub    = sub[(sub["year"] >= BASELINE_START) & (sub["year"] <= BASELINE_END)]
+        b_sub    = sub[(sub["year"] >= SPEI_BASELINE_START) & (sub["year"] <= SPEI_BASELINE_END)]
         speis    = _spei_from_balances(all_vals, b_sub["balance"].values)
         sorted_asc = np.sort(all_vals)
         for (_, row), spei_val in zip(sub.iterrows(), speis):
@@ -714,7 +742,7 @@ def build_spei_station(data: pd.DataFrame, stations_df: pd.DataFrame) -> pd.Data
             if len(recs) < 10:
                 continue
             rd = pd.DataFrame(recs)
-            b  = rd[(rd["year"] >= BASELINE_START) & (rd["year"] <= BASELINE_END)]
+            b  = rd[(rd["year"] >= SPEI_BASELINE_START) & (rd["year"] <= SPEI_BASELINE_END)]
             speis = [round(v, 2) for v in _spei_from_balances(rd["balance"].values, b["balance"].values)]
             years = [int(y) for y in rd["year"].tolist()]
             series[s_name] = {"years": years, "spei": speis, "trend": _spei_trend(speis, years)}
@@ -740,7 +768,7 @@ def build_spei_station(data: pd.DataFrame, stations_df: pd.DataFrame) -> pd.Data
             if len(recs) < 10:
                 continue
             rd = pd.DataFrame(recs)
-            b  = rd[(rd["year"] >= BASELINE_START) & (rd["year"] <= BASELINE_END)]
+            b  = rd[(rd["year"] >= SPEI_BASELINE_START) & (rd["year"] <= SPEI_BASELINE_END)]
             speis = [round(v, 2) for v in _spei_from_balances(rd["balance"].values, b["balance"].values)]
             years = [int(y) for y in rd["year"].tolist()]
             series[m_name] = {"years": years, "spei": speis, "trend": _spei_trend(speis, years)}

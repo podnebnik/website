@@ -268,8 +268,7 @@ function assertMirroredCopy() {
  * where the real value lives and how to read it out.
  */
 const DEFAULT_SOURCES = [
-  { key: "variable", file: PANEL_SRC, cite: "RegressionPanel.tsx:38", from: /const \[selVar,\s*setSelVar\]\s*=\s*createSignal\("([^"]+)"\)/, cast: String },
-  { key: "window_days", file: PANEL_SRC, cite: "RegressionPanel.tsx:40", from: /const \[window_,\s*setWindow\]\s*=\s*createSignal\((\d+)\)/, cast: Number },
+  { key: "variable", file: PANEL_SRC, cite: "RegressionPanel.tsx:39", from: /const \[selVar,\s*setSelVar\]\s*=\s*createSignal\("([^"]+)"\)/, cast: String },
   { key: "method", file: PANEL_SRC, cite: "RegressionPanel.tsx:42 (useOls)", from: /const \[useOls,\s*setUseOls\]\s*=\s*createSignal\((true|false)\)/, cast: (v) => (v === "true" ? "ols" : "theilsen") },
   { key: "elevation_correction", file: PANEL_SRC, cite: "RegressionPanel.tsx:41 (corr)", from: /const \[corr,\s*setCorr\]\s*=\s*createSignal\((true|false)\)/, cast: (v) => (v === "true" ? "corr" : "raw") },
   { key: "tropical_days_threshold", file: PAGE_SRC, cite: "AliJeVroceERA5.tsx:212", from: /const \[daysThr,\s*setDaysThr\]\s*=\s*createSignal\((\d+)\)/, cast: Number },

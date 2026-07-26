@@ -1,62 +1,55 @@
-// @vitest-environment jsdom
-//
-// jsdom, not node: this file imports dateToDoy from AliJeVroceERA5.tsx, and that
-// module's Solid JSX transform calls delegateEvents() at load, which needs a DOM.
-// The charts (highcharts, leaflet) are behind lazy()/dynamic import, so importing
-// the module only evaluates its top-level definitions — nothing renders.
+// All three DOY helpers now live in api.ts (a pure .ts module), so this test needs
+// no DOM and runs under the default node environment. Until T-4.5 dateToDoy lived in
+// AliJeVroceERA5.tsx and forced `@vitest-environment jsdom` (its Solid JSX transform
+// calls delegateEvents() at load); moving it here removed that coupling.
 import { describe, expect, it } from "vitest";
 
-import { dateToDoy } from "../../code/ali-je-vroce-era5/AliJeVroceERA5.tsx";
-import { monthDayToDoy, doyToMonthDay } from "../../code/ali-je-vroce-era5/api.ts";
+import { dateToDoy, monthDayToDoy, doyToMonthDay } from "../../code/ali-je-vroce-era5/api.ts";
 
-// T-3.4 — day-of-year conversions, the machinery T-4.5 (the leap-year doy fix)
-// will rework. Two conventions live in the island and DISAGREE at the leap-year
-// boundary:
+// T-4.5 — day-of-year conversions, AFTER the leap-year fix. The island now uses ONE
+// convention: a FIXED non-leap 365-slot year, with 29 Feb folded into 28 Feb / DOY 59
+// (D-12). All three helpers agree:
 //
-//   * dateToDoy (AliJeVroceERA5.tsx) parses the real calendar date, so it is
-//     LEAP-AWARE — 1 March is doy 61 in 2024 but doy 60 in 2023.
-//   * monthDayToDoy (api.ts) reads a FIXED non-leap day table, so it returns the
-//     non-leap doy regardless of year — 1 March is always 60.
-//   * doyToMonthDay (api.ts), which fetchRegression uses to turn the panel's doy
-//     back into a month/day, walks a FIXED non-leap 2001 calendar.
+//   * dateToDoy    (calendar date → doy) reads the date's month/day in
+//     Europe/Ljubljana and folds to the non-leap slot via monthDayToDoy — so it is
+//     NO LONGER leap-aware: 1 March is doy 60 in both 2023 and 2024.
+//   * monthDayToDoy(month, day) reads the same fixed non-leap day table, folding
+//     29 Feb to 59.
+//   * doyToMonthDay(doy) walks the fixed non-leap 2001 calendar (unchanged by T-4.5).
 //
-// The panel feeds dateToDoy's leap-aware doy straight into doyToMonthDay's
-// non-leap inverse, so for any day after 28 Feb IN A LEAP YEAR the round-trip
-// lands one day late. T-1.1 froze this: 2024-03-01 is analysed as 2 March
-// (snapshot cases ljubljana-leap-mar01 +0.589 vs ljubljana-nonleap-mar01 +0.585
-// °C/decade).
-//
-// EVERYTHING BELOW ASSERTS THE CURRENT, KNOWN-BUGGY BEHAVIOUR. When T-4.5 fixes
-// the conversion these expectations INVERT — that is the point: the fix must not
-// pass silently. Every value is hand-computed from the calendar, never read back
-// from the code.
+// Because the forward and inverse now share one calendar, the round-trip is exact:
+// the panel's date → doy → month/day no longer lands one day late in a leap year.
+// This INVERTS the T-3.4 fixture, which pinned the pre-fix bug (2024-03-01 analysed
+// as 2 March). Every value is hand-computed from the calendar, never read back from
+// the code.
 
-describe("dateToDoy — leap-aware forward conversion (real calendar)", () => {
+describe("dateToDoy — non-leap forward conversion (T-4.5, folds via monthDayToDoy)", () => {
   it("maps 1 January to doy 1 in both leap and non-leap years", () => {
     expect(dateToDoy("2023-01-01")).toBe(1);
     expect(dateToDoy("2024-01-01")).toBe(1);
   });
 
   it("agrees with the non-leap table through 28 February", () => {
-    // Jan 31 + Feb 28 = 59, identical in both years up to here.
+    // Jan 31 + Feb 28 = 59, identical in both years.
     expect(dateToDoy("2023-02-28")).toBe(59);
     expect(dateToDoy("2024-02-28")).toBe(59);
   });
 
-  it("gives 29 February its own doy 60 in a leap year", () => {
-    // Jan 31 + Feb 29th day = 60.
-    expect(dateToDoy("2024-02-29")).toBe(60);
+  it("folds 29 February into DOY 59 (D-12), sharing 28 February's slot", () => {
+    // No distinct leap-day bin: 29 Feb pools into the Feb 28 window.
+    expect(dateToDoy("2024-02-29")).toBe(59);
   });
 
-  it("SHIFTS every post-February day by +1 in a leap year (the bug's source)", () => {
-    // 1 March: non-leap 2023 = 31 + 28 + 1 = 60; leap 2024 = 31 + 29 + 1 = 61.
+  it("keeps 1 March on doy 60 in BOTH leap and non-leap years (the fix)", () => {
+    // Non-leap 2023 = 31 + 28 + 1 = 60; leap 2024 no longer shifts to 61 — the
+    // non-leap table is used unconditionally.
     expect(dateToDoy("2023-03-01")).toBe(60);
-    expect(dateToDoy("2024-03-01")).toBe(61);
+    expect(dateToDoy("2024-03-01")).toBe(60);
   });
 
-  it("counts the whole year (365 non-leap, 366 leap)", () => {
+  it("counts the whole year as 365 slots in both leap and non-leap years", () => {
     expect(dateToDoy("2023-12-31")).toBe(365);
-    expect(dateToDoy("2024-12-31")).toBe(366);
+    expect(dateToDoy("2024-12-31")).toBe(365);
   });
 });
 
@@ -66,14 +59,18 @@ describe("monthDayToDoy — fixed non-leap day table (no year, never shifts)", (
     expect(monthDayToDoy(12, 31)).toBe(365);
   });
 
-  it("returns the NON-LEAP doy for 1 March unconditionally", () => {
-    // DAYS[2] = 59 (Jan 31 + Feb 28) + day 1 = 60. There is no leap branch, so
-    // unlike dateToDoy this never becomes 61 — the two disagree in a leap year.
+  it("returns the non-leap doy for 1 March unconditionally", () => {
+    // DAYS[2] = 59 (Jan 31 + Feb 28) + day 1 = 60.
     expect(monthDayToDoy(3, 1)).toBe(60);
   });
 
   it("maps 28 February to 59", () => {
     expect(monthDayToDoy(2, 28)).toBe(59);
+  });
+
+  it("folds 29 February into 59, the same slot as 28 February (D-12)", () => {
+    // Without the fold this would be 31 + 29 = 60, colliding with 1 March.
+    expect(monthDayToDoy(2, 29)).toBe(59);
   });
 });
 
@@ -91,17 +88,25 @@ describe("doyToMonthDay — fixed non-leap 2001 inverse (fetchRegression's step)
   });
 });
 
-describe("FROZEN BUG (T-1.1): leap-aware forward + non-leap inverse round-trip", () => {
-  // This is the exact path the regression panel walks:
+describe("FIXED round-trip (T-4.5): non-leap forward + non-leap inverse agree", () => {
+  // The exact path the regression panel walks:
   //   defaultDoy = dateToDoy(date)   →   fetchRegression: doyToMonthDay(doy)
-  // T-4.5 will fix it; when it does, THESE TWO ASSERTIONS FLIP.
-  it("sends 2024-03-01 (leap) to 2 March — off by one, the pinned bug", () => {
-    const doy = dateToDoy("2024-03-01"); // 61
-    expect(doyToMonthDay(doy)).toEqual({ month: 3, day: 2 });
+  // Pre-T-4.5 this landed leap years one day late; the T-1.1 witness (snapshot cases
+  // ljubljana-leap-mar01 vs ljubljana-nonleap-mar01) reported +0.589 vs +0.585
+  // °C/decade for what the reader is told is the same day. Now they resolve to the
+  // same month/day.
+  it("sends 2024-03-01 (leap) to 1 March — the off-by-one is gone", () => {
+    const doy = dateToDoy("2024-03-01"); // 60
+    expect(doyToMonthDay(doy)).toEqual({ month: 3, day: 1 });
   });
 
-  it("keeps 2023-03-01 (non-leap) on 1 March — correct, no shift", () => {
+  it("keeps 2023-03-01 (non-leap) on 1 March — unchanged, still correct", () => {
     const doy = dateToDoy("2023-03-01"); // 60
     expect(doyToMonthDay(doy)).toEqual({ month: 3, day: 1 });
+  });
+
+  it("sends 2024-02-29 (leap day) to 28 February (D-12 fold)", () => {
+    const doy = dateToDoy("2024-02-29"); // 59
+    expect(doyToMonthDay(doy)).toEqual({ month: 2, day: 28 });
   });
 });
