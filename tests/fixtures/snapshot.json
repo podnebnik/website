@@ -31309,7 +31309,7 @@
           "percentile_label": "percentil",
           "samples": "20,520 vzorcev",
           "preliminary_badge": "ERA5T · preliminarno",
-          "explain": "Povprečna najvišja temperatura vseh ARSO postaj v Sloveniji, razvrstena glede na percentilne zapise ARSO meritev (1950–2026).",
+          "explain": "Povprečje najvišjih dnevnih temperatur 18 slovenskih postaj (nadmorska višina 10–2514 m), razvrščeno glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
           "footer": "24.6 °C · 50. percentil · 20,520 vzorcev (1950–2026)",
           "unavailable_message": null
         },
@@ -40557,7 +40557,7 @@
           "percentile_label": "percentil",
           "samples": "20,520 vzorcev",
           "preliminary_badge": null,
-          "explain": "Povprečna najvišja temperatura vseh ARSO postaj v Sloveniji, razvrstena glede na percentilne zapise ARSO meritev (1950–2026).",
+          "explain": "Povprečje najvišjih dnevnih temperatur 18 slovenskih postaj (nadmorska višina 10–2514 m), razvrščeno glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
           "footer": "28.0 °C · 88. percentil · 20,520 vzorcev (1950–2026)",
           "unavailable_message": null
         },
