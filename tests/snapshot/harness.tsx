@@ -223,6 +223,15 @@ async function mount(
   }
   assertNoMisses(`${label} (re-check)`);
 
+  // T-4.18: Solid sets <select>.value as a PROPERTY, and cloneNode(true) does not
+  // copy it (jsdom's clone reports the first option, verified), so the frozen clone
+  // cannot tell which option is selected. Materialize the LIVE selection into an
+  // attribute — attributes do survive the clone — so Reader.select() can read it
+  // back after teardown. Harmless on units with no <select>.
+  for (const sel of Array.from(el.querySelectorAll("select"))) {
+    sel.setAttribute("data-snapshot-value", (sel as HTMLSelectElement).value);
+  }
+
   // Snapshot the DOM before teardown; onCleanup destroys the charts.
   const frozen = el.cloneNode(true) as HTMLElement;
   dispose();
@@ -284,6 +293,23 @@ class Reader {
     const els = Array.from(this.root.querySelectorAll(sel));
     if (els.length === 0) this.fail(sel, "no elements");
     return els.map((e) => norm(e.textContent)).filter((s): s is string => s !== null);
+  }
+
+  /**
+   * T-4.18: a `<select>`'s option text and its selected value. `<option>` labels
+   * were a snapshot blind spot — a dropdown label change (e.g. the T-4.6 national
+   * option "Slovenija — povprečje N postaj", TodayCard.tsx:130) moved nothing here.
+   * Option text is read from the DOM; the selected value comes from the
+   * `data-snapshot-value` attribute mount() materializes off the live element,
+   * because select.value does not survive cloneNode.
+   */
+  select(sel: string): { selected: string | null; options: string[] } {
+    const el = this.one(sel) as HTMLSelectElement;
+    const options = Array.from(el.querySelectorAll("option"))
+      .map((o) => norm(o.textContent))
+      .filter((s): s is string => s !== null);
+    if (options.length === 0) this.fail(`${sel} > option`, "no <option> elements");
+    return { selected: el.getAttribute("data-snapshot-value"), options };
   }
 
   style(sel: string, prop: string): string | null {
@@ -458,6 +484,10 @@ function captureTodayCard(unit: Unit, status: TodayStatus, last7: Last7): any {
     rendered: {
       // The date/location control is outside the Show, so it renders either way.
       date_badge: r.txt(".today-date-badge"),
+      // T-4.18: the station selector, whose options were previously uncaptured.
+      // Renders in both branches (TodayCard.tsx:125-145 sits before the available
+      // Show); the national option carries the T-4.6 "povprečje N postaj" label.
+      loc_select: r.select(".today-loc-select"),
       category_label: ok ? r.txt(".today-cat") : r.optional(".today-cat", why),
       category_color: ok
         ? r.style(".today-cat", "color")
@@ -553,6 +583,9 @@ function captureAnalysis(unit: Unit): any {
   return {
     rendered: {
       toolbar: r.all(".reg-toolbar > div"),
+      // T-4.18: the variable selector (RegressionPanel.tsx:170-178) — the lone
+      // <select> in the toolbar; its option labels were uncaptured.
+      variable_select: r.select("select"),
       day_label: r.txt(".reg-doy-ctrl > div"),
       title: scatter.txt("[style*='font-size: 15px']"),
       subtitle: scatter.txt("[style*='margin-top: 3px']"),
@@ -1009,6 +1042,28 @@ export async function run(): Promise<RunResult> {
         },
         charts,
       };
+
+      // T-4.18: the title/explain/footer come from TodayTrendChart's createResource
+      // (TodayTrendChart.tsx:144). settle() already awaits that fetch (it goes
+      // through the counted fetch) and expectedCharts=1 waits for the chart, which
+      // mounts only AFTER the <Show> renders this copy — so these are populated, not
+      // empty. Make that guarantee EXPLICIT rather than incidental: an empty value
+      // here means the resource had not resolved when the DOM was frozen, and must
+      // fail the run, not baseline blank. (r.txt already throws if the element is
+      // absent; this catches present-but-empty, which norm() would return as null.)
+      for (const [field, val] of [
+        ["title", trendRendered.title],
+        ["explain", trendRendered.explain],
+        ["footer", trendRendered.footer],
+      ] as const) {
+        if (val == null) {
+          throw new Error(
+            `[snapshot] ${label}.today_trend: ${field} is empty — TodayTrendChart's ` +
+              `createResource had not resolved when the DOM was serialized. ` +
+              `No snapshot was written.`,
+          );
+        }
+      }
     }
 
     const analysisUnit = await mount(
