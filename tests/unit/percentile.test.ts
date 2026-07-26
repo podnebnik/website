@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   rankPercentile,
   categorizeArso,
+  cdfPercentile,
   CAT_COLORS,
   type ComputedPercentiles,
 } from "../../code/ali-je-vroce-era5/percentile.ts";
@@ -87,5 +88,59 @@ describe("categorizeArso — category from p05/p20/p80/p95, plus the real rank",
   it("keys the nope/cold boundary off p20 (inclusive lower), not p10", () => {
     expect(categorizeArso(10, p).category_key).toBe("nope"); // 10 == p20 -> nope
     expect(categorizeArso(9, p).category_key).toBe("cold"); // 9 < p20 but >= p05
+  });
+});
+
+describe("cdfPercentile — CDF of the served KDE density (T-4.1 / D-6, Option B)", () => {
+  // Every expected value is hand-computed from the trapezoid definition, never
+  // read back from the code.
+
+  // Uniform density 1 on [0, 10]: the CDF is exactly linear, mass = x/10.
+  const uniform: [number, number][] = [[0, 1], [10, 1]];
+
+  it("is 0 at/below the low edge and 100 at/above the high edge", () => {
+    expect(cdfPercentile(uniform, 0)).toBe(0);
+    expect(cdfPercentile(uniform, -3)).toBe(0);
+    expect(cdfPercentile(uniform, 10)).toBe(100);
+    expect(cdfPercentile(uniform, 13)).toBe(100);
+  });
+
+  it("integrates the mass below the value on a uniform curve", () => {
+    expect(cdfPercentile(uniform, 5)).toBeCloseTo(50, 10);   // half the area
+    expect(cdfPercentile(uniform, 2.5)).toBeCloseTo(25, 10); // a quarter
+    expect(cdfPercentile(uniform, 9)).toBeCloseTo(90, 10);
+  });
+
+  it("normalises out the absolute scale of the density", () => {
+    // Same shape as `uniform`, density scaled ×7 — the CDF is unchanged because
+    // both integrals scale together (no explicit normalisation needed).
+    const scaled: [number, number][] = [[0, 7], [10, 7]];
+    expect(cdfPercentile(scaled, 5)).toBeCloseTo(50, 10);
+  });
+
+  it("matches the trapezoid CDF of a symmetric triangle at its peak (median = 50)", () => {
+    // Triangle rising 0->1 over [0,10] then falling 1->0 over [10,20]. Total area
+    // = 10 (two triangles of area 5). Mass up to the peak x=10 is one triangle = 5,
+    // i.e. exactly half -> 50th percentile at the mode, as a symmetric curve must.
+    const tri: [number, number][] = [[0, 0], [10, 1], [20, 0]];
+    expect(cdfPercentile(tri, 10)).toBeCloseTo(50, 10);
+    // At x=5 the left triangle up to 5 has area 0.5*5*0.5 = 1.25 -> 12.5% of 10.
+    expect(cdfPercentile(tri, 5)).toBeCloseTo(12.5, 10);
+    expect(cdfPercentile(tri, 20)).toBe(100);
+  });
+
+  it("handles an uneven grid via per-segment trapezoids", () => {
+    // Density 2 on [0,1] then 0 on [1,3]. Total area = 2*1 + (2+0)/2*2 = 2 + 2 = 4.
+    // Up to x=1 the mass is 2 -> 50%. Up to x=2 add half of the falling segment's
+    // first unit: trapezoid [1,2] with y interp 2->1 = (2+1)/2*1 = 1.5 -> 3.5/4 = 87.5%.
+    const uneven: [number, number][] = [[0, 2], [1, 2], [3, 0]];
+    expect(cdfPercentile(uneven, 1)).toBeCloseTo(50, 10);
+    expect(cdfPercentile(uneven, 2)).toBeCloseTo(87.5, 10);
+  });
+
+  it("guards degenerate curves and empty mass", () => {
+    expect(cdfPercentile([], 5)).toBe(0);
+    expect(cdfPercentile([[5, 1]], 5)).toBe(0);          // < 2 points
+    expect(cdfPercentile([[0, 0], [10, 0]], 5)).toBe(0); // zero total mass
   });
 });

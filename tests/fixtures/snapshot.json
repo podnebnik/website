@@ -31030,7 +31030,7 @@
           "date": "2026-07-21",
           "loc": "era5:national",
           "today_temp": 24.6,
-          "percentile": 50,
+          "percentile": 46.40082834330306,
           "category_key": "nope",
           "color": "#e7d9b8",
           "is_preliminary": true,
@@ -31859,12 +31859,12 @@
           "category_label": "Normalno",
           "category_color": "rgb(231, 217, 184)",
           "description": "Točno takšno, kot 21.07 v Slovenija ponavadi je.",
-          "percentile": "50",
+          "percentile": "46",
           "percentile_label": "percentil",
           "samples": "20,520 vzorcev",
           "preliminary_badge": "napoved",
           "explain": "Povprečje najvišjih dnevnih temperatur 18 slovenskih postaj (nadmorska višina 10–2514 m), razvrščeno glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
-          "footer": "24.6 °C · 50. percentil · 20,520 vzorcev (1950–2026)",
+          "footer": "24.6 °C · 46. percentil · 20,520 vzorcev (1950–2026)",
           "unavailable_message": null
         },
         "last7": {
@@ -31924,7 +31924,7 @@
                 "name": null,
                 "type": "gauge",
                 "data": [
-                  2.5
+                  2.4400138057217178
                 ]
               }
             ],
@@ -32817,7 +32817,7 @@
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature v Sloveniji za dva tedna okoli 21.07 od 1950",
         "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
-        "footer": "Slovenija: 24.6 °C · 50. percentil · mediana 24.5 °C · 20,520 opazovanj · 1950–2026"
+        "footer": "Slovenija: 24.6 °C · 46. percentil · mediana 24.5 °C · 20,520 opazovanj · 1950–2026"
       },
       "today_trend": {
         "api": {
@@ -34356,7 +34356,7 @@
           "date": "2026-07-21",
           "loc": "Ljubljana",
           "today_temp": 26,
-          "percentile": 50,
+          "percentile": 61.02159967171171,
           "category_key": "nope",
           "color": "#e7d9b8",
           "is_preliminary": true,
@@ -35185,12 +35185,12 @@
           "category_label": "Normalno",
           "category_color": "rgb(231, 217, 184)",
           "description": "Točno takšno, kot 21.07 v Slovenija ponavadi je.",
-          "percentile": "50",
+          "percentile": "61",
           "percentile_label": "percentil",
           "samples": "1,140 vzorcev",
           "preliminary_badge": "napoved",
           "explain": "Temperatura na postaji Ljubljana, razvrstena glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
-          "footer": "26.0 °C · 50. percentil · 1,140 vzorcev (1950–2026)",
+          "footer": "26.0 °C · 61. percentil · 1,140 vzorcev (1950–2026)",
           "unavailable_message": null
         },
         "last7": {
@@ -35307,7 +35307,7 @@
                 "name": null,
                 "type": "gauge",
                 "data": [
-                  2.5
+                  2.683693327861862
                 ]
               }
             ],
@@ -36334,7 +36334,7 @@
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 21.07 od 1950",
         "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
-        "footer": "Danes: 26.0 °C · 50. percentil · mediana 24.9 °C · 1,140 opazovanj · 1950–2026"
+        "footer": "Danes: 26.0 °C · 61. percentil · mediana 24.9 °C · 1,140 opazovanj · 1950–2026"
       },
       "today_trend": {
         "api": {
@@ -37873,7 +37873,7 @@
           "date": "2026-07-21",
           "loc": "Kredarica",
           "today_temp": 7.1,
-          "percentile": 15,
+          "percentile": 14.041864741566808,
           "category_key": "cold",
           "color": "#6c8fb6",
           "is_preliminary": true,
@@ -38702,12 +38702,12 @@
           "category_label": "Hladno",
           "category_color": "rgb(108, 143, 182)",
           "description": "Hladneje od večine izmerjenih 21.07.",
-          "percentile": "15",
+          "percentile": "14",
           "percentile_label": "percentil",
           "samples": "1,140 vzorcev",
           "preliminary_badge": "napoved",
           "explain": "Temperatura na postaji Kredarica, razvrstena glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
-          "footer": "7.1 °C · 15. percentil · 1,140 vzorcev (1950–2026)",
+          "footer": "7.1 °C · 14. percentil · 1,140 vzorcev (1950–2026)",
           "unavailable_message": null
         },
         "last7": {
@@ -38958,7 +38958,7 @@
                 "name": null,
                 "type": "gauge",
                 "data": [
-                  1.5
+                  1.4041864741566807
                 ]
               }
             ],
@@ -39851,7 +39851,7 @@
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Kredarica za dva tedna okoli 21.07 od 1950",
         "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
-        "footer": "Danes: 7.1 °C · 15. percentil · mediana 11.2 °C · 1,140 opazovanj · 1950–2026"
+        "footer": "Danes: 7.1 °C · 14. percentil · mediana 11.2 °C · 1,140 opazovanj · 1950–2026"
       },
       "today_trend": {
         "api": {
@@ -41390,7 +41390,7 @@
           "date": "2025-07-15",
           "loc": "era5:national",
           "today_temp": 28,
-          "percentile": 87.5,
+          "percentile": 79.1216442802875,
           "category_key": "hot",
           "color": "#c25a2c",
           "is_preliminary": false,
@@ -42219,12 +42219,12 @@
           "category_label": "Vroče",
           "category_color": "rgb(194, 90, 44)",
           "description": "Med najtoplejšimi 15.07 v naših zapisih.",
-          "percentile": "88",
+          "percentile": "79",
           "percentile_label": "percentil",
           "samples": "20,520 vzorcev",
           "preliminary_badge": null,
           "explain": "Povprečje najvišjih dnevnih temperatur 18 slovenskih postaj (nadmorska višina 10–2514 m), razvrščeno glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
-          "footer": "28.0 °C · 88. percentil · 20,520 vzorcev (1950–2026)",
+          "footer": "28.0 °C · 79. percentil · 20,520 vzorcev (1950–2026)",
           "unavailable_message": null
         },
         "last7": {
@@ -42284,7 +42284,7 @@
                 "name": null,
                 "type": "gauge",
                 "data": [
-                  3.5
+                  3
                 ]
               }
             ],
@@ -43177,7 +43177,7 @@
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature v Sloveniji za dva tedna okoli 15.07 od 1950",
         "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
-        "footer": "Slovenija: 28.0 °C · 88. percentil · mediana 24.2 °C · 20,520 opazovanj · 1950–2026"
+        "footer": "Slovenija: 28.0 °C · 79. percentil · mediana 24.2 °C · 20,520 opazovanj · 1950–2026"
       },
       "today_trend": {
         "api": {
@@ -44716,7 +44716,7 @@
           "date": "2025-07-15",
           "loc": "Ljubljana",
           "today_temp": 29.656,
-          "percentile": 87.5,
+          "percentile": 90.53068038606584,
           "category_key": "hot",
           "color": "#c25a2c",
           "is_preliminary": false,
@@ -45545,12 +45545,12 @@
           "category_label": "Vroče",
           "category_color": "rgb(194, 90, 44)",
           "description": "Med najtoplejšimi 15.07 v naših zapisih.",
-          "percentile": "88",
+          "percentile": "91",
           "percentile_label": "percentil",
           "samples": "1,140 vzorcev",
           "preliminary_badge": null,
           "explain": "Temperatura na postaji Ljubljana, razvrstena glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
-          "footer": "29.7 °C · 88. percentil · 1,140 vzorcev (1950–2026)",
+          "footer": "29.7 °C · 91. percentil · 1,140 vzorcev (1950–2026)",
           "unavailable_message": null
         },
         "last7": {
@@ -45801,7 +45801,7 @@
                 "name": null,
                 "type": "gauge",
                 "data": [
-                  3.5
+                  3.702045359071056
                 ]
               }
             ],
@@ -46694,7 +46694,7 @@
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 15.07 od 1950",
         "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
-        "footer": "Danes: 29.7 °C · 88. percentil · mediana 24.6 °C · 1,140 opazovanj · 1950–2026"
+        "footer": "Danes: 29.7 °C · 91. percentil · mediana 24.6 °C · 1,140 opazovanj · 1950–2026"
       },
       "today_trend": {
         "api": {
@@ -48233,7 +48233,7 @@
           "date": "2025-07-15",
           "loc": "Kredarica",
           "today_temp": 13.904,
-          "percentile": 87.5,
+          "percentile": 80.91312942479611,
           "category_key": "hot",
           "color": "#c25a2c",
           "is_preliminary": false,
@@ -49062,12 +49062,12 @@
           "category_label": "Vroče",
           "category_color": "rgb(194, 90, 44)",
           "description": "Med najtoplejšimi 15.07 v naših zapisih.",
-          "percentile": "88",
+          "percentile": "81",
           "percentile_label": "percentil",
           "samples": "1,140 vzorcev",
           "preliminary_badge": null,
           "explain": "Temperatura na postaji Kredarica, razvrstena glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
-          "footer": "13.9 °C · 88. percentil · 1,140 vzorcev (1950–2026)",
+          "footer": "13.9 °C · 81. percentil · 1,140 vzorcev (1950–2026)",
           "unavailable_message": null
         },
         "last7": {
@@ -49318,7 +49318,7 @@
                 "name": null,
                 "type": "gauge",
                 "data": [
-                  3.5
+                  3.0608752949864075
                 ]
               }
             ],
@@ -50211,7 +50211,7 @@
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Kredarica za dva tedna okoli 15.07 od 1950",
         "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
-        "footer": "Danes: 13.9 °C · 88. percentil · mediana 10.9 °C · 1,140 opazovanj · 1950–2026"
+        "footer": "Danes: 13.9 °C · 81. percentil · mediana 10.9 °C · 1,140 opazovanj · 1950–2026"
       },
       "today_trend": {
         "api": {
@@ -54209,7 +54209,7 @@
           "date": "2024-03-01",
           "loc": "Ljubljana",
           "today_temp": 10.907,
-          "percentile": 50,
+          "percentile": 78.1186485185819,
           "category_key": "nope",
           "color": "#e7d9b8",
           "is_preliminary": false,
@@ -55038,12 +55038,12 @@
           "category_label": "Normalno",
           "category_color": "rgb(231, 217, 184)",
           "description": "Točno takšno, kot 01.03 v Slovenija ponavadi je.",
-          "percentile": "50",
+          "percentile": "78",
           "percentile_label": "percentil",
           "samples": "1,155 vzorcev",
           "preliminary_badge": null,
           "explain": "Temperatura na postaji Ljubljana, razvrstena glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
-          "footer": "10.9 °C · 50. percentil · 1,155 vzorcev (1950–2026)",
+          "footer": "10.9 °C · 78. percentil · 1,155 vzorcev (1950–2026)",
           "unavailable_message": null
         },
         "last7": {
@@ -55276,7 +55276,7 @@
                 "name": null,
                 "type": "gauge",
                 "data": [
-                  2.5
+                  2.968644141976365
                 ]
               }
             ],
@@ -56169,7 +56169,7 @@
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 01.03 od 1950",
         "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
-        "footer": "Danes: 10.9 °C · 50. percentil · mediana 7.2 °C · 1,155 opazovanj · 1950–2026"
+        "footer": "Danes: 10.9 °C · 78. percentil · mediana 7.2 °C · 1,155 opazovanj · 1950–2026"
       },
       "today_trend": {
         "api": {
@@ -57708,7 +57708,7 @@
           "date": "2025-02-28",
           "loc": "Ljubljana",
           "today_temp": 9.356,
-          "percentile": 50,
+          "percentile": 68.91691350092128,
           "category_key": "nope",
           "color": "#e7d9b8",
           "is_preliminary": false,
@@ -58537,12 +58537,12 @@
           "category_label": "Normalno",
           "category_color": "rgb(231, 217, 184)",
           "description": "Točno takšno, kot 28.02 v Slovenija ponavadi je.",
-          "percentile": "50",
+          "percentile": "69",
           "percentile_label": "percentil",
           "samples": "1,155 vzorcev",
           "preliminary_badge": null,
           "explain": "Temperatura na postaji Ljubljana, razvrstena glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
-          "footer": "9.4 °C · 50. percentil · 1,155 vzorcev (1950–2026)",
+          "footer": "9.4 °C · 69. percentil · 1,155 vzorcev (1950–2026)",
           "unavailable_message": null
         },
         "last7": {
@@ -58793,7 +58793,7 @@
                 "name": null,
                 "type": "gauge",
                 "data": [
-                  2.5
+                  2.8152818916820213
                 ]
               }
             ],
@@ -59686,7 +59686,7 @@
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 28.02 od 1950",
         "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
-        "footer": "Danes: 9.4 °C · 50. percentil · mediana 7.1 °C · 1,155 opazovanj · 1950–2026"
+        "footer": "Danes: 9.4 °C · 69. percentil · mediana 7.1 °C · 1,155 opazovanj · 1950–2026"
       },
       "today_trend": {
         "api": {
@@ -61225,7 +61225,7 @@
           "date": "2025-03-01",
           "loc": "Ljubljana",
           "today_temp": 9.356,
-          "percentile": 50,
+          "percentile": 67.53286505140056,
           "category_key": "nope",
           "color": "#e7d9b8",
           "is_preliminary": false,
@@ -62054,12 +62054,12 @@
           "category_label": "Normalno",
           "category_color": "rgb(231, 217, 184)",
           "description": "Točno takšno, kot 01.03 v Slovenija ponavadi je.",
-          "percentile": "50",
+          "percentile": "68",
           "percentile_label": "percentil",
           "samples": "1,155 vzorcev",
           "preliminary_badge": null,
           "explain": "Temperatura na postaji Ljubljana, razvrstena glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
-          "footer": "9.4 °C · 50. percentil · 1,155 vzorcev (1950–2026)",
+          "footer": "9.4 °C · 68. percentil · 1,155 vzorcev (1950–2026)",
           "unavailable_message": null
         },
         "last7": {
@@ -62310,7 +62310,7 @@
                 "name": null,
                 "type": "gauge",
                 "data": [
-                  2.5
+                  2.7922144175233425
                 ]
               }
             ],
@@ -63203,7 +63203,7 @@
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 01.03 od 1950",
         "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
-        "footer": "Danes: 9.4 °C · 50. percentil · mediana 7.2 °C · 1,155 opazovanj · 1950–2026"
+        "footer": "Danes: 9.4 °C · 68. percentil · mediana 7.2 °C · 1,155 opazovanj · 1950–2026"
       },
       "today_trend": {
         "api": {
@@ -64742,7 +64742,7 @@
           "date": "2025-01-01",
           "loc": "Ljubljana",
           "today_temp": 8.407,
-          "percentile": 87.5,
+          "percentile": 90.83805595140643,
           "category_key": "hot",
           "color": "#c25a2c",
           "is_preliminary": false,
@@ -65571,12 +65571,12 @@
           "category_label": "Vroče",
           "category_color": "rgb(194, 90, 44)",
           "description": "Med najtoplejšimi 01.01 v naših zapisih.",
-          "percentile": "88",
+          "percentile": "91",
           "percentile_label": "percentil",
           "samples": "1,167 vzorcev",
           "preliminary_badge": null,
           "explain": "Temperatura na postaji Ljubljana, razvrstena glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
-          "footer": "8.4 °C · 88. percentil · 1,167 vzorcev (1950–2026)",
+          "footer": "8.4 °C · 91. percentil · 1,167 vzorcev (1950–2026)",
           "unavailable_message": null
         },
         "last7": {
@@ -65827,7 +65827,7 @@
                 "name": null,
                 "type": "gauge",
                 "data": [
-                  3.5
+                  3.7225370634270956
                 ]
               }
             ],
@@ -66720,7 +66720,7 @@
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 01.01 od 1950",
         "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
-        "footer": "Danes: 8.4 °C · 88. percentil · mediana 3.3 °C · 1,167 opazovanj · 1950–2026"
+        "footer": "Danes: 8.4 °C · 91. percentil · mediana 3.3 °C · 1,167 opazovanj · 1950–2026"
       },
       "today_trend": {
         "api": {
@@ -68259,7 +68259,7 @@
           "date": "2025-12-31",
           "loc": "Ljubljana",
           "today_temp": 1.456,
-          "percentile": 50,
+          "percentile": 33.63938266512111,
           "category_key": "nope",
           "color": "#e7d9b8",
           "is_preliminary": false,
@@ -69088,12 +69088,12 @@
           "category_label": "Normalno",
           "category_color": "rgb(231, 217, 184)",
           "description": "Točno takšno, kot 31.12 v Slovenija ponavadi je.",
-          "percentile": "50",
+          "percentile": "34",
           "percentile_label": "percentil",
           "samples": "1,166 vzorcev",
           "preliminary_badge": null,
           "explain": "Temperatura na postaji Ljubljana, razvrstena glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
-          "footer": "1.5 °C · 50. percentil · 1,166 vzorcev (1950–2026)",
+          "footer": "1.5 °C · 34. percentil · 1,166 vzorcev (1950–2026)",
           "unavailable_message": null
         },
         "last7": {
@@ -69344,7 +69344,7 @@
                 "name": null,
                 "type": "gauge",
                 "data": [
-                  2.5
+                  2.2273230444186853
                 ]
               }
             ],
@@ -70237,7 +70237,7 @@
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 31.12 od 1950",
         "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
-        "footer": "Danes: 1.5 °C · 50. percentil · mediana 3.3 °C · 1,166 opazovanj · 1950–2026"
+        "footer": "Danes: 1.5 °C · 34. percentil · mediana 3.3 °C · 1,166 opazovanj · 1950–2026"
       },
       "today_trend": {
         "api": {
@@ -71768,7 +71768,7 @@
           "date": "2013-08-03",
           "loc": "Ljubljana",
           "today_temp": 35.591,
-          "percentile": 97.5,
+          "percentile": 99.3887352985452,
           "category_key": "hell",
           "color": "#962c1a",
           "is_preliminary": false,
@@ -72597,12 +72597,12 @@
           "category_label": "Peklensko",
           "category_color": "rgb(150, 44, 26)",
           "description": "Izjemna vročina — vrh 5 % vseh 03.08 od 1950.",
-          "percentile": "98",
+          "percentile": "99",
           "percentile_label": "percentil",
           "samples": "1,140 vzorcev",
           "preliminary_badge": null,
           "explain": "Temperatura na postaji Ljubljana, razvrstena glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
-          "footer": "35.6 °C · 98. percentil · 1,140 vzorcev (1950–2026)",
+          "footer": "35.6 °C · 99. percentil · 1,140 vzorcev (1950–2026)",
           "unavailable_message": null
         },
         "last7": {
@@ -72853,7 +72853,7 @@
                 "name": null,
                 "type": "gauge",
                 "data": [
-                  4.416666666666667
+                  4.731455883090867
                 ]
               }
             ],
@@ -73746,7 +73746,7 @@
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 03.08 od 1950",
         "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
-        "footer": "Danes: 35.6 °C · 98. percentil · mediana 25.1 °C · 1,140 opazovanj · 1950–2026"
+        "footer": "Danes: 35.6 °C · 99. percentil · mediana 25.1 °C · 1,140 opazovanj · 1950–2026"
       },
       "today_trend": {
         "api": {
@@ -75277,7 +75277,7 @@
           "date": "2013-08-03",
           "loc": "Kredarica",
           "today_temp": 21.743,
-          "percentile": 97.5,
+          "percentile": 99.75213595392691,
           "category_key": "hell",
           "color": "#962c1a",
           "is_preliminary": false,
@@ -76106,12 +76106,12 @@
           "category_label": "Peklensko",
           "category_color": "rgb(150, 44, 26)",
           "description": "Izjemna vročina — vrh 5 % vseh 03.08 od 1950.",
-          "percentile": "98",
+          "percentile": "100",
           "percentile_label": "percentil",
           "samples": "1,140 vzorcev",
           "preliminary_badge": null,
           "explain": "Temperatura na postaji Kredarica, razvrstena glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
-          "footer": "21.7 °C · 98. percentil · 1,140 vzorcev (1950–2026)",
+          "footer": "21.7 °C · 100. percentil · 1,140 vzorcev (1950–2026)",
           "unavailable_message": null
         },
         "last7": {
@@ -76362,7 +76362,7 @@
                 "name": null,
                 "type": "gauge",
                 "data": [
-                  4.416666666666667
+                  4.792022658987818
                 ]
               }
             ],
@@ -77255,7 +77255,7 @@
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Kredarica za dva tedna okoli 03.08 od 1950",
         "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
-        "footer": "Danes: 21.7 °C · 98. percentil · mediana 11.4 °C · 1,140 opazovanj · 1950–2026"
+        "footer": "Danes: 21.7 °C · 100. percentil · mediana 11.4 °C · 1,140 opazovanj · 1950–2026"
       },
       "today_trend": {
         "api": {
@@ -78786,7 +78786,7 @@
           "date": "2012-02-07",
           "loc": "Ljubljana",
           "today_temp": -5.759,
-          "percentile": 5,
+          "percentile": 3.42081911162353,
           "category_key": "freezing",
           "color": "#3a5a8a",
           "is_preliminary": false,
@@ -79615,12 +79615,12 @@
           "category_label": "Zmrzujoče",
           "category_color": "rgb(58, 90, 138)",
           "description": "Med najhladnejšimi 07.02 v naših 77 letih zapisov.",
-          "percentile": "5",
+          "percentile": "3",
           "percentile_label": "percentil",
           "samples": "1,155 vzorcev",
           "preliminary_badge": null,
           "explain": "Temperatura na postaji Ljubljana, razvrstena glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
-          "footer": "-5.8 °C · 5. percentil · 1,155 vzorcev (1950–2026)",
+          "footer": "-5.8 °C · 3. percentil · 1,155 vzorcev (1950–2026)",
           "unavailable_message": null
         },
         "last7": {
@@ -79871,7 +79871,7 @@
                 "name": null,
                 "type": "gauge",
                 "data": [
-                  0.5
+                  0.342081911162353
                 ]
               }
             ],
@@ -80764,7 +80764,7 @@
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 07.02 od 1950",
         "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
-        "footer": "Danes: -5.8 °C · 5. percentil · mediana 4.8 °C · 1,155 opazovanj · 1950–2026"
+        "footer": "Danes: -5.8 °C · 3. percentil · mediana 4.8 °C · 1,155 opazovanj · 1950–2026"
       },
       "today_trend": {
         "api": {
@@ -82316,7 +82316,7 @@
           "date": "1985-01-07",
           "loc": "Kredarica",
           "today_temp": -23.707,
-          "percentile": 5,
+          "percentile": 0.1811273821432626,
           "category_key": "freezing",
           "color": "#3a5a8a",
           "is_preliminary": false,
@@ -83145,12 +83145,12 @@
           "category_label": "Zmrzujoče",
           "category_color": "rgb(58, 90, 138)",
           "description": "Med najhladnejšimi 07.01 v naših 77 letih zapisov.",
-          "percentile": "5",
+          "percentile": "0",
           "percentile_label": "percentil",
           "samples": "1,173 vzorcev",
           "preliminary_badge": null,
           "explain": "Temperatura na postaji Kredarica, razvrstena glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
-          "footer": "-23.7 °C · 5. percentil · 1,173 vzorcev (1950–2026)",
+          "footer": "-23.7 °C · 0. percentil · 1,173 vzorcev (1950–2026)",
           "unavailable_message": null
         },
         "last7": {
@@ -83401,7 +83401,7 @@
                 "name": null,
                 "type": "gauge",
                 "data": [
-                  0.5
+                  0.01811273821432626
                 ]
               }
             ],
@@ -84294,7 +84294,7 @@
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Kredarica za dva tedna okoli 07.01 od 1950",
         "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
-        "footer": "Danes: -23.7 °C · 5. percentil · mediana -8.8 °C · 1,173 opazovanj · 1950–2026"
+        "footer": "Danes: -23.7 °C · 0. percentil · mediana -8.8 °C · 1,173 opazovanj · 1950–2026"
       },
       "today_trend": {
         "api": {

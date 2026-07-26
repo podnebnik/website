@@ -67,6 +67,50 @@ export function rankPercentile(sorted: number[], value: number): number {
 }
 
 /**
+ * Empirical percentile of `value` as the CDF of a served KDE density curve —
+ * the fraction of the distribution's mass at or below `value`, in [0, 100].
+ *
+ * This is T-4.1 / D-6 Option B: the honest percentile the today-card shows as its
+ * detail figure, replacing `categorizeEra5`'s bucket midpoint (api.ts). `curve` is
+ * the SAME `[x, density]` grid the distribution chart already draws — per-station a
+ * scipy `gaussian_kde` on a 200-point linspace (precompute_datasette.py), national
+ * the unweighted mean of the 18 station curves on a common grid (averageDistributions,
+ * api.ts). Both are ascending in x. We trapezoid-integrate the density from the low
+ * edge up to `value` and divide by the full integral, so the number equals what a
+ * reader integrating the visible curve by eye would get — no normalisation needed,
+ * since the two integrals share whatever mass the padded grid omits.
+ *
+ * Unlike `rankPercentile`, this needs no raw sorted sample (none is served); it
+ * rides on the density already on the card. Guards: `value` at/below the grid's low
+ * edge → 0, at/above the high edge → 100; result clamped to [0, 100]; a degenerate
+ * curve (< 2 points or non-positive mass) → 0. Ranks against the 1991–2020 reference
+ * that the KDE itself is built on (D-3).
+ */
+export function cdfPercentile(curve: [number, number][], value: number): number {
+  const n = curve.length;
+  if (n < 2) return 0;
+  let total = 0;   // full integral over the grid
+  let partial = 0; // integral from the low edge up to `value`
+  for (let i = 0; i < n - 1; i++) {
+    const [x0, y0] = curve[i]!;
+    const [x1, y1] = curve[i + 1]!;
+    const dx = x1 - x0;
+    if (dx <= 0) continue; // non-increasing x — skip rather than integrate backwards
+    total += ((y0 + y1) / 2) * dx;
+    if (value >= x1) {
+      partial += ((y0 + y1) / 2) * dx; // whole segment lies below `value`
+    } else if (value > x0) {
+      // segment straddles `value`: trapezoid from x0 to the interpolated point
+      const yv = y0 + ((y1 - y0) * (value - x0)) / dx;
+      partial += ((y0 + yv) / 2) * (value - x0);
+    }
+    // value <= x0 → this segment contributes nothing to `partial`
+  }
+  if (total <= 0) return 0;
+  return Math.min(100, Math.max(0, (partial / total) * 100));
+}
+
+/**
  * Category + REAL empirical percentile for `temp` against the reference `p`.
  * Contrast `categorizeEra5` (api.ts), which returns a bucket midpoint.
  */
