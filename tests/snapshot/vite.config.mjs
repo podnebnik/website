@@ -37,6 +37,12 @@ export default defineConfig({
       // Order matters: the exact-match regexes keep `highcharts/...` submodules
       // from being caught by the bare `highcharts` rule.
       { find: /^highcharts\/modules\/map$/, replacement: here("./highcharts-stub.ts") },
+      // T-5.4a — the accessibility bootstrap (charts/highcharts-a11y.ts) side-effect
+      // imports these three; alias them to the stub so the harness never loads the
+      // real modules (which would expect real Highcharts internals the stub omits).
+      { find: /^highcharts\/modules\/accessibility$/, replacement: here("./highcharts-stub.ts") },
+      { find: /^highcharts\/modules\/export-data$/, replacement: here("./highcharts-stub.ts") },
+      { find: /^highcharts\/modules\/exporting$/, replacement: here("./highcharts-stub.ts") },
       { find: /^highcharts\/highcharts-more$/, replacement: here("./highcharts-stub.ts") },
       { find: /^highcharts$/, replacement: here("./highcharts-stub.ts") },
     ],

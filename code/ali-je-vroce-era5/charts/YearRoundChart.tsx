@@ -1,5 +1,6 @@
 import { onMount, onCleanup, createEffect } from "solid-js";
 import type { CalendarData } from "../api.ts";
+import { enableChartA11y } from "./highcharts-a11y.ts";
 
 interface Props {
   data: CalendarData;
@@ -49,6 +50,7 @@ export function YearRoundChart(props: Props) {
 
   onMount(async () => {
     const Highcharts = (await import("highcharts")).default;
+    await enableChartA11y(Highcharts);
 
     const colData = buildSeries(props.data, props.var);
 
@@ -67,6 +69,11 @@ export function YearRoundChart(props: Props) {
       subtitle: { text: undefined },
       credits:  { enabled: false },
       legend:   { enabled: false },
+      // T-5.4a — screen-reader summary (Slovenian copy awaiting operator review)
+      accessibility: {
+        enabled: true,
+        description: "Trend spremembe po dnevih v letu čez celotno koledarsko leto — vsak stolpec je en dan, višina je trend na desetletje, navpična črta pa označuje izbrani datum.",
+      },
       xAxis: {
         min: 0.5, max: 365.5,
         tickPositions: MONTH_MIDS,

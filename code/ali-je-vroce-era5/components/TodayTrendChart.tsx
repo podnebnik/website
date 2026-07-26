@@ -2,6 +2,7 @@ import { createResource, Show, ErrorBoundary, onMount, onCleanup, createEffect }
 import { fetchAnnualTrend, ERA5_NATIONAL } from "../api.ts";
 import { todayYear } from "../clock.ts";
 import { sectionErrorFallback } from "./SectionError.tsx";
+import { enableChartA11y } from "../charts/highcharts-a11y.ts";
 import type { AnnualTrend } from "../types.ts";
 
 const INK      = "#0E0E0C";
@@ -39,6 +40,7 @@ function TrendHighchart(props: ChartProps) {
   onMount(async () => {
     const Highcharts = (await import("highcharts")).default;
     await import("highcharts/highcharts-more");
+    await enableChartA11y(Highcharts);
 
     const d = props.trend;
     // Rendered as a visible plotline label below, on a component that mounts on
@@ -58,6 +60,11 @@ function TrendHighchart(props: ChartProps) {
       title:   { text: null },
       credits: { enabled: false },
       legend:  { enabled: false },
+      // T-5.4a — screen-reader summary (Slovenian copy awaiting operator review)
+      accessibility: {
+        enabled: true,
+        description: "Letni trend najvišjih temperatur okoli izbranega datuma z linijo Theil-Sen, 95-odstotnim intervalom zaupanja in projekcijo do leta 2050. Vsaka pika je vrednost enega leta.",
+      },
       tooltip: {
         formatter(this: any) {
           if (this.series.name === "Annual value") return `<b>${Math.round(this.x)}</b>: ${this.y.toFixed(1)} °C`;

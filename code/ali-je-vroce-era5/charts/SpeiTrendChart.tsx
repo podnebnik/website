@@ -1,4 +1,5 @@
 import { createSignal, createMemo, For, Show, onMount, onCleanup } from "solid-js";
+import { enableChartA11y } from "./highcharts-a11y.ts";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -81,6 +82,11 @@ function SpeiScatterChart(props: ChartProps) {
       title:   { text: "" },
       credits: { enabled: false },
       legend:  { enabled: false },
+      // T-5.4a — screen-reader summary (Slovenian copy awaiting operator review)
+      accessibility: {
+        enabled: true,
+        description: "Razsevni diagram sušnega indeksa SPEI po letih za izbrano postajo in obdobje, z linijo trenda Theil-Sen ter pragovoma hude suše (−1,5) in zelo mokrega (+1,5).",
+      },
       tooltip: {
         formatter(this: any) {
           const v = this.y as number;
@@ -120,6 +126,7 @@ function SpeiScatterChart(props: ChartProps) {
 
   onMount(async () => {
     const Highcharts = (await import("highcharts")).default;
+    await enableChartA11y(Highcharts);
     chart = Highcharts.chart(container, buildOpts() as any);
   });
 

@@ -29,6 +29,15 @@ const MODES = [
   { key: "Winter",   label: "Zima" },
 ];
 
+// T-5.4a — visually-hidden (screen-reader-only) style. Kept off the visual layout
+// entirely, so it changes nothing a sighted reader sees. Kebab-case keys because
+// Solid's style() calls setProperty() and silently drops camelCase.
+const SR_ONLY = {
+  position: "absolute", width: "1px", height: "1px", padding: "0",
+  margin: "-1px", overflow: "hidden", clip: "rect(0,0,0,0)",
+  "white-space": "nowrap", border: "0",
+} as const;
+
 interface Props { data: SeasonHeatmapRow[]; }
 interface TipData { row: SeasonHeatmapRow; px: number; py: number; }
 
@@ -67,6 +76,17 @@ export function SeasonHeatmap(props: Props) {
   });
 
   const decadeTicks = createMemo(() => allYears().filter(y => y % 10 === 0));
+
+  // T-5.4a — the same data the colour grid encodes, in a form assistive tech can
+  // read: one row per (season, year). Sorted season-then-year for stable reading.
+  const tableRows = createMemo(() =>
+    [...props.data].sort((a, b) =>
+      a.season === b.season ? a.y - b.y : a.season.localeCompare(b.season))
+  );
+  const gridLabel = createMemo(() => {
+    const ys = allYears();
+    return `Toplotna karta letnih časov po letih od ${ys[0]} do ${ys[ys.length - 1]}: vsak stolpec je eno leto, vsaka vrstica en letni čas, barva pa uvršča povprečno najvišjo temperaturo od hladne do ekstremne glede na referenčno obdobje. Celotni podatki so v tabeli pod grafom.`;
+  });
 
   function cellClass(season: string, cat: string, year: number): string {
     if (!revealedYears().has(year)) return "shm-cell shm-cell--dim";
@@ -140,8 +160,10 @@ export function SeasonHeatmap(props: Props) {
         </button>
       </div>
 
-      {/* Grid */}
-      <div class="shm-grid">
+      {/* Grid — decorative colour encoding; announced as one labelled image so a
+          screen reader gets the summary and skips the unlabeled cells. The numbers
+          live in the visually-hidden table below (T-5.4a). */}
+      <div class="shm-grid" role="img" aria-label={gridLabel()}>
         <For each={SEASON_ORDER}>
           {(season) => (
             <>
@@ -232,6 +254,34 @@ export function SeasonHeatmap(props: Props) {
           </div>
         )}
       </Show>
+
+      {/* T-5.4a — screen-reader data-table fallback (visually hidden). Slovenian
+          caption/headers awaiting operator review. */}
+      <table style={SR_ONLY}>
+        <caption>Podatki toplotne karte letnih časov po letih</caption>
+        <thead>
+          <tr>
+            <th scope="col">Letni čas</th>
+            <th scope="col">Leto</th>
+            <th scope="col">Kategorija</th>
+            <th scope="col">Povprečni maksimum (°C)</th>
+            <th scope="col">Uvrstitev</th>
+          </tr>
+        </thead>
+        <tbody>
+          <For each={tableRows()}>
+            {(r) => (
+              <tr>
+                <td>{SEASON_LABEL[r.season as Season] ?? r.season}</td>
+                <td>{r.y}</td>
+                <td>{CAT_LABELS[r.cat] ?? r.cat}</td>
+                <td>{r.avg.toFixed(1)}</td>
+                <td>{r.rank}. od {r.total}</td>
+              </tr>
+            )}
+          </For>
+        </tbody>
+      </table>
     </div>
   );
 }

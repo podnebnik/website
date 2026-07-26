@@ -1,5 +1,6 @@
 import { onMount, onCleanup, createEffect } from "solid-js";
 import type { RegressionResponse } from "../types.ts";
+import { enableChartA11y } from "./highcharts-a11y.ts";
 
 interface Props {
   data:    RegressionResponse;
@@ -69,6 +70,7 @@ export function RegressionChart(props: Props) {
   onMount(async () => {
     const HC = (await import("highcharts")).default;
     await import("highcharts/highcharts-more");
+    await enableChartA11y(HC);
 
     const d = props.data;
     chart = HC.chart(container, {
@@ -79,8 +81,13 @@ export function RegressionChart(props: Props) {
       },
       title:         null,
       credits:       { enabled: false },
-      exporting:     { enabled: false },
-      accessibility: { enabled: false },
+      // T-5.4a — screen-reader summary (Slovenian copy awaiting operator review).
+      // Was `{ enabled: false }` (only to silence the missing-module warning); the
+      // module is now loaded, so this chart is properly exposed to assistive tech.
+      accessibility: {
+        enabled: true,
+        description: "Razsevni diagram letnih vrednosti izbrane spremenljivke z regresijsko linijo trenda in 95-odstotnim intervalom zaupanja; črtkana črta označuje povprečje referenčnega obdobja.",
+      },
       legend: {
         enabled: true,
         itemStyle: { fontFamily: "'Space Grotesk', system-ui, sans-serif", fontWeight: "600", fontSize: "11px", color: "#1a1a18" },

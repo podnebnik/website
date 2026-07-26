@@ -348,7 +348,11 @@ export function SeaLevelWidget() {
   // ── Template ──────────────────────────────────────────────────────────────
 
   return (
-    <div class="sl-widget">
+    <div
+      class="sl-widget"
+      role="group"
+      aria-label="Interaktivni prikaz dviga morske gladine v Kopru po scenarijih IPCC AR6; gumbi izberejo scenarij in verjetnost, drsnik leto, ločnica pa primerja sedanjost s projekcijo."
+    >
 
       {/* Controls bar */}
       <div class="sl-ctrl">
