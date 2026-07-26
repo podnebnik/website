@@ -490,8 +490,6 @@ const out = {
     "",
     "Known current-behaviour defects deliberately frozen here rather than fixed:",
     "  * Feb 29 returns zero rows everywhere and fetchAnnualTrend throws (T-4.5).",
-    "  * The 'ERA5T · preliminarno' badge names a source the code never fetches",
-    "    (D-11 open, T-4.13).",
     "  * The percentile shown is a bucket midpoint, not an empirical rank (D-6, T-4.1).",
     "",
     "NOT COVERED: the sea-level widget. See tests/snapshot/sections.json `excluded`.",

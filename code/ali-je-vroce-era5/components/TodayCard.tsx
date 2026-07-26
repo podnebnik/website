@@ -184,6 +184,12 @@ export function TodayCard(props: Props) {
                   <span class="today-pct-samples">{(r().n_samples ?? 0).toLocaleString()} vzorcev</span>
                 </Show>
               </Show>
+              {/* is_preliminary is true iff the value came from the live
+                  Open-Meteo /v1/forecast fallback (api.ts:271,302) — an NWP
+                  forecast, never ERA5T reanalysis. The old badge read
+                  "ERA5T · preliminarno", mislabelling the forecast as the very
+                  thing it is not (D-11 / T-4.13). Reanalysis rows carry no badge;
+                  their ERA5-Land provenance is stated in the explain line below. */}
               <Show when={r().is_preliminary}>
                 <span style={{
                   "font-family": "var(--font-mono)", "font-size": "9px",
@@ -194,7 +200,7 @@ export function TodayCard(props: Props) {
                   "border-radius": "4px", padding: "2px 6px",
                   "margin-top": "4px", display: "inline-block",
                 }}>
-                  ERA5T · preliminarno
+                  napoved
                 </span>
               </Show>
             </div>
