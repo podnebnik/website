@@ -1,5 +1,5 @@
 import { createResource, Show, onMount, onCleanup, createEffect } from "solid-js";
-import { fetchAnnualTrend } from "../api.ts";
+import { fetchAnnualTrend, ERA5_NATIONAL } from "../api.ts";
 import { todayYear } from "../clock.ts";
 import type { AnnualTrend } from "../types.ts";
 
@@ -133,7 +133,8 @@ interface Props {
   loc:  string | null;
   // era5 station count (D-7 "povprečje N postaj") — the national trend explain
   // names it rather than the bare "vseh postaj". Derived from meta.stations by the
-  // caller so it can't go stale; only read on the national branch (props.loc null).
+  // caller so it can't go stale; only read on the national branch
+  // (props.loc null or ERA5_NATIONAL — the caller passes the latter).
   stationCount: number;
 }
 
@@ -163,14 +164,20 @@ export function TodayTrendChart(props: Props) {
             return lastY.toFixed(1);
           };
           const trendStr = () => `${sign()}${d().trend10.toFixed(2)}`;
+          // National (loc === ERA5_NATIONAL, or null) is NOT a station: return null so
+          // both the title and explain take their national branch. Testing bare
+          // truthiness printed the raw "era5:national" key (T-4.20); the `&&` narrows
+          // props.loc to string for the compare + replace, so no assertion is needed.
+          const stationLabel = () =>
+            props.loc && props.loc !== ERA5_NATIONAL ? props.loc.replace(/_/g, " ") : null;
           return (
             <>
               <div class="today-chart-title">
-                Najvišje temperature {props.loc ? `na postaji ${props.loc.replace(/_/g, " ")}` : "v Sloveniji"} okoli {d().dayLabel} · {d().yearMin}–{d().yearMax} · trend s projekcijo do 2050
+                Najvišje temperature {stationLabel() ? `na postaji ${stationLabel()}` : "v Sloveniji"} okoli {d().dayLabel} · {d().yearMin}–{d().yearMax} · trend s projekcijo do 2050
               </div>
               <TrendHighchart trend={d()} />
               <p class="today-explain" style={{ padding: "4px 0 2px" }}>
-                Vsaka pika je 90. percentil {props.loc ? `lapsno popravljene dnevne najvišje temperature na postaji ${props.loc.replace(/_/g, " ")}` : `nacionalne povprečne dnevne najvišje temperature vseh ${props.stationCount} postaj`} v ±30-dnevnem oknu okoli tega datuma za vsako leto od {d().yearMin}. Trend Theil-Sen je {trendStr()} °C/desetletje ({sig()}). Po tem tempu projekcija kaže {proj2050()} °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.
+                Vsaka pika je 90. percentil {stationLabel() ? `lapsno popravljene dnevne najvišje temperature na postaji ${stationLabel()}` : `nacionalne povprečne dnevne najvišje temperature vseh ${props.stationCount} postaj`} v ±30-dnevnem oknu okoli tega datuma za vsako leto od {d().yearMin}. Trend Theil-Sen je {trendStr()} °C/desetletje ({sig()}). Po tem tempu projekcija kaže {proj2050()} °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.
               </p>
               <div class="today-foot">
                 Theil-Sen + TFPW MK: {trendStr()} °C/desetletje · {sig()} · τ = {d().tau.toFixed(3)} · 95% CI · {d().nYears} let
