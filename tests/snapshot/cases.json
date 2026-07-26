@@ -48,7 +48,7 @@
       "today_loc": "era5:national",
       "analysis_loc": "Ljubljana",
       "date": "2026-07-21",
-      "purpose": "THE DEFAULT PAGE LOAD, verbatim. Pinned 'today' sits inside the ERA5-Land reanalysis lag, so climate-si has no `daily` row and fetchTodayStatus falls through to the live Open-Meteo national average (api.ts:362-366) and marks the result preliminary — this is the case that pins the 'ERA5T · preliminarno' badge string (TodayCard.tsx:183), known inaccurate per D-11 and snapshotted as-is."
+      "purpose": "THE DEFAULT PAGE LOAD, verbatim. Pinned 'today' sits inside the ERA5-Land reanalysis lag, so climate-si has no `daily` row and fetchTodayStatus falls through to the live Open-Meteo national average (api.ts:270) and marks the result preliminary — this is the case that pins the forecast 'napoved' badge string (TodayCard.tsx:203), made honest under T-4.13 (D-11), previously the inaccurate 'ERA5T · preliminarno'."
     },
     {
       "id": "ljubljana-primary",

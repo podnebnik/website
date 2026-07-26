@@ -420,13 +420,13 @@ function captureTodayCard(unit: Unit, status: TodayStatus, last7: Last7): any {
 
   const pctSpans = Array.from(el.querySelectorAll(".today-pct-wrap > span"));
   // The badge is the only span in that column with no class attribute
-  // (TodayCard.tsx:173-185). Selected structurally so a copy change to the badge
+  // (TodayCard.tsx:187-205). Selected structurally so a copy change to the badge
   // TEXT still shows up as a diff instead of silently failing to match.
   const badgeEl = pctSpans.find((s) => !s.getAttribute("class"));
   if (ok && status.is_preliminary && !badgeEl) {
     throw new Error(
       `[snapshot] ${unit.label}: is_preliminary is true but no unclassed span exists in ` +
-        `.today-pct-wrap — the 'ERA5T · preliminarno' badge (TodayCard.tsx:173-185) moved. ` +
+        `.today-pct-wrap — the 'napoved' forecast badge (TodayCard.tsx:187-205) moved. ` +
         `No snapshot was written.`,
     );
   }
@@ -472,10 +472,10 @@ function captureTodayCard(unit: Unit, status: TodayStatus, last7: Last7): any {
               ".today-pct-samples",
               "TodayCard.tsx:169 — only rendered when n_samples > 0",
             ),
-      // D-11 OPEN: this string says ERA5T, but the value it labels comes from
-      // api.open-meteo.com/v1/forecast (api.ts:249), an NWP blend that is never
-      // ERA5T. Snapshotted verbatim on purpose — correcting it is T-4.13.
-      // Presence is asserted above against status.is_preliminary.
+      // Shown only when is_preliminary — i.e. the value is the live Open-Meteo
+      // /v1/forecast fallback (api.ts:271,302), not reanalysis. Reads "napoved"
+      // (forecast) since T-4.13 (D-11); it previously read "ERA5T · preliminarno",
+      // naming a source the code never fetches. Presence asserted above.
       preliminary_badge: badgeEl ? norm(badgeEl.textContent) : null,
       // Both branches render `.today-explain`: the data card's provenance line
       // (TodayCard.tsx:191) or UnavailableCard's message (TodayCard.tsx:290).

@@ -19,8 +19,6 @@
     "",
     "Known current-behaviour defects deliberately frozen here rather than fixed:",
     "  * Feb 29 returns zero rows everywhere and fetchAnnualTrend throws (T-4.5).",
-    "  * The 'ERA5T · preliminarno' badge names a source the code never fetches",
-    "    (D-11 open, T-4.13).",
     "  * The percentile shown is a bucket midpoint, not an empirical rank (D-6, T-4.1).",
     "",
     "NOT COVERED: the sea-level widget. See tests/snapshot/sections.json `excluded`."
@@ -31308,7 +31306,7 @@
           "percentile": "50",
           "percentile_label": "percentil",
           "samples": "20,520 vzorcev",
-          "preliminary_badge": "ERA5T · preliminarno",
+          "preliminary_badge": "napoved",
           "explain": "Povprečje najvišjih dnevnih temperatur 18 slovenskih postaj (nadmorska višina 10–2514 m), razvrščeno glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
           "footer": "24.6 °C · 50. percentil · 20,520 vzorcev (1950–2026)",
           "unavailable_message": null
@@ -34078,7 +34076,7 @@
           "percentile": "50",
           "percentile_label": "percentil",
           "samples": "1,140 vzorcev",
-          "preliminary_badge": "ERA5T · preliminarno",
+          "preliminary_badge": "napoved",
           "explain": "Temperatura na postaji Ljubljana, razvrstena glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
           "footer": "26.0 °C · 50. percentil · 1,140 vzorcev (1950–2026)",
           "unavailable_message": null
@@ -37595,7 +37593,7 @@
           "percentile": "15",
           "percentile_label": "percentil",
           "samples": "1,140 vzorcev",
-          "preliminary_badge": "ERA5T · preliminarno",
+          "preliminary_badge": "napoved",
           "explain": "Temperatura na postaji Kredarica, razvrstena glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
           "footer": "7.1 °C · 15. percentil · 1,140 vzorcev (1950–2026)",
           "unavailable_message": null
