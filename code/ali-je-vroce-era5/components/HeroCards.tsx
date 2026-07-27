@@ -74,7 +74,7 @@ export function HeroCards(props: Props) {
   const [resp, { refetch }] = createResource(
     () => ({ loc: loc(), doy: props.doy }),
     ({ loc, doy }) =>
-      fetchRegression({ locs: [loc], var: "temperature_max", doy, corr: "corr", method: "theilsen" }),
+      fetchRegression({ locs: [loc], var: "temperature_max", doy }),
   );
 
   return (
