@@ -80,6 +80,49 @@ export function parseJsonColumn<T>(raw: string, column: string): T {
   }
 }
 
+// T-5.2 — kill the silent `_size` truncation cliff on the national aggregates.
+//
+// datasette returns at most `_size` rows and drops the rest WITHOUT any signal —
+// the same silent-failure class T-5.1 removed from the fetch/parse paths. The
+// three national helpers below (daily_window / daily / annual_trend, each filtered
+// to a single month-day or date) pool "one row per ERA5 station" and average them.
+// The healthy result is ALL-OR-NOTHING: either the day has no rows at all (Feb 29
+// has no pooled climatology row; a date beyond the reanalysis boundary has no
+// observation) or exactly one row per station. A count that is neither 0 nor the
+// station count is either a partial pool — a national mean silently computed over a
+// subset, which D-7's "povprečje 18 postaj" would then mislabel — or a response
+// truncated at the `_size` cap. Both are silent failures and must fail loudly; the
+// throw reaches each section's ErrorBoundary and renders SectionError instead of a
+// wrong number.
+//
+// The station count comes from `era5Coords`, populated by fetchMeta from
+// `stations.json?…&_size=30` (api.ts:267). NOTE: that `_size=30` is the SAME class
+// of latent cliff (18 rows today, margin 12) and bounds how far this assert can be
+// trusted — past 30 stations it truncates first and this "expected" undercounts.
+// It is out of T-5.2's `_size=50` scope; see the PROGRESS finding.
+//
+// The `_size=50` in the three query URLs is deliberately NOT removed: the offline
+// fixture layer keys on the EXACT request URL (fixtures/install.ts index.routes),
+// so changing it would miss every recorded response and force a network re-record
+// for no data benefit. 50 is already a correct bound (> the 18-station count); this
+// assert is the loud "you didn't hit the cap" guard layered on top of it.
+function assertNationalStationRows(rows: readonly unknown[], table: string): void {
+  const expected = Object.keys(era5Coords).length;
+  if (expected === 0) {
+    throw new Error(
+      `[T-5.2] ${table}: station registry not loaded (fetchMeta must run before a ` +
+        `national aggregate) — cannot validate the national row count`,
+    );
+  }
+  if (rows.length !== 0 && rows.length !== expected) {
+    throw new Error(
+      `[T-5.2] ${table}: national aggregate expected 0 or ${expected} station rows, got ` +
+        `${rows.length} — a partial pool would silently bias the national mean, and a count at ` +
+        `the datasette \`_size\` cap means rows were truncated`,
+    );
+  }
+}
+
 
 export function doyToMonthDay(doy: number): { month: number; day: number } {
   const d = new Date(Date.UTC(2001, 0, 1));
@@ -194,6 +237,7 @@ export async function fetchEra5NationalWindowRow(month: number, day: number): Pr
   const rows = await dsGet<DailyWindowRow[]>(
     `daily_window.json?_shape=array&month__exact=${month}&day__exact=${day}&_size=50`
   );
+  assertNationalStationRows(rows, "daily_window");
   if (rows.length === 0) return null;
   const avg = (f: (r: DailyWindowRow) => number) =>
     rows.reduce((s, r) => s + (f(r) ?? 0), 0) / rows.length;
@@ -311,6 +355,7 @@ export async function fetchTodayStatus(date: string, loc: string | null): Promis
     const dsRows = await dsGet<Array<{ temperature_max_2m: number | null }>>(
       `daily.json?_shape=array&date__exact=${date}&_col=temperature_max_2m&_size=50`
     );
+    assertNationalStationRows(dsRows, "daily");
     const dsVals = dsRows.filter(r => r.temperature_max_2m != null).map(r => r.temperature_max_2m!);
     let todayTemp: number | null = dsVals.length > 0
       ? dsVals.reduce((a, b) => a + b) / dsVals.length
@@ -652,6 +697,7 @@ async function fetchNationalAnnualTrendRow(month: number, day: number): Promise<
   const rows = await dsGet<AnnualTrendRow[]>(
     `annual_trend.json?_shape=array&variable__exact=temperature_max&month__exact=${month}&day__exact=${day}&_size=50`
   );
+  assertNationalStationRows(rows, "annual_trend");
   if (!rows.length) return undefined;
   const avg = (f: (r: AnnualTrendRow) => number) => rows.reduce((s, r) => s + (f(r) ?? 0), 0) / rows.length;
 
