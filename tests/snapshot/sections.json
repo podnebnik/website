@@ -108,17 +108,23 @@
     "SiteMeta": "NOT a component. A type argument in createResource<SiteMeta> (AliJeVroceERA5.tsx:35) that the tag regex cannot distinguish from JSX. Classified explicitly rather than special-cased in the extractor, so the extractor stays dumb and auditable."
   },
 
-  "excluded": {
-    "SeaLevelChart": {
-      "mounted_at": "AliJeVroceERA5.tsx:304",
-      "reason": "NOT SNAPSHOTTED. Its displayed figures — flooded hectares and affected buildings per sea-level increment — come from the same-origin /data/flood-stats.json plus the per-cm factors 20.77 ha and 14.13 buildings (SeaLevelWidget.tsx:56-57,109), none of which are part of the T-1.2 ERA5 fixture set. It also eagerly constructs 24 image preloads and a Leaflet map against external tiles.",
-      "consequence": "Every number the sea-level widget displays is currently OUTSIDE the regression net. A Phase 2 or Phase 3 change that moved one of them would produce an empty T-1.1 diff.",
-      "tickets": [
-        "T-4.11 (D-10c) — BLOCKING: the widget renders 10 cm increments from a SRTM-derived DEM whose vertical error is metre-scale, so the lower half of its range sits inside the DEM's own error. The widget does not launch on the current DEM, and may be cut from v1 entirely.",
-        "T-4.10 (D-10b) — the 20.77 / 14.13 factors and the AR6 per-SSP tables are unattributed.",
-        "T-5.6 — the widget is 162 KB and is to be lazy-loaded on interaction."
-      ],
-      "if_the_widget_ships": "Extend the T-1.2 fixture matrix to cover /data/flood-stats.json, then add a global.sea_level unit here. Do not baseline it before T-4.11 resolves — the numbers are expected to change or disappear."
-    }
-  }
+  "excluded": {},
+
+  "_sea_level_excluded_note": [
+    "T-4.21 removed the SeaLevelChart mount from AliJeVroceERA5.tsx — the sea-level",
+    "widget is GATED OUT of v1 per D-10 (unsound per-cm factors D-10b; SRTM DEM unfit",
+    "for 10cm increments D-10c). Its former 'excluded' entry was dropped here because",
+    "the tag no longer appears in the page and assertSections() fails on a stale bucket",
+    "key (scripts/snapshot/main.mjs:153).",
+    "",
+    "It was never snapshotted: its figures — flooded hectares / affected buildings per",
+    "increment — came from /data/flood-stats.json plus the per-cm factors 20.77 ha and",
+    "14.13 buildings (SeaLevelWidget.tsx:56-57,109), none in the T-1.2 ERA5 fixture set.",
+    "",
+    "ON UNPARK (D-10b/c resolved, widget cleared to launch): restore the mount in",
+    "AliJeVroceERA5.tsx, re-add a SeaLevelChart entry under 'excluded' here (or a",
+    "global.sea_level 'covered' unit if the fixture matrix is extended to cover",
+    "/data/flood-stats.json). Tickets: T-4.11 (D-10c, DEM), T-4.10 (D-10b, factors +",
+    "unattributed AR6 tables), T-4.12 (flood asset passthrough), T-5.6 (lazy-load 162KB)."
+  ]
 }
