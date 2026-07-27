@@ -17,7 +17,11 @@ const HeroCardsPanel         = lazy(() => import("./components/HeroCards.tsx").t
 const Era5TropicalChart      = lazy(() => import("./charts/Era5TropicalChart.tsx").then(m => ({ default: m.Era5TropicalChart })));
 const SpeiHeatmapChart       = lazy(() => import("./charts/SpeiHeatmap.tsx").then(m => ({ default: m.SpeiHeatmap })));
 const SpeiTrendChartLazy     = lazy(() => import("./charts/SpeiTrendChart.tsx").then(m => ({ default: m.SpeiTrendChart })));
-const SeaLevelChart          = lazy(() => import("./charts/SeaLevelWidget.tsx").then(m => ({ default: m.SeaLevelWidget })));
+// T-4.21 / D-10 — the sea-level widget is GATED OUT of v1 (unsound per-cm factors,
+// D-10b; SRTM DEM can't support the increments, D-10c). Import + mount removed so it
+// renders nothing and makes no /data/flood asset requests. Deferred, not deleted:
+// charts/SeaLevelWidget.tsx and scripts/floodmap/ are kept for re-entry. To unpark
+// when D-10b/c clear, restore the lazy import here and the section below (see PROGRESS).
 
 // T-5.5 — the datasette `day_label` is an internal "Mon D" key; render its month
 // as a Slovenian short date via the formatter rather than a hand-built string.
@@ -315,18 +319,11 @@ function Era5Charts() {
         </Suspense>
       </section>
 
-      {/* Sea level rise — Koper (IPCC AR6 projections, static) */}
-      <section class="sec-p" style={{ "padding-bottom": "40px" }}>
-        <div class="sec-h" style={{ "padding-inline": "0", "padding-top": "8px" }}>
-          {t("sections.sea_level")}
-        </div>
-        <div class="sec-hs2" style={{ "margin-bottom": "16px" }}>
-          {t("sections.sea_level_sub")}
-        </div>
-        <Suspense fallback={<div class="animate-pulse rounded-xl bg-[#071e26]" style={{ height: "500px" }} />}>
-          <SeaLevelChart />
-        </Suspense>
-      </section>
+      {/* T-4.21 / D-10 — Sea level rise — Koper section GATED OUT of v1. The whole
+          <section> (header sections.sea_level / sub sections.sea_level_sub + the
+          SeaLevelChart mount) was removed so the known-unsound widget is not public
+          and fetches no /data/flood assets. i18n strings (i18n/sl.ts) and si.yaml
+          sea_level_section are intentionally LEFT as-is for reversible re-entry. */}
     </Show>
   );
 }
