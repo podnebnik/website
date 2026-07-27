@@ -15,3 +15,8 @@ build = [
     "invoke",
     "sqlite-utils",
 ]
+
+# T-4.22: setuptools is a transitive dependency of datasette; GHSA-h35f-9h28-mq5c
+# (< 83.0.0) is patched in 83.0.0. Constrain it up without adding a direct dep.
+[tool.uv]
+constraint-dependencies = ["setuptools>=83.0.0"]

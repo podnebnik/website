@@ -28,7 +28,7 @@ dependencies = [
 # uv.lock alongside the runtime deps.
 [dependency-groups]
 dev = [
-    "pytest == 8.*",
+    "pytest == 9.*",
 ]
 
 # T-3.3: pytest looks here for its test tree, so `uv run pytest` behaves the same
