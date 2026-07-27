@@ -407,6 +407,17 @@ export const sl = {
     src_warn: "⚠ Poplavne cone so shematske — zamenjava z LIDAR DEM poligoni sledi.",
   },
 
+  // T-6.1 / T-6.2 — methodology disclosure + trust furniture. The long prose lives
+  // VERBATIM in hero-content.ts `methodologyMarkdown`; these are the short chrome
+  // strings around it. `stations` is plural-selected on the live station count
+  // (derived from meta.stations, never hardcoded); `contact` is the T-6.2 correction
+  // contact. The email address itself is a literal, not translatable prose.
+  methodology: {
+    summary: "Metodologija",
+    stations: "{count, plural, one{# postaja} two{# postaji} few{# postaje} other{# postaj}} ERA5-Land",
+    contact_label: "Popravki in vprašanja:",
+  },
+
   // Site meta (fallbacks)
   meta: {
     name: "Slovenija",

@@ -146,6 +146,37 @@
 /* ── Responsive: Section horizontal padding ──────────────────────────────── */
 .sec-p  { padding-inline: 40px; }
 
+/* ── Methodology block + trust furniture (T-6.1 / T-6.2) ──────────────────── */
+.methodology { padding-top: 8px; padding-bottom: 56px; margin-top: 24px; border-top: 1px solid var(--color-rule); }
+.methodology-details { max-width: 760px; }
+.methodology-summary {
+  font-family: var(--font-mono); font-size: 12px; font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--color-ink-soft); cursor: pointer;
+  padding: 14px 0; list-style: none; display: flex; align-items: center; gap: 8px;
+}
+.methodology-summary::-webkit-details-marker { display: none; }
+.methodology-summary::before { content: "▸"; font-size: 10px; transition: transform 0.15s; }
+.methodology-details[open] .methodology-summary::before { transform: rotate(90deg); }
+.methodology-summary:hover { color: var(--color-ink); }
+.methodology-summary:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; border-radius: 3px; }
+
+.methodology-body { max-width: 720px; padding: 4px 0 8px; }
+.methodology-h    { font-family: var(--font-sans); font-size: 16px; font-weight: 600; color: var(--color-ink); margin: 22px 0 6px; }
+.methodology-lede { font-family: var(--font-sans); font-size: 14px; font-style: italic; color: var(--color-ink-soft); margin: 0 0 4px; }
+.methodology-p    { font-family: var(--font-sans); font-size: 14px; line-height: 1.62; color: var(--color-ink-2); margin: 8px 0; }
+.methodology-ul   { margin: 8px 0; padding-left: 20px; }
+.methodology-ul li{ font-family: var(--font-sans); font-size: 14px; line-height: 1.6; color: var(--color-ink-2); margin: 5px 0; }
+.methodology-body strong { font-weight: 600; color: var(--color-ink); }
+.methodology-body a      { color: var(--color-accent); }
+.methodology-body code   { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-paper-2); padding: 1px 4px; border-radius: 4px; }
+
+.methodology-furniture {
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; color: var(--color-ink-soft);
+  margin: 14px 0 0; display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+}
+.methodology-furniture a   { color: var(--color-accent); }
+.methodology-furniture-sep { opacity: 0.5; }
+
 /* ── Responsive: Regression toolbar ──────────────────────────────────────── */
 .reg-toolbar {
   margin: 20px 40px 0;
