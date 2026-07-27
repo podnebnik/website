@@ -48,14 +48,16 @@
     "http-proxy-middleware": "^3.0.5",
     "jsdom": "^29.1.1",
     "sass": "^1.99.0",
-    "sharp": "^0.34.5",
+    "sharp": "^0.35.0",
     "typescript": "~6.0.3",
     "vite": "~8.0.16",
     "vite-plugin-solid": "^2.11.12",
     "vitest": "^4.1.10"
   },
   "resolutions": {
-    "vite": "~8.0.16"
+    "vite": "~8.0.16",
+    "brace-expansion": "5.0.8",
+    "sharp": "^0.35.0"
   },
   "packageManager": "yarn@4.9.4+sha512.7b1cb0b62abba6a537b3a2ce00811a843bea02bcf53138581a6ae5b1bf563f734872bd47de49ce32a9ca9dcaff995aa789577ffb16811da7c603dcf69e73750b"
 }
