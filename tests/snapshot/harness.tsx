@@ -76,6 +76,7 @@ import {
   RegScatterCard,
   RegYearRoundCard,
 } from "../../code/ali-je-vroce-era5/components/RegressionPanel.tsx";
+import { MethodologyPanel } from "../../code/ali-je-vroce-era5/components/MethodologyPanel.tsx";
 
 import { chartLog, resetChartLog, type RecordedChart } from "./highcharts-stub.ts";
 import cases from "./cases.json";
@@ -715,6 +716,17 @@ export async function run(): Promise<RunResult> {
     0,
   );
 
+  // T-6.1 / T-6.2 — the methodology disclosure + trust furniture at the foot of
+  // the page (AliJeVroceERA5.tsx:191). The real component is mounted (not a
+  // mirror), so no assertMirroredCopy is needed. Only the always-visible furniture
+  // — the derived station-count line and the correction contact — plus the summary
+  // label are read; the static methodology prose is deliberately not captured.
+  const methodologyUnit = await mount(
+    "global.methodology",
+    () => <MethodologyPanel stationCount={era5Stations.length} />,
+    0,
+  );
+
   const speiNational = await fetchSpeiHeatmap();
   assertNoMisses("global.spei_national (fetch)");
   const speiUnit = await mount(
@@ -815,6 +827,16 @@ export async function run(): Promise<RunResult> {
       n_rows: speiNational.data?.length ?? 0,
       rows: speiRows,
       rendered_legend: read(speiUnit).all("button"),
+    },
+    methodology: {
+      _note:
+        "T-6.1/T-6.2 trust furniture (MethodologyPanel.tsx, mounted AliJeVroceERA5.tsx:191). " +
+        "The methodology PROSE is static reviewed content and is not captured; the station " +
+        "count is the only rendered value worth watching and is the same figure as " +
+        "global.meta.station_count / station_map.panel_header.station_count.",
+      summary: read(methodologyUnit).txt(".methodology-summary"),
+      station_count: read(methodologyUnit).txt(".methodology-furniture-stations"),
+      contact: read(methodologyUnit).txt(".methodology-furniture-contact"),
     },
     spei_station: {
       available: speiStation.available,

@@ -49,6 +49,7 @@
       "Era5SeasonHeatmapChart",
       "Era5TropicalChart",
       "HeroCardsPanel",
+      "MethodologyPanel",
       "RegScatterCard",
       "RegToolbar",
       "RegYearRoundCard",
@@ -3275,6 +3276,12 @@
         "Zima",
         "▶ Animacija"
       ]
+    },
+    "methodology": {
+      "_note": "T-6.1/T-6.2 trust furniture (MethodologyPanel.tsx, mounted AliJeVroceERA5.tsx:191). The methodology PROSE is static reviewed content and is not captured; the station count is the only rendered value worth watching and is the same figure as global.meta.station_count / station_map.panel_header.station_count.",
+      "summary": "Metodologija",
+      "station_count": "18 postaj ERA5-Land",
+      "contact": "Popravki in vprašanja: info@podnebnik.org"
     },
     "spei_station": {
       "available": true,

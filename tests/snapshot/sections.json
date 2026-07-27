@@ -89,6 +89,11 @@
       "mounted_at": "AliJeVroceERA5.tsx:279 (days), :291 (nights)",
       "harness_unit": "by_station.tropical_days / by_station.tropical_nights",
       "captures": "per-year counts, NB-GLM trend, and the highlighted current-year bar (TropicalChart.tsx:73-76) — the second former clock leak"
+    },
+    "MethodologyPanel": {
+      "mounted_at": "AliJeVroceERA5.tsx:191",
+      "harness_unit": "global.methodology",
+      "captures": "the always-visible trust furniture — the derived station-count line (`{era5Stations.length} postaj`, the same figure global.meta.station_count and the map panel_header watch) and the correction-contact line — plus the disclosure summary label. The methodology PROSE itself (i18n/hero-content.ts methodologyMarkdown) is static reviewed editorial content and is NOT captured, per the capture-surface rule (capture inputs the numbers depend on, not annotation); the station count is the only rendered value here worth watching."
     }
   },
 

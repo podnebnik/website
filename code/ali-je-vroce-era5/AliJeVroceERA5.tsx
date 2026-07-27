@@ -7,6 +7,7 @@ import { DistributionChart } from "./charts/DistributionChart.tsx";
 import { TodayTrendChart } from "./components/TodayTrendChart.tsx";
 import { RegressionPanel, RegToolbar, RegScatterCard, RegYearRoundCard, useReg,
          panelHStyle, panelTitleStyle, panelSubStyle } from "./components/RegressionPanel.tsx";
+import { MethodologyPanel } from "./components/MethodologyPanel.tsx";
 import type { SiteMeta } from "./types.ts";
 import { t, fmtNum, fmtInt, fmtMonthDay } from "./i18n/format.ts";
 
@@ -188,6 +189,9 @@ function Dashboard(props: { meta: SiteMeta }) {
         <Era5Charts />
 
       </RegressionPanel>
+
+      {/* ── Methodology + trust furniture (T-6.1 / T-6.2) — foot of content ── */}
+      <MethodologyPanel stationCount={era5Stations.length} />
 
     </div>
   );
