@@ -96,10 +96,10 @@ export function parseJsonColumn<T>(raw: string, column: string): T {
 // wrong number.
 //
 // The station count comes from `era5Coords`, populated by fetchMeta from
-// `stations.json?…&_size=30` (api.ts:267). NOTE: that `_size=30` is the SAME class
-// of latent cliff (18 rows today, margin 12) and bounds how far this assert can be
-// trusted — past 30 stations it truncates first and this "expected" undercounts.
-// It is out of T-5.2's `_size=50` scope; see the PROGRESS finding.
+// `stations.json?…&_size=30`. That query is the SAME class of latent cliff and,
+// being the SOURCE of this "expected", would truncate first and make every assert
+// below validate against a wrong count — so fetchMeta guards it too (asserts it
+// did not hit the `_size=30` cap; see the guard beside that query).
 //
 // The `_size=50` in the three query URLs is deliberately NOT removed: the offline
 // fixture layer keys on the EXACT request URL (fixtures/install.ts index.routes),
@@ -309,6 +309,21 @@ export async function fetchMeta(): Promise<SiteMeta> {
     era5_name: string; name: string; lat: number; lon: number;
     elevation: number; station_id: number | null;
   }>>("stations.json?_shape=array&_col=era5_name&_col=name&_col=lat&_col=lon&_col=elevation&_col=station_id&_size=30");
+
+  // T-5.2 — the station registry is the SOURCE of the station count that the three
+  // national-aggregate asserts (assertNationalStationRows) trust, so a silent
+  // truncation HERE would corrupt every one of them. This query is capped at
+  // `_size=30` (18 stations today, margin 12); a full page means rows were dropped.
+  // We cannot assert against a station count — this IS that source — so assert we
+  // did not hit the cap. `_size=30` is kept literal (the offline fixture layer keys
+  // on the exact URL); the throw surfaces via the section ErrorBoundary.
+  if (era5Stations.length >= 30) {
+    throw new Error(
+      `[T-5.2] stations.json: got ${era5Stations.length} rows at the \`_size=30\` cap — the ` +
+        `station registry was truncated, so every national aggregate would validate against a ` +
+        `wrong station count. Raise the cap and re-record the fixtures.`,
+    );
+  }
 
   // Coordinates + true elevation for Open-Meteo live temps (elevation-corrected)
   era5Coords = Object.fromEntries(
