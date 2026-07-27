@@ -4598,10 +4598,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"seroval@npm:~1.5.0":
-  version: 1.5.0
-  resolution: "seroval@npm:1.5.0"
-  checksum: 10c0/aff16b14a7145388555cefd4ebd41759024ee1c2c064080fd8d4fabea4b7c89d103155cd98f5109523b8878e577da73cc6cd8abf98965f2d1f0ba19dc38317ab
+"seroval@npm:1.5.3":
+  version: 1.5.3
+  resolution: "seroval@npm:1.5.3"
+  checksum: 10c0/f84e9bc32c647906bc6af18ca4e3853a3695af963fbe80fae5e3ea74289391bdaf22d2459c5ed5226fffbdad14a7aed6c761746a2fb1cab55eae73364fbac912
   languageName: node
   linkType: hard
 
