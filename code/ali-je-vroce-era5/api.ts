@@ -80,6 +80,49 @@ export function parseJsonColumn<T>(raw: string, column: string): T {
   }
 }
 
+// T-5.2 — kill the silent `_size` truncation cliff on the national aggregates.
+//
+// datasette returns at most `_size` rows and drops the rest WITHOUT any signal —
+// the same silent-failure class T-5.1 removed from the fetch/parse paths. The
+// three national helpers below (daily_window / daily / annual_trend, each filtered
+// to a single month-day or date) pool "one row per ERA5 station" and average them.
+// The healthy result is ALL-OR-NOTHING: either the day has no rows at all (Feb 29
+// has no pooled climatology row; a date beyond the reanalysis boundary has no
+// observation) or exactly one row per station. A count that is neither 0 nor the
+// station count is either a partial pool — a national mean silently computed over a
+// subset, which D-7's "povprečje 18 postaj" would then mislabel — or a response
+// truncated at the `_size` cap. Both are silent failures and must fail loudly; the
+// throw reaches each section's ErrorBoundary and renders SectionError instead of a
+// wrong number.
+//
+// The station count comes from `era5Coords`, populated by fetchMeta from
+// `stations.json?…&_size=30`. That query is the SAME class of latent cliff and,
+// being the SOURCE of this "expected", would truncate first and make every assert
+// below validate against a wrong count — so fetchMeta guards it too (asserts it
+// did not hit the `_size=30` cap; see the guard beside that query).
+//
+// The `_size=50` in the three query URLs is deliberately NOT removed: the offline
+// fixture layer keys on the EXACT request URL (fixtures/install.ts index.routes),
+// so changing it would miss every recorded response and force a network re-record
+// for no data benefit. 50 is already a correct bound (> the 18-station count); this
+// assert is the loud "you didn't hit the cap" guard layered on top of it.
+function assertNationalStationRows(rows: readonly unknown[], table: string): void {
+  const expected = Object.keys(era5Coords).length;
+  if (expected === 0) {
+    throw new Error(
+      `[T-5.2] ${table}: station registry not loaded (fetchMeta must run before a ` +
+        `national aggregate) — cannot validate the national row count`,
+    );
+  }
+  if (rows.length !== 0 && rows.length !== expected) {
+    throw new Error(
+      `[T-5.2] ${table}: national aggregate expected 0 or ${expected} station rows, got ` +
+        `${rows.length} — a partial pool would silently bias the national mean, and a count at ` +
+        `the datasette \`_size\` cap means rows were truncated`,
+    );
+  }
+}
+
 
 export function doyToMonthDay(doy: number): { month: number; day: number } {
   const d = new Date(Date.UTC(2001, 0, 1));
@@ -194,6 +237,7 @@ export async function fetchEra5NationalWindowRow(month: number, day: number): Pr
   const rows = await dsGet<DailyWindowRow[]>(
     `daily_window.json?_shape=array&month__exact=${month}&day__exact=${day}&_size=50`
   );
+  assertNationalStationRows(rows, "daily_window");
   if (rows.length === 0) return null;
   const avg = (f: (r: DailyWindowRow) => number) =>
     rows.reduce((s, r) => s + (f(r) ?? 0), 0) / rows.length;
@@ -266,6 +310,21 @@ export async function fetchMeta(): Promise<SiteMeta> {
     elevation: number; station_id: number | null;
   }>>("stations.json?_shape=array&_col=era5_name&_col=name&_col=lat&_col=lon&_col=elevation&_col=station_id&_size=30");
 
+  // T-5.2 — the station registry is the SOURCE of the station count that the three
+  // national-aggregate asserts (assertNationalStationRows) trust, so a silent
+  // truncation HERE would corrupt every one of them. This query is capped at
+  // `_size=30` (18 stations today, margin 12); a full page means rows were dropped.
+  // We cannot assert against a station count — this IS that source — so assert we
+  // did not hit the cap. `_size=30` is kept literal (the offline fixture layer keys
+  // on the exact URL); the throw surfaces via the section ErrorBoundary.
+  if (era5Stations.length >= 30) {
+    throw new Error(
+      `[T-5.2] stations.json: got ${era5Stations.length} rows at the \`_size=30\` cap — the ` +
+        `station registry was truncated, so every national aggregate would validate against a ` +
+        `wrong station count. Raise the cap and re-record the fixtures.`,
+    );
+  }
+
   // Coordinates + true elevation for Open-Meteo live temps (elevation-corrected)
   era5Coords = Object.fromEntries(
     era5Stations.map(s => [s.era5_name, { lat: s.lat, lon: s.lon, elevation: s.elevation }])
@@ -311,6 +370,7 @@ export async function fetchTodayStatus(date: string, loc: string | null): Promis
     const dsRows = await dsGet<Array<{ temperature_max_2m: number | null }>>(
       `daily.json?_shape=array&date__exact=${date}&_col=temperature_max_2m&_size=50`
     );
+    assertNationalStationRows(dsRows, "daily");
     const dsVals = dsRows.filter(r => r.temperature_max_2m != null).map(r => r.temperature_max_2m!);
     let todayTemp: number | null = dsVals.length > 0
       ? dsVals.reduce((a, b) => a + b) / dsVals.length
@@ -652,6 +712,7 @@ async function fetchNationalAnnualTrendRow(month: number, day: number): Promise<
   const rows = await dsGet<AnnualTrendRow[]>(
     `annual_trend.json?_shape=array&variable__exact=temperature_max&month__exact=${month}&day__exact=${day}&_size=50`
   );
+  assertNationalStationRows(rows, "annual_trend");
   if (!rows.length) return undefined;
   const avg = (f: (r: AnnualTrendRow) => number) => rows.reduce((s, r) => s + (f(r) ?? 0), 0) / rows.length;
 
