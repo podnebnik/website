@@ -48,11 +48,6 @@ function createStore(props: ProviderProps) {
     locs:   selLocs(),
     var:    selVar(),
     doy:    doy(),
-    // Retained to satisfy RegressionParams; fetchRegression ignores both (the
-    // annual_trend table is always Theil-Sen + TFPW MK with elevation correction
-    // baked in). The toolbar controls that once varied them were dead — see T-4.15.
-    corr:   "raw",
-    method: "theilsen",
   }));
   const [regData, { refetch: refetchReg }] = createResource(params, fetchRegression);
 
@@ -62,7 +57,7 @@ function createStore(props: ProviderProps) {
   }));
   const [calData, { refetch: refetchCal }] = createResource(
     calParams,
-    p => fetchCalendar(p.loc, p.var, "raw", "theilsen"),
+    p => fetchCalendar(p.loc, p.var),
   );
 
   const isPrecip   = () => selVar() === "precipitation_sum" || selVar() === "et0_evapotranspiration";

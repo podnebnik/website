@@ -504,8 +504,6 @@ export interface RegressionParams {
   locs:   string[];
   var:    string;
   doy:    number;
-  corr:   "raw" | "corr";
-  method: "theilsen" | "ols";
 }
 
 export async function fetchRegression(p: RegressionParams): Promise<RegressionResponse> {
@@ -694,8 +692,7 @@ export interface CalendarData {
 }
 
 export async function fetchCalendar(
-  loc: string, variable: string,
-  _corr: "raw" | "corr", _method: "theilsen" | "ols"
+  loc: string, variable: string
 ): Promise<CalendarData> {
   const rows = await dsGet<CalendarRow[]>(
     `annual_trend.json?_shape=array&era5_name__exact=${encodeURIComponent(loc)}&variable__exact=${encodeURIComponent(variable)}&_col=month&_col=day&_col=trend10&_col=p_val&_size=400`

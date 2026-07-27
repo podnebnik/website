@@ -885,7 +885,7 @@ export async function run(): Promise<RunResult> {
     // The year-round calendar is keyed on station + variable only; its 365 rows
     // do not move with the selected date, which is why it lives here and not in
     // `cases`. doy=1 only positions the selected-day marker.
-    const cal = await fetchCalendar(station, defaults.variable, "raw", "theilsen");
+    const cal = await fetchCalendar(station, defaults.variable);
     assertNoMisses(`by_station.${station}.calendar (fetch)`);
     const calUnit = await mount(
       `by_station.${station}.calendar`,
