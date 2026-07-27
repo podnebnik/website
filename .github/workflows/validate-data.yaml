@@ -42,3 +42,13 @@ jobs:
       - name: Validate data
         run: find ./data -name '*package.yaml' -not -path '*/climate-si/*' -print0 | xargs -0 -I {} sh -c 'echo "\nValidating {}:"; uvx frictionless validate {}'
         # run: uv run --group=build invoke validate
+
+      # T-5.11: the climate-si *raw* per-station inputs ARE committed (unlike the nine
+      # derived tables, which are generated at image build and validated there by
+      # validate.py). Nothing else checks them on the PR, so a malformed raw row would
+      # otherwise pass every gate and fail only at image build, after merge, naming a
+      # derived table. validate_raw.py checks column set/dtypes, temperature bounds,
+      # date continuity, elevation_diff vs si.yaml and source — failing the PR with the
+      # raw-row cause. Hard prerequisite for T-5.7d (weekly refresh Action).
+      - name: Validate raw station inputs
+        run: uv run --project data/climate-si/sources python data/climate-si/sources/validate_raw.py
