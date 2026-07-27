@@ -123,6 +123,44 @@ STATION_META: dict[str, dict] = {
     "Ratece":        {"official_name": "Rateče",               "name_locative": "v Ratečah",           "xml_id": None},
 }
 
+# ── Station-metadata completeness guard (T-5.7e) ────────────────────────────────
+# si.yaml is the single source for the station LIST and its geographic fields
+# (name/lat/lon/elevation/elevation_era5_m — enforced against the built table by
+# validate._check_stations_match_config). The four ARSO/Vremenar identity columns
+# (official_name, name_locative, station_id, xml_id) live in the two dicts above by
+# design (D-9 split: registry identity is pipeline metadata, not country geo config).
+# That leaves one silent-drift path: `build_stations` falls back to display-name
+# defaults / NULL when a si.yaml station is missing from STATION_META, so a station
+# added to si.yaml without a metadata entry would ship a fabricated official_name /
+# name_locative with no error. This guard closes that path — it runs during the
+# image-build precompute (via build_stations) and raises BEFORE any table is written.
+
+def assert_station_metadata_complete() -> None:
+    """Every si.yaml station must have an explicit STATION_META entry (no silent
+    display-name fallback); every ERA5_TO_STATION_ID key must be a known station
+    (ERA5-only stations legitimately carry no station_id, so subset — not equality)."""
+    names = {loc["name"] for loc in CONFIG["stations"]}
+    meta_keys = set(STATION_META)
+    missing_meta = names - meta_keys
+    orphan_meta  = meta_keys - names
+    if missing_meta:
+        raise ValueError(
+            f"STATION_META is missing entries for si.yaml station(s): "
+            f"{sorted(missing_meta)} — add official_name/name_locative/xml_id in "
+            f"precompute_datasette.py rather than letting build_stations fabricate them."
+        )
+    if orphan_meta:
+        raise ValueError(
+            f"STATION_META has entries for unknown station(s) not in si.yaml: "
+            f"{sorted(orphan_meta)} — remove them or restore the station in si.yaml."
+        )
+    orphan_ids = set(ERA5_TO_STATION_ID) - names
+    if orphan_ids:
+        raise ValueError(
+            f"ERA5_TO_STATION_ID maps unknown station(s) not in si.yaml: "
+            f"{sorted(orphan_ids)}."
+        )
+
 # ── Data loading ───────────────────────────────────────────────────────────────
 
 def load_all() -> pd.DataFrame:
@@ -185,6 +223,7 @@ def window_filter(loc_data: pd.DataFrame, month: int, day: int, half: int) -> pd
 # ── 1. stations table ──────────────────────────────────────────────────────────
 
 def build_stations(data: pd.DataFrame) -> pd.DataFrame:
+    assert_station_metadata_complete()   # T-5.7e: no silent metadata fallback
     rows = []
     for loc_cfg in CONFIG["stations"]:
         name = loc_cfg["name"]
