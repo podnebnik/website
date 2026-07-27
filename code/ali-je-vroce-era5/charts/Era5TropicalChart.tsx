@@ -128,6 +128,23 @@ export function Era5TropicalChart(props: Props) {
           </Show>
         </div>
 
+        {/* T-5.4b — the current-year (right-most) bar is drawn in the same hue as
+            the others but at a lower opacity (TropicalChart.tsx:74-77) to mark it
+            as the still-incomplete year in progress. That distinction was visible
+            only through the fill and, on hover, the tooltip's "(leto v teku)"; a
+            screen-reader user already gets it from the chart description, but a
+            sighted (incl. colour-blind) user had no PERSISTENT text cue. This
+            legend-style line supplies one, matching the swatch+label pattern of
+            the map elevation legend (AliJeVroceERA5.tsx:154-164). Colour, wording
+            and placement are PROVISIONAL — flagged for the designer/content review
+            (D-17); the category colours themselves are unchanged. */}
+        <Show when={display()}>
+          <div style={{ padding: "0 16px 10px", display: "flex", "align-items": "center", gap: "5px", "font-family": "var(--font-mono)", "font-size": "9px", "letter-spacing": "0.06em", "text-transform": "uppercase", color: "var(--color-ink-soft)" }}>
+            <span style={{ width: "10px", height: "10px", background: "rgba(194,90,44,0.4)", "border-radius": "2px", display: "inline-block", border: "1px solid rgba(0,0,0,0.15)", "flex-shrink": "0" }} />
+            Zadnji stolpec — leto v teku
+          </div>
+        </Show>
+
         <Show when={trendDesc()}>
           {(td) => (
             <div style={{ margin: "0", padding: "0 16px 12px", "font-size": "12px", "line-height": "1.55", "border-top": "1px solid var(--color-rule)" }}>
