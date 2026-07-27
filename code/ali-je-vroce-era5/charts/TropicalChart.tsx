@@ -9,6 +9,7 @@
 import { createEffect, onMount, onCleanup } from "solid-js";
 import { todayYear } from "../clock";
 import { enableChartA11y } from "./highcharts-a11y.ts";
+import { t, fmtNum, fmtSigned } from "../i18n/format.ts";
 
 export interface TropTrend {
   model_used:      boolean | "nb";
@@ -51,7 +52,7 @@ const ACCENT   = "#C25A2C";
 const MONO     = { fontFamily: "'JetBrains Mono', monospace" };
 
 function pFmt(p: number): string {
-  return p < 0.001 ? "p < 0.001" : p < 0.01 ? "p < 0.01" : p < 0.05 ? `p = ${p.toFixed(3)}` : `p = ${p.toFixed(3)} (ns)`;
+  return p < 0.001 ? "p < 0,001" : p < 0.01 ? "p < 0,01" : p < 0.05 ? `p = ${fmtNum(p, 3)}` : `p = ${fmtNum(p, 3)} (ns)`;
 }
 
 // ── Highcharts inner component ────────────────────────────────────────────────
@@ -126,7 +127,7 @@ export function TropHighchart(props: ChartProps) {
         },
         {
           type: "line",
-          name: `NB fit (${dpd >= 0 ? "+" : ""}${dpd.toFixed(1)} ${props.cfg.unitLabel}/des · ${pFmt(p)})`,
+          name: t("tropical.nb_fit", { dpd: fmtSigned(dpd, 1), unit: props.cfg.unitLabel, p: pFmt(p) }),
           data: trend.x_line.map((x, i) => ({ x, y: trend.y_line[i] })),
           color: INK,
           lineWidth: 2,
@@ -145,7 +146,7 @@ export function TropHighchart(props: ChartProps) {
       value: props.series.trend.fit_year_max + 0.5,
       color: INK_SOFT, width: 1, dashStyle: "Dot" as const, zIndex: 4,
       label: {
-        text: `trend do ${props.series.trend.fit_year_max}`, rotation: 0,
+        text: t("tropical.trend_label", { year: props.series.trend.fit_year_max }), rotation: 0,
         align: "right" as const, x: -4, y: -4,
         style: { fontSize: "9px", color: INK_SOFT, ...MONO },
       },
@@ -166,14 +167,14 @@ export function TropHighchart(props: ChartProps) {
       // Parameterised by cfg so days vs nights each get their own wording.
       accessibility: {
         enabled: true,
-        description: `Stolpčni prikaz letnega števila — ${props.cfg.tooltipNoun.toLowerCase()}, torej koliko ${props.cfg.unitLabel} na leto preseže izbrani temperaturni prag — z modelom trenda negativne binomske regresije in intervalom zaupanja; zadnji stolpec je leto v teku.`,
+        description: t("tropical.a11y", { noun: props.cfg.tooltipNoun.toLowerCase(), unit: props.cfg.unitLabel }),
       },
       tooltip: {
         formatter(this: any) {
-          if (this.series.type === "line") return `<b>${Math.round(this.x)}</b><br>Trend: <b>${this.y!.toFixed(1)}</b> ${props.cfg.unitLabel}`;
+          if (this.series.type === "line") return t("tropical.tooltip_trend", { x: Math.round(this.x), y: fmtNum(this.y!, 1), unit: props.cfg.unitLabel });
           if (this.series.type === "arearange") return false as any;
-          const partial = this.x === todayYear() ? " <i>(leto v teku)</i>" : "";
-          return `<b>${this.x}</b>${partial}<br>${props.cfg.tooltipNoun}: <b>${this.y}</b>`;
+          const partial = this.x === todayYear() ? ` <i>${t("tropical.year_in_progress")}</i>` : "";
+          return t("tropical.tooltip_bar", { x: this.x, partial, noun: props.cfg.tooltipNoun, y: this.y });
         },
       },
       xAxis: {

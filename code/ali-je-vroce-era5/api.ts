@@ -11,6 +11,8 @@ import { CAT_COLORS, cdfPercentile } from "./percentile.ts";
 // T-4.5 (D-4): dateToDoy reads the calendar day in Europe/Ljubljana, the same day
 // boundary clock.ts uses. This is a PURE date-parts read, not a system-clock read.
 import { calendarDateIn, LJUBLJANA_TZ } from "./clock.ts";
+// T-5.5 (D-8) — Slovenian catalogue + Slovenian number/date formatting.
+import { t, fmtNum, fmtMonthDay } from "./i18n/format.ts";
 
 // podnebnik.org datasette serves each DB at the root (no /datasette prefix),
 // e.g. https://stage-data.podnebnik.org/climate-si — override with VITE_DATASETTE_URL for dev.
@@ -48,11 +50,13 @@ export function isArsoLoc(loc: string): boolean {
   return loc.startsWith("arso:");
 }
 
-const VAR_LABELS: Record<string, string> = {
-  temperature_max:  "Max temperature (°C)",
-  temperature_min:  "Min temperature (°C)",
-  temperature_mean: "Mean temperature (°C)",
-};
+// T-5.5 — variable labels moved to the catalogue (reg.var_*); one source shared
+// with RegressionPanel's picker. `et0_evapotranspiration` maps to reg.var_et0.
+export function varLabel(v: string): string {
+  const key = v === "et0_evapotranspiration" ? "reg.var_et0" : `reg.var_${v}`;
+  const lbl = t(key);
+  return lbl === key ? `${v} (°C)` : lbl;
+}
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
@@ -278,16 +282,17 @@ export async function fetchMeta(): Promise<SiteMeta> {
 
   return {
     country:          "si",
-    name:             "Slovenija",
+    name:             t("meta.name"),
     default_location: "Ljubljana",
-    languages:        ["en"],
-    default_language: "en",
+    // D-8 — Slovenian only for v1 (was ["en"]/"en", contradicting the whole page).
+    languages:        ["sl"],
+    default_language: "sl",
     map:      { center_lat: 46.1, center_lon: 14.8, zoom: 7 },
-    branding: { site_title: "Podnebnik · Ali je vroče?" },
+    branding: { site_title: t("meta.site_title") },
     stations,
     strings: {
-      explain_reg: "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija",
-      explain_cal: "Trend na desetletje za vsak dan v letu · rdeča = ogrevanje · modra = ohlajanje · prosojnost = statistična značilnost",
+      explain_reg: t("reg.explain_reg"),
+      explain_cal: t("reg.explain_cal"),
     },
   };
 }
@@ -452,8 +457,8 @@ export async function fetchRegression(p: RegressionParams): Promise<RegressionRe
 
   return {
     results:    era5Results.filter(Boolean) as RegressionResult[],
-    date_label: dayLabel(month, day),
-    ylabel:     VAR_LABELS[p.var] ?? `${p.var} (°C)`,
+    date_label: fmtMonthDay(month, day),
+    ylabel:     varLabel(p.var),
     unit:       "°C",
   };
 }
@@ -492,11 +497,11 @@ async function buildRegressionResult(
     baseline,
     stats: {
       method: "Theil-Sen + TFPW MK", trend10: r.trend10, metric: r.trend10,
-      metric_lbl: "trend / 10y", p_val: r.p_val,
+      metric_lbl: "trend / 10 let", p_val: r.p_val,
       direction: r.trend10 >= 0 ? "up" : "down",
       chg_str: `${r.trend10 >= 0 ? "+" : ""}${r.trend10.toFixed(2)} °C/10y`,
-      fit_desc: `τ = ${r.tau.toFixed(2)}`,
-      sig_label: r.p_val < 0.05 ? "p < 0.05" : `p = ${r.p_val.toFixed(3)}`,
+      fit_desc: `τ = ${fmtNum(r.tau, 2)}`,
+      sig_label: r.p_val < 0.05 ? "p < 0,05" : `p = ${fmtNum(r.p_val, 3)}`,
       n_years: r.n_years, ar1: null,
     },
   };

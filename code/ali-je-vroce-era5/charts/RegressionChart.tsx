@@ -1,6 +1,7 @@
 import { onMount, onCleanup, createEffect } from "solid-js";
 import type { RegressionResponse } from "../types.ts";
 import { enableChartA11y } from "./highcharts-a11y.ts";
+import { t, fmtNum, fmtSigned } from "../i18n/format.ts";
 
 interface Props {
   data:    RegressionResponse;
@@ -86,7 +87,7 @@ export function RegressionChart(props: Props) {
       // module is now loaded, so this chart is properly exposed to assistive tech.
       accessibility: {
         enabled: true,
-        description: "Razsevni diagram letnih vrednosti izbrane spremenljivke z regresijsko linijo trenda in 95-odstotnim intervalom zaupanja; črtkana črta označuje povprečje referenčnega obdobja.",
+        description: t("regchart.a11y"),
       },
       legend: {
         enabled: true,
@@ -97,7 +98,8 @@ export function RegressionChart(props: Props) {
         formatter(this: Highcharts.TooltipFormatterContextObject) {
           const pt = this.point as any;
           const loc = (this.series.name ?? "").replace(/_/g, " ");
-          return `<b>${loc}</b><br/>${this.x}: <b>${(this.y as number).toFixed(2)}</b> ${d.unit}${pt.anomaly != null ? `<br/>anomaly: ${pt.anomaly > 0 ? "+" : ""}${pt.anomaly.toFixed(2)}` : ""}`;
+          const base = t("regchart.tooltip", { loc, x: this.x, y: fmtNum(this.y as number, 2), unit: d.unit });
+          return base + (pt.anomaly != null ? t("regchart.tooltip_anomaly", { a: fmtSigned(pt.anomaly, 2) }) : "");
         },
       },
       xAxis: { type: "linear", title: { text: null }, gridLineWidth: 0, tickInterval: 10 },
@@ -119,7 +121,7 @@ export function RegressionChart(props: Props) {
           dashStyle: "Dash",
           zIndex: 2,
           label: {
-            text:  `${res.stats.n_years}-YR MEAN ${res.baseline.toFixed(1)}`,
+            text:  t("regchart.baseline_label", { count: res.stats.n_years, baseline: fmtNum(res.baseline, 1) }),
             align: "right",
             x:     -4,
             style: { color: res.color ?? "#999", fontSize: "9px", fontFamily: "'JetBrains Mono', monospace" },
@@ -150,7 +152,7 @@ export function RegressionChart(props: Props) {
       yAxis.addPlotLine({
         id: `baseline-${res.loc}`, value: res.baseline, color: res.color ?? "#999",
         width: 1, dashStyle: "Dash", zIndex: 2,
-        label: { text: `${res.stats.n_years}-YR MEAN ${res.baseline.toFixed(1)}`,
+        label: { text: t("regchart.baseline_label", { count: res.stats.n_years, baseline: fmtNum(res.baseline, 1) }),
           align: "right", x: -4, style: { color: res.color ?? "#999", fontSize: "9px", fontFamily: "'JetBrains Mono', monospace" } },
       });
     }

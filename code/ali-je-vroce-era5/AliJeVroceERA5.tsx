@@ -8,6 +8,7 @@ import { TodayTrendChart } from "./components/TodayTrendChart.tsx";
 import { RegressionPanel, RegToolbar, RegScatterCard, RegYearRoundCard, useReg,
          panelHStyle, panelTitleStyle, panelSubStyle } from "./components/RegressionPanel.tsx";
 import type { SiteMeta } from "./types.ts";
+import { t, fmtNum, fmtInt, fmtMonthDay } from "./i18n/format.ts";
 
 const Era5SeasonHeatmapChart = lazy(() => import("./charts/Era5SeasonHeatmap.tsx").then(m => ({ default: m.Era5SeasonHeatmap })));
 const StationMap             = lazy(() => import("./components/StationMap.tsx").then(m => ({ default: m.StationMap })));
@@ -17,13 +18,16 @@ const SpeiHeatmapChart       = lazy(() => import("./charts/SpeiHeatmap.tsx").the
 const SpeiTrendChartLazy     = lazy(() => import("./charts/SpeiTrendChart.tsx").then(m => ({ default: m.SpeiTrendChart })));
 const SeaLevelChart          = lazy(() => import("./charts/SeaLevelWidget.tsx").then(m => ({ default: m.SeaLevelWidget })));
 
-const EN_MONTHS: Record<string, string> = {
-  Jan:"01", Feb:"02", Mar:"03", Apr:"04", May:"05", Jun:"06",
-  Jul:"07", Aug:"08", Sep:"09", Oct:"10", Nov:"11", Dec:"12",
+// T-5.5 — the datasette `day_label` is an internal "Mon D" key; render its month
+// as a Slovenian short date via the formatter rather than a hand-built string.
+const EN_MONTHS: Record<string, number> = {
+  Jan:1, Feb:2, Mar:3, Apr:4, May:5, Jun:6,
+  Jul:7, Aug:8, Sep:9, Oct:10, Nov:11, Dec:12,
 };
 function fmtDayLabel(dl: string): string {
   const [mon, day] = dl.split(" ");
-  return `${(day ?? "").padStart(2, "0")}.${EN_MONTHS[mon ?? ""] ?? "??"}`;
+  const m = EN_MONTHS[mon ?? ""] ?? 0;
+  return m ? fmtMonthDay(m, Number(day)) : "??";
 }
 
 export function AliJeVroceERA5() {
@@ -34,7 +38,7 @@ export function AliJeVroceERA5() {
   // visible page-level error (T-5.1).
   return (
     <ErrorBoundary fallback={sectionErrorFallback(refetchMeta, "480px")}>
-      <Show when={meta()} fallback={<div class="px-10 py-8 text-[var(--color-ink-soft)]">Nalaganje…</div>}>
+      <Show when={meta()} fallback={<div class="px-10 py-8 text-[var(--color-ink-soft)]">{t("loading")}</div>}>
         {(m) => <Dashboard meta={m()} />}
       </Show>
     </ErrorBoundary>
@@ -71,8 +75,8 @@ function Dashboard(props: { meta: SiteMeta }) {
       <section class="today-status">
         <div class="sec-heading">
           <div class="today-heading-text">
-            <span class="today-heading-title">ERA5 — Ali je vroče?</span>
-            <span class="today-heading-subtitle">reanaliza ERA5-Land v primerjavi z zgodovinskimi percentili</span>
+            <span class="today-heading-title">{t("sections.today_title")}</span>
+            <span class="today-heading-subtitle">{t("sections.today_subtitle")}</span>
           </div>
         </div>
 
@@ -101,15 +105,23 @@ function Dashboard(props: { meta: SiteMeta }) {
             <div class="today-chart">
               <div class="today-chart-title">
                 {isNat()
-                  ? `Dnevne najvišje temperature v Sloveniji za dva tedna okoli ${fmtDayLabel(todayData()!.day_label ?? "")} od ${todayData()!.year_min}`
-                  : `Dnevne najvišje temperature na postaji ${todayData()!.loc!.replace(/_/g, " ")} za dva tedna okoli ${fmtDayLabel(todayData()!.day_label ?? "")} od ${todayData()!.year_min}`}
+                  ? t("today.chart_title_nat", { day: fmtDayLabel(todayData()!.day_label ?? ""), year_min: todayData()!.year_min ?? 0 })
+                  : t("today.chart_title_station", { station: todayData()!.loc!.replace(/_/g, " "), day: fmtDayLabel(todayData()!.day_label ?? ""), year_min: todayData()!.year_min ?? 0 })}
               </div>
               <DistributionChart data={todayData()!} chartId="dist-chart" />
               <p class="today-explain" style={{ "font-size": "12px", "padding-top": "6px" }}>
-                Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.
+                {t("today.chart_explain")}
               </p>
               <div class="today-foot">
-                {`${isNat() ? "Slovenija" : "Danes"}: ${todayData()!.today_temp!.toFixed(1)} °C · ${todayData()!.percentile!.toFixed(0)}. percentil · mediana ${todayData()!.cutoffs!.p50.toFixed(1)} °C · ${(todayData()!.n_samples ?? 0).toLocaleString()} opazovanj · ${todayData()!.year_min}–${todayData()!.year_max}`}
+                {t("today.foot2", {
+                  region: isNat() ? t("today.foot2_region_nat") : t("today.foot2_region_day"),
+                  temp: fmtNum(todayData()!.today_temp!, 1),
+                  pct: fmtInt(todayData()!.percentile!),
+                  median: fmtNum(todayData()!.cutoffs!.p50, 1),
+                  count: todayData()!.n_samples ?? 0,
+                  year_min: todayData()!.year_min ?? 0,
+                  year_max: todayData()!.year_max ?? 0,
+                })}
               </div>
             </div>
           </Show>
@@ -129,7 +141,7 @@ function Dashboard(props: { meta: SiteMeta }) {
         syncLoc={mapLoc}
         onLocChange={setMapLoc}
       >
-        <div class="sec-hs">Analiza trendov · ERA5-Land reanaliza</div>
+        <div class="sec-hs">{t("sections.trends_analysis")}</div>
 
         <RegToolbar />
 
@@ -140,10 +152,10 @@ function Dashboard(props: { meta: SiteMeta }) {
             <div style={{ ...panelHStyle, background: "var(--color-card)" }}>
               <div>
                 <div style={panelTitleStyle}>
-                  {mapLoc() ? mapLoc()!.replace(/_/g, " ") : `Slovenija — vseh ${era5Stations.length} postaj`}
+                  {mapLoc() ? mapLoc()!.replace(/_/g, " ") : t("map.panel_title_all", { count: era5Stations.length })}
                 </div>
                 <div style={{ ...panelSubStyle, "margin-top": "3px" }}>
-                  {era5Stations.length} postaj · ERA5
+                  {t("map.panel_sub_count", { count: era5Stations.length })}
                 </div>
               </div>
             </div>
@@ -152,10 +164,10 @@ function Dashboard(props: { meta: SiteMeta }) {
             </Suspense>
             <div style={{ padding: "8px 12px 10px", "border-top": "1px solid var(--color-rule)", display: "flex", gap: "10px", "flex-wrap": "wrap", background: "var(--color-card)" }}>
               {([
-                ["#7bafd4", "Alpska (>1500m)"],
-                ["#a3c4a0", "Gorska (800–1500m)"],
-                ["#c8b97a", "Predgorska (400–800m)"],
-                ["#c25a2c", "Nižinska (<400m)"],
+                ["#7bafd4", t("map.legend_alpine")],
+                ["#a3c4a0", t("map.legend_mountain")],
+                ["#c8b97a", t("map.legend_foothill")],
+                ["#c25a2c", t("map.legend_lowland")],
               ] as [string, string][]).map(([color, label]) => (
                 <span style={{ display: "flex", "align-items": "center", gap: "5px", "font-family": "var(--font-mono)", "font-size": "9px", "letter-spacing": "0.06em", "text-transform": "uppercase", color: "var(--color-ink-soft)" }}>
                   <span style={{ width: "10px", height: "10px", "border-radius": "50%", background: color, display: "inline-block", border: "1px solid rgba(0,0,0,0.15)", "flex-shrink": "0" }} />
@@ -189,13 +201,13 @@ function TropControls(props: {
   return (
     <div style={{ display: "flex", gap: "24px", "align-items": "center", "flex-wrap": "wrap", margin: "0 40px 12px" }}>
       <label style={{ display: "flex", "align-items": "center", gap: "8px" }}>
-        <span style={ctlLabel}>Prag:</span>
+        <span style={ctlLabel}>{t("tropical.ctrl_threshold")}</span>
         <input type="range" min={props.min} max={props.max} step={1} value={props.threshold}
                onInput={(e) => props.setThreshold(Number(e.currentTarget.value))} />
-        <span style={{ ...ctlLabel, color: "var(--color-ink)" }}>{props.threshold} °C</span>
+        <span style={{ ...ctlLabel, color: "var(--color-ink)" }}>{t("common.temp_c", { temp: fmtInt(props.threshold) })}</span>
       </label>
       <label style={{ display: "flex", "align-items": "center", gap: "8px" }}>
-        <span style={ctlLabel}>Min. zap. {props.unit}:</span>
+        <span style={ctlLabel}>{props.unit === "noči" ? t("tropical.ctrl_streak_nights") : t("tropical.ctrl_streak_days")}</span>
         <select value={props.streak} onInput={(e) => props.setStreak(Number(e.currentTarget.value))}
                 style={{ "font-family": "var(--font-mono)", "font-size": "11px", padding: "2px 6px" }}>
           <option value={1}>1</option>
@@ -225,7 +237,7 @@ function Era5Charts() {
       {/* Location impact details */}
       <section class="sec-p" style={{ "padding-top": "16px", "padding-bottom": "24px" }}>
         <div class="sec-hs" style={{ "padding-inline": "0", "padding-top": "0", "padding-bottom": "10px" }}>
-          Podrobnosti lokacije
+          {t("sections.location_details")}
         </div>
         <Suspense fallback={<div style={{ height: "180px" }} class="animate-pulse rounded-xl bg-[var(--color-paper-2)]" />}>
           <HeroCardsPanel loc={loc()} doy={s.doy()} />
@@ -234,10 +246,10 @@ function Era5Charts() {
 
       <section class="sec-p" style={{ "padding-bottom": "40px" }}>
         <div class="sec-h" style={{ "padding-inline": "0", "padding-top": "24px" }}>
-          Sezonski pregled
+          {t("sections.season_overview")}
         </div>
         <div class="sec-hs2">
-          Povprečna najvišja temperatura po sezonah · ERA5-Land · barve glede na referenčno obdobje {BASELINE_LABEL}
+          {t("sections.season_overview_sub", { baseline: BASELINE_LABEL })}
         </div>
         <Suspense fallback={<div class="h-40 animate-pulse bg-[var(--color-paper-2)] rounded-xl" />}>
           <Era5SeasonHeatmapChart loc={loc()} label={st()?.label} />
@@ -247,7 +259,7 @@ function Era5Charts() {
       {/* SPEI drought heatmap (national) */}
       <section class="sec-p" style={{ "padding-bottom": "40px" }}>
         <div class="sec-h" style={{ "padding-inline": "0", "padding-top": "8px" }}>
-          Sezonski sušni indeks (SPEI)
+          {t("sections.spei")}
         </div>
         <ErrorBoundary fallback={sectionErrorFallback(refetchSpei, "160px")}>
           <Suspense fallback={<div class="h-40 animate-pulse bg-[var(--color-paper-2)] rounded-xl" />}>
@@ -261,10 +273,10 @@ function Era5Charts() {
       {/* SPEI drought trend per station */}
       <section class="sec-p" style={{ "padding-bottom": "40px" }}>
         <div class="sec-h" style={{ "padding-inline": "0", "padding-top": "8px" }}>
-          Sušni trend po postaji — SPEI
+          {t("sections.spei_trend")}
         </div>
         <div class="sec-hs2">
-          Sezonski (SPEI-3) in mesečni (SPEI-30) indeks vodne bilance · Theil-Sen · ERA5-Land
+          {t("sections.spei_trend_sub")}
         </div>
         <ErrorBoundary fallback={sectionErrorFallback(refetchSpeiStation, "400px")}>
           <Suspense fallback={<div class="animate-pulse rounded-xl bg-[var(--color-paper-2)]" style={{ height: "400px" }} />}>
@@ -277,9 +289,9 @@ function Era5Charts() {
 
       {/* Tropical days */}
       <section class="sec-p" style={{ "padding-bottom": "40px" }}>
-        <div class="sec-h" style={{ "padding-inline": "0", "padding-top": "8px" }}>Tropski dnevi</div>
+        <div class="sec-h" style={{ "padding-inline": "0", "padding-top": "8px" }}>{t("sections.tropical_days")}</div>
         <div class="sec-hs2">
-          Število dni z najvišjo temperaturo nad pragom · ERA5-Land · lapsna korekcija nadmorske višine
+          {t("sections.tropical_days_sub")}
         </div>
         <TropControls threshold={daysThr()} setThreshold={setDaysThr} min={25} max={35} streak={streak()} setStreak={setStreak} unit="dni" />
         <Suspense fallback={<div class="h-56 animate-pulse bg-[var(--color-paper-2)] rounded-xl" />}>
@@ -289,9 +301,9 @@ function Era5Charts() {
 
       {/* Tropical nights */}
       <section class="sec-p" style={{ "padding-bottom": "60px" }}>
-        <div class="sec-h" style={{ "padding-inline": "0", "padding-top": "8px" }}>Tropske noči</div>
+        <div class="sec-h" style={{ "padding-inline": "0", "padding-top": "8px" }}>{t("sections.tropical_nights")}</div>
         <div class="sec-hs2">
-          Število noči z najnižjo temperaturo nad pragom · ERA5-Land · lapsna korekcija nadmorske višine
+          {t("sections.tropical_nights_sub")}
         </div>
         <TropControls threshold={nightsThr()} setThreshold={setNightsThr} min={15} max={25} streak={streak()} setStreak={setStreak} unit="noči" />
         <Suspense fallback={<div class="h-56 animate-pulse bg-[var(--color-paper-2)] rounded-xl" />}>
@@ -302,10 +314,10 @@ function Era5Charts() {
       {/* Sea level rise — Koper (IPCC AR6 projections, static) */}
       <section class="sec-p" style={{ "padding-bottom": "40px" }}>
         <div class="sec-h" style={{ "padding-inline": "0", "padding-top": "8px" }}>
-          Dvig morske gladine — Koper
+          {t("sections.sea_level")}
         </div>
         <div class="sec-hs2" style={{ "margin-bottom": "16px" }}>
-          Projekcije dviga morske gladine po scenarijih IPCC AR6 z viharnimi nalivi · severni Jadran
+          {t("sections.sea_level_sub")}
         </div>
         <Suspense fallback={<div class="animate-pulse rounded-xl bg-[#071e26]" style={{ height: "500px" }} />}>
           <SeaLevelChart />

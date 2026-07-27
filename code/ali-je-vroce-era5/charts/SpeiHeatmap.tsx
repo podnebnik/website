@@ -1,18 +1,20 @@
 import { createSignal, createMemo, For, Show, onCleanup } from "solid-js";
+import { t, fmtNum, fmtSigned } from "../i18n/format.ts";
 
 const SEASON_ORDER = ["Autumn", "Summer", "Spring", "Winter"] as const;
 type Season = typeof SEASON_ORDER[number];
 
 const SEASON_LABEL: Record<Season, string> = {
-  Autumn: "Jesen", Summer: "Poletje", Spring: "Pomlad", Winter: "Zima",
+  Autumn: t("spei.label_Autumn"), Summer: t("spei.label_Summer"),
+  Spring: t("spei.label_Spring"), Winter: t("spei.label_Winter"),
 };
 
 const CAT_LABELS: Record<string, string> = {
-  extreme_dry: "Huda suša (SPEI < −1,5)",
-  dry:         "Suho (SPEI −1,5 do −1,0)",
-  normal:      "Normalno (SPEI −1,0 do 1,0)",
-  wet:         "Mokro (SPEI 1,0 do 1,5)",
-  extreme_wet: "Zelo mokro (SPEI > 1,5)",
+  extreme_dry: t("spei.cat_extreme_dry"),
+  dry:         t("spei.cat_dry"),
+  normal:      t("spei.cat_normal"),
+  wet:         t("spei.cat_wet"),
+  extreme_wet: t("spei.cat_extreme_wet"),
 };
 
 const CAT_COLORS: Record<string, string> = {
@@ -24,12 +26,12 @@ const CAT_COLORS: Record<string, string> = {
 };
 
 const MODES = [
-  { key: "all",      label: "Vse letne čase" },
-  { key: "extremes", label: "Samo ekstremi" },
-  { key: "Autumn",   label: "Jesen" },
-  { key: "Summer",   label: "Poletje" },
-  { key: "Spring",   label: "Pomlad" },
-  { key: "Winter",   label: "Zima" },
+  { key: "all",      label: t("spei.mode_all") },
+  { key: "extremes", label: t("spei.mode_extremes") },
+  { key: "Autumn",   label: t("spei.label_Autumn") },
+  { key: "Summer",   label: t("spei.label_Summer") },
+  { key: "Spring",   label: t("spei.label_Spring") },
+  { key: "Winter",   label: t("spei.label_Winter") },
 ];
 
 // T-5.4a — visually-hidden (screen-reader-only) style. Kebab-case keys because
@@ -103,7 +105,7 @@ export function SpeiHeatmap(props: SpeiHeatmapProps) {
       a.season === b.season ? a.y - b.y : a.season.localeCompare(b.season))
   );
   const gridLabel = createMemo(() =>
-    `Toplotna karta sušnega indeksa SPEI po letnih časih in letih od ${props.data.year_min} do ${props.data.year_max}: vsak stolpec je eno leto, vsaka vrstica en letni čas, barva pa označuje razmere od hude suše do zelo mokrega. Celotni podatki so v tabeli pod grafom.`
+    t("spei.grid_a11y", { from: props.data.year_min, to: props.data.year_max })
   );
 
   function isExtreme(cat: string) { return cat === "extreme_dry" || cat === "extreme_wet"; }
@@ -132,10 +134,10 @@ export function SpeiHeatmap(props: SpeiHeatmapProps) {
       }
     }
     return [
-      { n: extDry,          lbl: "Sezone hude suše (SPEI < −1,5)" },
-      { n: extWet,          lbl: "Izjemno mokre sezone (SPEI > 1,5)" },
-      { n: extDrySince2000, lbl: "Sezone hude suše od 2000" },
-      { n: dryRecent,       lbl: `Suho ali suša (${recentFrom}–${ym})` },
+      { n: extDry,          lbl: t("spei.stat_extreme_dry") },
+      { n: extWet,          lbl: t("spei.stat_extreme_wet") },
+      { n: extDrySince2000, lbl: t("spei.stat_extreme_dry_since") },
+      { n: dryRecent,       lbl: t("spei.stat_dry_recent", { from: recentFrom, to: ym }) },
     ];
   });
 
@@ -176,7 +178,7 @@ export function SpeiHeatmap(props: SpeiHeatmapProps) {
           )}
         </For>
         <button class="shm-btn shm-btn--anim" onClick={() => animating() ? stopAnimate() : startAnimate()}>
-          {animating() ? "⏹ Ustavi" : "▶ Animacija"}
+          {animating() ? t("spei.anim_stop") : t("spei.anim_play")}
         </button>
       </div>
 
@@ -257,7 +259,6 @@ export function SpeiHeatmap(props: SpeiHeatmapProps) {
       {/* Floating tooltip */}
       <Show when={tipData()}>
         {(td) => {
-          const speiSign = td().row.spei >= 0 ? "+" : "";
           return (
             <div
               class="shm-tip"
@@ -271,9 +272,9 @@ export function SpeiHeatmap(props: SpeiHeatmapProps) {
                 <span class="shm-tip-sw" style={{ background: td().row.color }} />
                 {CAT_LABELS[td().row.cat] ?? td().row.cat}
               </div>
-              SPEI: <b>{speiSign}{td().row.spei.toFixed(2)}</b><br />
-              Vodni bilans: <b>{td().row.balance.toFixed(0)} mm P−ET₀</b><br />
-              {td().row.rank}. najsušnejša {SEASON_LABEL[td().row.season as Season] ?? td().row.season} od {td().row.total} let
+              {t("spei.tooltip_spei")}<b>{fmtSigned(td().row.spei, 2)}</b><br />
+              {t("spei.tooltip_balance")}<b>{fmtNum(td().row.balance, 0)}{t("spei.tooltip_balance_unit")}</b><br />
+              {t("spei.tooltip_rank", { rank: td().row.rank, season: SEASON_LABEL[td().row.season as Season] ?? td().row.season, count: td().row.total })}
             </div>
           );
         }}
@@ -282,15 +283,15 @@ export function SpeiHeatmap(props: SpeiHeatmapProps) {
       {/* T-5.4a — screen-reader data-table fallback (visually hidden). Slovenian
           caption/headers awaiting operator review. */}
       <table style={SR_ONLY}>
-        <caption>Podatki toplotne karte sušnega indeksa SPEI po letnih časih in letih</caption>
+        <caption>{t("spei.table_caption")}</caption>
         <thead>
           <tr>
-            <th scope="col">Letni čas</th>
-            <th scope="col">Leto</th>
-            <th scope="col">Kategorija</th>
-            <th scope="col">SPEI</th>
-            <th scope="col">Vodna bilanca (mm)</th>
-            <th scope="col">Uvrstitev</th>
+            <th scope="col">{t("spei.th_season")}</th>
+            <th scope="col">{t("spei.th_year")}</th>
+            <th scope="col">{t("spei.th_category")}</th>
+            <th scope="col">{t("spei.th_spei")}</th>
+            <th scope="col">{t("spei.th_balance")}</th>
+            <th scope="col">{t("spei.th_rank")}</th>
           </tr>
         </thead>
         <tbody>
@@ -300,9 +301,9 @@ export function SpeiHeatmap(props: SpeiHeatmapProps) {
                 <td>{SEASON_LABEL[r.season as Season] ?? r.season}</td>
                 <td>{r.y}</td>
                 <td>{CAT_LABELS[r.cat] ?? r.cat}</td>
-                <td>{r.spei >= 0 ? "+" : ""}{r.spei.toFixed(2)}</td>
-                <td>{r.balance.toFixed(0)}</td>
-                <td>{r.rank}. od {r.total}</td>
+                <td>{fmtSigned(r.spei, 2)}</td>
+                <td>{fmtNum(r.balance, 0)}</td>
+                <td>{t("spei.rank_of", { rank: r.rank, total: r.total })}</td>
               </tr>
             )}
           </For>

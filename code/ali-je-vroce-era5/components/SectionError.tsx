@@ -1,5 +1,6 @@
 import { Show } from "solid-js";
 import type { JSXElement } from "solid-js";
+import { t } from "../i18n/format.ts";
 
 // T-5.1 — the ONE visible error state for a failed section fetch, reused at every
 // section boundary. Before this, a failed section fetch either vanished (the
@@ -34,7 +35,7 @@ export function SectionError(props: { onRetry?: (() => void) | undefined; minHei
         "line-height":     "1.5",
       }}
     >
-      <span>Tega razdelka trenutno ni bilo mogoče naložiti.</span>
+      <span>{t("error.section")}</span>
       <Show when={props.onRetry}>
         <button
           type="button"
@@ -52,7 +53,7 @@ export function SectionError(props: { onRetry?: (() => void) | undefined; minHei
             cursor:          "pointer",
           }}
         >
-          Poskusi znova
+          {t("error.retry")}
         </button>
       </Show>
     </div>

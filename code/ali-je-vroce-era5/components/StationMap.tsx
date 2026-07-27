@@ -1,6 +1,7 @@
 import { onMount, onCleanup, createEffect } from "solid-js";
 import { enableChartA11y } from "../charts/highcharts-a11y.ts";
 import type { SiteMeta } from "../types.ts";
+import { t } from "../i18n/format.ts";
 
 interface Props {
   meta:     SiteMeta;
@@ -64,7 +65,7 @@ export function StationMap(props: Props) {
       // T-5.4a — screen-reader summary (Slovenian copy awaiting operator review)
       accessibility: {
         enabled: true,
-        description: "Zemljevid Slovenije z merilnimi postajami; barva točke označuje višinski pas postaje. Postajo lahko izberete tudi s spustnim seznamom v analizi trendov.",
+        description: t("map.a11y"),
       },
       mapNavigation: {
         enabled: true,

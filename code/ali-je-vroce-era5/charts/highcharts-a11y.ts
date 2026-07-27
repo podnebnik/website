@@ -20,6 +20,8 @@
 // side effects and HC.setOptions is the stub's no-op, so nothing here reaches real
 // Highcharts — exactly as the existing highcharts-more / modules/map aliases do.
 
+import { t } from "../i18n/format.ts";
+
 let ready: Promise<void> | null = null;
 
 export function enableChartA11y(HC: any): Promise<void> {
@@ -37,6 +39,17 @@ export function enableChartA11y(HC: any): Promise<void> {
         // view-data-table proxy present in the SR region. Purely additive; no
         // rendered pixel changes (T-5.4a).
         exporting: { enabled: false },
+        // T-5.5 — the export-data "view as data table" affordance strings, sourced
+        // from the catalogue (hc.*). Extracted AS-IS: the values are still the
+        // English Highcharts defaults, centralised here and FLAGGED for a Slovenian
+        // translation pass (D-8). Setting them to their own defaults is a no-op on
+        // the rendered output today.
+        lang: {
+          viewData:    t("hc.viewData"),
+          hideData:    t("hc.hideData"),
+          downloadCSV: t("hc.downloadCSV"),
+          downloadXLS: t("hc.downloadXLS"),
+        },
       });
     })();
   }

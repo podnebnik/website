@@ -1,6 +1,7 @@
 import { createSignal, createMemo, createEffect, onMount, onCleanup } from "solid-js";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { t } from "../i18n/format.ts";
 
 // ── Projection data (IPCC AR6, localised for northern Adriatic / DRSV 2023) ──
 
@@ -351,17 +352,17 @@ export function SeaLevelWidget() {
     <div
       class="sl-widget"
       role="group"
-      aria-label="Interaktivni prikaz dviga morske gladine v Kopru po scenarijih IPCC AR6; gumbi izberejo scenarij in verjetnost, drsnik leto, ločnica pa primerja sedanjost s projekcijo."
+      aria-label={t("sea.a11y")}
     >
 
       {/* Controls bar */}
       <div class="sl-ctrl">
         <div class="sl-ctrl-group">
-          <span class="sl-lbl">Scenarij</span>
+          <span class="sl-lbl">{t("sea.scenario")}</span>
           <div class="sl-btn-row">
             {([
-              { key: "ssp245", label: "SSP2-4.5", sub: "Srednja pot" },
-              { key: "ssp585", label: "SSP5-8.5", sub: "Vožnja po avtocesti" },
+              { key: "ssp245", label: "SSP2-4.5", sub: t("sea.scn_mid") },
+              { key: "ssp585", label: "SSP5-8.5", sub: t("sea.scn_highway") },
             ] as const).map(s => (
               <button class={"sl-btn" + (scn() === s.key ? " sl-btn--active" : "")} onClick={() => setScn(s.key)}>
                 {s.label}<span class="sl-btn-sub">{s.sub}</span>
@@ -371,12 +372,12 @@ export function SeaLevelWidget() {
         </div>
 
         <div class="sl-ctrl-group">
-          <span class="sl-lbl">Verjetnost ekstremov</span>
+          <span class="sl-lbl">{t("sea.prob")}</span>
           <div class="sl-btn-row">
             {([
-              { key: "p70", label: "pogost (70 %)" },
-              { key: "p20", label: "redek (20 %)" },
-              { key: "p01", label: "ekstrem (1 %)" },
+              { key: "p70", label: t("sea.prob_common") },
+              { key: "p20", label: t("sea.prob_rare") },
+              { key: "p01", label: t("sea.prob_extreme") },
             ] as const).map(p => (
               <button class={"sl-btn" + (prob() === p.key ? " sl-btn--active" : "")} onClick={() => setProb(p.key)}>
                 {p.label}
@@ -387,15 +388,15 @@ export function SeaLevelWidget() {
 
         <div class="sl-ctrl-group sl-ctrl-group--year">
           <div class="sl-year-header">
-            <span class="sl-lbl">Leto: <strong style={{ color: "var(--sl-txt)" }}>{Math.round(year())}</strong></span>
+            <span class="sl-lbl">{t("sea.year")} <strong style={{ color: "var(--sl-txt)" }}>{Math.round(year())}</strong></span>
             <span class="sl-inline-stats">
-              {visHa()} ha<span class="sl-inline-sep">·</span>{visBuild()} stavb
+              {visHa()} ha<span class="sl-inline-sep">·</span>{visBuild()} {t("sea.buildings_short")}
             </span>
           </div>
           <div class="sl-year-row">
             <input type="range" min="2024" max="2100" step="1" value={Math.round(year())}
               onInput={(e) => { stopPlay(); setYear(+e.currentTarget.value); }} />
-            <button class="sl-play-btn" aria-label={playing() ? "Ustavi" : "Predvajaj"}
+            <button class="sl-play-btn" aria-label={playing() ? t("sea.pause") : t("sea.play")}
               onClick={() => playing() ? stopPlay() : startPlay()}>
               {playing() ? "⏸" : "▶"}
             </button>
@@ -412,19 +413,19 @@ export function SeaLevelWidget() {
           <canvas ref={canvasEl}
             style={{ position: "absolute", inset: "0", width: "100%", height: "100%", "pointer-events": "none", "z-index": "410" }} />
           <div ref={divLineEl}   class="sl-div-line" />
-          <div ref={divHandleEl} class="sl-div-handle" aria-label="Premakni ločnico">⟺</div>
-          <div class="sl-lbl-today">DANES</div>
+          <div ref={divHandleEl} class="sl-div-handle" aria-label={t("sea.move_divider")}>⟺</div>
+          <div class="sl-lbl-today">{t("sea.today")}</div>
           <div ref={futureLblEl} class="sl-future-lbl">{Math.round(year())}</div>
         </div>
 
         {/* Stats card */}
         <div class="sl-stats-card">
-          <div class="sl-stats-label">Skupni dvig gladine</div>
+          <div class="sl-stats-label">{t("sea.total_rise")}</div>
           <div class="sl-rise-big">
             <span class="sl-rise-val">+{Math.round(meanRise())}</span>
             <span class="sl-rise-unit"> cm</span>
           </div>
-          <div class="sl-stats-sub">srednja vrednost · {scn() === 'ssp245' ? 'SSP2-4.5' : 'SSP5-8.5'}</div>
+          <div class="sl-stats-sub">{t("sea.mean_sub", { scn: scn() === 'ssp245' ? 'SSP2-4.5' : 'SSP5-8.5' })}</div>
 
           {/* Vertical gauge (desktop) */}
           <div class="sl-gauge-wrap">
@@ -456,31 +457,31 @@ export function SeaLevelWidget() {
           <div class="sl-impacts">
             <div class="sl-impact-row">
               <span class="sl-impact-val">{visHa()}</span>
-              <span class="sl-impact-lbl">ha poplavljenih</span>
+              <span class="sl-impact-lbl">{t("sea.impact_ha")}</span>
             </div>
             <div class="sl-impact-row">
               <span class="sl-impact-val">{visBuild()}</span>
-              <span class="sl-impact-lbl">ogroženih stavb</span>
+              <span class="sl-impact-lbl">{t("sea.impact_build")}</span>
             </div>
           </div>
 
           {/* Legend */}
           <div class="sl-legend">
             <span class="sl-leg-swatch" style={{ background: "rgba(60,30,200,0.82)" }}/>
-            <span class="sl-leg-txt">Danes in prihodnost</span>
+            <span class="sl-leg-txt">{t("sea.legend_today")}</span>
           </div>
           <div class="sl-legend">
             <span class="sl-leg-swatch" style={{ background: "rgba(210,30,45,0.83)" }}/>
-            <span class="sl-leg-txt">Novo v prihodnosti</span>
+            <span class="sl-leg-txt">{t("sea.legend_future")}</span>
           </div>
 
           {/* Sources */}
           <details class="sl-src">
-            <summary>Viri podatkov</summary>
-            <p>Projekcije: IPCC AR6 (Fox-Kemper et al. 2021), lokalizirano za severni Jadran — DRSV 2023.</p>
-            <p>Posledice: Kovačič et al. 2016/2019.</p>
-            <p>Karta: © <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA), © <a href="https://www.openstreetmap.org">OpenStreetMap</a>.</p>
-            <p class="sl-src-warn">⚠ Poplavne cone so shematske — zamenjava z LIDAR DEM poligoni sledi.</p>
+            <summary>{t("sea.sources")}</summary>
+            <p>{t("sea.src_proj")}</p>
+            <p>{t("sea.src_impact")}</p>
+            <p>{t("sea.src_map")} © <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA), © <a href="https://www.openstreetmap.org">OpenStreetMap</a>.</p>
+            <p class="sl-src-warn">{t("sea.src_warn")}</p>
           </details>
         </div>
 
