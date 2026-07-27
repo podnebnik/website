@@ -3,19 +3,19 @@ import { createSignal, createResource, createEffect, createMemo, createContext, 
 import type { JSXElement } from "solid-js";
 import type { SiteMeta } from "../types.ts";
 import type { RegressionParams } from "../api.ts";
-import { fetchRegression, fetchCalendar } from "../api.ts";
+import { fetchRegression, fetchCalendar, varLabel as varLabelOf } from "../api.ts";
 import { sectionErrorFallback } from "./SectionError.tsx";
+import { t, fmtSigned, fmtDoy } from "../i18n/format.ts";
 
 const RegressionChart = lazy(() => import("../charts/RegressionChart.tsx").then(m => ({ default: m.RegressionChart })));
 const YearRoundChart  = lazy(() => import("../charts/YearRoundChart.tsx").then(m => ({ default: m.YearRoundChart })));
 
-const VARIABLES: [string, string][] = [
-  ["temperature_max",  "Max temperature (°C)"],
-  ["temperature_min",  "Min temperature (°C)"],
-  ["temperature_mean", "Mean temperature (°C)"],
-  ["precipitation_sum",      "Precipitation (mm)"],
-  ["et0_evapotranspiration", "ET₀ (mm)"],
+// T-5.5 — variable labels come from the catalogue (reg.var_*, via api.varLabel).
+const VAR_KEYS = [
+  "temperature_max", "temperature_min", "temperature_mean",
+  "precipitation_sum", "et0_evapotranspiration",
 ];
+const VARIABLES: [string, string][] = VAR_KEYS.map(k => [k, varLabelOf(k)]);
 
 interface ProviderProps {
   meta:         SiteMeta;
@@ -26,9 +26,7 @@ interface ProviderProps {
 }
 
 function doyToLabel(doy: number): string {
-  const d = new Date(Date.UTC(2001, 0, 1));
-  d.setUTCDate(d.getUTCDate() + doy - 1);
-  return d.toLocaleDateString("en-GB", { month: "short", day: "numeric" });
+  return fmtDoy(doy);
 }
 
 // ── Store factory ─────────────────────────────────────────────────────────────
@@ -75,10 +73,10 @@ function createStore(props: ProviderProps) {
     if (isPrecip()) return t >= 0 ? "#1a5fc8" : "#a05c20";
     return t >= 0 ? "#cc2222" : "#1a5fc8";
   };
-  const totalChange = () => {
+  const totalChange = (): number | null => {
     const s = stats0();
     if (!s) return null;
-    return (trend10() * s.n_years / 10).toFixed(2);
+    return trend10() * s.n_years / 10;
   };
   const stationLabel = (name: string) => {
     const st = props.meta.stations.find(s => s.name === name);
@@ -86,7 +84,7 @@ function createStore(props: ProviderProps) {
   };
   const locLabel   = () => {
     const locs = selLocs();
-    return locs.length === 1 ? stationLabel(locs[0]!) : `${locs.length} locations`;
+    return locs.length === 1 ? stationLabel(locs[0]!) : t("reg.locations_multi", { count: locs.length });
   };
   const varLabel   = () => VARIABLES.find(([k]) => k === selVar())?.[1] ?? selVar();
   const chartTitle = () => `${varLabel().split("(")[0]!.trim()} · ${doyToLabel(doy())}`;
@@ -136,7 +134,7 @@ export function RegToolbar() {
       {/* Location */}
       <div style={{ position: "relative" }}>
         <div style={pillGroupStyle}>
-          <span style={pgkStyle}>Location</span>
+          <span style={pgkStyle}>{t("reg.location")}</span>
           <button style={locBtnStyle} onClick={() => s.setLocOpen(v => !v)}>
             <span>{s.locLabel()}</span>
             <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
@@ -145,7 +143,7 @@ export function RegToolbar() {
         <Show when={s.locOpen()}>
           <div style={locMenuStyle} onClick={(e) => e.stopPropagation()}>
             <div style={locMenuHeaderStyle}>
-              <span style={{ "font-size": "11px", "font-weight": "600", "font-family": "var(--font-sans)" }}>Select locations (max 6)</span>
+              <span style={{ "font-size": "11px", "font-weight": "600", "font-family": "var(--font-sans)" }}>{t("reg.select_locations")}</span>
               <button style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-ink-soft)", "font-size": "14px" }} onClick={() => s.setLocOpen(false)}>✕</button>
             </div>
             <For each={s.meta.stations}>
@@ -166,7 +164,7 @@ export function RegToolbar() {
 
       {/* Variable */}
       <div style={pillGroupStyle}>
-        <span style={pgkStyle}>Variable</span>
+        <span style={pgkStyle}>{t("reg.variable")}</span>
         <div style={{ ...pillStyle, "padding-right": "4px" }}>
           <select
             value={s.selVar()}
@@ -194,7 +192,7 @@ export function RegToolbar() {
 
       {/* DOY control */}
       <div class="reg-doy-ctrl">
-        <span style={{ "font-family": "var(--font-mono)", "font-size": "9px", "letter-spacing": "0.12em", "text-transform": "uppercase", color: "var(--color-ink-soft)", "white-space": "nowrap" }}>Day</span>
+        <span style={{ "font-family": "var(--font-mono)", "font-size": "9px", "letter-spacing": "0.12em", "text-transform": "uppercase", color: "var(--color-ink-soft)", "white-space": "nowrap" }}>{t("reg.day")}</span>
         <div style={{ "font-family": "var(--font-mono)", "font-weight": "600", "font-size": "13px", background: "var(--color-card)", border: "1px solid var(--color-rule-2)", "border-radius": "7px", padding: "4px 10px", "min-width": "60px", "text-align": "center", "white-space": "nowrap" }}>
           {s.doyToLabel(s.doy())}
         </div>
@@ -229,7 +227,7 @@ export function RegScatterCard() {
           <div style={{ ...panelSubStyle, "margin-top": "3px" }}>{s.chartSub()}</div>
         </div>
         <Show when={s.stats0()}>
-          {(st) => <div style={panelSubStyle}>{st().n_years} YR · {st().sig_label}</div>}
+          {(st) => <div style={panelSubStyle}>{t("reg.years_sig", { count: st().n_years, sig: st().sig_label })}</div>}
         </Show>
       </div>
 
@@ -237,11 +235,11 @@ export function RegScatterCard() {
         <Show when={s.totalChange() !== null}>
           <div style={statsBoxStyle}>
             <div style={{ "font-family": "var(--font-sans)", "font-size": "20px", "font-weight": "600", color: s.trendColor(), "letter-spacing": "-0.02em", "line-height": "1", "margin-bottom": "3px" }}>
-              {Number(s.totalChange()) >= 0 ? "+" : ""}{s.totalChange()}
+              {fmtSigned(s.totalChange()!, 2)}
               <span style={{ "font-size": "11px", "font-weight": "400", "margin-left": "3px" }}>{s.isPrecip() ? "mm" : "°C"}</span>
             </div>
             <div style={{ "font-family": "var(--font-mono)", "font-size": "9px", "letter-spacing": "0.08em", "text-transform": "uppercase", color: "var(--color-ink-soft)" }}>
-              change over record
+              {t("reg.change_over_record")}
             </div>
           </div>
         </Show>
@@ -252,7 +250,7 @@ export function RegScatterCard() {
               {(d) => (
                 <Show when={d.results.length > 0} fallback={
                   <div style={{ flex: "1", display: "flex", "align-items": "center", "justify-content": "center", color: "var(--color-ink-soft)", "font-size": "13px", "min-height": "280px" }}>
-                    No data for the selected day and location.
+                    {t("reg.no_data")}
                   </div>
                 }>
                   <RegressionChart data={d} chartId={`reg-${s.selVar()}-${s.doy()}-${s.selLocs().join("_")}`} />
@@ -265,10 +263,10 @@ export function RegScatterCard() {
 
       <div style={chartFooterStyle}>
         <div style={{ display: "flex", gap: "12px", "align-items": "center", "flex-wrap": "wrap" }}>
-          <span style={swatchStyle}><i style={{ background: "var(--color-accent-cool)", "border-radius": "50%", display: "inline-block", width: "8px", height: "8px" }} />Under mean</span>
-          <span style={swatchStyle}><i style={{ background: "var(--color-accent)", "border-radius": "50%", display: "inline-block", width: "8px", height: "8px" }} />Over mean</span>
-          <span style={swatchStyle}><i style={{ background: "var(--color-ink)", "border-radius": "1px", display: "inline-block", width: "14px", height: "3px" }} />Trend line</span>
-          <span style={swatchStyle}><i style={{ background: "rgba(194,90,44,0.25)", "border-radius": "2px", display: "inline-block", width: "10px", height: "10px" }} />95% CI</span>
+          <span style={swatchStyle}><i style={{ background: "var(--color-accent-cool)", "border-radius": "50%", display: "inline-block", width: "8px", height: "8px" }} />{t("reg.under_mean")}</span>
+          <span style={swatchStyle}><i style={{ background: "var(--color-accent)", "border-radius": "50%", display: "inline-block", width: "8px", height: "8px" }} />{t("reg.over_mean")}</span>
+          <span style={swatchStyle}><i style={{ background: "var(--color-ink)", "border-radius": "1px", display: "inline-block", width: "14px", height: "3px" }} />{t("reg.trend_line")}</span>
+          <span style={swatchStyle}><i style={{ background: "rgba(194,90,44,0.25)", "border-radius": "2px", display: "inline-block", width: "10px", height: "10px" }} />{t("common.ci95")}</span>
         </div>
         <Show when={s.stats0()}>
           {(st) => <span style={panelSubStyle}>{st().method ?? "Theil-Sen"} · {st().fit_desc}</span>}
@@ -293,13 +291,13 @@ export function RegYearRoundCard() {
 
       <div style={panelHStyle}>
         <div style={{ "min-width": "0" }}>
-          <div style={panelTitleStyle}>Year-round trend · {s.selLocs()[0]?.replace(/_/g, " ")}</div>
+          <div style={panelTitleStyle}>{t("reg.year_round_title", { station: s.selLocs()[0]?.replace(/_/g, " ") ?? "" })}</div>
           <div style={{ ...panelSubStyle, "margin-top": "3px" }}>
             {(s.VARIABLES.find(([k]) => k === s.selVar())?.[1] ?? s.selVar()).split("(")[0]!.trim()}
             {" · Theil-Sen + MK"}
           </div>
         </div>
-        <div style={panelSubStyle}>trend/decade per day of year · red line = selected day</div>
+        <div style={panelSubStyle}>{t("reg.year_round_sub")}</div>
       </div>
 
       <div style={{ padding: "8px 16px 12px", background: "var(--color-paper)" }}>
@@ -313,9 +311,9 @@ export function RegYearRoundCard() {
       </div>
 
       <div style={{ ...chartFooterStyle, "justify-content": "flex-start", gap: "16px" }}>
-        <span style={swatchStyle}><i style={{ background: "rgba(210,55,35,0.9)", "border-radius": "2px", display: "inline-block", width: "10px", height: "10px" }} />Warming</span>
-        <span style={swatchStyle}><i style={{ background: "rgba(35,90,210,0.9)", "border-radius": "2px", display: "inline-block", width: "10px", height: "10px" }} />Cooling</span>
-        <span style={{ ...panelSubStyle, "margin-left": "auto" }}>opacity = significance · p &lt; 0.001 fully opaque</span>
+        <span style={swatchStyle}><i style={{ background: "rgba(210,55,35,0.9)", "border-radius": "2px", display: "inline-block", width: "10px", height: "10px" }} />{t("reg.warming")}</span>
+        <span style={swatchStyle}><i style={{ background: "rgba(35,90,210,0.9)", "border-radius": "2px", display: "inline-block", width: "10px", height: "10px" }} />{t("reg.cooling")}</span>
+        <span style={{ ...panelSubStyle, "margin-left": "auto" }}>{t("reg.year_round_footer")}</span>
       </div>
 
       <Show when={s.meta.strings?.explain_cal}>

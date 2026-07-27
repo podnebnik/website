@@ -3,6 +3,7 @@ import { fetchAnnualTrend, ERA5_NATIONAL } from "../api.ts";
 import { todayYear } from "../clock.ts";
 import { sectionErrorFallback } from "./SectionError.tsx";
 import { enableChartA11y } from "../charts/highcharts-a11y.ts";
+import { t, fmtNum, fmtSigned, fmtMonthDay } from "../i18n/format.ts";
 import type { AnnualTrend } from "../types.ts";
 
 const INK      = "#0E0E0C";
@@ -63,12 +64,12 @@ function TrendHighchart(props: ChartProps) {
       // T-5.4a — screen-reader summary (Slovenian copy awaiting operator review)
       accessibility: {
         enabled: true,
-        description: "Letni trend najvišjih temperatur okoli izbranega datuma z linijo Theil-Sen, 95-odstotnim intervalom zaupanja in projekcijo do leta 2050. Vsaka pika je vrednost enega leta.",
+        description: t("trend.a11y"),
       },
       tooltip: {
         formatter(this: any) {
-          if (this.series.name === "Annual value") return `<b>${Math.round(this.x)}</b>: ${this.y.toFixed(1)} °C`;
-          if (this.series.name === "Milestones")   return `<b>${this.x}</b>: ${this.y.toFixed(1)} °C <em>(projection)</em>`;
+          if (this.series.name === "Annual value") return t("trend.tooltip_annual", { x: Math.round(this.x), y: fmtNum(this.y, 1) });
+          if (this.series.name === "Milestones")   return t("trend.tooltip_milestone", { x: this.x, y: fmtNum(this.y, 1) });
           return false;
         },
       },
@@ -162,17 +163,16 @@ export function TodayTrendChart(props: Props) {
     <div class="today-chart">
       <ErrorBoundary fallback={sectionErrorFallback(refetch, "240px")}>
       <Show when={trendDisplay()}>
-        {(t) => {
-          const d = () => t();
-          const sign     = () => d().trend10 >= 0 ? "+" : "";
-          const sig      = () => { const p = d().pVal; return p < 0.001 ? "p < 0.001" : p < 0.01 ? "p < 0.01" : p < 0.05 ? `p = ${p}` : `p = ${p} (ns)`; };
+        {(tr) => {
+          const d = () => tr();
+          const sig      = () => { const p = d().pVal; return p < 0.001 ? "p < 0,001" : p < 0.01 ? "p < 0,01" : p < 0.05 ? `p = ${fmtNum(p, 3)}` : `p = ${fmtNum(p, 3)} (ns)`; };
           const proj2050 = () => {
             const y = d().projLine.y;
             const lastY = y[y.length - 1];
             if (lastY === undefined) throw new Error("projLine.y is empty");
-            return lastY.toFixed(1);
+            return fmtNum(lastY, 1);
           };
-          const trendStr = () => `${sign()}${d().trend10.toFixed(2)}`;
+          const trendStr = () => fmtSigned(d().trend10, 2);
           // National (loc === ERA5_NATIONAL, or null) is NOT a station: return null so
           // both the title and explain take their national branch. Testing bare
           // truthiness printed the raw "era5:national" key (T-4.20); the `&&` narrows
@@ -182,14 +182,24 @@ export function TodayTrendChart(props: Props) {
           return (
             <>
               <div class="today-chart-title">
-                Najvišje temperature {stationLabel() ? `na postaji ${stationLabel()}` : "v Sloveniji"} okoli {d().dayLabel} · {d().yearMin}–{d().yearMax} · trend s projekcijo do 2050
+                {stationLabel()
+                  ? t("trend.title_station", { station: stationLabel()!, day: fmtMonthDay(d().monthNum, d().dayNum), yearMin: d().yearMin, yearMax: d().yearMax })
+                  : t("trend.title_nat", { day: fmtMonthDay(d().monthNum, d().dayNum), yearMin: d().yearMin, yearMax: d().yearMax })}
               </div>
               <TrendHighchart trend={d()} />
               <p class="today-explain" style={{ padding: "4px 0 2px" }}>
-                Vsaka pika je 90. percentil {stationLabel() ? `lapsno popravljene dnevne najvišje temperature na postaji ${stationLabel()}` : `nacionalne povprečne dnevne najvišje temperature vseh ${props.stationCount} postaj`} v ±30-dnevnem oknu okoli tega datuma za vsako leto od {d().yearMin}. Trend Theil-Sen je {trendStr()} °C/desetletje ({sig()}). Po tem tempu projekcija kaže {proj2050()} °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.
+                {t("trend.explain", {
+                  source: stationLabel()
+                    ? t("trend.explain_source_station", { station: stationLabel()! })
+                    : t("trend.explain_source_nat", { count: props.stationCount }),
+                  yearMin: d().yearMin,
+                  trend: trendStr(),
+                  sig: sig(),
+                  proj2050: proj2050(),
+                })}
               </p>
               <div class="today-foot">
-                Theil-Sen + TFPW MK: {trendStr()} °C/desetletje · {sig()} · τ = {d().tau.toFixed(3)} · 95% CI · {d().nYears} let
+                {t("trend.foot", { trend: trendStr(), sig: sig(), tau: fmtNum(d().tau, 3), count: d().nYears })}
               </div>
             </>
           );

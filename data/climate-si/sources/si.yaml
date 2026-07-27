@@ -6,7 +6,8 @@ code: si
 name: Slovenia
 timezone: Europe/Ljubljana
 default_location: Ljubljana
-languages: [en, sl]
+# D-8 / T-5.5 — Slovenian only for v1 (no switcher, /en/ routing or hreflang yet).
+languages: [sl]
 default_language: sl
 
 data_start_date: "1950-01-01"

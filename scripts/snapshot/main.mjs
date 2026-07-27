@@ -172,47 +172,47 @@ const { sections } = assertSections();
  * tolerated and a changed STRING is not.
  */
 const MIRRORED = [
+  // T-5.5 — the raw JSX now renders through the i18n catalogue; the mirrored
+  // fragments are the catalogue-key call sites, and the harness reproduces them
+  // by calling the SAME t()/formatters.
   {
     file: PAGE_SRC,
-    cite: "AliJeVroceERA5.tsx:102",
+    cite: "AliJeVroceERA5.tsx:108",
     mirror: "harness.tsx TodayChartCopy — title, national branch",
     fragment:
-      "`Dnevne najvišje temperature v Sloveniji za dva tedna okoli ${fmtDayLabel(todayData()!.day_label ?? \"\")} od ${todayData()!.year_min}`",
+      't("today.chart_title_nat", { day: fmtDayLabel(todayData()!.day_label ?? ""), year_min: todayData()!.year_min ?? 0 })',
   },
   {
     file: PAGE_SRC,
-    cite: "AliJeVroceERA5.tsx:103",
+    cite: "AliJeVroceERA5.tsx:109",
     mirror: "harness.tsx TodayChartCopy — title, per-station branch",
     fragment:
-      "`Dnevne najvišje temperature na postaji ${todayData()!.loc!.replace(/_/g, \" \")} za dva tedna okoli ${fmtDayLabel(todayData()!.day_label ?? \"\")} od ${todayData()!.year_min}`",
+      't("today.chart_title_station", { station: todayData()!.loc!.replace(/_/g, " "), day: fmtDayLabel(todayData()!.day_label ?? ""), year_min: todayData()!.year_min ?? 0 })',
   },
   {
     file: PAGE_SRC,
-    cite: "AliJeVroceERA5.tsx:110",
+    cite: "AliJeVroceERA5.tsx:116",
     mirror: "harness.tsx TodayChartCopy — footer (median cutoff, sample count, record years)",
     fragment:
-      "`${isNat() ? \"Slovenija\" : \"Danes\"}: ${todayData()!.today_temp!.toFixed(1)} °C · ${todayData()!.percentile!.toFixed(0)}. percentil · mediana ${todayData()!.cutoffs!.p50.toFixed(1)} °C · ${(todayData()!.n_samples ?? 0).toLocaleString()} opazovanj · ${todayData()!.year_min}–${todayData()!.year_max}`",
+      'region: isNat() ? t("today.foot2_region_nat") : t("today.foot2_region_day"),',
   },
   {
     file: PAGE_SRC,
-    cite: "AliJeVroceERA5.tsx:107",
+    cite: "AliJeVroceERA5.tsx:113",
     mirror: "harness.tsx TodayChartCopy — explain paragraph",
-    // Anchored on the closing tag: a text node's fragment would otherwise still
-    // "appear in" a LONGER version of itself.
-    fragment:
-      "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče. </p>",
+    fragment: 't("today.chart_explain")',
   },
   {
     file: PAGE_SRC,
-    cite: "AliJeVroceERA5.tsx:134",
+    cite: "AliJeVroceERA5.tsx:155",
     mirror: "harness.tsx MapPanelHeader — title",
-    fragment: '{mapLoc() ? mapLoc()!.replace(/_/g, " ") : `Slovenija — vseh ${era5Stations.length} postaj`}',
+    fragment: '{mapLoc() ? mapLoc()!.replace(/_/g, " ") : t("map.panel_title_all", { count: era5Stations.length })}',
   },
   {
     file: PAGE_SRC,
-    cite: "AliJeVroceERA5.tsx:143",
+    cite: "AliJeVroceERA5.tsx:158",
     mirror: "harness.tsx MapPanelHeader — station count",
-    fragment: "{era5Stations.length} postaj · ERA5 </div>",
+    fragment: 't("map.panel_sub_count", { count: era5Stations.length })',
   },
 ];
 

@@ -3,35 +3,38 @@ import { fetchEra5Tropical, isArsoLoc, ERA5_NATIONAL } from "../api.ts";
 import { sectionErrorFallback } from "../components/SectionError.tsx";
 import { TropHighchart } from "./TropicalChart.tsx";
 import type { Config } from "./TropicalChart.tsx";
+import { t, fmtNum, fmtInt, fmtSigned } from "../i18n/format.ts";
 
 function pFmt(p: number): string {
-  return p < 0.001 ? "p < 0.001" : p < 0.01 ? "p < 0.01" : p < 0.05 ? `p = ${p.toFixed(3)}` : `p = ${p.toFixed(3)} (ns)`;
+  return p < 0.001 ? "p < 0,001" : p < 0.01 ? "p < 0,01" : p < 0.05 ? `p = ${fmtNum(p, 3)}` : `p = ${fmtNum(p, 3)} (ns)`;
 }
 
 const ERA5_CONFIGS: Record<string, Config> = {
   days: {
     kind:             "days",
-    unitLabel:        "dni",
+    unitLabel:        t("tropical.unit_days"),
     defaultThreshold: 30,
     minT: 25, maxT: 35,
+    // NB: subLabel is currently unreferenced (the section subtitle is rendered from
+    // sections.tropical_days_sub in AliJeVroceERA5). Left as-is — see PROGRESS T-5.5.
     subLabel:         (th, st) => `Število dni z najvišjo temperaturo nad ${th} °C` +
       (st > 1 ? `, v nizih ${st}+ zaporednih dni` : "") +
       ` na leto · lapsna korekcija nadmorske višine · ERA5-Land`,
-    tooltipNoun:      "Tropski dnevi",
-    plainDesc:        (th) => `Tropski dan — ko dnevna temperatura preseže ${th} °C — povečuje toplotni stres in zdravstvena tveganja.`,
-    plainNoun:        "tropski dan",
+    tooltipNoun:      t("tropical.noun_days"),
+    plainDesc:        (th) => t("tropical.plain_desc_days", { th: fmtInt(th) }),
+    plainNoun:        t("tropical.plain_noun_days"),
   },
   nights: {
     kind:             "nights",
-    unitLabel:        "noči",
+    unitLabel:        t("tropical.unit_nights"),
     defaultThreshold: 20,
     minT: 15, maxT: 25,
     subLabel:         (th, st) => `Število noči z najnižjo temperaturo nad ${th} °C` +
       (st > 1 ? `, v nizih ${st}+ zaporednih noči` : "") +
       ` na leto · lapsna korekcija nadmorske višine · ERA5-Land`,
-    tooltipNoun:      "Tropske noči",
-    plainDesc:        (th) => `Tropska noč — ko temperatura čez noč ostane nad ${th} °C — preprečuje telesu okrevanje po dnevni vročini.`,
-    plainNoun:        "tropska noč",
+    tooltipNoun:      t("tropical.noun_nights"),
+    plainDesc:        (th) => t("tropical.plain_desc_nights", { th: fmtInt(th) }),
+    plainNoun:        t("tropical.plain_noun_nights"),
   },
 };
 
@@ -69,21 +72,24 @@ export function Era5TropicalChart(props: Props) {
     const dpd = tr.days_per_decade;
     const p   = tr.p_value;
 
-    const techLine =
-      `NB GLM: ${tr.rate_per_year >= 0 ? "+" : ""}${tr.rate_per_year.toFixed(2)}%/leto · ` +
-      `${dpd >= 0 ? "+" : ""}${dpd.toFixed(1)} ${cfg().unitLabel}/desetletje · ` +
-      `95% CI · ${p < 0.05 ? `statistično značilen (${pFmt(p)})` : `ni značilen (${pFmt(p)})`} · ` +
-      `AIC ${tr.aic.toFixed(0)} · α=${tr.alpha}.`;
+    const sigphrase = p < 0.05 ? t("tropical.sig_yes", { p: pFmt(p) }) : t("tropical.sig_no", { p: pFmt(p) });
+    const techLine = t("tropical.tech", {
+      rate: fmtSigned(tr.rate_per_year, 2), dpd: fmtSigned(dpd, 1), unit: cfg().unitLabel,
+      sigphrase, aic: fmtInt(tr.aic), alpha: tr.alpha,
+    });
 
     const fittedLast = tr.y_line[tr.y_line.length - 1]!;
     const proj2050   = Math.round(fittedLast * Math.pow(1 + tr.rate_per_year / 100, 2050 - tr.fit_year_max));
-    const dir        = dpd > 0 ? "več" : "manj";
-    const sig        = p < 0.05 ? "statistično značilen trend" : "trend, ki še ni statistično značilen";
+    const dir        = dpd > 0 ? t("tropical.dir_more") : t("tropical.dir_less");
+    const sig        = p < 0.05 ? t("tropical.sig_trend_yes") : t("tropical.sig_trend_no");
     const forward    = p < 0.05 && proj2050 > 0
-      ? `Če trend nadaljuje, bi bilo do 2050 tipičnih okoli ${proj2050} ${cfg().unitLabel} na leto.`
-      : `Podatki ne kažejo jasnega signala, a smer spremembe je vredna pozornosti.`;
+      ? t("tropical.forward_yes", { proj2050: fmtInt(proj2050), unit: cfg().unitLabel })
+      : t("tropical.forward_no");
 
-    const plainLine = `${cfg().plainDesc(props.threshold)} Postaja ${props.label ?? ""} kaže ${sig}: grobe ${Math.abs(dpd).toFixed(1)} ${dir} ${cfg().unitLabel} na desetletje. ${forward}`;
+    const plainLine = t("tropical.plain", {
+      plainDesc: cfg().plainDesc(props.threshold), station: props.label ?? "", sig,
+      dpd: fmtNum(Math.abs(dpd), 1), dir, unit: cfg().unitLabel, forward,
+    });
 
     return { tech: techLine, plain: plainLine };
   };
@@ -91,7 +97,7 @@ export function Era5TropicalChart(props: Props) {
   const noTrendReason = () => {
     const d = display();
     if (!d || d.trend.model_used) return null;
-    return `Premalo let z ${cfg().plainNoun}i za izračun trenda (${d.nonzero_count} let z vrednostjo > 0). Potrebnih je vsaj 10.`;
+    return t("tropical.no_trend", { plainNoun: cfg().plainNoun, count: d.nonzero_count });
   };
 
   return (
@@ -106,7 +112,7 @@ export function Era5TropicalChart(props: Props) {
           <Show when={display()}>
             {(d) => (
               <div style={{ "font-family": "var(--font-mono)", "font-size": "10px", color: "var(--color-ink-soft)", "letter-spacing": "0.06em", "text-transform": "uppercase" }}>
-                {d().years.length} let · {d().nonzero_count} z vrednostjo &gt; 0
+                {t("tropical.header_count", { count: d().years.length, nonzero: d().nonzero_count })}
               </div>
             )}
           </Show>
@@ -141,7 +147,7 @@ export function Era5TropicalChart(props: Props) {
         <Show when={display()}>
           <div style={{ padding: "0 16px 10px", display: "flex", "align-items": "center", gap: "5px", "font-family": "var(--font-mono)", "font-size": "9px", "letter-spacing": "0.06em", "text-transform": "uppercase", color: "var(--color-ink-soft)" }}>
             <span style={{ width: "10px", height: "10px", background: "rgba(194,90,44,0.4)", "border-radius": "2px", display: "inline-block", border: "1px solid rgba(0,0,0,0.15)", "flex-shrink": "0" }} />
-            Zadnji stolpec — leto v teku
+            {t("tropical.year_legend")}
           </div>
         </Show>
 

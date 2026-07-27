@@ -1,6 +1,7 @@
 import { onMount, onCleanup, createEffect } from "solid-js";
 import type { CalendarData } from "../api.ts";
 import { enableChartA11y } from "./highcharts-a11y.ts";
+import { t, fmtNum, fmtSigned, fmtDoy, fmtMonthShort } from "../i18n/format.ts";
 
 interface Props {
   data: CalendarData;
@@ -12,7 +13,7 @@ const MONTH_DOYS = [1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335];
 const MONTH_MIDS = MONTH_DOYS.map((d, i) =>
   Math.round((d + (MONTH_DOYS[i + 1] ?? 366)) / 2)
 );
-const MONTH_LABELS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const MONTH_LABELS = Array.from({ length: 12 }, (_, i) => fmtMonthShort(i + 1));
 
 const IS_PRECIP = new Set(["precipitation_sum","et0_evapotranspiration"]);
 const POS_TEMP  = [210, 55,  35] as const;   // red   — warming
@@ -72,7 +73,7 @@ export function YearRoundChart(props: Props) {
       // T-5.4a — screen-reader summary (Slovenian copy awaiting operator review)
       accessibility: {
         enabled: true,
-        description: "Trend spremembe po dnevih v letu čez celotno koledarsko leto — vsak stolpec je en dan, višina je trend na desetletje, navpična črta pa označuje izbrani datum.",
+        description: t("yearround.a11y"),
       },
       xAxis: {
         min: 0.5, max: 365.5,
@@ -120,11 +121,9 @@ export function YearRoundChart(props: Props) {
       },
       tooltip: {
         formatter(this: any) {
-          const ref = new Date(2001, 0, this.x - 1);
-          const label = ref.toLocaleDateString("en-GB", { month: "short", day: "numeric" });
-          const sign = this.y >= 0 ? "+" : "";
-          const pStr = this.point.p < 0.001 ? "< 0.001" : this.point.p.toFixed(3);
-          return `<b>${label}</b><br>Trend: ${sign}${this.y.toFixed(3)} ${props.data.unit}/decade<br>p = ${pStr}`;
+          const label = fmtDoy(Math.round(this.x));
+          const pStr = this.point.p < 0.001 ? "< 0,001" : fmtNum(this.point.p, 3);
+          return t("yearround.tooltip", { label, trend: fmtSigned(this.y, 3), unit: props.data.unit, p: pStr });
         },
         style: { fontSize: "12px", fontFamily: "Space Grotesk, sans-serif" },
       },

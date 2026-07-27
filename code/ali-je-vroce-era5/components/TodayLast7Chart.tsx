@@ -1,10 +1,14 @@
 import { onMount, onCleanup, createEffect } from "solid-js";
 import type { Last7 } from "../types.ts";
 import { enableChartA11y } from "../charts/highcharts-a11y.ts";
+import { t, fmtNum, fmtInt } from "../i18n/format.ts";
 
 const CAT_ORDER  = ["freezing", "cold", "nope", "hot", "hell"];
 const CAT_COLORS = ["#3a5a8a", "#6c8fb6", "#e7d9b8", "#c25a2c", "#962c1a"];
-const CAT_LABELS = ["Zmrzujoče", "Hladno", "Normalno", "Vroče", "Peklensko"];
+const CAT_LABELS = [
+  t("last7.cat_freezing"), t("last7.cat_cold"), t("last7.cat_nope"),
+  t("last7.cat_hot"), t("last7.cat_hell"),
+];
 
 const INK      = "#0E0E0C";
 const MONO     = { fontFamily: "'JetBrains Mono', monospace", fontSize: "11px", fontWeight: "600" };
@@ -48,12 +52,12 @@ export function TodayLast7Chart(props: Props) {
       // T-5.4a — screen-reader summary (Slovenian copy awaiting operator review)
       accessibility: {
         enabled: true,
-        description: "Gibanje toplotne kategorije v zadnjih sedmih dneh — vsaka točka je en dan, uvrščen od zmrzujoče do peklensko glede na zgodovinske percentile.",
+        description: t("last7.a11y"),
       },
       tooltip: {
         formatter(this: any) {
           const p = this.point as any;
-          return `<b>${p.label}</b>: ${p.catName} · ${p.temp.toFixed(1)} °C (${p.pct.toFixed(0)}th pct)`;
+          return t("last7.tooltip", { label: p.label, cat: p.catName, temp: fmtNum(p.temp, 1), pct: fmtInt(p.pct) });
         },
       },
       xAxis: {

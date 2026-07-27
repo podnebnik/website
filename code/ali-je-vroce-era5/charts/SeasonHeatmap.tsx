@@ -1,19 +1,21 @@
 import { createSignal, createMemo, For, Show, onCleanup } from "solid-js";
 import type { SeasonHeatmapRow } from "../types.ts";
+import { t, fmtNum } from "../i18n/format.ts";
 
 const SEASON_ORDER = ["Autumn", "Summer", "Spring", "Winter"] as const;
 type Season = typeof SEASON_ORDER[number];
 
 const SEASON_LABEL: Record<Season, string> = {
-  Autumn: "Jesen", Summer: "Poletje", Spring: "Pomlad", Winter: "Zima",
+  Autumn: t("season.label_Autumn"), Summer: t("season.label_Summer"),
+  Spring: t("season.label_Spring"), Winter: t("season.label_Winter"),
 };
 
 const CAT_LABELS: Record<string, string> = {
-  cold:    "Hladno (<10. pct)",
-  cool:    "Sveže (10–20. pct)",
-  normal:  "Normalno (20–80. pct)",
-  hot:     "Vroče (80–95. pct)",
-  extreme: "Ekstremno (>95. pct)",
+  cold:    t("season.cat_cold"),
+  cool:    t("season.cat_cool"),
+  normal:  t("season.cat_normal"),
+  hot:     t("season.cat_hot"),
+  extreme: t("season.cat_extreme"),
 };
 
 const CAT_COLORS: Record<string, string> = {
@@ -21,12 +23,12 @@ const CAT_COLORS: Record<string, string> = {
 };
 
 const MODES = [
-  { key: "all",      label: "Vse letne čase" },
-  { key: "extremes", label: "Samo ekstremi" },
-  { key: "Autumn",   label: "Jesen" },
-  { key: "Summer",   label: "Poletje" },
-  { key: "Spring",   label: "Pomlad" },
-  { key: "Winter",   label: "Zima" },
+  { key: "all",      label: t("season.mode_all") },
+  { key: "extremes", label: t("season.mode_extremes") },
+  { key: "Autumn",   label: t("season.label_Autumn") },
+  { key: "Summer",   label: t("season.label_Summer") },
+  { key: "Spring",   label: t("season.label_Spring") },
+  { key: "Winter",   label: t("season.label_Winter") },
 ];
 
 // T-5.4a — visually-hidden (screen-reader-only) style. Kept off the visual layout
@@ -85,7 +87,7 @@ export function SeasonHeatmap(props: Props) {
   );
   const gridLabel = createMemo(() => {
     const ys = allYears();
-    return `Toplotna karta letnih časov po letih od ${ys[0]} do ${ys[ys.length - 1]}: vsak stolpec je eno leto, vsaka vrstica en letni čas, barva pa uvršča povprečno najvišjo temperaturo od hladne do ekstremne glede na referenčno obdobje. Celotni podatki so v tabeli pod grafom.`;
+    return t("season.grid_a11y", { from: ys[0] ?? 0, to: ys[ys.length - 1] ?? 0 });
   });
 
   function cellClass(season: string, cat: string, year: number): string {
@@ -112,10 +114,10 @@ export function SeasonHeatmap(props: Props) {
       }
     }
     return [
-      { n: ext,          lbl: "Ekstremne sezone" },
-      { n: cold,         lbl: "Hladne sezone" },
-      { n: extSince2010, lbl: "Ekstremne od 2010" },
-      { n: hotRecent,    lbl: `Vroče ali ekstremne (${recentFrom}–${ym})` },
+      { n: ext,          lbl: t("season.stat_extreme") },
+      { n: cold,         lbl: t("season.stat_cold") },
+      { n: extSince2010, lbl: t("season.stat_extreme_since") },
+      { n: hotRecent,    lbl: t("season.stat_hot_recent", { from: recentFrom, to: ym }) },
     ];
   });
 
@@ -156,7 +158,7 @@ export function SeasonHeatmap(props: Props) {
           )}
         </For>
         <button class="shm-btn shm-btn--anim" onClick={() => animating() ? stopAnimate() : startAnimate()}>
-          {animating() ? "⏹ Ustavi" : "▶ Animacija"}
+          {animating() ? t("season.anim_stop") : t("season.anim_play")}
         </button>
       </div>
 
@@ -244,13 +246,13 @@ export function SeasonHeatmap(props: Props) {
               top:  `${Math.max(8, td().py - 52)}px`,
             }}
           >
-            <strong>{td().row.season} {td().row.y}</strong>
+            <strong>{SEASON_LABEL[td().row.season as Season] ?? td().row.season} {td().row.y}</strong>
             <div class="shm-tip-row">
               <span class="shm-tip-sw" style={{ background: td().row.color }} />
               {CAT_LABELS[td().row.cat]}
             </div>
-            Povprečni maks: <b>{td().row.avg.toFixed(1)} °C</b><br />
-            {td().row.rank}. najtoplejša {SEASON_LABEL[td().row.season as Season] ?? td().row.season} od {td().row.total} let
+            {t("season.tooltip_avg_label")} <b>{t("common.temp_c", { temp: fmtNum(td().row.avg, 1) })}</b><br />
+            {t("season.tooltip_rank", { rank: td().row.rank, season: SEASON_LABEL[td().row.season as Season] ?? td().row.season, count: td().row.total })}
           </div>
         )}
       </Show>
@@ -258,14 +260,14 @@ export function SeasonHeatmap(props: Props) {
       {/* T-5.4a — screen-reader data-table fallback (visually hidden). Slovenian
           caption/headers awaiting operator review. */}
       <table style={SR_ONLY}>
-        <caption>Podatki toplotne karte letnih časov po letih</caption>
+        <caption>{t("season.table_caption")}</caption>
         <thead>
           <tr>
-            <th scope="col">Letni čas</th>
-            <th scope="col">Leto</th>
-            <th scope="col">Kategorija</th>
-            <th scope="col">Povprečni maksimum (°C)</th>
-            <th scope="col">Uvrstitev</th>
+            <th scope="col">{t("season.th_season")}</th>
+            <th scope="col">{t("season.th_year")}</th>
+            <th scope="col">{t("season.th_category")}</th>
+            <th scope="col">{t("season.th_avg")}</th>
+            <th scope="col">{t("season.th_rank")}</th>
           </tr>
         </thead>
         <tbody>
@@ -275,8 +277,8 @@ export function SeasonHeatmap(props: Props) {
                 <td>{SEASON_LABEL[r.season as Season] ?? r.season}</td>
                 <td>{r.y}</td>
                 <td>{CAT_LABELS[r.cat] ?? r.cat}</td>
-                <td>{r.avg.toFixed(1)}</td>
-                <td>{r.rank}. od {r.total}</td>
+                <td>{fmtNum(r.avg, 1)}</td>
+                <td>{t("season.rank_of", { rank: r.rank, total: r.total })}</td>
               </tr>
             )}
           </For>

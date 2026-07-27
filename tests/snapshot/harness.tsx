@@ -58,6 +58,7 @@ import {
 } from "../../code/ali-je-vroce-era5/api.ts";
 import { installFixtures, misses } from "../../code/ali-je-vroce-era5/fixtures/install.ts";
 import { today as todayIso, todayYear } from "../../code/ali-je-vroce-era5/clock.ts";
+import { t, fmtNum, fmtInt, fmtMonthDay } from "../../code/ali-je-vroce-era5/i18n/format.ts";
 import type { SiteMeta, TodayStatus, Last7 } from "../../code/ali-je-vroce-era5/types.ts";
 
 import { TodayCard } from "../../code/ali-je-vroce-era5/components/TodayCard.tsx";
@@ -614,45 +615,56 @@ function captureAnalysis(unit: Unit): any {
 // editing the page without editing the harness fails the run rather than
 // baselining a string the page no longer renders.
 
-const EN_MONTHS: Record<string, string> = {
-  Jan: "01", Feb: "02", Mar: "03", Apr: "04", May: "05", Jun: "06",
-  Jul: "07", Aug: "08", Sep: "09", Oct: "10", Nov: "11", Dec: "12",
+// T-5.5 — the mirrored copy now goes through the SAME i18n catalogue + formatter
+// (t / fmtMonthDay / fmtNum / fmtInt) as the page, so it cannot drift on wording
+// or number formatting. day_label ("Mon D") maps to a Slovenian short date exactly
+// as AliJeVroceERA5.fmtDayLabel does.
+const EN_MONTHS: Record<string, number> = {
+  Jan: 1, Feb: 2, Mar: 3, Apr: 4, May: 5, Jun: 6,
+  Jul: 7, Aug: 8, Sep: 9, Oct: 10, Nov: 11, Dec: 12,
 };
-
-/** AliJeVroceERA5.tsx:23-26. */
 function fmtDayLabel(dl: string): string {
   const [mon, day] = dl.split(" ");
-  return `${(day ?? "").padStart(2, "0")}.${EN_MONTHS[mon ?? ""] ?? "??"}`;
+  const m = EN_MONTHS[mon ?? ""] ?? 0;
+  return m ? fmtMonthDay(m, Number(day)) : "??";
 }
 
-/** Mirrors AliJeVroceERA5.tsx:99-112 — the today-chart title, explain and foot. */
+/** Mirrors AliJeVroceERA5.tsx:104-124 — the today-chart title, explain and foot. */
 function TodayChartCopy(props: { data: TodayStatus; isNat: boolean }) {
-  const t = () => props.data;
+  const d = () => props.data;
   return (
     <div class="today-chart">
       <div class="today-chart-title">
         {props.isNat
-          ? `Dnevne najvišje temperature v Sloveniji za dva tedna okoli ${fmtDayLabel(t().day_label ?? "")} od ${t().year_min}`
-          : `Dnevne najvišje temperature na postaji ${t().loc!.replace(/_/g, " ")} za dva tedna okoli ${fmtDayLabel(t().day_label ?? "")} od ${t().year_min}`}
+          ? t("today.chart_title_nat", { day: fmtDayLabel(d().day_label ?? ""), year_min: d().year_min ?? 0 })
+          : t("today.chart_title_station", { station: d().loc!.replace(/_/g, " "), day: fmtDayLabel(d().day_label ?? ""), year_min: d().year_min ?? 0 })}
       </div>
       <p class="today-explain" style={{ "font-size": "12px", "padding-top": "6px" }}>
-        Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.
+        {t("today.chart_explain")}
       </p>
       <div class="today-foot">
-        {`${props.isNat ? "Slovenija" : "Danes"}: ${t().today_temp!.toFixed(1)} °C · ${t().percentile!.toFixed(0)}. percentil · mediana ${t().cutoffs!.p50.toFixed(1)} °C · ${(t().n_samples ?? 0).toLocaleString()} opazovanj · ${t().year_min}–${t().year_max}`}
+        {t("today.foot2", {
+          region: props.isNat ? t("today.foot2_region_nat") : t("today.foot2_region_day"),
+          temp: fmtNum(d().today_temp!, 1),
+          pct: fmtInt(d().percentile!),
+          median: fmtNum(d().cutoffs!.p50, 1),
+          count: d().n_samples ?? 0,
+          year_min: d().year_min ?? 0,
+          year_max: d().year_max ?? 0,
+        })}
       </div>
     </div>
   );
 }
 
-/** Mirrors AliJeVroceERA5.tsx:137-145 — the map panel header. */
+/** Mirrors AliJeVroceERA5.tsx:155-158 — the map panel header. */
 function MapPanelHeader(props: { mapLoc: string | null; stationCount: number }) {
   return (
     <div>
       <div class="mirror-panel-title">
-        {props.mapLoc ? props.mapLoc.replace(/_/g, " ") : `Slovenija — vseh ${props.stationCount} postaj`}
+        {props.mapLoc ? props.mapLoc.replace(/_/g, " ") : t("map.panel_title_all", { count: props.stationCount })}
       </div>
-      <div class="mirror-panel-sub">{props.stationCount} postaj · ERA5</div>
+      <div class="mirror-panel-sub">{t("map.panel_sub_count", { count: props.stationCount })}</div>
     </div>
   );
 }

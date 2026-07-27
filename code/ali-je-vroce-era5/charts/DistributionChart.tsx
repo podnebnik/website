@@ -1,6 +1,7 @@
 import { onMount, onCleanup, createEffect } from "solid-js";
 import type { TodayStatus } from "../types.ts";
 import { enableChartA11y } from "./highcharts-a11y.ts";
+import { t, fmtNum } from "../i18n/format.ts";
 
 interface Props {
   data:    TodayStatus;
@@ -19,7 +20,10 @@ const ZONE_COLORS = [
   "#962c1a",   // p95+     Extreme
 ];
 
-const ZONE_LABELS = ["Hladno", "Sveže", "Normalno", "Vroče", "Ekstremno"];
+const ZONE_LABELS = [
+  t("dist.zone_cold"), t("dist.zone_cool"), t("dist.zone_normal"),
+  t("dist.zone_hot"), t("dist.zone_extreme"),
+];
 
 function buildOptions(r: TodayStatus): Highcharts.Options {
   const c       = r.cutoffs!;
@@ -54,18 +58,17 @@ function buildOptions(r: TodayStatus): Highcharts.Options {
     // T-5.4a — screen-reader summary (Slovenian copy awaiting operator review)
     accessibility: {
       enabled: true,
-      description: "Porazdelitev najvišjih dnevnih temperatur na dneve okoli izbranega datuma v vseh letih zabeleženega obdobja. Navpična črta označuje današnjo vrednost; barvni pasovi ločijo klimatološke cone od hladne do ekstremne.",
+      description: t("dist.a11y"),
     },
     tooltip: {
       formatter(this: any) {
         const temp: number = this.x;
-        let zone: string;
-        if      (temp < c.p10) zone = "Hladno";
-        else if (temp < c.p20) zone = "Sveže";
-        else if (temp < c.p80) zone = "Normalno";
-        else if (temp < c.p95) zone = "Vroče";
-        else                   zone = "Ekstremno";
-        return `${temp.toFixed(1)} °C · ${zone}`;
+        const zone =
+          temp < c.p10 ? t("dist.zone_cold") :
+          temp < c.p20 ? t("dist.zone_cool") :
+          temp < c.p80 ? t("dist.zone_normal") :
+          temp < c.p95 ? t("dist.zone_hot") : t("dist.zone_extreme");
+        return t("dist.tooltip", { temp: fmtNum(temp, 1), zone });
       },
     },
     xAxis: {
@@ -83,7 +86,7 @@ function buildOptions(r: TodayStatus): Highcharts.Options {
         width:  3,
         zIndex: 5,
         label: {
-          text:      `DANES: ${todayX.toFixed(1)} °C`,
+          text:      t("dist.today_line", { temp: fmtNum(todayX, 1) }),
           rotation:  -90,
           x:         -4,
           y:         40,
@@ -93,15 +96,15 @@ function buildOptions(r: TodayStatus): Highcharts.Options {
       }],
       plotBands: [
         { from: axisMin,  to: c.p10,  color: "transparent",
-          label: { text: `< ${c.p10.toFixed(1)}°C`,                        align: "center", verticalAlign: "top", y: 18, style: zoneLabelStyle } },
+          label: { text: t("dist.band_below", { p: fmtNum(c.p10, 1) }),                        align: "center", verticalAlign: "top", y: 18, style: zoneLabelStyle } },
         { from: c.p10,   to: c.p20,  color: "transparent",
-          label: { text: `${c.p10.toFixed(1)}–${c.p20.toFixed(1)}°C`,      align: "center", verticalAlign: "top", y: 18, style: zoneLabelStyle } },
+          label: { text: t("dist.band_range", { a: fmtNum(c.p10, 1), b: fmtNum(c.p20, 1) }),      align: "center", verticalAlign: "top", y: 18, style: zoneLabelStyle } },
         { from: c.p20,   to: c.p80,  color: "transparent",
-          label: { text: `${c.p20.toFixed(1)}–${c.p80.toFixed(1)}°C`,      align: "center", verticalAlign: "top", y: 18, style: zoneLabelStyle } },
+          label: { text: t("dist.band_range", { a: fmtNum(c.p20, 1), b: fmtNum(c.p80, 1) }),      align: "center", verticalAlign: "top", y: 18, style: zoneLabelStyle } },
         { from: c.p80,   to: c.p95,  color: "transparent",
-          label: { text: `${c.p80.toFixed(1)}–${c.p95.toFixed(1)}°C`,      align: "center", verticalAlign: "top", y: 18, style: zoneLabelStyle } },
+          label: { text: t("dist.band_range", { a: fmtNum(c.p80, 1), b: fmtNum(c.p95, 1) }),      align: "center", verticalAlign: "top", y: 18, style: zoneLabelStyle } },
         { from: c.p95,   to: axisMax, color: "transparent",
-          label: { text: `> ${c.p95.toFixed(1)}°C`,                        align: "center", verticalAlign: "top", y: 18, style: zoneLabelStyle } },
+          label: { text: t("dist.band_above", { p: fmtNum(c.p95, 1) }),                        align: "center", verticalAlign: "top", y: 18, style: zoneLabelStyle } },
       ],
     },
     yAxis: {

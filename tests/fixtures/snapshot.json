@@ -78,9 +78,9 @@
       "name": "Slovenija",
       "default_location": "Ljubljana",
       "languages": [
-        "en"
+        "sl"
       ],
-      "default_language": "en",
+      "default_language": "sl",
       "map": {
         "center_lat": 46.1,
         "center_lon": 14.8,
@@ -3287,7 +3287,7 @@
         "station": "Celje",
         "period": "Summer",
         "rendered": [
-          "Theil-Sen naklon: -0.026 SPEI/desetletje · Mann-Kendall: no trend · ni statistično značilen (p = 0.204). Negativen trend pomeni, da razmere postajajo sušnejše glede na osnovno obdobje 1950–1980."
+          "Theil-Sen naklon: −0,026 SPEI/desetletje · Mann-Kendall: no trend · ni statistično značilen (p = 0,204). Negativen trend pomeni, da razmere postajajo sušnejše glede na osnovno obdobje 1950–1980."
         ]
       },
       "trends": {
@@ -17256,11 +17256,11 @@
           ]
         },
         "rendered": {
-          "title": "Year-round trend · Ljubljana",
+          "title": "Celoletni trend · Ljubljana",
           "legend": [
-            "Warming",
-            "Cooling",
-            "opacity = significance · p < 0.001 fully opaque"
+            "Segrevanje",
+            "Ohlajanje",
+            "prosojnost = značilnost · p < 0,001 povsem neprosojno"
           ]
         },
         "charts": [
@@ -20074,8 +20074,8 @@
           "header": "Tropski dnevi · Ljubljana",
           "coverage": "77 let · 48 z vrednostjo > 0",
           "paragraphs": [
-            "NB GLM: +3.32%/leto · +1.6 dni/desetletje · 95% CI · statistično značilen (p < 0.001) · AIC 387 · α=2.059.",
-            "Tropski dan — ko dnevna temperatura preseže 30 °C — povečuje toplotni stres in zdravstvena tveganja. Postaja Ljubljana kaže statistično značilen trend: grobe 1.6 več dni na desetletje. Če trend nadaljuje, bi bilo do 2050 tipičnih okoli 34 dni na leto."
+            "NB GLM: +3,32%/leto · +1,6 dni/desetletje · 95% CI · statistično značilen (p < 0,001) · AIC 387 · α=2.059.",
+            "Tropski dan — ko dnevna temperatura preseže 30 °C — povečuje toplotni stres in zdravstvena tveganja. Postaja Ljubljana kaže statistično značilen trend: grobe 1,6 več dni na desetletje. Če trend nadaljuje, bi bilo do 2050 tipičnih okoli 34 dni na leto."
           ]
         },
         "current_year_bar": {
@@ -21216,7 +21216,7 @@
                 ]
               },
               {
-                "name": "NB fit (+1.6 dni/des · p < 0.001)",
+                "name": "NB fit (+1,6 dni/des · p < 0,001)",
                 "type": "line",
                 "data": [
                   {
@@ -22107,8 +22107,8 @@
           "header": "Tropske noči · Ljubljana",
           "coverage": "77 let · 27 z vrednostjo > 0",
           "paragraphs": [
-            "NB GLM: +2.94%/leto · +0.4 noči/desetletje · 95% CI · statistično značilen (p < 0.01) · AIC 216 · α=3.5.",
-            "Tropska noč — ko temperatura čez noč ostane nad 20 °C — preprečuje telesu okrevanje po dnevni vročini. Postaja Ljubljana kaže statistično značilen trend: grobe 0.4 več noči na desetletje. Če trend nadaljuje, bi bilo do 2050 tipičnih okoli 7 noči na leto."
+            "NB GLM: +2,94%/leto · +0,4 noči/desetletje · 95% CI · statistično značilen (p < 0,01) · AIC 216 · α=3.5.",
+            "Tropska noč — ko temperatura čez noč ostane nad 20 °C — preprečuje telesu okrevanje po dnevni vročini. Postaja Ljubljana kaže statistično značilen trend: grobe 0,4 več noči na desetletje. Če trend nadaljuje, bi bilo do 2050 tipičnih okoli 7 noči na leto."
           ]
         },
         "current_year_bar": {
@@ -23249,7 +23249,7 @@
                 ]
               },
               {
-                "name": "NB fit (+0.4 noči/des · p < 0.01)",
+                "name": "NB fit (+0,4 noči/des · p < 0,01)",
                 "type": "line",
                 "data": [
                   {
@@ -27839,11 +27839,11 @@
           ]
         },
         "rendered": {
-          "title": "Year-round trend · Kredarica",
+          "title": "Celoletni trend · Kredarica",
           "legend": [
-            "Warming",
-            "Cooling",
-            "opacity = significance · p < 0.001 fully opaque"
+            "Segrevanje",
+            "Ohlajanje",
+            "prosojnost = značilnost · p < 0,001 povsem neprosojno"
           ]
         },
         "charts": [
@@ -31856,7 +31856,7 @@
           }
         },
         "rendered": {
-          "date_badge": "21.07.",
+          "date_badge": "21. jul.",
           "loc_select": {
             "selected": "era5:national",
             "options": [
@@ -31883,13 +31883,13 @@
           },
           "category_label": "Normalno",
           "category_color": "rgb(231, 217, 184)",
-          "description": "Točno takšno, kot 21.07 v Slovenija ponavadi je.",
+          "description": "Točno takšno, kot 21. jul. v Slovenija ponavadi je.",
           "percentile": "46",
           "percentile_label": "percentil",
-          "samples": "20,520 vzorcev",
+          "samples": "20.520 vzorcev",
           "preliminary_badge": "napoved",
           "explain": "Povprečje najvišjih dnevnih temperatur 18 slovenskih postaj (nadmorska višina 10–2514 m), razvrščeno glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
-          "footer": "24.6 °C · 46. percentil · 20,520 vzorcev (1950–2026)",
+          "footer": "24,6 °C · 46. percentil · 20.520 vzorcev (1950–2026)",
           "unavailable_message": null
         },
         "last7": {
@@ -31974,7 +31974,7 @@
                 {
                   "id": null,
                   "value": 24.6,
-                  "label": "DANES: 24.6 °C",
+                  "label": "DANES: 24,6 °C",
                   "dash_style": null
                 }
               ],
@@ -31982,27 +31982,27 @@
                 {
                   "from": -2.80558,
                   "to": 19.805,
-                  "label": "< 19.8°C"
+                  "label": "< 19,8°C"
                 },
                 {
                   "from": 19.805,
                   "to": 21.371111111111112,
-                  "label": "19.8–21.4°C"
+                  "label": "19,8–21,4°C"
                 },
                 {
                   "from": 21.371111111111112,
                   "to": 27.54055555555556,
-                  "label": "21.4–27.5°C"
+                  "label": "21,4–27,5°C"
                 },
                 {
                   "from": 27.54055555555556,
                   "to": 30.17666666666667,
-                  "label": "27.5–30.2°C"
+                  "label": "27,5–30,2°C"
                 },
                 {
                   "from": 30.17666666666667,
                   "to": 41.87458,
-                  "label": "> 30.2°C"
+                  "label": "> 30,2°C"
                 }
               ]
             },
@@ -32840,9 +32840,9 @@
       },
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
-        "title": "Dnevne najvišje temperature v Sloveniji za dva tedna okoli 21.07 od 1950",
+        "title": "Dnevne najvišje temperature v Sloveniji za dva tedna okoli 21. jul. od 1950",
         "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
-        "footer": "Slovenija: 24.6 °C · 46. percentil · mediana 24.5 °C · 20,520 opazovanj · 1950–2026"
+        "footer": "Slovenija: 24,6 °C · 46. percentil · mediana 24,5 °C · 20.520 opazovanj · 1950–2026"
       },
       "today_trend": {
         "api": {
@@ -33204,9 +33204,9 @@
           ]
         },
         "rendered": {
-          "title": "Najvišje temperature v Sloveniji okoli Jul 21 · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je 90. percentil nacionalne povprečne dnevne najvišje temperature vseh 18 postaj v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0.45 °C/desetletje (p < 0.001). Po tem tempu projekcija kaže 26.7 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-          "footer": "Theil-Sen + TFPW MK: +0.45 °C/desetletje · p < 0.001 · τ = 0.426 · 95% CI · 77 let",
+          "title": "Najvišje temperature v Sloveniji okoli 21. jul. · 1950–2026 · trend s projekcijo do 2050",
+          "explain": "Vsaka pika je 90. percentil nacionalne povprečne dnevne najvišje temperature vseh 18 postaj v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,45 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 26,7 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "footer": "Theil-Sen + TFPW MK: +0,45 °C/desetletje · p < 0,001 · τ = 0,426 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
             "label": "2026",
@@ -33644,25 +33644,25 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LocationLjubljana",
-            "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "Day21 Jul◀▶"
+            "LokacijaLjubljana",
+            "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
+            "Dan21. jul.◀▶"
           ],
           "variable_select": {
             "selected": "temperature_max",
             "options": [
-              "Max temperature (°C)",
-              "Min temperature (°C)",
-              "Mean temperature (°C)",
-              "Precipitation (mm)",
+              "Najvišja temperatura (°C)",
+              "Najnižja temperatura (°C)",
+              "Povprečna temperatura (°C)",
+              "Padavine (mm)",
               "ET₀ (mm)"
             ]
           },
-          "day_label": "21 Jul",
-          "title": "Max temperature · 21 Jul",
+          "day_label": "21. jul.",
+          "title": "Najvišja temperatura · 21. jul.",
           "subtitle": "Ljubljana",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0.46",
-          "total_change": "+4.25°C",
+          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,46",
+          "total_change": "+4,25°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
             "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
@@ -33682,7 +33682,7 @@
               "plot_bands": []
             },
             "y_axis": {
-              "title": "Max temperature (°C)",
+              "title": "Najvišja temperatura (°C)",
               "min": null,
               "max": null,
               "categories": null,
@@ -33690,7 +33690,7 @@
                 {
                   "id": "baseline-Ljubljana",
                   "value": 25.39366666666667,
-                  "label": "77-YR MEAN 25.4",
+                  "label": "POVPREČJE 77 let: 25,4",
                   "dash_style": "Dash"
                 }
               ],
@@ -34359,18 +34359,18 @@
       },
       "hero_cards": {
         "rendered": {
-          "headline": "+0.552",
+          "headline": "+0,552",
           "headline_color": "rgb(194, 90, 44)",
           "category": "Katastrofalno",
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
-            "Sto let segrevanja za +5.52 °C – pri trenutnem tempu vsaka 18.1 let doda eno stopinjo.",
+            "Sto let segrevanja za +5,52 °C – pri trenutnem tempu vsaka 18,1 let doda eno stopinjo.",
             "Theil-Sen + TFPW Mann-Kendall"
           ],
           "stats": [
             "Mestni toplotni otok — poletni vročinski stres in tveganje hudourniških poplav v Ljubljanski kotlini",
-            "★★★ p < 0.001",
-            "0.5520",
+            "★★★ p < 0,001",
+            "0,5520",
             "77 let",
             "—"
           ]
@@ -35214,7 +35214,7 @@
           }
         },
         "rendered": {
-          "date_badge": "21.07.",
+          "date_badge": "21. jul.",
           "loc_select": {
             "selected": "Ljubljana",
             "options": [
@@ -35241,13 +35241,13 @@
           },
           "category_label": "Normalno",
           "category_color": "rgb(231, 217, 184)",
-          "description": "Točno takšno, kot 21.07 v Slovenija ponavadi je.",
+          "description": "Točno takšno, kot 21. jul. v Slovenija ponavadi je.",
           "percentile": "61",
           "percentile_label": "percentil",
-          "samples": "1,140 vzorcev",
+          "samples": "1140 vzorcev",
           "preliminary_badge": "napoved",
           "explain": "Temperatura na postaji Ljubljana, razvrstena glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
-          "footer": "26.0 °C · 61. percentil · 1,140 vzorcev (1950–2026)",
+          "footer": "26,0 °C · 61. percentil · 1140 vzorcev (1950–2026)",
           "unavailable_message": null
         },
         "last7": {
@@ -35523,7 +35523,7 @@
                 {
                   "id": null,
                   "value": 26,
-                  "label": "DANES: 26.0 °C",
+                  "label": "DANES: 26,0 °C",
                   "dash_style": null
                 }
               ],
@@ -35531,27 +35531,27 @@
                 {
                   "from": 11.18618,
                   "to": 20.24,
-                  "label": "< 20.2°C"
+                  "label": "< 20,2°C"
                 },
                 {
                   "from": 20.24,
                   "to": 21.78,
-                  "label": "20.2–21.8°C"
+                  "label": "20,2–21,8°C"
                 },
                 {
                   "from": 21.78,
                   "to": 28.16,
-                  "label": "21.8–28.2°C"
+                  "label": "21,8–28,2°C"
                 },
                 {
                   "from": 28.16,
                   "to": 31.19,
-                  "label": "28.2–31.2°C"
+                  "label": "28,2–31,2°C"
                 },
                 {
                   "from": 31.19,
                   "to": 39.91082,
-                  "label": "> 31.2°C"
+                  "label": "> 31,2°C"
                 }
               ]
             },
@@ -36389,9 +36389,9 @@
       },
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
-        "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 21.07 od 1950",
+        "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 21. jul. od 1950",
         "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
-        "footer": "Danes: 26.0 °C · 61. percentil · mediana 24.9 °C · 1,140 opazovanj · 1950–2026"
+        "footer": "Danes: 26,0 °C · 61. percentil · mediana 24,9 °C · 1140 opazovanj · 1950–2026"
       },
       "today_trend": {
         "api": {
@@ -36753,9 +36753,9 @@
           ]
         },
         "rendered": {
-          "title": "Najvišje temperature na postaji Ljubljana okoli Jul 21 · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je 90. percentil lapsno popravljene dnevne najvišje temperature na postaji Ljubljana v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0.55 °C/desetletje (p < 0.001). Po tem tempu projekcija kaže 27.6 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-          "footer": "Theil-Sen + TFPW MK: +0.55 °C/desetletje · p < 0.001 · τ = 0.457 · 95% CI · 77 let",
+          "title": "Najvišje temperature na postaji Ljubljana okoli 21. jul. · 1950–2026 · trend s projekcijo do 2050",
+          "explain": "Vsaka pika je 90. percentil lapsno popravljene dnevne najvišje temperature na postaji Ljubljana v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,55 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 27,6 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "footer": "Theil-Sen + TFPW MK: +0,55 °C/desetletje · p < 0,001 · τ = 0,457 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
             "label": "2026",
@@ -37193,25 +37193,25 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LocationLjubljana",
-            "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "Day21 Jul◀▶"
+            "LokacijaLjubljana",
+            "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
+            "Dan21. jul.◀▶"
           ],
           "variable_select": {
             "selected": "temperature_max",
             "options": [
-              "Max temperature (°C)",
-              "Min temperature (°C)",
-              "Mean temperature (°C)",
-              "Precipitation (mm)",
+              "Najvišja temperatura (°C)",
+              "Najnižja temperatura (°C)",
+              "Povprečna temperatura (°C)",
+              "Padavine (mm)",
               "ET₀ (mm)"
             ]
           },
-          "day_label": "21 Jul",
-          "title": "Max temperature · 21 Jul",
+          "day_label": "21. jul.",
+          "title": "Najvišja temperatura · 21. jul.",
           "subtitle": "Ljubljana",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0.46",
-          "total_change": "+4.25°C",
+          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,46",
+          "total_change": "+4,25°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
             "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
@@ -37231,7 +37231,7 @@
               "plot_bands": []
             },
             "y_axis": {
-              "title": "Max temperature (°C)",
+              "title": "Najvišja temperatura (°C)",
               "min": null,
               "max": null,
               "categories": null,
@@ -37239,7 +37239,7 @@
                 {
                   "id": "baseline-Ljubljana",
                   "value": 25.39366666666667,
-                  "label": "77-YR MEAN 25.4",
+                  "label": "POVPREČJE 77 let: 25,4",
                   "dash_style": "Dash"
                 }
               ],
@@ -37908,18 +37908,18 @@
       },
       "hero_cards": {
         "rendered": {
-          "headline": "+0.552",
+          "headline": "+0,552",
           "headline_color": "rgb(194, 90, 44)",
           "category": "Katastrofalno",
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
-            "Sto let segrevanja za +5.52 °C – pri trenutnem tempu vsaka 18.1 let doda eno stopinjo.",
+            "Sto let segrevanja za +5,52 °C – pri trenutnem tempu vsaka 18,1 let doda eno stopinjo.",
             "Theil-Sen + TFPW Mann-Kendall"
           ],
           "stats": [
             "Mestni toplotni otok — poletni vročinski stres in tveganje hudourniških poplav v Ljubljanski kotlini",
-            "★★★ p < 0.001",
-            "0.5520",
+            "★★★ p < 0,001",
+            "0,5520",
             "77 let",
             "—"
           ]
@@ -38763,7 +38763,7 @@
           }
         },
         "rendered": {
-          "date_badge": "21.07.",
+          "date_badge": "21. jul.",
           "loc_select": {
             "selected": "Kredarica",
             "options": [
@@ -38790,13 +38790,13 @@
           },
           "category_label": "Hladno",
           "category_color": "rgb(108, 143, 182)",
-          "description": "Hladneje od večine izmerjenih 21.07.",
+          "description": "Hladneje od večine izmerjenih 21. jul..",
           "percentile": "14",
           "percentile_label": "percentil",
-          "samples": "1,140 vzorcev",
+          "samples": "1140 vzorcev",
           "preliminary_badge": "napoved",
           "explain": "Temperatura na postaji Kredarica, razvrstena glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
-          "footer": "7.1 °C · 14. percentil · 1,140 vzorcev (1950–2026)",
+          "footer": "7,1 °C · 14. percentil · 1140 vzorcev (1950–2026)",
           "unavailable_message": null
         },
         "last7": {
@@ -39072,7 +39072,7 @@
                 {
                   "id": null,
                   "value": 7.1,
-                  "label": "DANES: 7.1 °C",
+                  "label": "DANES: 7,1 °C",
                   "dash_style": null
                 }
               ],
@@ -39080,27 +39080,27 @@
                 {
                   "from": -1.8705999999999998,
                   "to": 6.34,
-                  "label": "< 6.3°C"
+                  "label": "< 6,3°C"
                 },
                 {
                   "from": 6.34,
                   "to": 8.04,
-                  "label": "6.3–8.0°C"
+                  "label": "6,3–8,0°C"
                 },
                 {
                   "from": 8.04,
                   "to": 13.99,
-                  "label": "8.0–14.0°C"
+                  "label": "8,0–14,0°C"
                 },
                 {
                   "from": 13.99,
                   "to": 16.55,
-                  "label": "14.0–16.6°C"
+                  "label": "14,0–16,6°C"
                 },
                 {
                   "from": 16.55,
                   "to": 25.3566,
-                  "label": "> 16.6°C"
+                  "label": "> 16,6°C"
                 }
               ]
             },
@@ -39938,9 +39938,9 @@
       },
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
-        "title": "Dnevne najvišje temperature na postaji Kredarica za dva tedna okoli 21.07 od 1950",
+        "title": "Dnevne najvišje temperature na postaji Kredarica za dva tedna okoli 21. jul. od 1950",
         "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
-        "footer": "Danes: 7.1 °C · 14. percentil · mediana 11.2 °C · 1,140 opazovanj · 1950–2026"
+        "footer": "Danes: 7,1 °C · 14. percentil · mediana 11,2 °C · 1140 opazovanj · 1950–2026"
       },
       "today_trend": {
         "api": {
@@ -40302,9 +40302,9 @@
           ]
         },
         "rendered": {
-          "title": "Najvišje temperature na postaji Kredarica okoli Jul 21 · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je 90. percentil lapsno popravljene dnevne najvišje temperature na postaji Kredarica v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0.35 °C/desetletje (p < 0.001). Po tem tempu projekcija kaže 13.0 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-          "footer": "Theil-Sen + TFPW MK: +0.35 °C/desetletje · p < 0.001 · τ = 0.403 · 95% CI · 77 let",
+          "title": "Najvišje temperature na postaji Kredarica okoli 21. jul. · 1950–2026 · trend s projekcijo do 2050",
+          "explain": "Vsaka pika je 90. percentil lapsno popravljene dnevne najvišje temperature na postaji Kredarica v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,35 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 13,0 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "footer": "Theil-Sen + TFPW MK: +0,35 °C/desetletje · p < 0,001 · τ = 0,403 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
             "label": "2026",
@@ -40742,25 +40742,25 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LocationKredarica",
-            "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "Day21 Jul◀▶"
+            "LokacijaKredarica",
+            "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
+            "Dan21. jul.◀▶"
           ],
           "variable_select": {
             "selected": "temperature_max",
             "options": [
-              "Max temperature (°C)",
-              "Min temperature (°C)",
-              "Mean temperature (°C)",
-              "Precipitation (mm)",
+              "Najvišja temperatura (°C)",
+              "Najnižja temperatura (°C)",
+              "Povprečna temperatura (°C)",
+              "Padavine (mm)",
               "ET₀ (mm)"
             ]
           },
-          "day_label": "21 Jul",
-          "title": "Max temperature · 21 Jul",
+          "day_label": "21. jul.",
+          "title": "Najvišja temperatura · 21. jul.",
           "subtitle": "Kredarica",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0.40",
-          "total_change": "+2.73°C",
+          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,40",
+          "total_change": "+2,73°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
             "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
@@ -40780,7 +40780,7 @@
               "plot_bands": []
             },
             "y_axis": {
-              "title": "Max temperature (°C)",
+              "title": "Najvišja temperatura (°C)",
               "min": null,
               "max": null,
               "categories": null,
@@ -40788,7 +40788,7 @@
                 {
                   "id": "baseline-Kredarica",
                   "value": 11.395,
-                  "label": "77-YR MEAN 11.4",
+                  "label": "POVPREČJE 77 let: 11,4",
                   "dash_style": "Dash"
                 }
               ],
@@ -41457,18 +41457,18 @@
       },
       "hero_cards": {
         "rendered": {
-          "headline": "+0.355",
+          "headline": "+0,355",
           "headline_color": "rgb(194, 90, 44)",
           "category": "Katastrofalno",
           "paragraphs": [
             "Popolna izguba Triglavskega ledenika — narodni simbol in vir savinjskih rek. Propad alpskega ekosistema sproži kaskadne učinke.",
-            "Sto let segrevanja za +3.55 °C – pri trenutnem tempu vsaka 28.2 let doda eno stopinjo.",
+            "Sto let segrevanja za +3,55 °C – pri trenutnem tempu vsaka 28,2 let doda eno stopinjo.",
             "Theil-Sen + TFPW Mann-Kendall"
           ],
           "stats": [
             "Izguba Triglavskega ledenika — izsušitev izvirnih vod za Slovenijo reke",
-            "★★★ p < 0.001",
-            "0.3550",
+            "★★★ p < 0,001",
+            "0,3550",
             "77 let",
             "—"
           ]
@@ -42312,7 +42312,7 @@
           }
         },
         "rendered": {
-          "date_badge": "15.07.",
+          "date_badge": "15. jul.",
           "loc_select": {
             "selected": "era5:national",
             "options": [
@@ -42339,13 +42339,13 @@
           },
           "category_label": "Vroče",
           "category_color": "rgb(194, 90, 44)",
-          "description": "Med najtoplejšimi 15.07 v naših zapisih.",
+          "description": "Med najtoplejšimi 15. jul. v naših zapisih.",
           "percentile": "79",
           "percentile_label": "percentil",
-          "samples": "20,520 vzorcev",
+          "samples": "20.520 vzorcev",
           "preliminary_badge": null,
           "explain": "Povprečje najvišjih dnevnih temperatur 18 slovenskih postaj (nadmorska višina 10–2514 m), razvrščeno glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
-          "footer": "28.0 °C · 79. percentil · 20,520 vzorcev (1950–2026)",
+          "footer": "28,0 °C · 79. percentil · 20.520 vzorcev (1950–2026)",
           "unavailable_message": null
         },
         "last7": {
@@ -42430,7 +42430,7 @@
                 {
                   "id": null,
                   "value": 28,
-                  "label": "DANES: 28.0 °C",
+                  "label": "DANES: 28,0 °C",
                   "dash_style": null
                 }
               ],
@@ -42438,27 +42438,27 @@
                 {
                   "from": -3.23102,
                   "to": 19.623888888888885,
-                  "label": "< 19.6°C"
+                  "label": "< 19,6°C"
                 },
                 {
                   "from": 19.623888888888885,
                   "to": 21.18555555555556,
-                  "label": "19.6–21.2°C"
+                  "label": "19,6–21,2°C"
                 },
                 {
                   "from": 21.18555555555556,
                   "to": 27.19,
-                  "label": "21.2–27.2°C"
+                  "label": "21,2–27,2°C"
                 },
                 {
                   "from": 27.19,
                   "to": 29.877777777777776,
-                  "label": "27.2–29.9°C"
+                  "label": "27,2–29,9°C"
                 },
                 {
                   "from": 29.877777777777776,
                   "to": 40.46802,
-                  "label": "> 29.9°C"
+                  "label": "> 29,9°C"
                 }
               ]
             },
@@ -43296,9 +43296,9 @@
       },
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
-        "title": "Dnevne najvišje temperature v Sloveniji za dva tedna okoli 15.07 od 1950",
+        "title": "Dnevne najvišje temperature v Sloveniji za dva tedna okoli 15. jul. od 1950",
         "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
-        "footer": "Slovenija: 28.0 °C · 79. percentil · mediana 24.2 °C · 20,520 opazovanj · 1950–2026"
+        "footer": "Slovenija: 28,0 °C · 79. percentil · mediana 24,2 °C · 20.520 opazovanj · 1950–2026"
       },
       "today_trend": {
         "api": {
@@ -43660,9 +43660,9 @@
           ]
         },
         "rendered": {
-          "title": "Najvišje temperature v Sloveniji okoli Jul 15 · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je 90. percentil nacionalne povprečne dnevne najvišje temperature vseh 18 postaj v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0.42 °C/desetletje (p < 0.001). Po tem tempu projekcija kaže 26.3 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-          "footer": "Theil-Sen + TFPW MK: +0.42 °C/desetletje · p < 0.001 · τ = 0.401 · 95% CI · 77 let",
+          "title": "Najvišje temperature v Sloveniji okoli 15. jul. · 1950–2026 · trend s projekcijo do 2050",
+          "explain": "Vsaka pika je 90. percentil nacionalne povprečne dnevne najvišje temperature vseh 18 postaj v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,42 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 26,3 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "footer": "Theil-Sen + TFPW MK: +0,42 °C/desetletje · p < 0,001 · τ = 0,401 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
             "label": "2026",
@@ -44100,25 +44100,25 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LocationLjubljana",
-            "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "Day15 Jul◀▶"
+            "LokacijaLjubljana",
+            "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
+            "Dan15. jul.◀▶"
           ],
           "variable_select": {
             "selected": "temperature_max",
             "options": [
-              "Max temperature (°C)",
-              "Min temperature (°C)",
-              "Mean temperature (°C)",
-              "Precipitation (mm)",
+              "Najvišja temperatura (°C)",
+              "Najnižja temperatura (°C)",
+              "Povprečna temperatura (°C)",
+              "Padavine (mm)",
               "ET₀ (mm)"
             ]
           },
-          "day_label": "15 Jul",
-          "title": "Max temperature · 15 Jul",
+          "day_label": "15. jul.",
+          "title": "Najvišja temperatura · 15. jul.",
           "subtitle": "Ljubljana",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0.43",
-          "total_change": "+3.83°C",
+          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,43",
+          "total_change": "+3,83°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
             "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
@@ -44138,7 +44138,7 @@
               "plot_bands": []
             },
             "y_axis": {
-              "title": "Max temperature (°C)",
+              "title": "Najvišja temperatura (°C)",
               "min": null,
               "max": null,
               "categories": null,
@@ -44146,7 +44146,7 @@
                 {
                   "id": "baseline-Ljubljana",
                   "value": 25.18466666666667,
-                  "label": "77-YR MEAN 25.2",
+                  "label": "POVPREČJE 77 let: 25,2",
                   "dash_style": "Dash"
                 }
               ],
@@ -44815,18 +44815,18 @@
       },
       "hero_cards": {
         "rendered": {
-          "headline": "+0.497",
+          "headline": "+0,497",
           "headline_color": "rgb(194, 90, 44)",
           "category": "Katastrofalno",
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
-            "Sto let segrevanja za +4.97 °C – pri trenutnem tempu vsaka 20.1 let doda eno stopinjo.",
+            "Sto let segrevanja za +4,97 °C – pri trenutnem tempu vsaka 20,1 let doda eno stopinjo.",
             "Theil-Sen + TFPW Mann-Kendall"
           ],
           "stats": [
             "Mestni toplotni otok — poletni vročinski stres in tveganje hudourniških poplav v Ljubljanski kotlini",
-            "★★★ p < 0.001",
-            "0.4970",
+            "★★★ p < 0,001",
+            "0,4970",
             "77 let",
             "—"
           ]
@@ -45670,7 +45670,7 @@
           }
         },
         "rendered": {
-          "date_badge": "15.07.",
+          "date_badge": "15. jul.",
           "loc_select": {
             "selected": "Ljubljana",
             "options": [
@@ -45697,13 +45697,13 @@
           },
           "category_label": "Vroče",
           "category_color": "rgb(194, 90, 44)",
-          "description": "Med najtoplejšimi 15.07 v naših zapisih.",
+          "description": "Med najtoplejšimi 15. jul. v naših zapisih.",
           "percentile": "91",
           "percentile_label": "percentil",
-          "samples": "1,140 vzorcev",
+          "samples": "1140 vzorcev",
           "preliminary_badge": null,
           "explain": "Temperatura na postaji Ljubljana, razvrstena glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
-          "footer": "29.7 °C · 91. percentil · 1,140 vzorcev (1950–2026)",
+          "footer": "29,7 °C · 91. percentil · 1140 vzorcev (1950–2026)",
           "unavailable_message": null
         },
         "last7": {
@@ -45979,7 +45979,7 @@
                 {
                   "id": null,
                   "value": 29.656,
-                  "label": "DANES: 29.7 °C",
+                  "label": "DANES: 29,7 °C",
                   "dash_style": null
                 }
               ],
@@ -45987,27 +45987,27 @@
                 {
                   "from": 10.78698,
                   "to": 20.03,
-                  "label": "< 20.0°C"
+                  "label": "< 20,0°C"
                 },
                 {
                   "from": 20.03,
                   "to": 21.58,
-                  "label": "20.0–21.6°C"
+                  "label": "20,0–21,6°C"
                 },
                 {
                   "from": 21.58,
                   "to": 27.7,
-                  "label": "21.6–27.7°C"
+                  "label": "21,6–27,7°C"
                 },
                 {
                   "from": 27.7,
                   "to": 30.96,
-                  "label": "27.7–31.0°C"
+                  "label": "27,7–31,0°C"
                 },
                 {
                   "from": 30.96,
                   "to": 37.91002,
-                  "label": "> 31.0°C"
+                  "label": "> 31,0°C"
                 }
               ]
             },
@@ -46845,9 +46845,9 @@
       },
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
-        "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 15.07 od 1950",
+        "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 15. jul. od 1950",
         "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
-        "footer": "Danes: 29.7 °C · 91. percentil · mediana 24.6 °C · 1,140 opazovanj · 1950–2026"
+        "footer": "Danes: 29,7 °C · 91. percentil · mediana 24,6 °C · 1140 opazovanj · 1950–2026"
       },
       "today_trend": {
         "api": {
@@ -47209,9 +47209,9 @@
           ]
         },
         "rendered": {
-          "title": "Najvišje temperature na postaji Ljubljana okoli Jul 15 · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je 90. percentil lapsno popravljene dnevne najvišje temperature na postaji Ljubljana v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0.50 °C/desetletje (p < 0.001). Po tem tempu projekcija kaže 27.2 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-          "footer": "Theil-Sen + TFPW MK: +0.50 °C/desetletje · p < 0.001 · τ = 0.431 · 95% CI · 77 let",
+          "title": "Najvišje temperature na postaji Ljubljana okoli 15. jul. · 1950–2026 · trend s projekcijo do 2050",
+          "explain": "Vsaka pika je 90. percentil lapsno popravljene dnevne najvišje temperature na postaji Ljubljana v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,50 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 27,2 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "footer": "Theil-Sen + TFPW MK: +0,50 °C/desetletje · p < 0,001 · τ = 0,431 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
             "label": "2026",
@@ -47649,25 +47649,25 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LocationLjubljana",
-            "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "Day15 Jul◀▶"
+            "LokacijaLjubljana",
+            "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
+            "Dan15. jul.◀▶"
           ],
           "variable_select": {
             "selected": "temperature_max",
             "options": [
-              "Max temperature (°C)",
-              "Min temperature (°C)",
-              "Mean temperature (°C)",
-              "Precipitation (mm)",
+              "Najvišja temperatura (°C)",
+              "Najnižja temperatura (°C)",
+              "Povprečna temperatura (°C)",
+              "Padavine (mm)",
               "ET₀ (mm)"
             ]
           },
-          "day_label": "15 Jul",
-          "title": "Max temperature · 15 Jul",
+          "day_label": "15. jul.",
+          "title": "Najvišja temperatura · 15. jul.",
           "subtitle": "Ljubljana",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0.43",
-          "total_change": "+3.83°C",
+          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,43",
+          "total_change": "+3,83°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
             "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
@@ -47687,7 +47687,7 @@
               "plot_bands": []
             },
             "y_axis": {
-              "title": "Max temperature (°C)",
+              "title": "Najvišja temperatura (°C)",
               "min": null,
               "max": null,
               "categories": null,
@@ -47695,7 +47695,7 @@
                 {
                   "id": "baseline-Ljubljana",
                   "value": 25.18466666666667,
-                  "label": "77-YR MEAN 25.2",
+                  "label": "POVPREČJE 77 let: 25,2",
                   "dash_style": "Dash"
                 }
               ],
@@ -48364,18 +48364,18 @@
       },
       "hero_cards": {
         "rendered": {
-          "headline": "+0.497",
+          "headline": "+0,497",
           "headline_color": "rgb(194, 90, 44)",
           "category": "Katastrofalno",
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
-            "Sto let segrevanja za +4.97 °C – pri trenutnem tempu vsaka 20.1 let doda eno stopinjo.",
+            "Sto let segrevanja za +4,97 °C – pri trenutnem tempu vsaka 20,1 let doda eno stopinjo.",
             "Theil-Sen + TFPW Mann-Kendall"
           ],
           "stats": [
             "Mestni toplotni otok — poletni vročinski stres in tveganje hudourniških poplav v Ljubljanski kotlini",
-            "★★★ p < 0.001",
-            "0.4970",
+            "★★★ p < 0,001",
+            "0,4970",
             "77 let",
             "—"
           ]
@@ -49219,7 +49219,7 @@
           }
         },
         "rendered": {
-          "date_badge": "15.07.",
+          "date_badge": "15. jul.",
           "loc_select": {
             "selected": "Kredarica",
             "options": [
@@ -49246,13 +49246,13 @@
           },
           "category_label": "Vroče",
           "category_color": "rgb(194, 90, 44)",
-          "description": "Med najtoplejšimi 15.07 v naših zapisih.",
+          "description": "Med najtoplejšimi 15. jul. v naših zapisih.",
           "percentile": "81",
           "percentile_label": "percentil",
-          "samples": "1,140 vzorcev",
+          "samples": "1140 vzorcev",
           "preliminary_badge": null,
           "explain": "Temperatura na postaji Kredarica, razvrstena glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
-          "footer": "13.9 °C · 81. percentil · 1,140 vzorcev (1950–2026)",
+          "footer": "13,9 °C · 81. percentil · 1140 vzorcev (1950–2026)",
           "unavailable_message": null
         },
         "last7": {
@@ -49528,7 +49528,7 @@
                 {
                   "id": null,
                   "value": 13.904,
-                  "label": "DANES: 13.9 °C",
+                  "label": "DANES: 13,9 °C",
                   "dash_style": null
                 }
               ],
@@ -49536,27 +49536,27 @@
                 {
                   "from": -2.18696,
                   "to": 6.34,
-                  "label": "< 6.3°C"
+                  "label": "< 6,3°C"
                 },
                 {
                   "from": 6.34,
                   "to": 7.89,
-                  "label": "6.3–7.9°C"
+                  "label": "6,3–7,9°C"
                 },
                 {
                   "from": 7.89,
                   "to": 13.69,
-                  "label": "7.9–13.7°C"
+                  "label": "7,9–13,7°C"
                 },
                 {
                   "from": 13.69,
                   "to": 16.24,
-                  "label": "13.7–16.2°C"
+                  "label": "13,7–16,2°C"
                 },
                 {
                   "from": 16.24,
                   "to": 22.022959999999998,
-                  "label": "> 16.2°C"
+                  "label": "> 16,2°C"
                 }
               ]
             },
@@ -50394,9 +50394,9 @@
       },
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
-        "title": "Dnevne najvišje temperature na postaji Kredarica za dva tedna okoli 15.07 od 1950",
+        "title": "Dnevne najvišje temperature na postaji Kredarica za dva tedna okoli 15. jul. od 1950",
         "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
-        "footer": "Danes: 13.9 °C · 81. percentil · mediana 10.9 °C · 1,140 opazovanj · 1950–2026"
+        "footer": "Danes: 13,9 °C · 81. percentil · mediana 10,9 °C · 1140 opazovanj · 1950–2026"
       },
       "today_trend": {
         "api": {
@@ -50758,9 +50758,9 @@
           ]
         },
         "rendered": {
-          "title": "Najvišje temperature na postaji Kredarica okoli Jul 15 · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je 90. percentil lapsno popravljene dnevne najvišje temperature na postaji Kredarica v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0.33 °C/desetletje (p < 0.001). Po tem tempu projekcija kaže 12.6 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-          "footer": "Theil-Sen + TFPW MK: +0.33 °C/desetletje · p < 0.001 · τ = 0.363 · 95% CI · 77 let",
+          "title": "Najvišje temperature na postaji Kredarica okoli 15. jul. · 1950–2026 · trend s projekcijo do 2050",
+          "explain": "Vsaka pika je 90. percentil lapsno popravljene dnevne najvišje temperature na postaji Kredarica v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,33 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 12,6 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "footer": "Theil-Sen + TFPW MK: +0,33 °C/desetletje · p < 0,001 · τ = 0,363 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
             "label": "2026",
@@ -51198,25 +51198,25 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LocationKredarica",
-            "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "Day15 Jul◀▶"
+            "LokacijaKredarica",
+            "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
+            "Dan15. jul.◀▶"
           ],
           "variable_select": {
             "selected": "temperature_max",
             "options": [
-              "Max temperature (°C)",
-              "Min temperature (°C)",
-              "Mean temperature (°C)",
-              "Precipitation (mm)",
+              "Najvišja temperatura (°C)",
+              "Najnižja temperatura (°C)",
+              "Povprečna temperatura (°C)",
+              "Padavine (mm)",
               "ET₀ (mm)"
             ]
           },
-          "day_label": "15 Jul",
-          "title": "Max temperature · 15 Jul",
+          "day_label": "15. jul.",
+          "title": "Najvišja temperatura · 15. jul.",
           "subtitle": "Kredarica",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0.36",
-          "total_change": "+2.51°C",
+          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,36",
+          "total_change": "+2,51°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
             "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
@@ -51236,7 +51236,7 @@
               "plot_bands": []
             },
             "y_axis": {
-              "title": "Max temperature (°C)",
+              "title": "Najvišja temperatura (°C)",
               "min": null,
               "max": null,
               "categories": null,
@@ -51244,7 +51244,7 @@
                 {
                   "id": "baseline-Kredarica",
                   "value": 11.213333333333333,
-                  "label": "77-YR MEAN 11.2",
+                  "label": "POVPREČJE 77 let: 11,2",
                   "dash_style": "Dash"
                 }
               ],
@@ -51913,18 +51913,18 @@
       },
       "hero_cards": {
         "rendered": {
-          "headline": "+0.326",
+          "headline": "+0,326",
           "headline_color": "rgb(194, 90, 44)",
           "category": "Katastrofalno",
           "paragraphs": [
             "Popolna izguba Triglavskega ledenika — narodni simbol in vir savinjskih rek. Propad alpskega ekosistema sproži kaskadne učinke.",
-            "Sto let segrevanja za +3.26 °C – pri trenutnem tempu vsaka 30.7 let doda eno stopinjo.",
+            "Sto let segrevanja za +3,26 °C – pri trenutnem tempu vsaka 30,7 let doda eno stopinjo.",
             "Theil-Sen + TFPW Mann-Kendall"
           ],
           "stats": [
             "Izguba Triglavskega ledenika — izsušitev izvirnih vod za Slovenijo reke",
-            "★★★ p < 0.001",
-            "0.3260",
+            "★★★ p < 0,001",
+            "0,3260",
             "77 let",
             "—"
           ]
@@ -51960,7 +51960,7 @@
           }
         },
         "rendered": {
-          "date_badge": "29.02.",
+          "date_badge": "1. mar.",
           "loc_select": {
             "selected": "",
             "options": [
@@ -52066,25 +52066,25 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LocationLjubljana",
-            "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "Day28 Feb◀▶"
+            "LokacijaLjubljana",
+            "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
+            "Dan28. feb.◀▶"
           ],
           "variable_select": {
             "selected": "temperature_max",
             "options": [
-              "Max temperature (°C)",
-              "Min temperature (°C)",
-              "Mean temperature (°C)",
-              "Precipitation (mm)",
+              "Najvišja temperatura (°C)",
+              "Najnižja temperatura (°C)",
+              "Povprečna temperatura (°C)",
+              "Padavine (mm)",
               "ET₀ (mm)"
             ]
           },
-          "day_label": "28 Feb",
-          "title": "Max temperature · 28 Feb",
+          "day_label": "28. feb.",
+          "title": "Najvišja temperatura · 28. feb.",
           "subtitle": "Ljubljana",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0.34",
-          "total_change": "+4.54°C",
+          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,34",
+          "total_change": "+4,54°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
             "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
@@ -52104,7 +52104,7 @@
               "plot_bands": []
             },
             "y_axis": {
-              "title": "Max temperature (°C)",
+              "title": "Najvišja temperatura (°C)",
               "min": null,
               "max": null,
               "categories": null,
@@ -52112,7 +52112,7 @@
                 {
                   "id": "baseline-Ljubljana",
                   "value": 7.894333333333332,
-                  "label": "77-YR MEAN 7.9",
+                  "label": "POVPREČJE 77 let: 7,9",
                   "dash_style": "Dash"
                 }
               ],
@@ -52781,18 +52781,18 @@
       },
       "hero_cards": {
         "rendered": {
-          "headline": "+0.589",
+          "headline": "+0,589",
           "headline_color": "rgb(194, 90, 44)",
           "category": "Katastrofalno",
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
-            "Sto let segrevanja za +5.89 °C – pri trenutnem tempu vsaka 17.0 let doda eno stopinjo.",
+            "Sto let segrevanja za +5,89 °C – pri trenutnem tempu vsaka 17,0 let doda eno stopinjo.",
             "Theil-Sen + TFPW Mann-Kendall"
           ],
           "stats": [
             "Mestni toplotni otok — poletni vročinski stres in tveganje hudourniških poplav v Ljubljanski kotlini",
-            "★★★ p < 0.001",
-            "0.5890",
+            "★★★ p < 0,001",
+            "0,5890",
             "77 let",
             "—"
           ]
@@ -52828,7 +52828,7 @@
           }
         },
         "rendered": {
-          "date_badge": "29.02.",
+          "date_badge": "1. mar.",
           "loc_select": {
             "selected": "",
             "options": [
@@ -52934,25 +52934,25 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LocationKredarica",
-            "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "Day28 Feb◀▶"
+            "LokacijaKredarica",
+            "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
+            "Dan28. feb.◀▶"
           ],
           "variable_select": {
             "selected": "temperature_max",
             "options": [
-              "Max temperature (°C)",
-              "Min temperature (°C)",
-              "Mean temperature (°C)",
-              "Precipitation (mm)",
+              "Najvišja temperatura (°C)",
+              "Najnižja temperatura (°C)",
+              "Povprečna temperatura (°C)",
+              "Padavine (mm)",
               "ET₀ (mm)"
             ]
           },
-          "day_label": "28 Feb",
-          "title": "Max temperature · 28 Feb",
+          "day_label": "28. feb.",
+          "title": "Najvišja temperatura · 28. feb.",
           "subtitle": "Kredarica",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0.27",
-          "total_change": "+3.29°C",
+          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,27",
+          "total_change": "+3,29°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
             "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
@@ -52972,7 +52972,7 @@
               "plot_bands": []
             },
             "y_axis": {
-              "title": "Max temperature (°C)",
+              "title": "Najvišja temperatura (°C)",
               "min": null,
               "max": null,
               "categories": null,
@@ -52980,7 +52980,7 @@
                 {
                   "id": "baseline-Kredarica",
                   "value": -5.116666666666666,
-                  "label": "77-YR MEAN -5.1",
+                  "label": "POVPREČJE 77 let: −5,1",
                   "dash_style": "Dash"
                 }
               ],
@@ -53649,18 +53649,18 @@
       },
       "hero_cards": {
         "rendered": {
-          "headline": "+0.427",
+          "headline": "+0,427",
           "headline_color": "rgb(194, 90, 44)",
           "category": "Katastrofalno",
           "paragraphs": [
             "Popolna izguba Triglavskega ledenika — narodni simbol in vir savinjskih rek. Propad alpskega ekosistema sproži kaskadne učinke.",
-            "Sto let segrevanja za +4.27 °C – pri trenutnem tempu vsaka 23.4 let doda eno stopinjo.",
+            "Sto let segrevanja za +4,27 °C – pri trenutnem tempu vsaka 23,4 let doda eno stopinjo.",
             "Theil-Sen + TFPW Mann-Kendall"
           ],
           "stats": [
             "Izguba Triglavskega ledenika — izsušitev izvirnih vod za Slovenijo reke",
-            "★★★ p < 0.001",
-            "0.4270",
+            "★★★ p < 0,001",
+            "0,4270",
             "77 let",
             "—"
           ]
@@ -53696,7 +53696,7 @@
           }
         },
         "rendered": {
-          "date_badge": "29.02.",
+          "date_badge": "1. mar.",
           "loc_select": {
             "selected": "",
             "options": [
@@ -53753,25 +53753,25 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LocationLjubljana",
-            "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "Day28 Feb◀▶"
+            "LokacijaLjubljana",
+            "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
+            "Dan28. feb.◀▶"
           ],
           "variable_select": {
             "selected": "temperature_max",
             "options": [
-              "Max temperature (°C)",
-              "Min temperature (°C)",
-              "Mean temperature (°C)",
-              "Precipitation (mm)",
+              "Najvišja temperatura (°C)",
+              "Najnižja temperatura (°C)",
+              "Povprečna temperatura (°C)",
+              "Padavine (mm)",
               "ET₀ (mm)"
             ]
           },
-          "day_label": "28 Feb",
-          "title": "Max temperature · 28 Feb",
+          "day_label": "28. feb.",
+          "title": "Najvišja temperatura · 28. feb.",
           "subtitle": "Ljubljana",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0.34",
-          "total_change": "+4.54°C",
+          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,34",
+          "total_change": "+4,54°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
             "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
@@ -53791,7 +53791,7 @@
               "plot_bands": []
             },
             "y_axis": {
-              "title": "Max temperature (°C)",
+              "title": "Najvišja temperatura (°C)",
               "min": null,
               "max": null,
               "categories": null,
@@ -53799,7 +53799,7 @@
                 {
                   "id": "baseline-Ljubljana",
                   "value": 7.894333333333332,
-                  "label": "77-YR MEAN 7.9",
+                  "label": "POVPREČJE 77 let: 7,9",
                   "dash_style": "Dash"
                 }
               ],
@@ -54468,18 +54468,18 @@
       },
       "hero_cards": {
         "rendered": {
-          "headline": "+0.589",
+          "headline": "+0,589",
           "headline_color": "rgb(194, 90, 44)",
           "category": "Katastrofalno",
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
-            "Sto let segrevanja za +5.89 °C – pri trenutnem tempu vsaka 17.0 let doda eno stopinjo.",
+            "Sto let segrevanja za +5,89 °C – pri trenutnem tempu vsaka 17,0 let doda eno stopinjo.",
             "Theil-Sen + TFPW Mann-Kendall"
           ],
           "stats": [
             "Mestni toplotni otok — poletni vročinski stres in tveganje hudourniških poplav v Ljubljanski kotlini",
-            "★★★ p < 0.001",
-            "0.5890",
+            "★★★ p < 0,001",
+            "0,5890",
             "77 let",
             "—"
           ]
@@ -55323,7 +55323,7 @@
           }
         },
         "rendered": {
-          "date_badge": "01.03.",
+          "date_badge": "1. mar.",
           "loc_select": {
             "selected": "Ljubljana",
             "options": [
@@ -55350,13 +55350,13 @@
           },
           "category_label": "Normalno",
           "category_color": "rgb(231, 217, 184)",
-          "description": "Točno takšno, kot 01.03 v Slovenija ponavadi je.",
+          "description": "Točno takšno, kot 1. mar. v Slovenija ponavadi je.",
           "percentile": "78",
           "percentile_label": "percentil",
-          "samples": "1,155 vzorcev",
+          "samples": "1155 vzorcev",
           "preliminary_badge": null,
           "explain": "Temperatura na postaji Ljubljana, razvrstena glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
-          "footer": "10.9 °C · 78. percentil · 1,155 vzorcev (1950–2026)",
+          "footer": "10,9 °C · 78. percentil · 1155 vzorcev (1950–2026)",
           "unavailable_message": null
         },
         "last7": {
@@ -55614,7 +55614,7 @@
                 {
                   "id": null,
                   "value": 10.907,
-                  "label": "DANES: 10.9 °C",
+                  "label": "DANES: 10,9 °C",
                   "dash_style": null
                 }
               ],
@@ -55622,27 +55622,27 @@
                 {
                   "from": -10.125,
                   "to": 1.19,
-                  "label": "< 1.2°C"
+                  "label": "< 1,2°C"
                 },
                 {
                   "from": 1.19,
                   "to": 2.79,
-                  "label": "1.2–2.8°C"
+                  "label": "1,2–2,8°C"
                 },
                 {
                   "from": 2.79,
                   "to": 11.14,
-                  "label": "2.8–11.1°C"
+                  "label": "2,8–11,1°C"
                 },
                 {
                   "from": 11.14,
                   "to": 14.42,
-                  "label": "11.1–14.4°C"
+                  "label": "11,1–14,4°C"
                 },
                 {
                   "from": 14.42,
                   "to": 21.907,
-                  "label": "> 14.4°C"
+                  "label": "> 14,4°C"
                 }
               ]
             },
@@ -56480,9 +56480,9 @@
       },
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
-        "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 01.03 od 1950",
+        "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 1. mar. od 1950",
         "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
-        "footer": "Danes: 10.9 °C · 78. percentil · mediana 7.2 °C · 1,155 opazovanj · 1950–2026"
+        "footer": "Danes: 10,9 °C · 78. percentil · mediana 7,2 °C · 1155 opazovanj · 1950–2026"
       },
       "today_trend": {
         "api": {
@@ -56844,9 +56844,9 @@
           ]
         },
         "rendered": {
-          "title": "Najvišje temperature na postaji Ljubljana okoli Mar 1 · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je 90. percentil lapsno popravljene dnevne najvišje temperature na postaji Ljubljana v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0.58 °C/desetletje (p < 0.001). Po tem tempu projekcija kaže 11.0 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-          "footer": "Theil-Sen + TFPW MK: +0.58 °C/desetletje · p < 0.001 · τ = 0.336 · 95% CI · 77 let",
+          "title": "Najvišje temperature na postaji Ljubljana okoli 1. mar. · 1950–2026 · trend s projekcijo do 2050",
+          "explain": "Vsaka pika je 90. percentil lapsno popravljene dnevne najvišje temperature na postaji Ljubljana v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,58 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 11,0 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "footer": "Theil-Sen + TFPW MK: +0,58 °C/desetletje · p < 0,001 · τ = 0,336 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
             "label": "2026",
@@ -57284,25 +57284,25 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LocationLjubljana",
-            "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "Day1 Mar◀▶"
+            "LokacijaLjubljana",
+            "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
+            "Dan1. mar.◀▶"
           ],
           "variable_select": {
             "selected": "temperature_max",
             "options": [
-              "Max temperature (°C)",
-              "Min temperature (°C)",
-              "Mean temperature (°C)",
-              "Precipitation (mm)",
+              "Najvišja temperatura (°C)",
+              "Najnižja temperatura (°C)",
+              "Povprečna temperatura (°C)",
+              "Padavine (mm)",
               "ET₀ (mm)"
             ]
           },
-          "day_label": "1 Mar",
-          "title": "Max temperature · 1 Mar",
+          "day_label": "1. mar.",
+          "title": "Najvišja temperatura · 1. mar.",
           "subtitle": "Ljubljana",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0.34",
-          "total_change": "+4.50°C",
+          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,34",
+          "total_change": "+4,50°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
             "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
@@ -57322,7 +57322,7 @@
               "plot_bands": []
             },
             "y_axis": {
-              "title": "Max temperature (°C)",
+              "title": "Najvišja temperatura (°C)",
               "min": null,
               "max": null,
               "categories": null,
@@ -57330,7 +57330,7 @@
                 {
                   "id": "baseline-Ljubljana",
                   "value": 8.039333333333335,
-                  "label": "77-YR MEAN 8.0",
+                  "label": "POVPREČJE 77 let: 8,0",
                   "dash_style": "Dash"
                 }
               ],
@@ -57999,18 +57999,18 @@
       },
       "hero_cards": {
         "rendered": {
-          "headline": "+0.585",
+          "headline": "+0,585",
           "headline_color": "rgb(194, 90, 44)",
           "category": "Katastrofalno",
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
-            "Sto let segrevanja za +5.85 °C – pri trenutnem tempu vsaka 17.1 let doda eno stopinjo.",
+            "Sto let segrevanja za +5,85 °C – pri trenutnem tempu vsaka 17,1 let doda eno stopinjo.",
             "Theil-Sen + TFPW Mann-Kendall"
           ],
           "stats": [
             "Mestni toplotni otok — poletni vročinski stres in tveganje hudourniških poplav v Ljubljanski kotlini",
-            "★★★ p < 0.001",
-            "0.5850",
+            "★★★ p < 0,001",
+            "0,5850",
             "77 let",
             "—"
           ]
@@ -58854,7 +58854,7 @@
           }
         },
         "rendered": {
-          "date_badge": "28.02.",
+          "date_badge": "28. feb.",
           "loc_select": {
             "selected": "Ljubljana",
             "options": [
@@ -58881,13 +58881,13 @@
           },
           "category_label": "Normalno",
           "category_color": "rgb(231, 217, 184)",
-          "description": "Točno takšno, kot 28.02 v Slovenija ponavadi je.",
+          "description": "Točno takšno, kot 28. feb. v Slovenija ponavadi je.",
           "percentile": "69",
           "percentile_label": "percentil",
-          "samples": "1,155 vzorcev",
+          "samples": "1155 vzorcev",
           "preliminary_badge": null,
           "explain": "Temperatura na postaji Ljubljana, razvrstena glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
-          "footer": "9.4 °C · 69. percentil · 1,155 vzorcev (1950–2026)",
+          "footer": "9,4 °C · 69. percentil · 1155 vzorcev (1950–2026)",
           "unavailable_message": null
         },
         "last7": {
@@ -59163,7 +59163,7 @@
                 {
                   "id": null,
                   "value": 9.356,
-                  "label": "DANES: 9.4 °C",
+                  "label": "DANES: 9,4 °C",
                   "dash_style": null
                 }
               ],
@@ -59171,27 +59171,27 @@
                 {
                   "from": -10.1134,
                   "to": 1.01,
-                  "label": "< 1.0°C"
+                  "label": "< 1,0°C"
                 },
                 {
                   "from": 1.01,
                   "to": 2.74,
-                  "label": "1.0–2.7°C"
+                  "label": "1,0–2,7°C"
                 },
                 {
                   "from": 2.74,
                   "to": 10.91,
-                  "label": "2.7–10.9°C"
+                  "label": "2,7–10,9°C"
                 },
                 {
                   "from": 10.91,
                   "to": 14.2,
-                  "label": "10.9–14.2°C"
+                  "label": "10,9–14,2°C"
                 },
                 {
                   "from": 14.2,
                   "to": 21.795399999999997,
-                  "label": "> 14.2°C"
+                  "label": "> 14,2°C"
                 }
               ]
             },
@@ -60029,9 +60029,9 @@
       },
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
-        "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 28.02 od 1950",
+        "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 28. feb. od 1950",
         "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
-        "footer": "Danes: 9.4 °C · 69. percentil · mediana 7.1 °C · 1,155 opazovanj · 1950–2026"
+        "footer": "Danes: 9,4 °C · 69. percentil · mediana 7,1 °C · 1155 opazovanj · 1950–2026"
       },
       "today_trend": {
         "api": {
@@ -60393,9 +60393,9 @@
           ]
         },
         "rendered": {
-          "title": "Najvišje temperature na postaji Ljubljana okoli Feb 28 · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je 90. percentil lapsno popravljene dnevne najvišje temperature na postaji Ljubljana v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0.59 °C/desetletje (p < 0.001). Po tem tempu projekcija kaže 10.9 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-          "footer": "Theil-Sen + TFPW MK: +0.59 °C/desetletje · p < 0.001 · τ = 0.337 · 95% CI · 77 let",
+          "title": "Najvišje temperature na postaji Ljubljana okoli 28. feb. · 1950–2026 · trend s projekcijo do 2050",
+          "explain": "Vsaka pika je 90. percentil lapsno popravljene dnevne najvišje temperature na postaji Ljubljana v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,59 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 10,9 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "footer": "Theil-Sen + TFPW MK: +0,59 °C/desetletje · p < 0,001 · τ = 0,337 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
             "label": "2026",
@@ -60833,25 +60833,25 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LocationLjubljana",
-            "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "Day28 Feb◀▶"
+            "LokacijaLjubljana",
+            "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
+            "Dan28. feb.◀▶"
           ],
           "variable_select": {
             "selected": "temperature_max",
             "options": [
-              "Max temperature (°C)",
-              "Min temperature (°C)",
-              "Mean temperature (°C)",
-              "Precipitation (mm)",
+              "Najvišja temperatura (°C)",
+              "Najnižja temperatura (°C)",
+              "Povprečna temperatura (°C)",
+              "Padavine (mm)",
               "ET₀ (mm)"
             ]
           },
-          "day_label": "28 Feb",
-          "title": "Max temperature · 28 Feb",
+          "day_label": "28. feb.",
+          "title": "Najvišja temperatura · 28. feb.",
           "subtitle": "Ljubljana",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0.34",
-          "total_change": "+4.54°C",
+          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,34",
+          "total_change": "+4,54°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
             "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
@@ -60871,7 +60871,7 @@
               "plot_bands": []
             },
             "y_axis": {
-              "title": "Max temperature (°C)",
+              "title": "Najvišja temperatura (°C)",
               "min": null,
               "max": null,
               "categories": null,
@@ -60879,7 +60879,7 @@
                 {
                   "id": "baseline-Ljubljana",
                   "value": 7.894333333333332,
-                  "label": "77-YR MEAN 7.9",
+                  "label": "POVPREČJE 77 let: 7,9",
                   "dash_style": "Dash"
                 }
               ],
@@ -61548,18 +61548,18 @@
       },
       "hero_cards": {
         "rendered": {
-          "headline": "+0.589",
+          "headline": "+0,589",
           "headline_color": "rgb(194, 90, 44)",
           "category": "Katastrofalno",
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
-            "Sto let segrevanja za +5.89 °C – pri trenutnem tempu vsaka 17.0 let doda eno stopinjo.",
+            "Sto let segrevanja za +5,89 °C – pri trenutnem tempu vsaka 17,0 let doda eno stopinjo.",
             "Theil-Sen + TFPW Mann-Kendall"
           ],
           "stats": [
             "Mestni toplotni otok — poletni vročinski stres in tveganje hudourniških poplav v Ljubljanski kotlini",
-            "★★★ p < 0.001",
-            "0.5890",
+            "★★★ p < 0,001",
+            "0,5890",
             "77 let",
             "—"
           ]
@@ -62403,7 +62403,7 @@
           }
         },
         "rendered": {
-          "date_badge": "01.03.",
+          "date_badge": "1. mar.",
           "loc_select": {
             "selected": "Ljubljana",
             "options": [
@@ -62430,13 +62430,13 @@
           },
           "category_label": "Normalno",
           "category_color": "rgb(231, 217, 184)",
-          "description": "Točno takšno, kot 01.03 v Slovenija ponavadi je.",
+          "description": "Točno takšno, kot 1. mar. v Slovenija ponavadi je.",
           "percentile": "68",
           "percentile_label": "percentil",
-          "samples": "1,155 vzorcev",
+          "samples": "1155 vzorcev",
           "preliminary_badge": null,
           "explain": "Temperatura na postaji Ljubljana, razvrstena glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
-          "footer": "9.4 °C · 68. percentil · 1,155 vzorcev (1950–2026)",
+          "footer": "9,4 °C · 68. percentil · 1155 vzorcev (1950–2026)",
           "unavailable_message": null
         },
         "last7": {
@@ -62712,7 +62712,7 @@
                 {
                   "id": null,
                   "value": 9.356,
-                  "label": "DANES: 9.4 °C",
+                  "label": "DANES: 9,4 °C",
                   "dash_style": null
                 }
               ],
@@ -62720,27 +62720,27 @@
                 {
                   "from": -10.125,
                   "to": 1.19,
-                  "label": "< 1.2°C"
+                  "label": "< 1,2°C"
                 },
                 {
                   "from": 1.19,
                   "to": 2.79,
-                  "label": "1.2–2.8°C"
+                  "label": "1,2–2,8°C"
                 },
                 {
                   "from": 2.79,
                   "to": 11.14,
-                  "label": "2.8–11.1°C"
+                  "label": "2,8–11,1°C"
                 },
                 {
                   "from": 11.14,
                   "to": 14.42,
-                  "label": "11.1–14.4°C"
+                  "label": "11,1–14,4°C"
                 },
                 {
                   "from": 14.42,
                   "to": 21.907,
-                  "label": "> 14.4°C"
+                  "label": "> 14,4°C"
                 }
               ]
             },
@@ -63578,9 +63578,9 @@
       },
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
-        "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 01.03 od 1950",
+        "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 1. mar. od 1950",
         "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
-        "footer": "Danes: 9.4 °C · 68. percentil · mediana 7.2 °C · 1,155 opazovanj · 1950–2026"
+        "footer": "Danes: 9,4 °C · 68. percentil · mediana 7,2 °C · 1155 opazovanj · 1950–2026"
       },
       "today_trend": {
         "api": {
@@ -63942,9 +63942,9 @@
           ]
         },
         "rendered": {
-          "title": "Najvišje temperature na postaji Ljubljana okoli Mar 1 · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je 90. percentil lapsno popravljene dnevne najvišje temperature na postaji Ljubljana v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0.58 °C/desetletje (p < 0.001). Po tem tempu projekcija kaže 11.0 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-          "footer": "Theil-Sen + TFPW MK: +0.58 °C/desetletje · p < 0.001 · τ = 0.336 · 95% CI · 77 let",
+          "title": "Najvišje temperature na postaji Ljubljana okoli 1. mar. · 1950–2026 · trend s projekcijo do 2050",
+          "explain": "Vsaka pika je 90. percentil lapsno popravljene dnevne najvišje temperature na postaji Ljubljana v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,58 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 11,0 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "footer": "Theil-Sen + TFPW MK: +0,58 °C/desetletje · p < 0,001 · τ = 0,336 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
             "label": "2026",
@@ -64382,25 +64382,25 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LocationLjubljana",
-            "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "Day1 Mar◀▶"
+            "LokacijaLjubljana",
+            "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
+            "Dan1. mar.◀▶"
           ],
           "variable_select": {
             "selected": "temperature_max",
             "options": [
-              "Max temperature (°C)",
-              "Min temperature (°C)",
-              "Mean temperature (°C)",
-              "Precipitation (mm)",
+              "Najvišja temperatura (°C)",
+              "Najnižja temperatura (°C)",
+              "Povprečna temperatura (°C)",
+              "Padavine (mm)",
               "ET₀ (mm)"
             ]
           },
-          "day_label": "1 Mar",
-          "title": "Max temperature · 1 Mar",
+          "day_label": "1. mar.",
+          "title": "Najvišja temperatura · 1. mar.",
           "subtitle": "Ljubljana",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0.34",
-          "total_change": "+4.50°C",
+          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,34",
+          "total_change": "+4,50°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
             "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
@@ -64420,7 +64420,7 @@
               "plot_bands": []
             },
             "y_axis": {
-              "title": "Max temperature (°C)",
+              "title": "Najvišja temperatura (°C)",
               "min": null,
               "max": null,
               "categories": null,
@@ -64428,7 +64428,7 @@
                 {
                   "id": "baseline-Ljubljana",
                   "value": 8.039333333333335,
-                  "label": "77-YR MEAN 8.0",
+                  "label": "POVPREČJE 77 let: 8,0",
                   "dash_style": "Dash"
                 }
               ],
@@ -65097,18 +65097,18 @@
       },
       "hero_cards": {
         "rendered": {
-          "headline": "+0.585",
+          "headline": "+0,585",
           "headline_color": "rgb(194, 90, 44)",
           "category": "Katastrofalno",
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
-            "Sto let segrevanja za +5.85 °C – pri trenutnem tempu vsaka 17.1 let doda eno stopinjo.",
+            "Sto let segrevanja za +5,85 °C – pri trenutnem tempu vsaka 17,1 let doda eno stopinjo.",
             "Theil-Sen + TFPW Mann-Kendall"
           ],
           "stats": [
             "Mestni toplotni otok — poletni vročinski stres in tveganje hudourniških poplav v Ljubljanski kotlini",
-            "★★★ p < 0.001",
-            "0.5850",
+            "★★★ p < 0,001",
+            "0,5850",
             "77 let",
             "—"
           ]
@@ -65952,7 +65952,7 @@
           }
         },
         "rendered": {
-          "date_badge": "01.01.",
+          "date_badge": "1. jan.",
           "loc_select": {
             "selected": "Ljubljana",
             "options": [
@@ -65979,13 +65979,13 @@
           },
           "category_label": "Vroče",
           "category_color": "rgb(194, 90, 44)",
-          "description": "Med najtoplejšimi 01.01 v naših zapisih.",
+          "description": "Med najtoplejšimi 1. jan. v naših zapisih.",
           "percentile": "91",
           "percentile_label": "percentil",
-          "samples": "1,167 vzorcev",
+          "samples": "1167 vzorcev",
           "preliminary_badge": null,
           "explain": "Temperatura na postaji Ljubljana, razvrstena glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
-          "footer": "8.4 °C · 91. percentil · 1,167 vzorcev (1950–2026)",
+          "footer": "8,4 °C · 91. percentil · 1167 vzorcev (1950–2026)",
           "unavailable_message": null
         },
         "last7": {
@@ -66261,7 +66261,7 @@
                 {
                   "id": null,
                   "value": 8.407,
-                  "label": "DANES: 8.4 °C",
+                  "label": "DANES: 8,4 °C",
                   "dash_style": null
                 }
               ],
@@ -66269,27 +66269,27 @@
                 {
                   "from": -14.74752,
                   "to": -2.56,
-                  "label": "< -2.6°C"
+                  "label": "< −2,6°C"
                 },
                 {
                   "from": -2.56,
                   "to": -0.41,
-                  "label": "-2.6–-0.4°C"
+                  "label": "−2,6–−0,4°C"
                 },
                 {
                   "from": -0.41,
                   "to": 6.43,
-                  "label": "-0.4–6.4°C"
+                  "label": "−0,4–6,4°C"
                 },
                 {
                   "from": 6.43,
                   "to": 9.33,
-                  "label": "6.4–9.3°C"
+                  "label": "6,4–9,3°C"
                 },
                 {
                   "from": 9.33,
                   "to": 16.99552,
-                  "label": "> 9.3°C"
+                  "label": "> 9,3°C"
                 }
               ]
             },
@@ -67127,9 +67127,9 @@
       },
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
-        "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 01.01 od 1950",
+        "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 1. jan. od 1950",
         "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
-        "footer": "Danes: 8.4 °C · 91. percentil · mediana 3.3 °C · 1,167 opazovanj · 1950–2026"
+        "footer": "Danes: 8,4 °C · 91. percentil · mediana 3,3 °C · 1167 opazovanj · 1950–2026"
       },
       "today_trend": {
         "api": {
@@ -67491,9 +67491,9 @@
           ]
         },
         "rendered": {
-          "title": "Najvišje temperature na postaji Ljubljana okoli Jan 1 · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je 90. percentil lapsno popravljene dnevne najvišje temperature na postaji Ljubljana v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0.47 °C/desetletje (p < 0.001). Po tem tempu projekcija kaže 5.9 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-          "footer": "Theil-Sen + TFPW MK: +0.47 °C/desetletje · p < 0.001 · τ = 0.355 · 95% CI · 77 let",
+          "title": "Najvišje temperature na postaji Ljubljana okoli 1. jan. · 1950–2026 · trend s projekcijo do 2050",
+          "explain": "Vsaka pika je 90. percentil lapsno popravljene dnevne najvišje temperature na postaji Ljubljana v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,47 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 5,9 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "footer": "Theil-Sen + TFPW MK: +0,47 °C/desetletje · p < 0,001 · τ = 0,355 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
             "label": "2026",
@@ -67931,25 +67931,25 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LocationLjubljana",
-            "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "Day1 Jan◀▶"
+            "LokacijaLjubljana",
+            "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
+            "Dan1. jan.◀▶"
           ],
           "variable_select": {
             "selected": "temperature_max",
             "options": [
-              "Max temperature (°C)",
-              "Min temperature (°C)",
-              "Mean temperature (°C)",
-              "Precipitation (mm)",
+              "Najvišja temperatura (°C)",
+              "Najnižja temperatura (°C)",
+              "Povprečna temperatura (°C)",
+              "Padavine (mm)",
               "ET₀ (mm)"
             ]
           },
-          "day_label": "1 Jan",
-          "title": "Max temperature · 1 Jan",
+          "day_label": "1. jan.",
+          "title": "Najvišja temperatura · 1. jan.",
           "subtitle": "Ljubljana",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0.35",
-          "total_change": "+3.64°C",
+          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,35",
+          "total_change": "+3,64°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
             "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
@@ -67969,7 +67969,7 @@
               "plot_bands": []
             },
             "y_axis": {
-              "title": "Max temperature (°C)",
+              "title": "Najvišja temperatura (°C)",
               "min": null,
               "max": null,
               "categories": null,
@@ -67977,7 +67977,7 @@
                 {
                   "id": "baseline-Ljubljana",
                   "value": 3.972666666666667,
-                  "label": "77-YR MEAN 4.0",
+                  "label": "POVPREČJE 77 let: 4,0",
                   "dash_style": "Dash"
                 }
               ],
@@ -68646,18 +68646,18 @@
       },
       "hero_cards": {
         "rendered": {
-          "headline": "+0.473",
+          "headline": "+0,473",
           "headline_color": "rgb(194, 90, 44)",
           "category": "Katastrofalno",
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
-            "Sto let segrevanja za +4.73 °C – pri trenutnem tempu vsaka 21.1 let doda eno stopinjo.",
+            "Sto let segrevanja za +4,73 °C – pri trenutnem tempu vsaka 21,1 let doda eno stopinjo.",
             "Theil-Sen + TFPW Mann-Kendall"
           ],
           "stats": [
             "Mestni toplotni otok — poletni vročinski stres in tveganje hudourniških poplav v Ljubljanski kotlini",
-            "★★★ p < 0.001",
-            "0.4730",
+            "★★★ p < 0,001",
+            "0,4730",
             "77 let",
             "—"
           ]
@@ -69501,7 +69501,7 @@
           }
         },
         "rendered": {
-          "date_badge": "31.12.",
+          "date_badge": "31. dec.",
           "loc_select": {
             "selected": "Ljubljana",
             "options": [
@@ -69528,13 +69528,13 @@
           },
           "category_label": "Normalno",
           "category_color": "rgb(231, 217, 184)",
-          "description": "Točno takšno, kot 31.12 v Slovenija ponavadi je.",
+          "description": "Točno takšno, kot 31. dec. v Slovenija ponavadi je.",
           "percentile": "34",
           "percentile_label": "percentil",
-          "samples": "1,166 vzorcev",
+          "samples": "1166 vzorcev",
           "preliminary_badge": null,
           "explain": "Temperatura na postaji Ljubljana, razvrstena glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
-          "footer": "1.5 °C · 34. percentil · 1,166 vzorcev (1950–2026)",
+          "footer": "1,5 °C · 34. percentil · 1166 vzorcev (1950–2026)",
           "unavailable_message": null
         },
         "last7": {
@@ -69810,7 +69810,7 @@
                 {
                   "id": null,
                   "value": 1.456,
-                  "label": "DANES: 1.5 °C",
+                  "label": "DANES: 1,5 °C",
                   "dash_style": null
                 }
               ],
@@ -69818,27 +69818,27 @@
                 {
                   "from": -14.74752,
                   "to": -2.43,
-                  "label": "< -2.4°C"
+                  "label": "< −2,4°C"
                 },
                 {
                   "from": -2.43,
                   "to": -0.36,
-                  "label": "-2.4–-0.4°C"
+                  "label": "−2,4–−0,4°C"
                 },
                 {
                   "from": -0.36,
                   "to": 6.49,
-                  "label": "-0.4–6.5°C"
+                  "label": "−0,4–6,5°C"
                 },
                 {
                   "from": 6.49,
                   "to": 9.54,
-                  "label": "6.5–9.5°C"
+                  "label": "6,5–9,5°C"
                 },
                 {
                   "from": 9.54,
                   "to": 16.99552,
-                  "label": "> 9.5°C"
+                  "label": "> 9,5°C"
                 }
               ]
             },
@@ -70676,9 +70676,9 @@
       },
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
-        "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 31.12 od 1950",
+        "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 31. dec. od 1950",
         "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
-        "footer": "Danes: 1.5 °C · 34. percentil · mediana 3.3 °C · 1,166 opazovanj · 1950–2026"
+        "footer": "Danes: 1,5 °C · 34. percentil · mediana 3,3 °C · 1166 opazovanj · 1950–2026"
       },
       "today_trend": {
         "api": {
@@ -71036,9 +71036,9 @@
           ]
         },
         "rendered": {
-          "title": "Najvišje temperature na postaji Ljubljana okoli Dec 31 · 1950–2025 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je 90. percentil lapsno popravljene dnevne najvišje temperature na postaji Ljubljana v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0.45 °C/desetletje (p < 0.001). Po tem tempu projekcija kaže 6.0 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-          "footer": "Theil-Sen + TFPW MK: +0.45 °C/desetletje · p < 0.001 · τ = 0.344 · 95% CI · 76 let",
+          "title": "Najvišje temperature na postaji Ljubljana okoli 31. dec. · 1950–2025 · trend s projekcijo do 2050",
+          "explain": "Vsaka pika je 90. percentil lapsno popravljene dnevne najvišje temperature na postaji Ljubljana v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,45 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 6,0 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "footer": "Theil-Sen + TFPW MK: +0,45 °C/desetletje · p < 0,001 · τ = 0,344 · 95% CI · 76 let",
           "current_year_plotline": {
             "value": 2026,
             "label": "2026",
@@ -71472,25 +71472,25 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LocationLjubljana",
-            "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "Day31 Dec◀▶"
+            "LokacijaLjubljana",
+            "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
+            "Dan31. dec.◀▶"
           ],
           "variable_select": {
             "selected": "temperature_max",
             "options": [
-              "Max temperature (°C)",
-              "Min temperature (°C)",
-              "Mean temperature (°C)",
-              "Precipitation (mm)",
+              "Najvišja temperatura (°C)",
+              "Najnižja temperatura (°C)",
+              "Povprečna temperatura (°C)",
+              "Padavine (mm)",
               "ET₀ (mm)"
             ]
           },
-          "day_label": "31 Dec",
-          "title": "Max temperature · 31 Dec",
+          "day_label": "31. dec.",
+          "title": "Najvišja temperatura · 31. dec.",
           "subtitle": "Ljubljana",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0.34",
-          "total_change": "+3.44°C",
+          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,34",
+          "total_change": "+3,44°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
             "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
@@ -71510,7 +71510,7 @@
               "plot_bands": []
             },
             "y_axis": {
-              "title": "Max temperature (°C)",
+              "title": "Najvišja temperatura (°C)",
               "min": null,
               "max": null,
               "categories": null,
@@ -71518,7 +71518,7 @@
                 {
                   "id": "baseline-Ljubljana",
                   "value": 4.044666666666668,
-                  "label": "76-YR MEAN 4.0",
+                  "label": "POVPREČJE 76 let: 4,0",
                   "dash_style": "Dash"
                 }
               ],
@@ -72179,18 +72179,18 @@
       },
       "hero_cards": {
         "rendered": {
-          "headline": "+0.452",
+          "headline": "+0,452",
           "headline_color": "rgb(194, 90, 44)",
           "category": "Katastrofalno",
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
-            "Sto let segrevanja za +4.52 °C – pri trenutnem tempu vsaka 22.1 let doda eno stopinjo.",
+            "Sto let segrevanja za +4,52 °C – pri trenutnem tempu vsaka 22,1 let doda eno stopinjo.",
             "Theil-Sen + TFPW Mann-Kendall"
           ],
           "stats": [
             "Mestni toplotni otok — poletni vročinski stres in tveganje hudourniških poplav v Ljubljanski kotlini",
-            "★★★ p < 0.001",
-            "0.4520",
+            "★★★ p < 0,001",
+            "0,4520",
             "76 let",
             "—"
           ]
@@ -73042,7 +73042,7 @@
           }
         },
         "rendered": {
-          "date_badge": "03.08.",
+          "date_badge": "3. avg.",
           "loc_select": {
             "selected": "Ljubljana",
             "options": [
@@ -73069,13 +73069,13 @@
           },
           "category_label": "Peklensko",
           "category_color": "rgb(150, 44, 26)",
-          "description": "Izjemna vročina — vrh 5 % vseh 03.08 od 1950.",
+          "description": "Izjemna vročina — vrh 5 % vseh 3. avg. od 1950.",
           "percentile": "99",
           "percentile_label": "percentil",
-          "samples": "1,140 vzorcev",
+          "samples": "1140 vzorcev",
           "preliminary_badge": null,
           "explain": "Temperatura na postaji Ljubljana, razvrstena glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
-          "footer": "35.6 °C · 99. percentil · 1,140 vzorcev (1950–2026)",
+          "footer": "35,6 °C · 99. percentil · 1140 vzorcev (1950–2026)",
           "unavailable_message": null
         },
         "last7": {
@@ -73351,7 +73351,7 @@
                 {
                   "id": null,
                   "value": 35.591,
-                  "label": "DANES: 35.6 °C",
+                  "label": "DANES: 35,6 °C",
                   "dash_style": null
                 }
               ],
@@ -73359,27 +73359,27 @@
                 {
                   "from": 12.19058,
                   "to": 20.59,
-                  "label": "< 20.6°C"
+                  "label": "< 20,6°C"
                 },
                 {
                   "from": 20.59,
                   "to": 22.14,
-                  "label": "20.6–22.1°C"
+                  "label": "20,6–22,1°C"
                 },
                 {
                   "from": 22.14,
                   "to": 28.44,
-                  "label": "22.1–28.4°C"
+                  "label": "22,1–28,4°C"
                 },
                 {
                   "from": 28.44,
                   "to": 31.36,
-                  "label": "28.4–31.4°C"
+                  "label": "28,4–31,4°C"
                 },
                 {
                   "from": 31.36,
                   "to": 39.806419999999996,
-                  "label": "> 31.4°C"
+                  "label": "> 31,4°C"
                 }
               ]
             },
@@ -74217,9 +74217,9 @@
       },
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
-        "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 03.08 od 1950",
+        "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 3. avg. od 1950",
         "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
-        "footer": "Danes: 35.6 °C · 99. percentil · mediana 25.1 °C · 1,140 opazovanj · 1950–2026"
+        "footer": "Danes: 35,6 °C · 99. percentil · mediana 25,1 °C · 1140 opazovanj · 1950–2026"
       },
       "today_trend": {
         "api": {
@@ -74577,9 +74577,9 @@
           ]
         },
         "rendered": {
-          "title": "Najvišje temperature na postaji Ljubljana okoli Aug 3 · 1950–2025 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je 90. percentil lapsno popravljene dnevne najvišje temperature na postaji Ljubljana v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0.53 °C/desetletje (p < 0.001). Po tem tempu projekcija kaže 27.3 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-          "footer": "Theil-Sen + TFPW MK: +0.53 °C/desetletje · p < 0.001 · τ = 0.437 · 95% CI · 76 let",
+          "title": "Najvišje temperature na postaji Ljubljana okoli 3. avg. · 1950–2025 · trend s projekcijo do 2050",
+          "explain": "Vsaka pika je 90. percentil lapsno popravljene dnevne najvišje temperature na postaji Ljubljana v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,53 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 27,3 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "footer": "Theil-Sen + TFPW MK: +0,53 °C/desetletje · p < 0,001 · τ = 0,437 · 95% CI · 76 let",
           "current_year_plotline": {
             "value": 2026,
             "label": "2026",
@@ -75013,25 +75013,25 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LocationLjubljana",
-            "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "Day3 Aug◀▶"
+            "LokacijaLjubljana",
+            "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
+            "Dan3. avg.◀▶"
           ],
           "variable_select": {
             "selected": "temperature_max",
             "options": [
-              "Max temperature (°C)",
-              "Min temperature (°C)",
-              "Mean temperature (°C)",
-              "Precipitation (mm)",
+              "Najvišja temperatura (°C)",
+              "Najnižja temperatura (°C)",
+              "Povprečna temperatura (°C)",
+              "Padavine (mm)",
               "ET₀ (mm)"
             ]
           },
-          "day_label": "3 Aug",
-          "title": "Max temperature · 3 Aug",
+          "day_label": "3. avg.",
+          "title": "Najvišja temperatura · 3. avg.",
           "subtitle": "Ljubljana",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0.44",
-          "total_change": "+3.99°C",
+          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,44",
+          "total_change": "+3,99°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
             "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
@@ -75051,7 +75051,7 @@
               "plot_bands": []
             },
             "y_axis": {
-              "title": "Max temperature (°C)",
+              "title": "Najvišja temperatura (°C)",
               "min": null,
               "max": null,
               "categories": null,
@@ -75059,7 +75059,7 @@
                 {
                   "id": "baseline-Ljubljana",
                   "value": 25.27533333333334,
-                  "label": "76-YR MEAN 25.3",
+                  "label": "POVPREČJE 76 let: 25,3",
                   "dash_style": "Dash"
                 }
               ],
@@ -75720,18 +75720,18 @@
       },
       "hero_cards": {
         "rendered": {
-          "headline": "+0.525",
+          "headline": "+0,525",
           "headline_color": "rgb(194, 90, 44)",
           "category": "Katastrofalno",
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
-            "Sto let segrevanja za +5.25 °C – pri trenutnem tempu vsaka 19.0 let doda eno stopinjo.",
+            "Sto let segrevanja za +5,25 °C – pri trenutnem tempu vsaka 19,0 let doda eno stopinjo.",
             "Theil-Sen + TFPW Mann-Kendall"
           ],
           "stats": [
             "Mestni toplotni otok — poletni vročinski stres in tveganje hudourniških poplav v Ljubljanski kotlini",
-            "★★★ p < 0.001",
-            "0.5250",
+            "★★★ p < 0,001",
+            "0,5250",
             "76 let",
             "—"
           ]
@@ -76583,7 +76583,7 @@
           }
         },
         "rendered": {
-          "date_badge": "03.08.",
+          "date_badge": "3. avg.",
           "loc_select": {
             "selected": "Kredarica",
             "options": [
@@ -76610,13 +76610,13 @@
           },
           "category_label": "Peklensko",
           "category_color": "rgb(150, 44, 26)",
-          "description": "Izjemna vročina — vrh 5 % vseh 03.08 od 1950.",
+          "description": "Izjemna vročina — vrh 5 % vseh 3. avg. od 1950.",
           "percentile": "100",
           "percentile_label": "percentil",
-          "samples": "1,140 vzorcev",
+          "samples": "1140 vzorcev",
           "preliminary_badge": null,
           "explain": "Temperatura na postaji Kredarica, razvrstena glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
-          "footer": "21.7 °C · 100. percentil · 1,140 vzorcev (1950–2026)",
+          "footer": "21,7 °C · 100. percentil · 1140 vzorcev (1950–2026)",
           "unavailable_message": null
         },
         "last7": {
@@ -76892,7 +76892,7 @@
                 {
                   "id": null,
                   "value": 21.743,
-                  "label": "DANES: 21.7 °C",
+                  "label": "DANES: 21,7 °C",
                   "dash_style": null
                 }
               ],
@@ -76900,27 +76900,27 @@
                 {
                   "from": -0.7545999999999998,
                   "to": 7.09,
-                  "label": "< 7.1°C"
+                  "label": "< 7,1°C"
                 },
                 {
                   "from": 7.09,
                   "to": 8.49,
-                  "label": "7.1–8.5°C"
+                  "label": "7,1–8,5°C"
                 },
                 {
                   "from": 8.49,
                   "to": 14.19,
-                  "label": "8.5–14.2°C"
+                  "label": "8,5–14,2°C"
                 },
                 {
                   "from": 14.19,
                   "to": 16.79,
-                  "label": "14.2–16.8°C"
+                  "label": "14,2–16,8°C"
                 },
                 {
                   "from": 16.79,
                   "to": 25.2406,
-                  "label": "> 16.8°C"
+                  "label": "> 16,8°C"
                 }
               ]
             },
@@ -77758,9 +77758,9 @@
       },
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
-        "title": "Dnevne najvišje temperature na postaji Kredarica za dva tedna okoli 03.08 od 1950",
+        "title": "Dnevne najvišje temperature na postaji Kredarica za dva tedna okoli 3. avg. od 1950",
         "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
-        "footer": "Danes: 21.7 °C · 100. percentil · mediana 11.4 °C · 1,140 opazovanj · 1950–2026"
+        "footer": "Danes: 21,7 °C · 100. percentil · mediana 11,4 °C · 1140 opazovanj · 1950–2026"
       },
       "today_trend": {
         "api": {
@@ -78118,9 +78118,9 @@
           ]
         },
         "rendered": {
-          "title": "Najvišje temperature na postaji Kredarica okoli Aug 3 · 1950–2025 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je 90. percentil lapsno popravljene dnevne najvišje temperature na postaji Kredarica v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0.33 °C/desetletje (p < 0.001). Po tem tempu projekcija kaže 12.6 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-          "footer": "Theil-Sen + TFPW MK: +0.33 °C/desetletje · p < 0.001 · τ = 0.369 · 95% CI · 76 let",
+          "title": "Najvišje temperature na postaji Kredarica okoli 3. avg. · 1950–2025 · trend s projekcijo do 2050",
+          "explain": "Vsaka pika je 90. percentil lapsno popravljene dnevne najvišje temperature na postaji Kredarica v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,33 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 12,6 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "footer": "Theil-Sen + TFPW MK: +0,33 °C/desetletje · p < 0,001 · τ = 0,369 · 95% CI · 76 let",
           "current_year_plotline": {
             "value": 2026,
             "label": "2026",
@@ -78554,25 +78554,25 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LocationKredarica",
-            "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "Day3 Aug◀▶"
+            "LokacijaKredarica",
+            "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
+            "Dan3. avg.◀▶"
           ],
           "variable_select": {
             "selected": "temperature_max",
             "options": [
-              "Max temperature (°C)",
-              "Min temperature (°C)",
-              "Mean temperature (°C)",
-              "Precipitation (mm)",
+              "Najvišja temperatura (°C)",
+              "Najnižja temperatura (°C)",
+              "Povprečna temperatura (°C)",
+              "Padavine (mm)",
               "ET₀ (mm)"
             ]
           },
-          "day_label": "3 Aug",
-          "title": "Max temperature · 3 Aug",
+          "day_label": "3. avg.",
+          "title": "Najvišja temperatura · 3. avg.",
           "subtitle": "Kredarica",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0.37",
-          "total_change": "+2.54°C",
+          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,37",
+          "total_change": "+2,54°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
             "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
@@ -78592,7 +78592,7 @@
               "plot_bands": []
             },
             "y_axis": {
-              "title": "Max temperature (°C)",
+              "title": "Najvišja temperatura (°C)",
               "min": null,
               "max": null,
               "categories": null,
@@ -78600,7 +78600,7 @@
                 {
                   "id": "baseline-Kredarica",
                   "value": 11.314666666666666,
-                  "label": "76-YR MEAN 11.3",
+                  "label": "POVPREČJE 76 let: 11,3",
                   "dash_style": "Dash"
                 }
               ],
@@ -79261,18 +79261,18 @@
       },
       "hero_cards": {
         "rendered": {
-          "headline": "+0.334",
+          "headline": "+0,334",
           "headline_color": "rgb(194, 90, 44)",
           "category": "Katastrofalno",
           "paragraphs": [
             "Popolna izguba Triglavskega ledenika — narodni simbol in vir savinjskih rek. Propad alpskega ekosistema sproži kaskadne učinke.",
-            "Sto let segrevanja za +3.34 °C – pri trenutnem tempu vsaka 29.9 let doda eno stopinjo.",
+            "Sto let segrevanja za +3,34 °C – pri trenutnem tempu vsaka 29,9 let doda eno stopinjo.",
             "Theil-Sen + TFPW Mann-Kendall"
           ],
           "stats": [
             "Izguba Triglavskega ledenika — izsušitev izvirnih vod za Slovenijo reke",
-            "★★★ p < 0.001",
-            "0.3340",
+            "★★★ p < 0,001",
+            "0,3340",
             "76 let",
             "—"
           ]
@@ -80124,7 +80124,7 @@
           }
         },
         "rendered": {
-          "date_badge": "07.02.",
+          "date_badge": "7. feb.",
           "loc_select": {
             "selected": "Ljubljana",
             "options": [
@@ -80151,13 +80151,13 @@
           },
           "category_label": "Zmrzujoče",
           "category_color": "rgb(58, 90, 138)",
-          "description": "Med najhladnejšimi 07.02 v naših 77 letih zapisov.",
+          "description": "Med najhladnejšimi 7. feb. v naših 77 letih zapisov.",
           "percentile": "3",
           "percentile_label": "percentil",
-          "samples": "1,155 vzorcev",
+          "samples": "1155 vzorcev",
           "preliminary_badge": null,
           "explain": "Temperatura na postaji Ljubljana, razvrstena glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
-          "footer": "-5.8 °C · 3. percentil · 1,155 vzorcev (1950–2026)",
+          "footer": "−5,8 °C · 3. percentil · 1155 vzorcev (1950–2026)",
           "unavailable_message": null
         },
         "last7": {
@@ -80433,7 +80433,7 @@
                 {
                   "id": null,
                   "value": -5.759,
-                  "label": "DANES: -5.8 °C",
+                  "label": "DANES: −5,8 °C",
                   "dash_style": null
                 }
               ],
@@ -80441,27 +80441,27 @@
                 {
                   "from": -14.6882,
                   "to": -2.06,
-                  "label": "< -2.1°C"
+                  "label": "< −2,1°C"
                 },
                 {
                   "from": -2.06,
                   "to": 0.53,
-                  "label": "-2.1–0.5°C"
+                  "label": "−2,1–0,5°C"
                 },
                 {
                   "from": 0.53,
                   "to": 8.25,
-                  "label": "0.5–8.3°C"
+                  "label": "0,5–8,3°C"
                 },
                 {
                   "from": 8.25,
                   "to": 10.95,
-                  "label": "8.3–10.9°C"
+                  "label": "8,3–10,9°C"
                 },
                 {
                   "from": 10.95,
                   "to": 20.6702,
-                  "label": "> 10.9°C"
+                  "label": "> 10,9°C"
                 }
               ]
             },
@@ -81299,9 +81299,9 @@
       },
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
-        "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 07.02 od 1950",
+        "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 7. feb. od 1950",
         "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
-        "footer": "Danes: -5.8 °C · 3. percentil · mediana 4.8 °C · 1,155 opazovanj · 1950–2026"
+        "footer": "Danes: −5,8 °C · 3. percentil · mediana 4,8 °C · 1155 opazovanj · 1950–2026"
       },
       "today_trend": {
         "api": {
@@ -81663,9 +81663,9 @@
           ]
         },
         "rendered": {
-          "title": "Najvišje temperature na postaji Ljubljana okoli Feb 7 · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je 90. percentil lapsno popravljene dnevne najvišje temperature na postaji Ljubljana v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0.55 °C/desetletje (p < 0.001). Po tem tempu projekcija kaže 7.7 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-          "footer": "Theil-Sen + TFPW MK: +0.55 °C/desetletje · p < 0.001 · τ = 0.341 · 95% CI · 77 let",
+          "title": "Najvišje temperature na postaji Ljubljana okoli 7. feb. · 1950–2026 · trend s projekcijo do 2050",
+          "explain": "Vsaka pika je 90. percentil lapsno popravljene dnevne najvišje temperature na postaji Ljubljana v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,55 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 7,7 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "footer": "Theil-Sen + TFPW MK: +0,55 °C/desetletje · p < 0,001 · τ = 0,341 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
             "label": "2026",
@@ -82103,25 +82103,25 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LocationLjubljana",
-            "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "Day7 Feb◀▶"
+            "LokacijaLjubljana",
+            "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
+            "Dan7. feb.◀▶"
           ],
           "variable_select": {
             "selected": "temperature_max",
             "options": [
-              "Max temperature (°C)",
-              "Min temperature (°C)",
-              "Mean temperature (°C)",
-              "Precipitation (mm)",
+              "Najvišja temperatura (°C)",
+              "Najnižja temperatura (°C)",
+              "Povprečna temperatura (°C)",
+              "Padavine (mm)",
               "ET₀ (mm)"
             ]
           },
-          "day_label": "7 Feb",
-          "title": "Max temperature · 7 Feb",
+          "day_label": "7. feb.",
+          "title": "Najvišja temperatura · 7. feb.",
           "subtitle": "Ljubljana",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0.34",
-          "total_change": "+4.24°C",
+          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,34",
+          "total_change": "+4,24°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
             "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
@@ -82141,7 +82141,7 @@
               "plot_bands": []
             },
             "y_axis": {
-              "title": "Max temperature (°C)",
+              "title": "Najvišja temperatura (°C)",
               "min": null,
               "max": null,
               "categories": null,
@@ -82149,7 +82149,7 @@
                 {
                   "id": "baseline-Ljubljana",
                   "value": 5.375,
-                  "label": "77-YR MEAN 5.4",
+                  "label": "POVPREČJE 77 let: 5,4",
                   "dash_style": "Dash"
                 }
               ],
@@ -82818,18 +82818,18 @@
       },
       "hero_cards": {
         "rendered": {
-          "headline": "+0.550",
+          "headline": "+0,550",
           "headline_color": "rgb(194, 90, 44)",
           "category": "Katastrofalno",
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
-            "Sto let segrevanja za +5.50 °C – pri trenutnem tempu vsaka 18.2 let doda eno stopinjo.",
+            "Sto let segrevanja za +5,50 °C – pri trenutnem tempu vsaka 18,2 let doda eno stopinjo.",
             "Theil-Sen + TFPW Mann-Kendall"
           ],
           "stats": [
             "Mestni toplotni otok — poletni vročinski stres in tveganje hudourniških poplav v Ljubljanski kotlini",
-            "★★★ p < 0.001",
-            "0.5500",
+            "★★★ p < 0,001",
+            "0,5500",
             "77 let",
             "—"
           ]
@@ -83686,7 +83686,7 @@
           }
         },
         "rendered": {
-          "date_badge": "07.01.",
+          "date_badge": "7. jan.",
           "loc_select": {
             "selected": "Kredarica",
             "options": [
@@ -83713,13 +83713,13 @@
           },
           "category_label": "Zmrzujoče",
           "category_color": "rgb(58, 90, 138)",
-          "description": "Med najhladnejšimi 07.01 v naših 77 letih zapisov.",
+          "description": "Med najhladnejšimi 7. jan. v naših 77 letih zapisov.",
           "percentile": "0",
           "percentile_label": "percentil",
-          "samples": "1,173 vzorcev",
+          "samples": "1173 vzorcev",
           "preliminary_badge": null,
           "explain": "Temperatura na postaji Kredarica, razvrstena glede na zapise ERA5-Land od leta 1950 za isto ±7-dnevno okno.",
-          "footer": "-23.7 °C · 0. percentil · 1,173 vzorcev (1950–2026)",
+          "footer": "−23,7 °C · 0. percentil · 1173 vzorcev (1950–2026)",
           "unavailable_message": null
         },
         "last7": {
@@ -83995,7 +83995,7 @@
                 {
                   "id": null,
                   "value": -23.707,
-                  "label": "DANES: -23.7 °C",
+                  "label": "DANES: −23,7 °C",
                   "dash_style": null
                 }
               ],
@@ -84003,27 +84003,27 @@
                 {
                   "from": -29.81448,
                   "to": -15.09,
-                  "label": "< -15.1°C"
+                  "label": "< −15,1°C"
                 },
                 {
                   "from": -15.09,
                   "to": -12.75,
-                  "label": "-15.1–-12.8°C"
+                  "label": "−15,1–−12,8°C"
                 },
                 {
                   "from": -12.75,
                   "to": -5.61,
-                  "label": "-12.8–-5.6°C"
+                  "label": "−12,8–−5,6°C"
                 },
                 {
                   "from": -5.61,
                   "to": -2.96,
-                  "label": "-5.6–-3.0°C"
+                  "label": "−5,6–−3,0°C"
                 },
                 {
                   "from": -2.96,
                   "to": 9.56248,
-                  "label": "> -3.0°C"
+                  "label": "> −3,0°C"
                 }
               ]
             },
@@ -84861,9 +84861,9 @@
       },
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
-        "title": "Dnevne najvišje temperature na postaji Kredarica za dva tedna okoli 07.01 od 1950",
+        "title": "Dnevne najvišje temperature na postaji Kredarica za dva tedna okoli 7. jan. od 1950",
         "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
-        "footer": "Danes: -23.7 °C · 0. percentil · mediana -8.8 °C · 1,173 opazovanj · 1950–2026"
+        "footer": "Danes: −23,7 °C · 0. percentil · mediana −8,8 °C · 1173 opazovanj · 1950–2026"
       },
       "today_trend": {
         "api": {
@@ -85225,9 +85225,9 @@
           ]
         },
         "rendered": {
-          "title": "Najvišje temperature na postaji Kredarica okoli Jan 7 · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je 90. percentil lapsno popravljene dnevne najvišje temperature na postaji Kredarica v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0.49 °C/desetletje (p < 0.001). Po tem tempu projekcija kaže -5.6 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-          "footer": "Theil-Sen + TFPW MK: +0.49 °C/desetletje · p < 0.001 · τ = 0.405 · 95% CI · 77 let",
+          "title": "Najvišje temperature na postaji Kredarica okoli 7. jan. · 1950–2026 · trend s projekcijo do 2050",
+          "explain": "Vsaka pika je 90. percentil lapsno popravljene dnevne najvišje temperature na postaji Kredarica v ±30-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,49 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže −5,6 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "footer": "Theil-Sen + TFPW MK: +0,49 °C/desetletje · p < 0,001 · τ = 0,405 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
             "label": "2026",
@@ -85665,25 +85665,25 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LocationKredarica",
-            "VariableMax temperature (°C)Min temperature (°C)Mean temperature (°C)Precipitation (mm)ET₀ (mm)",
-            "Day7 Jan◀▶"
+            "LokacijaKredarica",
+            "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
+            "Dan7. jan.◀▶"
           ],
           "variable_select": {
             "selected": "temperature_max",
             "options": [
-              "Max temperature (°C)",
-              "Min temperature (°C)",
-              "Mean temperature (°C)",
-              "Precipitation (mm)",
+              "Najvišja temperatura (°C)",
+              "Najnižja temperatura (°C)",
+              "Povprečna temperatura (°C)",
+              "Padavine (mm)",
               "ET₀ (mm)"
             ]
           },
-          "day_label": "7 Jan",
-          "title": "Max temperature · 7 Jan",
+          "day_label": "7. jan.",
+          "title": "Najvišja temperatura · 7. jan.",
           "subtitle": "Kredarica",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0.41",
-          "total_change": "+3.79°C",
+          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,41",
+          "total_change": "+3,79°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
             "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
@@ -85703,7 +85703,7 @@
               "plot_bands": []
             },
             "y_axis": {
-              "title": "Max temperature (°C)",
+              "title": "Najvišja temperatura (°C)",
               "min": null,
               "max": null,
               "categories": null,
@@ -85711,7 +85711,7 @@
                 {
                   "id": "baseline-Kredarica",
                   "value": -7.949666666666668,
-                  "label": "77-YR MEAN -7.9",
+                  "label": "POVPREČJE 77 let: −7,9",
                   "dash_style": "Dash"
                 }
               ],
@@ -86380,18 +86380,18 @@
       },
       "hero_cards": {
         "rendered": {
-          "headline": "+0.492",
+          "headline": "+0,492",
           "headline_color": "rgb(194, 90, 44)",
           "category": "Katastrofalno",
           "paragraphs": [
             "Popolna izguba Triglavskega ledenika — narodni simbol in vir savinjskih rek. Propad alpskega ekosistema sproži kaskadne učinke.",
-            "Sto let segrevanja za +4.92 °C – pri trenutnem tempu vsaka 20.3 let doda eno stopinjo.",
+            "Sto let segrevanja za +4,92 °C – pri trenutnem tempu vsaka 20,3 let doda eno stopinjo.",
             "Theil-Sen + TFPW Mann-Kendall"
           ],
           "stats": [
             "Izguba Triglavskega ledenika — izsušitev izvirnih vod za Slovenijo reke",
-            "★★★ p < 0.001",
-            "0.4920",
+            "★★★ p < 0,001",
+            "0,4920",
             "77 let",
             "—"
           ]

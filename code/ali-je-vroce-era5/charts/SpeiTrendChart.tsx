@@ -1,5 +1,6 @@
 import { createSignal, createMemo, For, Show, onMount, onCleanup } from "solid-js";
 import { enableChartA11y } from "./highcharts-a11y.ts";
+import { t, fmtNum, fmtSigned, fmtMonthShort } from "../i18n/format.ts";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -30,6 +31,14 @@ export interface SpeiStationData {
 const SEASONS = ["Annual", "Winter", "Spring", "Summer", "Autumn"] as const;
 const MONTHS  = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"] as const;
 type Period   = typeof SEASONS[number] | typeof MONTHS[number];
+
+// T-5.5 — the season/month period keys stay English (they index the datasette);
+// only their display label is Slovenian (seasons from the catalogue, months from
+// the Intl short-month formatter).
+function periodLabel(p: string): string {
+  const mi = (MONTHS as readonly string[]).indexOf(p);
+  return mi >= 0 ? fmtMonthShort(mi + 1) : t(`speitrend.season_${p}`);
+}
 
 const INK      = "#0E0E0C";
 const INK_SOFT = "#6B655B";
@@ -85,14 +94,13 @@ function SpeiScatterChart(props: ChartProps) {
       // T-5.4a — screen-reader summary (Slovenian copy awaiting operator review)
       accessibility: {
         enabled: true,
-        description: "Razsevni diagram sušnega indeksa SPEI po letih za izbrano postajo in obdobje, z linijo trenda Theil-Sen ter pragovoma hude suše (−1,5) in zelo mokrega (+1,5).",
+        description: t("speitrend.a11y"),
       },
       tooltip: {
         formatter(this: any) {
           const v = this.y as number;
-          const cat = v < -1.5 ? "Huda suša" : v < -1.0 ? "Suho" : v < 1.0 ? "Normalno" : v < 1.5 ? "Mokro" : "Zelo mokro";
-          const sign = v >= 0 ? "+" : "";
-          return `<b>${props.season} ${this.x}</b><br>${scaleLabel}: <b>${sign}${v.toFixed(2)}</b><br>${cat}`;
+          const cat = v < -1.5 ? t("speitrend.tooltip_cat_huda") : v < -1.0 ? t("speitrend.tooltip_cat_suho") : v < 1.0 ? t("speitrend.tooltip_cat_normalno") : v < 1.5 ? t("speitrend.tooltip_cat_mokro") : t("speitrend.tooltip_cat_zelo_mokro");
+          return t("speitrend.tooltip", { season: periodLabel(props.season), x: this.x, scale: scaleLabel, v: fmtSigned(v, 2), cat });
         },
       },
       xAxis: {
@@ -109,9 +117,9 @@ function SpeiScatterChart(props: ChartProps) {
         plotLines: [
           { value: 0,    color: INK,       width: 1, dashStyle: "Solid", zIndex: 3 },
           { value: -1.5, color: "#8b3a0f", width: 1, dashStyle: "Dash",  zIndex: 3,
-            label: { text: "huda suša", style: { fontSize: "9px", color: "#8b3a0f", ...MONO } } },
+            label: { text: t("speitrend.threshold_dry"), style: { fontSize: "9px", color: "#8b3a0f", ...MONO } } },
           { value:  1.5, color: "#1e4d78", width: 1, dashStyle: "Dash",  zIndex: 3,
-            label: { text: "zelo mokro", style: { fontSize: "9px", color: "#1e4d78", ...MONO }, align: "right" as const } },
+            label: { text: t("speitrend.threshold_wet"), style: { fontSize: "9px", color: "#1e4d78", ...MONO }, align: "right" as const } },
         ],
       },
       series: [
@@ -173,26 +181,29 @@ export function SpeiTrendChart(props: SpeiTrendChartProps) {
     if (sl !== 0) {
       if (sl < 0) {
         if (curVal <= -1.5) {
-          thresholdLine = "Trendna linija je že prečkala prag hude suše (SPEI −1,5).";
+          thresholdLine = t("speitrend.threshold_crossed_dry");
         } else {
           const yr = Math.round((-1.5 - ic) / sl);
-          if (yr > lastYear && yr < 2200) thresholdLine = `Pri tem trendu doseže hudo sušo (SPEI −1,5) okoli leta ${yr}.`;
+          if (yr > lastYear && yr < 2200) thresholdLine = t("speitrend.threshold_reach_dry", { year: yr });
         }
       } else {
         if (curVal >= 1.5) {
-          thresholdLine = "Trendna linija je že prečkala prag zelo mokrega (SPEI +1,5).";
+          thresholdLine = t("speitrend.threshold_crossed_wet");
         } else {
           const yr = Math.round((1.5 - ic) / sl);
-          if (yr > lastYear && yr < 2200) thresholdLine = `Pri tem trendu doseže zelo mokro (SPEI +1,5) okoli leta ${yr}.`;
+          if (yr > lastYear && yr < 2200) thresholdLine = t("speitrend.threshold_reach_wet", { year: yr });
         }
       }
     }
 
     const sig = p < 0.05
-      ? `statistično značilen (p < 0,05)`
-      : `ni statistično značilen (p = ${p.toFixed(3)})`;
+      ? t("speitrend.sig_significant")
+      : t("speitrend.sig_not", { p: fmtNum(p, 3) });
 
-    const tech = `Theil-Sen naklon: ${slope >= 0 ? "+" : ""}${slope.toFixed(3)} SPEI/desetletje · Mann-Kendall: ${tr.mk_trend} · ${sig}. Negativen trend pomeni, da razmere postajajo sušnejše glede na osnovno obdobje ${props.data.baseline}.${thresholdLine ? " " + thresholdLine : ""}`;
+    const tech = t("speitrend.tech", {
+      slope: fmtSigned(slope, 3), mk: tr.mk_trend, sig, baseline: props.data.baseline,
+      threshold: thresholdLine ? " " + thresholdLine : "",
+    });
 
     return { slope, p, tech };
   });
@@ -239,11 +250,11 @@ export function SpeiTrendChart(props: SpeiTrendChartProps) {
       {/* Season + month row */}
       <div style={{ display: "flex", "flex-wrap": "wrap", gap: "5px", "align-items": "center", margin: "0 40px 14px" }}>
         <For each={SEASONS}>
-          {(s) => <button style={periodBtnStyle(s)} onClick={() => setPeriod(s)}>{s}</button>}
+          {(s) => <button style={periodBtnStyle(s)} onClick={() => setPeriod(s)}>{periodLabel(s)}</button>}
         </For>
         <span style={{ display: "inline-block", width: "1px", height: "16px", background: "var(--color-rule-2)", margin: "0 4px" }} />
         <For each={MONTHS}>
-          {(m) => <button style={periodBtnStyle(m)} onClick={() => setPeriod(m)}>{m}</button>}
+          {(m) => <button style={periodBtnStyle(m)} onClick={() => setPeriod(m)}>{periodLabel(m)}</button>}
         </For>
       </div>
 
@@ -255,12 +266,18 @@ export function SpeiTrendChart(props: SpeiTrendChartProps) {
           <div style={{ padding: "12px 16px 10px", "border-bottom": "1px solid var(--color-rule)", display: "flex", "justify-content": "space-between", "align-items": "flex-start", gap: "12px" }}>
             <div>
               <div style={{ "font-family": "var(--font-sans)", "font-weight": "500", "font-size": "14px", color: "var(--color-ink)" }}>
-                {station().replace(/_/g, " ")} — {period()} {scaleLabel()}
+                {station().replace(/_/g, " ")} — {periodLabel(period())} {scaleLabel()}
               </div>
               <Show when={series()}>
                 {(s) => (
                   <div style={{ "font-family": "var(--font-mono)", "font-size": "10px", color: "var(--color-ink-soft)", "letter-spacing": "0.06em", "text-transform": "uppercase", "margin-top": "2px" }}>
-                    {s().years.length} {isMonth() ? "mesecev" : "sezon"} · {s().years[0]}–{s().years[s().years.length - 1]}
+                    {t("speitrend.header_count", {
+                      count: s().years.length,
+                      unit1: isMonth() ? t("speitrend.unit_months_one") : t("speitrend.unit_seasons_one"),
+                      unit2: isMonth() ? t("speitrend.unit_months_other") : t("speitrend.unit_seasons_other"),
+                      y0: s().years[0] ?? 0,
+                      y1: s().years[s().years.length - 1] ?? 0,
+                    })}
                   </div>
                 )}
               </Show>
@@ -271,10 +288,10 @@ export function SpeiTrendChart(props: SpeiTrendChartProps) {
               {(ts) => (
                 <div style={{ "text-align": "right", "flex-shrink": "0" }}>
                   <div style={{ "font-family": "var(--font-sans)", "font-size": "32px", "font-weight": "700", "line-height": "1", color: ts().slope < 0 ? "#8b3a0f" : "#1e4d78" }}>
-                    {ts().slope >= 0 ? "+" : ""}{ts().slope.toFixed(2)}
+                    {fmtSigned(ts().slope, 2)}
                   </div>
                   <div style={{ "font-family": "var(--font-mono)", "font-size": "9px", "letter-spacing": "0.07em", "text-transform": "uppercase", color: "var(--color-ink-soft)", "margin-top": "2px" }}>
-                    SPEI / desetletje
+                    {t("speitrend.slope_unit")}
                   </div>
                 </div>
               )}
@@ -298,7 +315,7 @@ export function SpeiTrendChart(props: SpeiTrendChartProps) {
           </Show>
           <Show when={!trendStats() && series()}>
             <p style={{ margin: "0", padding: "8px 16px 12px", "font-family": "var(--font-sans)", "font-size": "12px", color: "var(--color-ink-soft)", "line-height": "1.55", "border-top": "1px solid var(--color-rule)" }}>
-              Premalo podatkov za izračun trenda.
+              {t("speitrend.too_little")}
             </p>
           </Show>
 

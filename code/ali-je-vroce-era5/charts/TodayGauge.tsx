@@ -1,6 +1,7 @@
 import { onMount, onCleanup, createEffect } from "solid-js";
 import type { TodayStatus } from "../types.ts";
 import { enableChartA11y } from "./highcharts-a11y.ts";
+import { t, fmtNum } from "../i18n/format.ts";
 
 interface Props {
   data: TodayStatus;
@@ -116,7 +117,7 @@ export function TodayGauge(props: Props) {
         class="font-mono text-sm font-semibold px-4 py-1 rounded-full leading-tight"
         style={tempStyle()}
       >
-        {props.data.today_temp?.toFixed(1)} °C
+        {props.data.today_temp != null ? t("common.temp_c", { temp: fmtNum(props.data.today_temp, 1) }) : " °C"}
       </div>
     </div>
   );
