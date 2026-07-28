@@ -8,9 +8,20 @@ description: >
   and then abort at creation. This action creates the label if missing and is
   a no-op if it already exists. Used by data-refresh.yaml for both the
   `data-refresh` PR label and the `refresh-failure` alert label, so the two
-  callers share ONE definition (D-18/D-19 anti-duplication) rather than copying
-  the `gh label create … || true` line. Needs a token with issues:write (labels
-  live under the issues API); the caller passes it in.
+  callers share ONE definition (anti-duplication) rather than copying the
+  `gh label create` line. Needs a token with issues:write (labels live under
+  the issues API); the caller passes it in.
+
+  Failure semantics (T-6.6b): this action distinguishes "already exists" from a
+  real failure (no permission, API down, bad input). A create that fails is
+  tolerated ONLY if the label is then observed to exist; otherwise the action
+  exits non-zero. The earlier `gh label create … 2>/dev/null || true` form
+  swallowed every error alike — harmless for the PR label (the following
+  `gh pr create --label` fails loudly on a missing label anyway) but NOT for the
+  refresh-failure alert label: if that label silently failed to be created, the
+  `gh issue create --label` behind it would fail, no alert issue would open, and
+  the alerting system would fail exactly as silently as the outage it exists to
+  surface. This action refuses to be that silent-failure path.
 inputs:
   name:
     description: 'Label name to ensure.'
@@ -35,13 +46,30 @@ runs:
         LABEL_NAME: ${{ inputs.name }}
         LABEL_COLOR: ${{ inputs.color }}
         LABEL_DESC: ${{ inputs.description }}
-      # `gh label create` errors if the label already exists; that is the
-      # idempotent no-op case, so swallow it. Any other failure (e.g. missing
-      # permission) is also swallowed here BY DESIGN — a label that cannot be
-      # created must not fail the run before the real work; the subsequent
-      # `--label` reference is what surfaces a genuinely missing label loudly.
+      # `gh label create` errors if the label already exists — that is the
+      # idempotent no-op case. Any OTHER error (missing permission, API down,
+      # bad colour) must NOT be swallowed: this action is a hard prerequisite
+      # for the refresh-failure alert, so a silent "could not create" here would
+      # silently disable alerting. Strategy: attempt the create; if it fails,
+      # verify the label actually exists now. Exists -> already-exists no-op,
+      # proceed. Absent -> the failure was real, abort loudly with the gh error.
       run: |
-        gh label create "$LABEL_NAME" \
-          --color "$LABEL_COLOR" \
-          --description "$LABEL_DESC" \
-          2>/dev/null || true
+        set -uo pipefail
+        if err="$(gh label create "$LABEL_NAME" \
+              --color "$LABEL_COLOR" \
+              --description "$LABEL_DESC" 2>&1)"; then
+          echo "Created label '$LABEL_NAME'."
+          exit 0
+        fi
+        echo "gh label create did not succeed for '$LABEL_NAME':" >&2
+        printf '%s\n' "$err" >&2
+        # Only "already exists" is an acceptable reason to continue. Confirm by
+        # listing labels and matching the name EXACTLY (grep -Fx). --limit is
+        # raised well past this repo's label count so paging cannot hide it.
+        if gh label list --limit 500 --json name --jq '.[].name' \
+             | grep -Fxq "$LABEL_NAME"; then
+          echo "Label '$LABEL_NAME' already exists — create failure was the idempotent no-op."
+          exit 0
+        fi
+        echo "::error::Could not ensure label '$LABEL_NAME': create failed and the label is absent (see gh error above). Refusing to continue silently." >&2
+        exit 1
