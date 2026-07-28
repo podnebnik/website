@@ -1,7 +1,7 @@
 import { onMount, onCleanup, createEffect } from "solid-js";
 import type { RegressionResponse } from "../types.ts";
 import { enableChartA11y } from "./highcharts-a11y.ts";
-import { t, fmtNum, fmtSigned } from "../i18n/format.ts";
+import { t, fmtNum } from "../i18n/format.ts";
 
 interface Props {
   data:    RegressionResponse;
@@ -36,7 +36,7 @@ export function RegressionChart(props: Props) {
         enableMouseTracking: false,
         showInLegend: false,
         zIndex: 1,
-      } as Highcharts.SeriesArearangeOptions);
+      } as Highcharts.SeriesOptionsType);
 
       // Trend line
       series.push({
@@ -80,7 +80,7 @@ export function RegressionChart(props: Props) {
         margin: [10, 20, 40, 60],
         animation: false,
       },
-      title:         null,
+      title:         { text: "" },
       credits:       { enabled: false },
       // T-5.4a — screen-reader summary (Slovenian copy awaiting operator review).
       // Was `{ enabled: false }` (only to silence the missing-module warning); the
@@ -95,11 +95,9 @@ export function RegressionChart(props: Props) {
       },
       tooltip: {
         shared: false,
-        formatter(this: Highcharts.TooltipFormatterContextObject) {
-          const pt = this.point as any;
+        formatter(this: Highcharts.Point) {
           const loc = (this.series.name ?? "").replace(/_/g, " ");
-          const base = t("regchart.tooltip", { loc, x: this.x, y: fmtNum(this.y as number, 2), unit: d.unit });
-          return base + (pt.anomaly != null ? t("regchart.tooltip_anomaly", { a: fmtSigned(pt.anomaly, 2) }) : "");
+          return t("regchart.tooltip", { loc, x: this.x, y: fmtNum(this.y as number, 2), unit: d.unit });
         },
       },
       xAxis: { type: "linear", title: { text: null }, gridLineWidth: 0, tickInterval: 10 },

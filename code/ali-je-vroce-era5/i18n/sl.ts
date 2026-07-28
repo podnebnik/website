@@ -191,7 +191,6 @@ export const sl = {
   // RegressionChart (Highcharts)
   regchart: {
     tooltip: "<b>{loc}</b><br/>{x}: <b>{y}</b> {unit}",
-    tooltip_anomaly: "<br/>anomalija: {a}",
     baseline_label: "POVPREČJE {count, plural, one{# leta} two{# let} few{# let} other{# let}}: {baseline}",
     a11y: "Razsevni diagram letnih vrednosti izbrane spremenljivke z regresijsko linijo trenda in 95-odstotnim intervalom zaupanja; črtkana črta označuje povprečje referenčnega obdobja.",
   },

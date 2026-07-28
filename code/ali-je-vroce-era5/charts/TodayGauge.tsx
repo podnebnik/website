@@ -48,7 +48,7 @@ export function TodayGauge(props: Props) {
         margin:          [0, 0, 0, 0],
         animation:       { duration: 900, easing: "easeOutQuint" },
       },
-      title:         null,
+      title:         { text: "" },
       credits:       { enabled: false },
       tooltip:       { enabled: false },
       exporting:     { enabled: false },
@@ -58,7 +58,10 @@ export function TodayGauge(props: Props) {
         endAngle:    90,
         center:      ["50%", "92%"],
         size:        "150%",
-        background:  undefined,
+        // [] renders no pane band, identical to the prior `undefined`: Highcharts'
+        // merge overwrites the gauge's default `{}` background with the empty array,
+        // and Pane.render's splat([]) loop runs zero times (T-5.8).
+        background:  [],
       },
       yAxis: {
         min:              0,
