@@ -44,12 +44,14 @@ concurrency:
   group: data-refresh
   cancel-in-progress: false
 
-# Least privilege: only what opening a PR needs. `contents: write` creates the
-# refresh branch and commit; `pull-requests: write` opens the PR. No packages,
-# no id-token, no actions scope.
+# Least privilege: only what opening a PR and alerting needs. `contents: write`
+# creates the refresh branch and commit; `pull-requests: write` opens the PR;
+# `issues: write` lets the failure-alert step open (or comment on, and label) a
+# refresh-failure issue (T-6.6a). No packages, no id-token, no actions scope.
 permissions:
   contents: write
   pull-requests: write
+  issues: write
 
 jobs:
   refresh:
@@ -62,6 +64,7 @@ jobs:
       # dispatcher typed the exact confirmation string. Do not remove it until
       # the T-4.3b meteo pass has landed (same condition as enabling `schedule:`).
       - name: Require explicit confirmation
+        id: confirm
         env:
           CONFIRM: ${{ github.event.inputs.confirm }}
         run: |
@@ -79,11 +82,13 @@ jobs:
           echo "Confirmation received (spend-quota) — proceeding with the refresh."
 
       - name: Checkout repository
+        id: checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
 
       - name: Install the latest version of uv
+        id: setup_uv
         uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
         with:
           version: "latest"
@@ -95,6 +100,7 @@ jobs:
       # Open-Meteo free-tier quota — never do that from a scheduled job.
       # DATA_DIR points the collector at the tracked raw CSVs (default is /app/data/si).
       - name: Refresh raw station data (differential)
+        id: fetch
         env:
           DATA_DIR: data/climate-si/data/raw
         run: uv run --project data/climate-si/sources python data/climate-si/sources/mk_collect.py
@@ -135,6 +141,7 @@ jobs:
 
       # Raw-input contract — the SAME definition validate-data.yaml runs on PRs.
       - name: Validate raw station inputs
+        id: validate_raw
         if: steps.scope.outputs.changed == 'true'
         uses: ./.github/actions/validate-raw-data
 
@@ -145,6 +152,7 @@ jobs:
       # BEFORE the first to_sql, so a violation aborts non-zero and no PR is opened.
       # Network-free: it computes only from the raw CSVs on disk. DB output is gitignored.
       - name: Validate derived pipeline (precompute + validate)
+        id: precompute
         if: steps.scope.outputs.changed == 'true'
         env:
           DATA_DIR: data/climate-si/data/raw
@@ -155,6 +163,7 @@ jobs:
       # plain push, never a force-push. `git add` is scoped to the raw CSVs (the scope
       # step already proved nothing else changed). If gh/push fails, the run fails loudly.
       - name: Open pull request with raw appends
+        id: open_pr
         if: steps.scope.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -169,6 +178,11 @@ jobs:
           branch="data-refresh/${date_tag}-${RUN_ID}"
           run_url="${SERVER_URL}/${REPO}/actions/runs/${RUN_ID}"
 
+          # Record the branch name for the failure-alert step BEFORE the push, so
+          # that if a later command aborts, the alert can name the branch. Outputs
+          # written to $GITHUB_OUTPUT survive a subsequent step failure.
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git switch -c "$branch"
@@ -178,6 +192,11 @@ jobs:
           # persist-credentials:false left no git credential — push over an explicit
           # tokened URL (GH_TOKEN is masked in logs). A new branch each run = plain push.
           git push "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git" "$branch"
+
+          # The push landed. Record it so that if `gh pr create` below fails, the
+          # alert step reports a pushed-but-PR-less orphan branch, not "nothing
+          # written". This is the one partial state that leaves data on origin.
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
 
           cat > /tmp/pr-body.md <<EOF
           ## Weekly raw data refresh
@@ -210,3 +229,119 @@ jobs:
             --title "Weekly raw data refresh (${date_tag})" \
             --body-file /tmp/pr-body.md \
             --label data-refresh
+
+      # --- Failure alerting (T-6.6a) ------------------------------------------
+      # D-19 makes the refresh validate in-job and open NO PR on failure, which
+      # makes "a real failure" indistinguishable from "no new data this week"
+      # unless a human happens to watch the run. This step closes that gap and is
+      # the HARD prerequisite (D-19) for ever uncommenting the `schedule:` block.
+      #
+      # Fires on ANY real failure (fetch, scope-assert, validate-raw, precompute,
+      # PR-open, or an infra failure of checkout/setup-uv). Deliberately does NOT
+      # fire in two cases:
+      #   * the confirmation guard aborted — `steps.confirm.outcome != 'success'`
+      #     means someone dispatched without typing `spend-quota`; that is a user
+      #     error, not an incident, and alerting on it would train people to
+      #     ignore these issues (D-19 second clause, ticket step 1b);
+      #   * the job SUCCEEDED — which includes the legitimate "nothing changed,
+      #     no PR" path, where the scope step exits 0 and the job is green, so
+      #     `failure()` is false and this step never runs.
+      # Dedupe: repeat failures COMMENT on the one open `refresh-failure` issue
+      # rather than opening a new one, so a stuck weekly refresh cannot produce 52
+      # issues. The body names the failed step, links the run, and — critically —
+      # states whether anything was written to origin (only the PR step pushes).
+      - name: Alert on refresh failure
+        if: failure() && steps.confirm.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+          CHECKOUT_OUTCOME: ${{ steps.checkout.outcome }}
+          SETUP_UV_OUTCOME: ${{ steps.setup_uv.outcome }}
+          FETCH_OUTCOME: ${{ steps.fetch.outcome }}
+          SCOPE_OUTCOME: ${{ steps.scope.outcome }}
+          VALIDATE_RAW_OUTCOME: ${{ steps.validate_raw.outcome }}
+          PRECOMPUTE_OUTCOME: ${{ steps.precompute.outcome }}
+          OPEN_PR_OUTCOME: ${{ steps.open_pr.outcome }}
+          PR_BRANCH: ${{ steps.open_pr.outputs.branch }}
+          PR_PUSHED: ${{ steps.open_pr.outputs.pushed }}
+        run: |
+          set -euo pipefail
+
+          # Which step failed — the first in run order whose outcome is 'failure'
+          # (earlier steps are 'success', later ones 'skipped').
+          if [ "$CHECKOUT_OUTCOME" = "failure" ]; then
+            failed="Checkout repository (infrastructure)"
+          elif [ "$SETUP_UV_OUTCOME" = "failure" ]; then
+            failed="Install uv (infrastructure)"
+          elif [ "$FETCH_OUTCOME" = "failure" ]; then
+            failed="Refresh raw station data (mk_collect.py, differential fetch)"
+          elif [ "$SCOPE_OUTCOME" = "failure" ]; then
+            failed="Assert only raw CSVs changed / detect scope"
+          elif [ "$VALIDATE_RAW_OUTCOME" = "failure" ]; then
+            failed="Validate raw station inputs (validate_raw.py)"
+          elif [ "$PRECOMPUTE_OUTCOME" = "failure" ]; then
+            failed="Validate derived pipeline (precompute_datasette.py)"
+          elif [ "$OPEN_PR_OUTCOME" = "failure" ]; then
+            failed="Open pull request with raw appends"
+          else
+            failed="Unknown — no step reported failure; read the run log"
+          fi
+
+          # Was anything written to origin? Only the PR step pushes; it records
+          # branch + pushed via step outputs. Every earlier failure leaves changes
+          # solely in the ephemeral runner working tree, which is discarded — so
+          # nothing persists to the repository.
+          if [ "${PR_PUSHED:-}" = "true" ]; then
+            raw_state="⚠️ **A branch WAS pushed to origin: \`${PR_BRANCH}\`.** It carries this run's raw-CSV commit, but because the failure was in the PR step **no pull request was opened** — the branch is orphaned. Inspect it, then delete if unwanted: \`git push origin --delete ${PR_BRANCH}\`."
+          elif [ -n "${PR_BRANCH:-}" ]; then
+            raw_state="The push did **not** complete. Branch \`${PR_BRANCH}\` existed only in the discarded runner — **nothing was written to the repository.**"
+          else
+            raw_state="**Nothing was written to the repository.** mk_collect.py may have modified raw CSVs in the runner's working tree, but that tree is ephemeral and is discarded with the runner — no branch reached origin."
+          fi
+
+          cat > "${RUNNER_TEMP}/issue-body.md" <<EOF
+          ## Weekly data refresh FAILED
+
+          The \`Weekly data refresh\` run did not complete. Under D-19 the refresh
+          validates in-job and opens **no PR** on failure, so this would otherwise
+          be silent — hence this issue.
+
+          - **Failed step:** ${failed}
+          - **Run:** ${RUN_URL} (attempt ${RUN_ATTEMPT})
+          - **Raw data / branch state:** ${raw_state}
+
+          ### What an on-call person should do
+          1. Open the run log above and read the failed step.
+          2. If a branch was pushed (see above), inspect or delete it — it is
+             behind no PR and is not cleaned up automatically.
+          3. mk_collect.py writes one CSV per station, so a mid-fetch failure can
+             leave partial appends in the (now-discarded) runner tree; once the
+             cause is fixed, a fresh differential re-dispatch is safe.
+
+          ---
+          <sub>Opened automatically by \`.github/workflows/data-refresh.yaml\`
+          (T-6.6a). Deduped by the \`refresh-failure\` label — repeat failures
+          comment here rather than opening new issues.</sub>
+          EOF
+
+          # Ensure the dedupe label exists (idempotent; needs issues: write).
+          gh label create refresh-failure \
+            --color B60205 \
+            --description "Automated: a weekly data-refresh run failed" \
+            2>/dev/null || true
+
+          # Dedupe: comment on the open refresh-failure issue if one exists, else
+          # open a new one.
+          existing="$(gh issue list --label refresh-failure --state open \
+            --json number --jq '.[0].number // empty')"
+          if [ -n "$existing" ]; then
+            echo "Existing open refresh-failure issue #${existing} — commenting."
+            gh issue comment "$existing" --body-file "${RUNNER_TEMP}/issue-body.md"
+          else
+            echo "No open refresh-failure issue — creating one."
+            gh issue create \
+              --title "Weekly data refresh failed" \
+              --body-file "${RUNNER_TEMP}/issue-body.md" \
+              --label refresh-failure
+          fi
