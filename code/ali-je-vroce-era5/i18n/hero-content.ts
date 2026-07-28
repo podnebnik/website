@@ -222,7 +222,7 @@ Razlog je kakovost podatkov. Reanaliza ERA5-Land sistematično slabše oceni **n
 
 ## Kaj pomeni »Slovenija«
 
-Nacionalna vrednost je **neutežено povprečje vseh 18 postaj**, vključno z višinsko popravljeno Kredarico — na strani poimenovano »povprečje 18 postaj«, s prikazanim naborom postaj in razponom višin.
+Nacionalna vrednost je **neuteženo povprečje vseh 18 postaj**, vključno z višinsko popravljeno Kredarico — na strani poimenovano »povprečje 18 postaj«, s prikazanim naborom postaj in razponom višin.
 
 Uteževanje po površini ali višinskih pasovih smo pretehtali in **zavrnili**: ker je nad 1000 m le ena postaja (Kredarica), bi ta sama nosila cel višinski pas. To bi bilo videti natančno, a bi slonelo na eni sami točki. Neuteženo povprečje nad vidnim, poimenovanim naborom postaj je poštenejša konstrukcija.
 
