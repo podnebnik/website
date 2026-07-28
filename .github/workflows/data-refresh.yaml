@@ -1,0 +1,212 @@
+name: "Weekly data refresh"
+
+# Weekly refresh of the committed raw ERA5-Land station CSVs
+# (data/climate-si/data/raw/<Station>.csv). The job runs mk_collect.py in
+# DIFFERENTIAL mode, validates the result end to end, and opens a PULL REQUEST
+# with raw appends only. It NEVER pushes to main — a human reviews and merges.
+#
+# WHY THE SCHEDULE IS COMMENTED OUT (T-5.7d, lands disabled):
+# enable the `schedule:` block below only after the T-4.3b meteo pass has landed
+# — a weekly refresh running against data mid-regeneration leaves two data
+# generations open at once and the fixture re-record cannot settle.
+#
+# WHY VALIDATION RUNS IN THIS JOB, not only on the PR (the (d) design decision):
+# a pull request opened with the workflow's GITHUB_TOKEN does NOT trigger
+# `on: pull_request` workflows (GitHub suppresses it to avoid recursive runs).
+# So validate-data.yaml and docker-data.yaml will NOT auto-run on the PR this
+# job opens. To keep D-9's guarantee — nothing merges to the raw inputs without
+# validation — this job runs the same raw-input contract (via the shared
+# ./.github/actions/validate-raw-data composite) AND the derived pipeline
+# (precompute_datasette.py, which validates before writing) in-job, and opens
+# the PR only if both pass. Any validation failure fails the run loudly and no
+# PR is opened. The PR body states that it carries no automated checks by design
+# and links this run's log so a reviewer can see exactly what was checked.
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: >
+          Type spend-quota to confirm. A run FETCHES from Open-Meteo, takes
+          roughly 20 minutes, and consumes free-tier quota reserved for the
+          T-4.3b meteo pass. Leave blank / any other value and the run aborts.
+        required: true
+        default: ''
+  # schedule:
+  #   # Enable ONLY after the T-4.3b meteo pass has landed (see header). A weekly
+  #   # refresh running mid-regeneration opens a second data generation before the
+  #   # first has settled and the fixture re-record then has no fixed point.
+  #   - cron: '17 4 * * 1'  # Mondays 04:17 UTC
+
+# Two refreshes must never race the same raw CSVs. Do not cancel an in-flight
+# run: it may be mid-commit, and cancelling could leave a half-pushed branch.
+concurrency:
+  group: data-refresh
+  cancel-in-progress: false
+
+# Least privilege: only what opening a PR needs. `contents: write` creates the
+# refresh branch and commit; `pull-requests: write` opens the PR. No packages,
+# no id-token, no actions scope.
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      # D-19 (second clause): commenting out `schedule:` does NOT make this
+      # workflow safe to land — workflow_dispatch leaves it one click away in the
+      # Actions UI, and an accidental run costs two un-repeatable things. This
+      # guard runs FIRST, before checkout/uv/anything, and aborts unless the
+      # dispatcher typed the exact confirmation string. Do not remove it until
+      # the T-4.3b meteo pass has landed (same condition as enabling `schedule:`).
+      - name: Require explicit confirmation
+        env:
+          CONFIRM: ${{ github.event.inputs.confirm }}
+        run: |
+          if [ "$CONFIRM" != "spend-quota" ]; then
+            echo "::error::Refresh aborted: confirmation input was not 'spend-quota'."
+            echo "This guard exists because a run is NOT free or reversible:"
+            echo "  - it fetches ~20 min from Open-Meteo, spending free-tier quota"
+            echo "    reserved for the T-4.3b meteo pass;"
+            echo "  - it writes UTC-aggregated appends (mk_collect.py timezone=UTC)"
+            echo "    onto raw CSVs for which stash@{0} holds Europe/Ljubljana"
+            echo "    conversions on 11 of 18 stations — a run mixes two conventions."
+            echo "Re-dispatch with confirm=spend-quota only if you truly mean to spend it."
+            exit 1
+          fi
+          echo "Confirmation received (spend-quota) — proceeding with the refresh."
+
+      - name: Checkout repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
+        with:
+          version: "latest"
+
+      # DIFFERENTIAL mode — deliberately NO --force-refresh. mk_collect.py with no
+      # flags appends only the days missing since the last commit plus the trailing
+      # REFRESH_WINDOW (so preliminary era5t rows upgrade to final era5 in place).
+      # --force-refresh would re-fetch ~76 years x 18 stations against the reserved
+      # Open-Meteo free-tier quota — never do that from a scheduled job.
+      # DATA_DIR points the collector at the tracked raw CSVs (default is /app/data/si).
+      - name: Refresh raw station data (differential)
+        env:
+          DATA_DIR: data/climate-si/data/raw
+        run: uv run --project data/climate-si/sources python data/climate-si/sources/mk_collect.py
+
+      # The commit may contain ONLY raw station CSVs — assert it, do not trust it.
+      # Derived tables and the intermediate DB are gitignored (T-5.7c), and the
+      # requests cache is gitignored (T-5.7d), so a well-behaved run touches only
+      # data/climate-si/data/raw/<Station>.csv. Anything else fails the run loudly.
+      # No changes at all -> exit cleanly here without opening an empty PR.
+      - name: Assert only raw CSVs changed, detect scope
+        id: scope
+        run: |
+          changes="$(git status --porcelain)"
+          if [ -z "$changes" ]; then
+            echo "No changes produced by the refresh — nothing to open a PR for."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "Working-tree changes:"
+          echo "$changes"
+          paths="$(echo "$changes" | cut -c4-)"
+          offending="$(echo "$paths" | grep -vE '^data/climate-si/data/raw/[A-Za-z_]+\.csv$' || true)"
+          if [ -n "$offending" ]; then
+            echo "::error::Refresh changed files outside data/climate-si/data/raw/*.csv — refusing to open a PR:"
+            echo "$offending"
+            exit 1
+          fi
+          stations="$(echo "$paths" | sed -E 's#.*/([A-Za-z_]+)\.csv$#\1#' | sort -u | paste -sd ', ' -)"
+          count="$(echo "$paths" | grep -c . )"
+          {
+            echo "changed=true"
+            echo "stations=$stations"
+            echo "count=$count"
+          } >> "$GITHUB_OUTPUT"
+          echo "Refreshed stations: $stations"
+
+      # --- Everything below runs only when the refresh actually produced changes. ---
+
+      # Raw-input contract — the SAME definition validate-data.yaml runs on PRs.
+      - name: Validate raw station inputs
+        if: steps.scope.outputs.changed == 'true'
+        uses: ./.github/actions/validate-raw-data
+
+      # Derived pipeline — a raw row can pass validate_raw and still break precompute
+      # (a validate.py bound, or a Fisk-fit failure withholding SPEI under D-16). Since
+      # docker-data.yaml won't auto-run on the token-opened PR either, build+validate
+      # the nine derived tables here. precompute_datasette.main() runs validate_tables
+      # BEFORE the first to_sql, so a violation aborts non-zero and no PR is opened.
+      # Network-free: it computes only from the raw CSVs on disk. DB output is gitignored.
+      - name: Validate derived pipeline (precompute + validate)
+        if: steps.scope.outputs.changed == 'true'
+        env:
+          DATA_DIR: data/climate-si/data/raw
+        run: uv run --project data/climate-si/sources python data/climate-si/sources/precompute_datasette.py
+
+      # Open the PR with first-party tooling only (git + gh) — no third-party action,
+      # so no extra pinned supply-chain dependency. Unique dated branch per run means a
+      # plain push, never a force-push. `git add` is scoped to the raw CSVs (the scope
+      # step already proved nothing else changed). If gh/push fails, the run fails loudly.
+      - name: Open pull request with raw appends
+        if: steps.scope.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          SERVER_URL: ${{ github.server_url }}
+          RUN_ID: ${{ github.run_id }}
+          STATIONS: ${{ steps.scope.outputs.stations }}
+          COUNT: ${{ steps.scope.outputs.count }}
+        run: |
+          set -euo pipefail
+          date_tag="$(date -u +%Y%m%d)"
+          branch="data-refresh/${date_tag}-${RUN_ID}"
+          run_url="${SERVER_URL}/${REPO}/actions/runs/${RUN_ID}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git add data/climate-si/data/raw/*.csv
+          git commit -m "data: weekly raw ERA5-Land refresh (${date_tag})"
+
+          # persist-credentials:false left no git credential — push over an explicit
+          # tokened URL (GH_TOKEN is masked in logs). A new branch each run = plain push.
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git" "$branch"
+
+          cat > /tmp/pr-body.md <<EOF
+          ## Weekly raw data refresh
+
+          Differential refresh of the committed ERA5-Land raw station CSVs
+          (\`mk_collect.py\`, no \`--force-refresh\`). This PR contains **raw appends only**.
+
+          - **Stations changed (${COUNT}):** ${STATIONS}
+          - **Scope asserted:** only \`data/climate-si/data/raw/*.csv\` were modified.
+
+          ### ⚠️ This PR carries NO automated checks by design
+          It was opened by a workflow using \`GITHUB_TOKEN\`, so GitHub does not trigger
+          \`pull_request\` workflows on it (validate-data / docker-data / build will not
+          run automatically). Instead, the refresh run validated everything **before**
+          opening this PR:
+
+          1. \`validate_raw.py\` — raw-input schema (same contract as the PR gate).
+          2. \`precompute_datasette.py\` — builds and validates all nine derived tables.
+
+          **Run log (what was checked):** ${run_url}
+
+          ### A human must review before merge
+          Confirm the appended dates/values look right, then merge. Merging to \`main\`
+          triggers the normal build + datasette image (which re-validates).
+          EOF
+
+          gh pr create \
+            --base main \
+            --head "$branch" \
+            --title "Weekly raw data refresh (${date_tag})" \
+            --body-file /tmp/pr-body.md \
+            --label data-refresh

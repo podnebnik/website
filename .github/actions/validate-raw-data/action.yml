@@ -1,0 +1,17 @@
+name: 'Validate climate-si raw inputs'
+description: >
+  Single source of the raw-station validation contract (T-5.11). Runs
+  validate_raw.py over data/climate-si/data/raw/<Station>.csv — column
+  set/dtypes, temperature bounds, date continuity, elevation_diff vs si.yaml
+  and the allowed source set. Used by BOTH validate-data.yaml (the PR gate) and
+  data-refresh.yaml (the weekly refresh, whose GITHUB_TOKEN-opened PR does not
+  itself trigger pull_request checks), so the two callers cannot drift out of a
+  shared definition (D-18 anti-duplication). Callers must have already checked
+  out the repo and installed uv (astral-sh/setup-uv) — both callers need uv for
+  other steps, so this action deliberately does not re-install it.
+runs:
+  using: 'composite'
+  steps:
+    - name: Validate raw station inputs
+      shell: bash
+      run: uv run --project data/climate-si/sources python data/climate-si/sources/validate_raw.py
