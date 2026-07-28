@@ -358,3 +358,86 @@ def test_spei_station_constant_series_rejected(tables):
     s.loc[0, "spei_json"] = "[0.5,0.5,0.5]"    # flat across years -> collapsed fit
     t["spei_station"] = s
     _expect_error(t, "constant across")
+
+
+# ── datapackage.yaml as the authoritative column set (D-18, T-5.3a) ──────────────
+#
+# validate.py no longer hardcodes the column SET; it derives it from
+# datapackage.yaml (`_load_datapackage_columns`) and pairs each declared column with
+# a hand spec via `_strict_schema`. These cover the loader and the two-directional
+# drift it must catch: a column declared in datapackage with no spec, and a spec with
+# no datapackage declaration. The end-to-end rename case (which doubles as the
+# datapackage-side corruption proof) drives a mutated datapackage through
+# validate_tables and asserts it fails loudly, naming the table and column.
+
+import pandera.pandas as pa      # noqa: E402
+import yaml                      # noqa: E402
+from pathlib import Path         # noqa: E402
+
+
+def test_load_datapackage_columns_happy():
+    cols = v._load_datapackage_columns()
+    # every validated table has a declared resource
+    for name in v.TABLE_NAMES:
+        assert name in cols, f"{name} missing from datapackage.yaml"
+        assert cols[name], f"{name} has no fields"
+    # a couple of representative, order-sensitive checks
+    assert cols["daily_percentiles"] == ["date", "station_id",
+                                         "p05", "p20", "p40", "p60", "p80", "p95"]
+    assert cols["daily_window"][:4] == ["era5_name", "station_id", "month", "day"]
+
+
+def test_load_datapackage_missing_fields_raises(tmp_path, monkeypatch):
+    bad = {"resources": [{"name": "daily", "schema": {}}]}   # no schema.fields
+    p = tmp_path / "datapackage.yaml"
+    p.write_text(yaml.safe_dump(bad))
+    monkeypatch.setenv("DATAPACKAGE_FILE", str(p))
+    with pytest.raises(ValueError, match="no schema.fields"):
+        v._load_datapackage_columns()
+
+
+def test_strict_schema_missing_resource():
+    # a table with no resource in datapackage → loud, named, no silent pass
+    with pytest.raises(v.SchemaColumnMismatch) as ei:
+        v._strict_schema("nope", {"a": pa.Column(int)}, {})
+    assert "no resource declared" in " ".join(ei.value.error_lines())
+
+
+def test_strict_schema_extra_spec_column():
+    # spec has a column datapackage does not declare (spec not emitted / not declared)
+    with pytest.raises(v.SchemaColumnMismatch) as ei:
+        v._strict_schema("t", {"a": pa.Column(int), "b": pa.Column(int)},
+                         {"t": ["a"]})
+    lines = " ".join(ei.value.error_lines())
+    assert "'b'" in lines and "not declared in datapackage.yaml" in lines
+
+
+def test_strict_schema_missing_spec_column():
+    # datapackage declares a column the spec map does not cover (declared, no spec)
+    with pytest.raises(v.SchemaColumnMismatch) as ei:
+        v._strict_schema("t", {"a": pa.Column(int)}, {"t": ["a", "b"]})
+    lines = " ".join(ei.value.error_lines())
+    assert "'b'" in lines and "no validate.py check spec" in lines
+
+
+def test_datapackage_column_rename_fails_validation(tables, tmp_path, monkeypatch):
+    """End-to-end: rename a column in datapackage.yaml and drive real (valid) tables
+    through validate_tables. Because the column set now comes from datapackage, the
+    rename no longer matches the spec map — the build must fail, naming the table and
+    both offending column names. This is the datapackage-side corruption proof."""
+    real_dp = Path(__file__).resolve().parent.parent.parent / "datapackage.yaml"
+    dp = yaml.safe_load(real_dp.read_text())
+    for res in dp["resources"]:
+        if res["name"] == "daily_percentiles":
+            for fld in res["schema"]["fields"]:
+                if fld["name"] == "p05":
+                    fld["name"] = "p05_renamed"
+    p = tmp_path / "datapackage.yaml"
+    p.write_text(yaml.safe_dump(dp))
+    monkeypatch.setenv("DATAPACKAGE_FILE", str(p))
+    with pytest.raises(v.PipelineValidationError) as ei:
+        v.validate_tables(dict(tables))
+    msg = str(ei.value)
+    assert "daily_percentiles" in msg
+    assert "p05_renamed" in msg      # declared in datapackage, no spec
+    assert "p05" in msg              # spec exists, no datapackage declaration
