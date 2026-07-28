@@ -24,6 +24,14 @@ name: "Weekly data refresh"
 
 on:
   workflow_dispatch:
+    inputs:
+      confirm:
+        description: >
+          Type spend-quota to confirm. A run FETCHES from Open-Meteo, takes
+          roughly 20 minutes, and consumes free-tier quota reserved for the
+          T-4.3b meteo pass. Leave blank / any other value and the run aborts.
+        required: true
+        default: ''
   # schedule:
   #   # Enable ONLY after the T-4.3b meteo pass has landed (see header). A weekly
   #   # refresh running mid-regeneration opens a second data generation before the
@@ -47,6 +55,29 @@ jobs:
   refresh:
     runs-on: ubuntu-latest
     steps:
+      # D-19 (second clause): commenting out `schedule:` does NOT make this
+      # workflow safe to land — workflow_dispatch leaves it one click away in the
+      # Actions UI, and an accidental run costs two un-repeatable things. This
+      # guard runs FIRST, before checkout/uv/anything, and aborts unless the
+      # dispatcher typed the exact confirmation string. Do not remove it until
+      # the T-4.3b meteo pass has landed (same condition as enabling `schedule:`).
+      - name: Require explicit confirmation
+        env:
+          CONFIRM: ${{ github.event.inputs.confirm }}
+        run: |
+          if [ "$CONFIRM" != "spend-quota" ]; then
+            echo "::error::Refresh aborted: confirmation input was not 'spend-quota'."
+            echo "This guard exists because a run is NOT free or reversible:"
+            echo "  - it fetches ~20 min from Open-Meteo, spending free-tier quota"
+            echo "    reserved for the T-4.3b meteo pass;"
+            echo "  - it writes UTC-aggregated appends (mk_collect.py timezone=UTC)"
+            echo "    onto raw CSVs for which stash@{0} holds Europe/Ljubljana"
+            echo "    conversions on 11 of 18 stations — a run mixes two conventions."
+            echo "Re-dispatch with confirm=spend-quota only if you truly mean to spend it."
+            exit 1
+          fi
+          echo "Confirmation received (spend-quota) — proceeding with the refresh."
+
       - name: Checkout repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
