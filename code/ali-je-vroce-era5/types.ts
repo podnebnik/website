@@ -1,3 +1,5 @@
+import type { DsAnnualTrend, DsDailyWindow } from "./generated/datasette-schema.ts";
+
 /** Today's status for one location — assembled in api.ts:218 from datasette rows
  *  plus the Open-Meteo live max. Never a sidecar payload (T-2.3, D-1). */
 export interface TodayStatus {
@@ -43,44 +45,31 @@ export interface Last7 {
   }>;
 }
 
-/** Datasette climate-si annual_trend row (slim: line params, not point arrays) */
-export interface AnnualTrendRow {
-  era5_name:       string;
-  month:           number;
-  day:             number;
-  day_label:       string;
-  year_min:        number;
-  year_max:        number;
-  trend10:         number;
-  p_val:           number;
-  tau:             number;
-  n_years:         number;
-  proj_end_year:   number;
-  scatter_json:    string;
+/** Datasette climate-si annual_trend row (slim projection: line params, not point
+ *  arrays). Columns are Pick'd from the generated datapackage contract (T-5.3b, D-18)
+ *  so a column renamed in datapackage.yaml — regenerating datasette-schema.ts —
+ *  becomes a compile error here. The declared `station_id` and `variable` columns are
+ *  intentionally NOT picked: the frontend reads neither as a row field (`variable` is
+ *  only ever a URL filter value), so renaming them cannot break a read. */
+export type AnnualTrendRow = Pick<
+  DsAnnualTrend,
+  | "era5_name" | "month" | "day" | "day_label" | "year_min" | "year_max"
+  | "trend10" | "p_val" | "tau" | "n_years" | "proj_end_year" | "scatter_json"
   // fitted line parameters — central + upper/lower CI (y = slope·x + intercept)
-  slope:           number;
-  intercept:       number;
-  slope_hi:        number;
-  intercept_hi:    number;
-  slope_lo:        number;
-  intercept_lo:    number;
-}
+  | "slope" | "intercept" | "slope_hi" | "intercept_hi" | "slope_lo" | "intercept_lo"
+>;
 
-/** Datasette si_daily_window row */
-export interface DailyWindowRow {
-  station:           string;
-  month:             number;
-  day:               number;
-  p5:                number;
-  p10:               number;
-  p20:               number;
-  p50:               number;
-  p80:               number;
-  p95:               number;
-  n_samples:         number;
-  year_min:          number;
-  year_max:          number;
-  distribution_json: string;
+/** Datasette climate-si daily_window row. The p5..p95 cutoffs and metadata are Pick'd
+ *  from the generated datapackage contract (T-5.3b) so a rename breaks compilation.
+ *  `station` is synthesized client-side from the era5_name column (api.ts
+ *  fetchDailyWindow / fetchEra5NationalWindowRow) and is NOT a datasette column. */
+export interface DailyWindowRow extends Pick<
+  DsDailyWindow,
+  | "month" | "day"
+  | "p5" | "p10" | "p20" | "p50" | "p80" | "p95"
+  | "n_samples" | "year_min" | "year_max" | "distribution_json"
+> {
+  station: string;
 }
 
 /** Site metadata — built client-side in api.ts:173 from the datasette stations
