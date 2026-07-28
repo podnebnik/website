@@ -38,3 +38,9 @@ dist-fixtures
 # growing. The raw inputs under data/climate-si/data/raw/ stay tracked.
 data/climate-si/data/climate-si.*.csv
 data/climate-si/data/raw/climate-si.db
+
+# T-5.7d: mk_collect.py's requests-cache backend (CachedSession(".openmeteo_cache"))
+# writes this into the working directory. A local dev running the collector creates
+# it too; the weekly refresh asserts it committed only raw CSVs, so this must not
+# show up as an untracked change.
+.openmeteo_cache.sqlite
