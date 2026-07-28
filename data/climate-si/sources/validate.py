@@ -119,6 +119,98 @@ class PipelineValidationError(Exception):
     """Raised when one or more output tables fail validation. Message lists all."""
 
 
+# ── datapackage.yaml as the authoritative column declaration (D-18, T-5.3a) ──────
+# The per-table column SET is owned by data/climate-si/datapackage.yaml — NOT by a
+# hardcoded list here. validate.py owns only the per-column dtype / bounds / domain
+# CHECKS; frictionless's coarse string/number/integer/date types are deliberately
+# NOT used as dtypes, since they are weaker than the pandera checks below. Each
+# schema builder supplies a `{column: pa.Column(...)}` spec map of those checks, and
+# `_strict_schema` builds the schema's column set FROM datapackage, pairing each
+# declared column with its hand spec.
+#
+# One mechanism, two guarantees:
+#   1. datapackage ↔ validate.py parity — a column renamed in datapackage but not in
+#      the spec map (or vice-versa) fails at build, naming the table + column, so the
+#      two can no longer silently diverge. This is the redundancy T-5.3a collapses:
+#      datapackage becomes the single column source, not a parallel hardcoded list.
+#   2. datapackage ↔ data parity — because the resulting strict=True schema runs
+#      against the real emitted tables, a column present in the data but not in
+#      datapackage (or missing from the data) also fails. The same check that ties
+#      validate.py to datapackage therefore also enforces that the published tables
+#      match the declared package.
+
+
+class SchemaColumnMismatch(Exception):
+    """A table's hand-declared spec map disagrees with datapackage.yaml's declared
+    column set. Carries the offending columns so `validate_tables` can aggregate them
+    into named error lines, in the same style as every other validation failure."""
+
+    def __init__(self, table: str, *, missing_spec: list[str] | None = None,
+                 extra_spec: list[str] | None = None, no_resource: bool = False):
+        self.table = table
+        self.missing_spec = missing_spec or []
+        self.extra_spec = extra_spec or []
+        self.no_resource = no_resource
+        super().__init__(table)
+
+    def error_lines(self) -> list[str]:
+        if self.no_resource:
+            return [f"{self.table}: no resource declared in datapackage.yaml"]
+        lines: list[str] = []
+        for c in self.missing_spec:
+            lines.append(f"{self.table}: column '{c}' is declared in datapackage.yaml "
+                         f"but has no validate.py check spec")
+        for c in self.extra_spec:
+            lines.append(f"{self.table}: column '{c}' has a validate.py check spec "
+                         f"but is not declared in datapackage.yaml")
+        return lines
+
+
+def _load_datapackage_columns() -> dict[str, list[str]]:
+    """Read the authoritative per-table column set from datapackage.yaml (D-18).
+
+    Returns ``{resource_name: [field name, …]}`` in declared order. Read once and
+    threaded into every schema builder, so the file is parsed a single time per
+    validate_tables() call. Path override via DATAPACKAGE_FILE (used by tests)."""
+    dp_path = Path(os.environ.get(
+        "DATAPACKAGE_FILE",
+        str(Path(__file__).parent.parent / "datapackage.yaml")))
+    with open(dp_path) as f:
+        dp = yaml.safe_load(f)
+    out: dict[str, list[str]] = {}
+    for res in dp.get("resources", []):
+        fields = res.get("schema", {}).get("fields")
+        if fields is None:
+            raise ValueError(
+                f"datapackage.yaml resource {res.get('name')!r} has no schema.fields")
+        out[res["name"]] = [fld["name"] for fld in fields]
+    return out
+
+
+def _strict_schema(table: str, specs: dict[str, pa.Column],
+                   dp_columns: dict[str, list[str]], *,
+                   checks=None, unique=None) -> pa.DataFrameSchema:
+    """Build a strict DataFrameSchema whose column SET comes from datapackage.yaml
+    (D-18), pairing each declared column with its hand-declared spec in ``specs``.
+    Raises SchemaColumnMismatch — naming every offending column — when the declared
+    set and the spec map disagree."""
+    want = dp_columns.get(table)
+    if want is None:
+        raise SchemaColumnMismatch(table, no_resource=True)
+    missing_spec = [c for c in want if c not in specs]
+    extra_spec = [c for c in specs if c not in want]
+    if missing_spec or extra_spec:
+        raise SchemaColumnMismatch(table, missing_spec=missing_spec,
+                                   extra_spec=extra_spec)
+    columns = {c: specs[c] for c in want}
+    kwargs: dict = {"strict": True}
+    if checks is not None:
+        kwargs["checks"] = checks
+    if unique is not None:
+        kwargs["unique"] = unique
+    return pa.DataFrameSchema(columns, **kwargs)
+
+
 # ── Reusable checks ─────────────────────────────────────────────────────────────
 
 def _json_parseable(name: str) -> pa.Check:
@@ -152,42 +244,43 @@ _STATION_ID_NULLABLE = pa.Column(float, nullable=True, coerce=True)
 
 
 # ── Per-table pandera schemas ───────────────────────────────────────────────────
-# strict=True: an unexpected column is a schema change and must fail. coerce=True so
-# the schema behaves identically whether fed the pipeline's in-memory frames or CSVs
-# re-read from disk (which widen ints to float where NaNs exist).
+# Each builder declares only the per-column CHECKS (a `{column: pa.Column(...)}`
+# spec map) and hands them to `_strict_schema`, which supplies the authoritative
+# column SET from datapackage.yaml (D-18) and enforces strict=True. strict=True: an
+# unexpected column is a schema change and must fail. coerce=True so the schema
+# behaves identically whether fed the pipeline's in-memory frames or CSVs re-read
+# from disk (which widen ints to float where NaNs exist).
 
-def _schema_stations(station_names: list[str]) -> pa.DataFrameSchema:
-    return pa.DataFrameSchema(
-        {
-            "era5_name": pa.Column(str, pa.Check.isin(station_names)),
-            "name": pa.Column(str),
-            "official_name": pa.Column(str),
-            "name_locative": pa.Column(str),
-            "station_id": _STATION_ID_NULLABLE,
-            "xml_id": pa.Column(str, nullable=True),
-            "lat": pa.Column(float, pa.Check.in_range(45.0, 47.0), coerce=True),
-            "lon": pa.Column(float, pa.Check.in_range(13.0, 17.0), coerce=True),
-            "elevation": pa.Column(int, pa.Check.in_range(0, 3000), coerce=True),
-            "elevation_era5_m": pa.Column(int, pa.Check.in_range(0, 3000), coerce=True),
-        },
-        strict=True, unique=["era5_name"],
-    )
+def _schema_stations(station_names: list[str], dp_columns) -> pa.DataFrameSchema:
+    specs = {
+        "era5_name": pa.Column(str, pa.Check.isin(station_names)),
+        "name": pa.Column(str),
+        "official_name": pa.Column(str),
+        "name_locative": pa.Column(str),
+        "station_id": _STATION_ID_NULLABLE,
+        "xml_id": pa.Column(str, nullable=True),
+        "lat": pa.Column(float, pa.Check.in_range(45.0, 47.0), coerce=True),
+        "lon": pa.Column(float, pa.Check.in_range(13.0, 17.0), coerce=True),
+        "elevation": pa.Column(int, pa.Check.in_range(0, 3000), coerce=True),
+        "elevation_era5_m": pa.Column(int, pa.Check.in_range(0, 3000), coerce=True),
+    }
+    return _strict_schema("stations", specs, dp_columns, unique=["era5_name"])
 
 
-def _schema_daily(station_names: list[str], max_year: int) -> pa.DataFrameSchema:
-    return pa.DataFrameSchema(
-        {
-            "station_id": _STATION_ID_NULLABLE,
-            "era5_name": pa.Column(str, pa.Check.isin(station_names)),
-            "date": pa.Column(str),
-            "year": pa.Column(int, pa.Check.in_range(DATA_START_YEAR, max_year), coerce=True),
-            "month": pa.Column(int, pa.Check.in_range(1, 12), coerce=True),
-            "day": pa.Column(int, pa.Check.in_range(1, 31), coerce=True),
-            "temperature_max_2m": _TEMP,
-            "temperature_average_2m": _TEMP,
-            "temperature_min_2m": _TEMP,
-        },
-        strict=True,
+def _schema_daily(station_names: list[str], max_year: int, dp_columns) -> pa.DataFrameSchema:
+    specs = {
+        "station_id": _STATION_ID_NULLABLE,
+        "era5_name": pa.Column(str, pa.Check.isin(station_names)),
+        "date": pa.Column(str),
+        "year": pa.Column(int, pa.Check.in_range(DATA_START_YEAR, max_year), coerce=True),
+        "month": pa.Column(int, pa.Check.in_range(1, 12), coerce=True),
+        "day": pa.Column(int, pa.Check.in_range(1, 31), coerce=True),
+        "temperature_max_2m": _TEMP,
+        "temperature_average_2m": _TEMP,
+        "temperature_min_2m": _TEMP,
+    }
+    return _strict_schema(
+        "daily", specs, dp_columns,
         checks=pa.Check(
             lambda df: (df["temperature_max_2m"] >= df["temperature_average_2m"])
             & (df["temperature_average_2m"] >= df["temperature_min_2m"]),
@@ -196,34 +289,33 @@ def _schema_daily(station_names: list[str], max_year: int) -> pa.DataFrameSchema
     )
 
 
-def _schema_daily_percentiles(max_year: int) -> pa.DataFrameSchema:
+def _schema_daily_percentiles(max_year: int, dp_columns) -> pa.DataFrameSchema:
     cols = ["p05", "p20", "p40", "p60", "p80", "p95"]
-    return pa.DataFrameSchema(
-        {
-            "date": pa.Column(str),
-            "station_id": pa.Column(int, coerce=True),
-            **{c: _TEMP for c in cols},
-        },
-        strict=True, checks=_monotonic_nondecreasing(cols),
-    )
+    specs = {
+        "date": pa.Column(str),
+        "station_id": pa.Column(int, coerce=True),
+        **{c: _TEMP for c in cols},
+    }
+    return _strict_schema("daily_percentiles", specs, dp_columns,
+                          checks=_monotonic_nondecreasing(cols))
 
 
-def _schema_daily_window(station_names: list[str], max_year: int) -> pa.DataFrameSchema:
+def _schema_daily_window(station_names: list[str], max_year: int, dp_columns) -> pa.DataFrameSchema:
     cols = ["p5", "p10", "p20", "p50", "p80", "p95"]
     year = pa.Check.in_range(DATA_START_YEAR, max_year)
-    return pa.DataFrameSchema(
-        {
-            "era5_name": pa.Column(str, pa.Check.isin(station_names)),
-            "station_id": _STATION_ID_NULLABLE,
-            "month": pa.Column(int, pa.Check.in_range(1, 12), coerce=True),
-            "day": pa.Column(int, pa.Check.in_range(1, 31), coerce=True),
-            **{c: _TEMP for c in cols},
-            "n_samples": pa.Column(int, pa.Check.ge(50), coerce=True),
-            "year_min": pa.Column(int, year, coerce=True),
-            "year_max": pa.Column(int, year, coerce=True),
-            "distribution_json": pa.Column(str, _json_parseable("distribution_json")),
-        },
-        strict=True,
+    specs = {
+        "era5_name": pa.Column(str, pa.Check.isin(station_names)),
+        "station_id": _STATION_ID_NULLABLE,
+        "month": pa.Column(int, pa.Check.in_range(1, 12), coerce=True),
+        "day": pa.Column(int, pa.Check.in_range(1, 31), coerce=True),
+        **{c: _TEMP for c in cols},
+        "n_samples": pa.Column(int, pa.Check.ge(50), coerce=True),
+        "year_min": pa.Column(int, year, coerce=True),
+        "year_max": pa.Column(int, year, coerce=True),
+        "distribution_json": pa.Column(str, _json_parseable("distribution_json")),
+    }
+    return _strict_schema(
+        "daily_window", specs, dp_columns,
         checks=[
             _monotonic_nondecreasing(cols),
             pa.Check(lambda df: df["year_min"] <= df["year_max"],
@@ -233,32 +325,32 @@ def _schema_daily_window(station_names: list[str], max_year: int) -> pa.DataFram
     )
 
 
-def _schema_annual_trend(station_names: list[str], max_year: int) -> pa.DataFrameSchema:
+def _schema_annual_trend(station_names: list[str], max_year: int, dp_columns) -> pa.DataFrameSchema:
     year = pa.Check.in_range(DATA_START_YEAR, max_year)
-    return pa.DataFrameSchema(
-        {
-            "era5_name": pa.Column(str, pa.Check.isin(station_names)),
-            "station_id": _STATION_ID_NULLABLE,
-            "variable": pa.Column(str, pa.Check.isin(sorted(TREND_VARIABLES))),
-            "month": pa.Column(int, pa.Check.in_range(1, 12), coerce=True),
-            "day": pa.Column(int, pa.Check.in_range(1, 31), coerce=True),
-            "day_label": pa.Column(str),
-            "year_min": pa.Column(int, year, coerce=True),
-            "year_max": pa.Column(int, year, coerce=True),
-            "trend10": pa.Column(float, coerce=True),
-            "p_val": pa.Column(float, pa.Check.in_range(0.0, 1.0), coerce=True),
-            "tau": pa.Column(float, pa.Check.in_range(-1.0, 1.0), coerce=True),
-            "n_years": pa.Column(int, pa.Check.ge(10), coerce=True),
-            "proj_end_year": pa.Column(int, coerce=True),
-            "slope": pa.Column(float, coerce=True),
-            "intercept": pa.Column(float, coerce=True),
-            "slope_hi": pa.Column(float, coerce=True),
-            "intercept_hi": pa.Column(float, coerce=True),
-            "slope_lo": pa.Column(float, coerce=True),
-            "intercept_lo": pa.Column(float, coerce=True),
-            "scatter_json": pa.Column(str, _json_parseable("scatter_json")),
-        },
-        strict=True,
+    specs = {
+        "era5_name": pa.Column(str, pa.Check.isin(station_names)),
+        "station_id": _STATION_ID_NULLABLE,
+        "variable": pa.Column(str, pa.Check.isin(sorted(TREND_VARIABLES))),
+        "month": pa.Column(int, pa.Check.in_range(1, 12), coerce=True),
+        "day": pa.Column(int, pa.Check.in_range(1, 31), coerce=True),
+        "day_label": pa.Column(str),
+        "year_min": pa.Column(int, year, coerce=True),
+        "year_max": pa.Column(int, year, coerce=True),
+        "trend10": pa.Column(float, coerce=True),
+        "p_val": pa.Column(float, pa.Check.in_range(0.0, 1.0), coerce=True),
+        "tau": pa.Column(float, pa.Check.in_range(-1.0, 1.0), coerce=True),
+        "n_years": pa.Column(int, pa.Check.ge(10), coerce=True),
+        "proj_end_year": pa.Column(int, coerce=True),
+        "slope": pa.Column(float, coerce=True),
+        "intercept": pa.Column(float, coerce=True),
+        "slope_hi": pa.Column(float, coerce=True),
+        "intercept_hi": pa.Column(float, coerce=True),
+        "slope_lo": pa.Column(float, coerce=True),
+        "intercept_lo": pa.Column(float, coerce=True),
+        "scatter_json": pa.Column(str, _json_parseable("scatter_json")),
+    }
+    return _strict_schema(
+        "annual_trend", specs, dp_columns,
         checks=[
             pa.Check(lambda df: df["year_min"] <= df["year_max"],
                      error="year_min > year_max"),
@@ -270,23 +362,23 @@ def _schema_annual_trend(station_names: list[str], max_year: int) -> pa.DataFram
     )
 
 
-def _schema_season_heatmap(station_names: list[str], max_year: int) -> pa.DataFrameSchema:
-    return pa.DataFrameSchema(
-        {
-            "era5_name": pa.Column(str, pa.Check.isin(station_names)),
-            "station_id": _STATION_ID_NULLABLE,
-            "x": pa.Column(int, pa.Check.in_range(0, 3), coerce=True),
-            "y": pa.Column(int, pa.Check.in_range(DATA_START_YEAR, max_year), coerce=True),
-            "season": pa.Column(str, pa.Check.isin(sorted(SEASONS))),
-            "avg": _TEMP,
-            "percentile": pa.Column(float, pa.Check.in_range(0.0, 100.0), coerce=True),
-            "cat": pa.Column(str, pa.Check.isin(list(SEASON_CAT_COLOR))),
-            "rank": pa.Column(int, pa.Check.ge(1), coerce=True),
-            "total": pa.Column(int, pa.Check.ge(1), coerce=True),
-            "color": pa.Column(str, pa.Check.isin(list(SEASON_CAT_COLOR.values()))),
-            "n_days": pa.Column(int, pa.Check.ge(30), coerce=True),
-        },
-        strict=True,
+def _schema_season_heatmap(station_names: list[str], max_year: int, dp_columns) -> pa.DataFrameSchema:
+    specs = {
+        "era5_name": pa.Column(str, pa.Check.isin(station_names)),
+        "station_id": _STATION_ID_NULLABLE,
+        "x": pa.Column(int, pa.Check.in_range(0, 3), coerce=True),
+        "y": pa.Column(int, pa.Check.in_range(DATA_START_YEAR, max_year), coerce=True),
+        "season": pa.Column(str, pa.Check.isin(sorted(SEASONS))),
+        "avg": _TEMP,
+        "percentile": pa.Column(float, pa.Check.in_range(0.0, 100.0), coerce=True),
+        "cat": pa.Column(str, pa.Check.isin(list(SEASON_CAT_COLOR))),
+        "rank": pa.Column(int, pa.Check.ge(1), coerce=True),
+        "total": pa.Column(int, pa.Check.ge(1), coerce=True),
+        "color": pa.Column(str, pa.Check.isin(list(SEASON_CAT_COLOR.values()))),
+        "n_days": pa.Column(int, pa.Check.ge(30), coerce=True),
+    }
+    return _strict_schema(
+        "season_heatmap", specs, dp_columns,
         checks=[
             pa.Check(lambda df: df["rank"] <= df["total"], error="rank > total"),
             pa.Check(lambda df: df["cat"].map(SEASON_CAT_COLOR) == df["color"],
@@ -295,20 +387,20 @@ def _schema_season_heatmap(station_names: list[str], max_year: int) -> pa.DataFr
     )
 
 
-def _schema_tropical(station_names: list[str]) -> pa.DataFrameSchema:
-    return pa.DataFrameSchema(
-        {
-            "era5_name": pa.Column(str, pa.Check.isin(station_names)),
-            "station_id": _STATION_ID_NULLABLE,
-            "kind": pa.Column(str, pa.Check.isin(["days", "nights"])),
-            "threshold": pa.Column(int, pa.Check.in_range(15, 35), coerce=True),
-            "streak": pa.Column(int, pa.Check.isin([1, 2, 3]), coerce=True),
-            "years_json": pa.Column(str, _json_parseable("years_json")),
-            "counts_json": pa.Column(str, _json_parseable("counts_json")),
-            "nonzero_count": pa.Column(int, pa.Check.ge(0), coerce=True),
-            "trend_json": pa.Column(str, _json_parseable("trend_json")),
-        },
-        strict=True,
+def _schema_tropical(station_names: list[str], dp_columns) -> pa.DataFrameSchema:
+    specs = {
+        "era5_name": pa.Column(str, pa.Check.isin(station_names)),
+        "station_id": _STATION_ID_NULLABLE,
+        "kind": pa.Column(str, pa.Check.isin(["days", "nights"])),
+        "threshold": pa.Column(int, pa.Check.in_range(15, 35), coerce=True),
+        "streak": pa.Column(int, pa.Check.isin([1, 2, 3]), coerce=True),
+        "years_json": pa.Column(str, _json_parseable("years_json")),
+        "counts_json": pa.Column(str, _json_parseable("counts_json")),
+        "nonzero_count": pa.Column(int, pa.Check.ge(0), coerce=True),
+        "trend_json": pa.Column(str, _json_parseable("trend_json")),
+    }
+    return _strict_schema(
+        "tropical", specs, dp_columns,
         checks=[
             # thresholds are kind-specific: days 25–35, nights 15–25.
             pa.Check(
@@ -333,21 +425,21 @@ def _schema_tropical(station_names: list[str]) -> pa.DataFrameSchema:
     )
 
 
-def _schema_spei(max_year: int) -> pa.DataFrameSchema:
-    return pa.DataFrameSchema(
-        {
-            "x": pa.Column(int, pa.Check.in_range(0, 3), coerce=True),
-            "y": pa.Column(int, pa.Check.in_range(DATA_START_YEAR, max_year), coerce=True),
-            "spei": pa.Column(float, pa.Check.in_range(-3.0, 3.0), coerce=True),
-            "balance": pa.Column(float, coerce=True),
-            "cat": pa.Column(str, pa.Check.isin(list(SPEI_CAT_COLOR))),
-            "rank": pa.Column(int, pa.Check.ge(1), coerce=True),
-            "total": pa.Column(int, pa.Check.ge(1), coerce=True),
-            "color": pa.Column(str, pa.Check.isin(list(SPEI_CAT_COLOR.values()))),
-            "season": pa.Column(str, pa.Check.isin(sorted(SEASONS))),
-            "n_days": pa.Column(int, pa.Check.ge(30), coerce=True),
-        },
-        strict=True,
+def _schema_spei(max_year: int, dp_columns) -> pa.DataFrameSchema:
+    specs = {
+        "x": pa.Column(int, pa.Check.in_range(0, 3), coerce=True),
+        "y": pa.Column(int, pa.Check.in_range(DATA_START_YEAR, max_year), coerce=True),
+        "spei": pa.Column(float, pa.Check.in_range(-3.0, 3.0), coerce=True),
+        "balance": pa.Column(float, coerce=True),
+        "cat": pa.Column(str, pa.Check.isin(list(SPEI_CAT_COLOR))),
+        "rank": pa.Column(int, pa.Check.ge(1), coerce=True),
+        "total": pa.Column(int, pa.Check.ge(1), coerce=True),
+        "color": pa.Column(str, pa.Check.isin(list(SPEI_CAT_COLOR.values()))),
+        "season": pa.Column(str, pa.Check.isin(sorted(SEASONS))),
+        "n_days": pa.Column(int, pa.Check.ge(30), coerce=True),
+    }
+    return _strict_schema(
+        "spei", specs, dp_columns,
         checks=[
             pa.Check(lambda df: df["rank"] <= df["total"], error="rank > total"),
             pa.Check(lambda df: df["cat"].map(SPEI_CAT_COLOR) == df["color"],
@@ -356,18 +448,16 @@ def _schema_spei(max_year: int) -> pa.DataFrameSchema:
     )
 
 
-def _schema_spei_station(station_names: list[str]) -> pa.DataFrameSchema:
-    return pa.DataFrameSchema(
-        {
-            "era5_name": pa.Column(str, pa.Check.isin(station_names)),
-            "station_id": _STATION_ID_NULLABLE,
-            "series": pa.Column(str),
-            "years_json": pa.Column(str, _json_parseable("years_json")),
-            "spei_json": pa.Column(str, _json_parseable("spei_json")),
-            "trend_json": pa.Column(str, _json_parseable("trend_json")),
-        },
-        strict=True,
-    )
+def _schema_spei_station(station_names: list[str], dp_columns) -> pa.DataFrameSchema:
+    specs = {
+        "era5_name": pa.Column(str, pa.Check.isin(station_names)),
+        "station_id": _STATION_ID_NULLABLE,
+        "series": pa.Column(str),
+        "years_json": pa.Column(str, _json_parseable("years_json")),
+        "spei_json": pa.Column(str, _json_parseable("spei_json")),
+        "trend_json": pa.Column(str, _json_parseable("trend_json")),
+    }
+    return _strict_schema("spei_station", specs, dp_columns)
 
 
 # ── Cross-table / structural checks ─────────────────────────────────────────────
@@ -521,6 +611,10 @@ def validate_tables(tables: dict[str, pd.DataFrame], config: dict | None = None)
     station_names = [s["name"] for s in config["stations"]]
     n_stations = len(station_names)
 
+    # The authoritative per-table column set (D-18), read once and threaded into
+    # every schema builder below.
+    dp_columns = _load_datapackage_columns()
+
     errors: list[str] = []
 
     missing = [t for t in TABLE_NAMES if t not in tables]
@@ -528,15 +622,15 @@ def validate_tables(tables: dict[str, pd.DataFrame], config: dict | None = None)
         errors.append(f"missing table(s): {missing}")
 
     schemas = {
-        "stations": lambda: _schema_stations(station_names),
-        "daily": lambda: _schema_daily(station_names, max_year),
-        "daily_percentiles": lambda: _schema_daily_percentiles(max_year),
-        "daily_window": lambda: _schema_daily_window(station_names, max_year),
-        "annual_trend": lambda: _schema_annual_trend(station_names, max_year),
-        "season_heatmap": lambda: _schema_season_heatmap(station_names, max_year),
-        "tropical": lambda: _schema_tropical(station_names),
-        "spei": lambda: _schema_spei(max_year),
-        "spei_station": lambda: _schema_spei_station(station_names),
+        "stations": lambda: _schema_stations(station_names, dp_columns),
+        "daily": lambda: _schema_daily(station_names, max_year, dp_columns),
+        "daily_percentiles": lambda: _schema_daily_percentiles(max_year, dp_columns),
+        "daily_window": lambda: _schema_daily_window(station_names, max_year, dp_columns),
+        "annual_trend": lambda: _schema_annual_trend(station_names, max_year, dp_columns),
+        "season_heatmap": lambda: _schema_season_heatmap(station_names, max_year, dp_columns),
+        "tropical": lambda: _schema_tropical(station_names, dp_columns),
+        "spei": lambda: _schema_spei(max_year, dp_columns),
+        "spei_station": lambda: _schema_spei_station(station_names, dp_columns),
     }
 
     for name, build in schemas.items():
@@ -545,6 +639,10 @@ def validate_tables(tables: dict[str, pd.DataFrame], config: dict | None = None)
             continue
         try:
             build().validate(df, lazy=True)
+        except SchemaColumnMismatch as e:
+            # datapackage.yaml ↔ validate.py spec-map drift: report each offending
+            # column and skip pandera for this table (its column set is unresolved).
+            errors.extend(e.error_lines())
         except pa.errors.SchemaErrors as e:
             for _, row in e.failure_cases.iterrows():
                 errors.append(
