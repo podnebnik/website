@@ -4,6 +4,14 @@ import type {
 } from "./types.ts";
 import type { SpeiData } from "./charts/SpeiHeatmap.tsx";
 import type { SpeiStationData } from "./charts/SpeiTrendChart.tsx";
+// T-5.3b (D-18 Half 2): the datasette column contract, codegen'd from
+// data/climate-si/datapackage.yaml (code/ali-je-vroce-era5/generated/datasette-schema.ts).
+// The `*Col` unions type-check the `_col=` projections below; `DsTropical` types the
+// tropical read. A column renamed in datapackage regenerates that file and turns any
+// stale name here into a compile error rather than a silent live-page break.
+import type {
+  StationsCol, DailyCol, SeasonHeatmapCol, SpeiCol, SpeiStationCol, AnnualTrendCol, DsTropical,
+} from "./generated/datasette-schema.ts";
 // The category palette lives with the percentile helpers salvaged from the
 // deleted ARSO path (T-2.2 / D-2); see percentile.ts for why they were kept.
 // `cdfPercentile` is the T-4.1 / D-6 honest percentile (CDF of the served KDE).
@@ -64,6 +72,33 @@ async function dsGet<T>(path: string): Promise<T> {
   const resp = await fetch(`${DS}/${path}`);
   if (!resp.ok) throw new Error(`Datasette ${resp.status}: ${path}`);
   return resp.json() as Promise<T>;
+}
+
+// ── `_col=` column projections (T-5.3b / D-18) ──────────────────────────────────
+//
+// Each datasette query below that uses `_col=` selects a SUBSET of its table's
+// columns. The subset and its ORDER are declared here as tuples type-checked against
+// the generated column unions (StationsCol, DailyCol, …). A column renamed in
+// datapackage.yaml regenerates those unions, and the now-invalid string literal below
+// fails `yarn typecheck` — closing the pipeline→frontend seam D-18 opened.
+//
+// THE ORDER IS THE URL ORDER, NOT datapackage's field order. The 2,040 fixtures are
+// keyed on the exact request URL (tests/fixtures/index.json; T-5.2 kept `_size`
+// literal for the same reason), so `dsCols` must reproduce the recorded query string
+// byte-for-byte. Where a call site's historical column order differs from
+// datapackage's declaration order, THIS TUPLE PRESERVES THE URL — reordering to match
+// datapackage would miss every fixture for no benefit.
+const STATIONS_COLS       = ["era5_name", "name", "lat", "lon", "elevation", "station_id"] as const satisfies readonly StationsCol[];
+const DAILY_TODAY_COLS    = ["temperature_max_2m"] as const satisfies readonly DailyCol[];
+const DAILY_LAST7_COLS    = ["date", "temperature_max_2m", "month", "day"] as const satisfies readonly DailyCol[];
+const SEASON_HEATMAP_COLS = ["x", "y", "season", "avg", "percentile", "cat", "rank", "total", "color", "n_days"] as const satisfies readonly SeasonHeatmapCol[];
+const SPEI_COLS           = ["y", "spei", "balance", "cat", "rank", "total", "color", "season", "n_days"] as const satisfies readonly SpeiCol[];
+const SPEI_STATION_COLS   = ["era5_name", "series", "years_json", "spei_json", "trend_json"] as const satisfies readonly SpeiStationCol[];
+const CALENDAR_COLS       = ["month", "day", "trend10", "p_val"] as const satisfies readonly AnnualTrendCol[];
+
+/** Render an ordered column tuple as a datasette `_col=a&_col=b&…` query fragment. */
+function dsCols(cols: readonly string[]): string {
+  return cols.map(c => `_col=${c}`).join("&");
 }
 
 // T-5.1: guard for the datasette `*_json` columns (distribution_json, scatter_json,
@@ -308,7 +343,7 @@ export async function fetchMeta(): Promise<SiteMeta> {
   const era5Stations = await dsGet<Array<{
     era5_name: string; name: string; lat: number; lon: number;
     elevation: number; station_id: number | null;
-  }>>("stations.json?_shape=array&_col=era5_name&_col=name&_col=lat&_col=lon&_col=elevation&_col=station_id&_size=30");
+  }>>(`stations.json?_shape=array&${dsCols(STATIONS_COLS)}&_size=30`);
 
   // T-5.2 — the station registry is the SOURCE of the station count that the three
   // national-aggregate asserts (assertNationalStationRows) trust, so a silent
@@ -368,7 +403,7 @@ export async function fetchTodayStatus(date: string, loc: string | null): Promis
     if (!w) return { available: false };
 
     const dsRows = await dsGet<Array<{ temperature_max_2m: number | null }>>(
-      `daily.json?_shape=array&date__exact=${date}&_col=temperature_max_2m&_size=50`
+      `daily.json?_shape=array&date__exact=${date}&${dsCols(DAILY_TODAY_COLS)}&_size=50`
     );
     assertNationalStationRows(dsRows, "daily");
     const dsVals = dsRows.filter(r => r.temperature_max_2m != null).map(r => r.temperature_max_2m!);
@@ -405,7 +440,7 @@ export async function fetchTodayStatus(date: string, loc: string | null): Promis
   let isPreliminary = false;
 
   const rows = await dsGet<Array<{ temperature_max_2m: number }>>(
-    `daily.json?_shape=array&era5_name__exact=${encodeURIComponent(era5Name)}&date__exact=${date}&_col=temperature_max_2m&_size=1`
+    `daily.json?_shape=array&era5_name__exact=${encodeURIComponent(era5Name)}&date__exact=${date}&${dsCols(DAILY_TODAY_COLS)}&_size=1`
   );
   if (rows[0]?.temperature_max_2m != null) {
     todayTemp = rows[0].temperature_max_2m;
@@ -449,7 +484,7 @@ export async function fetchLast7(date: string, loc: string | null): Promise<Last
   const rows = await dsGet<Array<{
     date: string; temperature_max_2m: number; month: number; day: number;
   }>>(
-    `daily.json?_shape=array&era5_name__exact=${encodeURIComponent(era5Name)}&date__lte=${date}&_sort_desc=date&_size=7&_col=date&_col=temperature_max_2m&_col=month&_col=day`
+    `daily.json?_shape=array&era5_name__exact=${encodeURIComponent(era5Name)}&date__lte=${date}&_sort_desc=date&_size=7&${dsCols(DAILY_LAST7_COLS)}`
   );
   if (!rows.length) return { available: false, days: [] };
 
@@ -494,7 +529,7 @@ export async function fetchPageData(
 export async function fetchSeasonHeatmap(loc?: string | null): Promise<SeasonHeatmapRow[]> {
   const era5Name = loc ?? "Ljubljana";
   return dsGet<SeasonHeatmapRow[]>(
-    `season_heatmap.json?_shape=array&era5_name__exact=${encodeURIComponent(era5Name)}&_col=x&_col=y&_col=season&_col=avg&_col=percentile&_col=cat&_col=rank&_col=total&_col=color&_col=n_days&_size=500`
+    `season_heatmap.json?_shape=array&era5_name__exact=${encodeURIComponent(era5Name)}&${dsCols(SEASON_HEATMAP_COLS)}&_size=500`
   );
 }
 
@@ -600,7 +635,7 @@ export async function fetchEra5Tropical(
   // the section's ErrorBoundary can show a visible error, instead of being swallowed
   // into `null` and rendering as an empty section. A genuinely empty result set
   // (no matching row) still returns null — that is legitimate "no data", not a fault.
-  const rows = await dsGet<Array<{ years_json: string; counts_json: string; nonzero_count: number; trend_json: string }>>(
+  const rows = await dsGet<Array<Pick<DsTropical, "years_json" | "counts_json" | "nonzero_count" | "trend_json">>>(
     `tropical.json?_shape=array&era5_name__exact=${encodeURIComponent(loc)}` +
     `&kind__exact=${kind}&threshold__exact=${threshold}&streak__exact=${streak}&_size=1`
   );
@@ -630,7 +665,7 @@ export async function fetchSpeiHeatmap(): Promise<SpeiData> {
     y: number; spei: number; balance: number; cat: string; rank: number;
     total: number; color: string; season: string; n_days: number;
   }>>(
-    `spei.json?_shape=array&_col=y&_col=spei&_col=balance&_col=cat&_col=rank&_col=total&_col=color&_col=season&_col=n_days&_size=2000`
+    `spei.json?_shape=array&${dsCols(SPEI_COLS)}&_size=2000`
   );
   if (!rows.length) return empty;
   const years = rows.map(r => r.y);
@@ -655,7 +690,7 @@ export async function fetchSpeiStationSeasonal(): Promise<SpeiStationData> {
   const rows = await dsGet<Array<{
     era5_name: string; series: string; years_json: string; spei_json: string; trend_json: string;
   }>>(
-    `spei_station.json?_shape=array&_col=era5_name&_col=series&_col=years_json&_col=spei_json&_col=trend_json&_size=1000`
+    `spei_station.json?_shape=array&${dsCols(SPEI_STATION_COLS)}&_size=1000`
   );
   if (!rows.length) return empty;
   const stations: SpeiStationData["stations"] = {};
@@ -695,7 +730,7 @@ export async function fetchCalendar(
   loc: string, variable: string
 ): Promise<CalendarData> {
   const rows = await dsGet<CalendarRow[]>(
-    `annual_trend.json?_shape=array&era5_name__exact=${encodeURIComponent(loc)}&variable__exact=${encodeURIComponent(variable)}&_col=month&_col=day&_col=trend10&_col=p_val&_size=400`
+    `annual_trend.json?_shape=array&era5_name__exact=${encodeURIComponent(loc)}&variable__exact=${encodeURIComponent(variable)}&${dsCols(CALENDAR_COLS)}&_size=400`
   );
   return { loc, var: variable, unit: "°C", method_label: "Theil-Sen + TFPW MK", rows };
 }
