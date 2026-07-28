@@ -1,0 +1,47 @@
+name: 'Ensure a GitHub label exists'
+description: >
+  Single source (T-6.6a) for idempotently ensuring a repository label exists
+  before something references it by name. `gh pr create --label` and
+  `gh issue create --label` both resolve label names to node IDs and FAIL
+  before creating anything if a name is unknown — so an unattended job that
+  references a not-yet-created label would push a branch (or do worse work)
+  and then abort at creation. This action creates the label if missing and is
+  a no-op if it already exists. Used by data-refresh.yaml for both the
+  `data-refresh` PR label and the `refresh-failure` alert label, so the two
+  callers share ONE definition (D-18/D-19 anti-duplication) rather than copying
+  the `gh label create … || true` line. Needs a token with issues:write (labels
+  live under the issues API); the caller passes it in.
+inputs:
+  name:
+    description: 'Label name to ensure.'
+    required: true
+  color:
+    description: 'Hex colour, no leading "#".'
+    required: true
+  description:
+    description: 'Label description.'
+    required: false
+    default: ''
+  token:
+    description: 'GITHUB_TOKEN (or equivalent) with issues:write.'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - name: Ensure label
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.token }}
+        LABEL_NAME: ${{ inputs.name }}
+        LABEL_COLOR: ${{ inputs.color }}
+        LABEL_DESC: ${{ inputs.description }}
+      # `gh label create` errors if the label already exists; that is the
+      # idempotent no-op case, so swallow it. Any other failure (e.g. missing
+      # permission) is also swallowed here BY DESIGN — a label that cannot be
+      # created must not fail the run before the real work; the subsequent
+      # `--label` reference is what surfaces a genuinely missing label loudly.
+      run: |
+        gh label create "$LABEL_NAME" \
+          --color "$LABEL_COLOR" \
+          --description "$LABEL_DESC" \
+          2>/dev/null || true

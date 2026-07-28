@@ -162,6 +162,19 @@ jobs:
       # so no extra pinned supply-chain dependency. Unique dated branch per run means a
       # plain push, never a force-push. `git add` is scoped to the raw CSVs (the scope
       # step already proved nothing else changed). If gh/push fails, the run fails loudly.
+      # Ensure the PR label exists BEFORE `gh pr create --label` — gh resolves
+      # label names to node IDs and aborts before creating the PR if the name is
+      # unknown, which on a first run (empty repo) would fetch ~20 min, push the
+      # branch, then fail at creation and leave an orphan branch with no PR.
+      - name: Ensure data-refresh label
+        if: steps.scope.outputs.changed == 'true'
+        uses: ./.github/actions/ensure-label
+        with:
+          name: data-refresh
+          color: D5C9EF
+          description: "Automated: weekly raw ERA5-Land refresh PR"
+          token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Open pull request with raw appends
         id: open_pr
         if: steps.scope.outputs.changed == 'true'
@@ -250,6 +263,17 @@ jobs:
       # rather than opening a new one, so a stuck weekly refresh cannot produce 52
       # issues. The body names the failed step, links the run, and — critically —
       # states whether anything was written to origin (only the PR step pushes).
+      # Ensure the dedupe label exists via the SAME action the PR label uses, so
+      # there is one way to ensure a label, not two copies (D-18/D-19).
+      - name: Ensure refresh-failure label
+        if: failure() && steps.confirm.outcome == 'success'
+        uses: ./.github/actions/ensure-label
+        with:
+          name: refresh-failure
+          color: B60205
+          description: "Automated: a weekly data-refresh run failed"
+          token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Alert on refresh failure
         if: failure() && steps.confirm.outcome == 'success'
         env:
@@ -325,12 +349,8 @@ jobs:
           comment here rather than opening new issues.</sub>
           EOF
 
-          # Ensure the dedupe label exists (idempotent; needs issues: write).
-          gh label create refresh-failure \
-            --color B60205 \
-            --description "Automated: a weekly data-refresh run failed" \
-            2>/dev/null || true
-
+          # (The refresh-failure label is ensured by the preceding step, via the
+          # shared ensure-label action.)
           # Dedupe: comment on the open refresh-failure issue if one exists, else
           # open a new one.
           existing="$(gh issue list --label refresh-failure --state open \
