@@ -24,6 +24,8 @@ import yaml
 from pathlib import Path
 from datetime import datetime, timedelta
 
+from local_day import local_daily_dates
+
 # ── Configuration ────────────────────────────────────────────────────────────
 
 COUNTRY = os.environ.get("COUNTRY", "si")
@@ -296,13 +298,17 @@ def fetch_location(loc):
         _idx_precip = 3 if _has_precip else None
         _idx_et0    = 4 if _has_precip else None
 
+        # D-4 (T-4.3b): daily.Time()/TimeEnd() are the Unix epochs of each LOCAL
+        # midnight (timezone=Europe/Ljubljana). local_daily_dates shifts by the
+        # response's UTC offset so .date reads the correct local calendar day
+        # instead of labelling every row one day early. See local_day.py.
         df_new = pd.DataFrame({
-            "date": pd.date_range(
-                start=pd.to_datetime(daily.Time(),    unit="s", utc=True),
-                end=pd.to_datetime(daily.TimeEnd(),   unit="s", utc=True),
-                freq=pd.Timedelta(seconds=daily.Interval()),
-                inclusive="left",
-            ).date,
+            "date": local_daily_dates(
+                daily.Time(),
+                daily.TimeEnd(),
+                daily.Interval(),
+                response.UtcOffsetSeconds(),
+            ),
             "temperature_max":  daily.Variables(0).ValuesAsNumpy(),
             "temperature_min":  daily.Variables(1).ValuesAsNumpy(),
             "temperature_mean": daily.Variables(2).ValuesAsNumpy(),
