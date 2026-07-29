@@ -126,8 +126,18 @@ export async function requestData(
       const dataAverage = (await resultAverage.json()) as RequestStationData;
       const averageTemperature = dataAverage.statistics.temperature_average_24h;
 
-      let timeUpdated = new Date(Number(dataAverage.statistics.timestamp));
+      const rawTimestamp = Number(dataAverage.statistics.timestamp);
+      // A null/absent/unparseable Vremenar timestamp coerces to 0 or NaN; under
+      // month-day matching that would silently return January percentiles all
+      // year, so reject it with a message distinct from "Percentiles not found".
+      if (!Number.isFinite(rawTimestamp) || rawTimestamp <= 0) {
+        throw new Error("Invalid observation timestamp from Vremenar");
+      }
+      let timeUpdated = new Date(rawTimestamp);
       const date = formatDateForQuery(timeUpdated);
+      // Match on month-day, not the full date: average_percentiles is a 365-slot
+      // climatology with an arbitrary year label (no 02-29 row → fall back to 02-28).
+      const monthDay = date.slice(5) === "02-29" ? "02-28" : date.slice(5);
 
       let timeMinDate = new Date(
         Number(dataAverage.statistics.timestamp_temperature_min_24h)
@@ -137,7 +147,7 @@ export async function requestData(
       );
 
       const resultPercentile = await fetch(
-        `${STAGE_DATA_BASE_URL}/temperature/temperature~2Eslovenia_historical~2Edaily~2Eaverage_percentiles.json?date__exact=${date}&station_id__exact=${stationID}&_col=p05&_col=p20&_col=p40&_col=p60&_col=p80&_col=p95`,
+        `${STAGE_DATA_BASE_URL}/temperature/temperature~2Eslovenia_historical~2Edaily~2Eaverage_percentiles.json?date__endswith=-${monthDay}&station_id__exact=${stationID}&_col=p05&_col=p20&_col=p40&_col=p60&_col=p80&_col=p95`,
          options.signal ? { signal: options?.signal } : undefined
       );
         const dataPercentile = await resultPercentile.json();
