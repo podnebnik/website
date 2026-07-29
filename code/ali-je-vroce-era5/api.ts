@@ -9,8 +9,14 @@ import type { SpeiStationData } from "./charts/SpeiTrendChart.tsx";
 // The `*Col` unions type-check the `_col=` projections below; `DsTropical` types the
 // tropical read. A column renamed in datapackage regenerates that file and turns any
 // stale name here into a compile error rather than a silent live-page break.
+// T-5.13 extends the same unions to the URL FILTER column names (see the `*Col` filter
+// helpers below): a filter-only column (e.g. annual_trend `variable`) would otherwise rename
+// silently, because an unknown datasette filter column does NOT 400 — it becomes an
+// always-false SQL comparison and returns an empty result (SQLite's double-quoted
+// identifier→string-literal quirk; verified against datasette 0.65.2 / SQLite DQS=3).
 import type {
-  StationsCol, DailyCol, SeasonHeatmapCol, SpeiCol, SpeiStationCol, AnnualTrendCol, DsTropical,
+  StationsCol, DailyCol, DailyWindowCol, SeasonHeatmapCol, SpeiCol, SpeiStationCol,
+  AnnualTrendCol, DsTropical, TropicalCol, DsDailyWindow,
 } from "./generated/datasette-schema.ts";
 // The category palette lives with the percentile helpers salvaged from the
 // deleted ARSO path (T-2.2 / D-2); see percentile.ts for why they were kept.
@@ -100,6 +106,26 @@ const CALENDAR_COLS       = ["month", "day", "trend10", "p_val"] as const satisf
 function dsCols(cols: readonly string[]): string {
   return cols.map(c => `_col=${c}`).join("&");
 }
+
+// ── Filter column names (T-5.13 / D-18) ─────────────────────────────────────────
+//
+// The `?…&<col>__exact=<value>` filters below name their column as a bare literal.
+// Unlike a `_col=` projection, a wrong filter column does NOT fail loudly: datasette
+// emits `WHERE "<col>" = :p`, and with an unknown column SQLite (DQS=3, the default —
+// confirmed on datasette 0.65.2) reads the double-quoted identifier as a STRING LITERAL,
+// making the comparison always-false — so the query returns an EMPTY result (HTTP 200),
+// not a 400. A filter-only column (annual_trend `variable`, tropical `kind`/`threshold`/
+// `streak`, the era5_name filters read via no row field) could therefore rename silently
+// and quietly blank a section. These identity helpers pin each filter column to its
+// table's generated `*Col` union: a datapackage rename regenerates the union and turns
+// the stale name into a `yarn typecheck` error. They return the name UNCHANGED, so every
+// request URL stays byte-identical (the 2,040 fixtures are URL-keyed). No parallel list
+// of column names is introduced — the names live only at the call sites, as before.
+const dwCol = (c: DailyWindowCol):  DailyWindowCol  => c;
+const dCol  = (c: DailyCol):        DailyCol        => c;
+const shCol = (c: SeasonHeatmapCol): SeasonHeatmapCol => c;
+const atCol = (c: AnnualTrendCol):  AnnualTrendCol  => c;
+const trCol = (c: TropicalCol):     TropicalCol     => c;
 
 // T-5.1: guard for the datasette `*_json` columns (distribution_json, scatter_json,
 // years_json, counts_json, trend_json, spei_json). An unguarded JSON.parse throws a
@@ -257,7 +283,7 @@ function categorizeEra5(temp: number, w: DailyWindowRow): { category_key: string
 
 async function fetchEra5WindowRow(era5Name: string, month: number, day: number): Promise<DailyWindowRow | null> {
   const rows = await dsGet<DailyWindowRow[]>(
-    `daily_window.json?_shape=array&era5_name__exact=${encodeURIComponent(era5Name)}&month__exact=${month}&day__exact=${day}`
+    `daily_window.json?_shape=array&${dwCol("era5_name")}__exact=${encodeURIComponent(era5Name)}&${dwCol("month")}__exact=${month}&${dwCol("day")}__exact=${day}`
   );
   return rows[0] ?? null;
 }
@@ -270,7 +296,7 @@ async function fetchEra5WindowRow(era5Name: string, month: number, day: number):
 // today-card category do not move; only the curve shape does.
 export async function fetchEra5NationalWindowRow(month: number, day: number): Promise<DailyWindowRow | null> {
   const rows = await dsGet<DailyWindowRow[]>(
-    `daily_window.json?_shape=array&month__exact=${month}&day__exact=${day}&_size=50`
+    `daily_window.json?_shape=array&${dwCol("month")}__exact=${month}&${dwCol("day")}__exact=${day}&_size=50`
   );
   assertNationalStationRows(rows, "daily_window");
   if (rows.length === 0) return null;
@@ -403,7 +429,7 @@ export async function fetchTodayStatus(date: string, loc: string | null): Promis
     if (!w) return { available: false };
 
     const dsRows = await dsGet<Array<{ temperature_max_2m: number | null }>>(
-      `daily.json?_shape=array&date__exact=${date}&${dsCols(DAILY_TODAY_COLS)}&_size=50`
+      `daily.json?_shape=array&${dCol("date")}__exact=${date}&${dsCols(DAILY_TODAY_COLS)}&_size=50`
     );
     assertNationalStationRows(dsRows, "daily");
     const dsVals = dsRows.filter(r => r.temperature_max_2m != null).map(r => r.temperature_max_2m!);
@@ -440,7 +466,7 @@ export async function fetchTodayStatus(date: string, loc: string | null): Promis
   let isPreliminary = false;
 
   const rows = await dsGet<Array<{ temperature_max_2m: number }>>(
-    `daily.json?_shape=array&era5_name__exact=${encodeURIComponent(era5Name)}&date__exact=${date}&${dsCols(DAILY_TODAY_COLS)}&_size=1`
+    `daily.json?_shape=array&${dCol("era5_name")}__exact=${encodeURIComponent(era5Name)}&${dCol("date")}__exact=${date}&${dsCols(DAILY_TODAY_COLS)}&_size=1`
   );
   if (rows[0]?.temperature_max_2m != null) {
     todayTemp = rows[0].temperature_max_2m;
@@ -484,7 +510,7 @@ export async function fetchLast7(date: string, loc: string | null): Promise<Last
   const rows = await dsGet<Array<{
     date: string; temperature_max_2m: number; month: number; day: number;
   }>>(
-    `daily.json?_shape=array&era5_name__exact=${encodeURIComponent(era5Name)}&date__lte=${date}&_sort_desc=date&_size=7&${dsCols(DAILY_LAST7_COLS)}`
+    `daily.json?_shape=array&${dCol("era5_name")}__exact=${encodeURIComponent(era5Name)}&${dCol("date")}__lte=${date}&_sort_desc=date&_size=7&${dsCols(DAILY_LAST7_COLS)}`
   );
   if (!rows.length) return { available: false, days: [] };
 
@@ -505,10 +531,15 @@ export async function fetchLast7(date: string, loc: string | null): Promise<Last
 export async function fetchDailyWindow(station: string | null, month: number, day: number): Promise<DailyWindowRow[]> {
   const loc = station ?? "Ljubljana";
 
-  const rows = await dsGet<DailyWindowRow[]>(
-    `daily_window.json?_shape=array&era5_name__exact=${encodeURIComponent(loc)}&month__exact=${month}&day__exact=${day}`
+  // The full-fetch response carries every daily_window column, including era5_name,
+  // which DailyWindowRow deliberately does not Pick (station is synthesized from it).
+  // Type the read as DailyWindowRow plus that one column, from the generated contract,
+  // so `r.era5_name` is typed (no `as any`) AND a rename of era5_name is a compile
+  // error here — the field is read nowhere else, so this is its only guard. (T-5.13)
+  const rows = await dsGet<Array<DailyWindowRow & Pick<DsDailyWindow, "era5_name">>>(
+    `daily_window.json?_shape=array&${dwCol("era5_name")}__exact=${encodeURIComponent(loc)}&${dwCol("month")}__exact=${month}&${dwCol("day")}__exact=${day}`
   );
-  return rows.map(r => ({ ...r, station: (r as any).era5_name ?? loc }));
+  return rows.map(r => ({ ...r, station: r.era5_name ?? loc }));
 }
 
 // ── fetchPageData ──────────────────────────────────────────────────────────────
@@ -529,7 +560,7 @@ export async function fetchPageData(
 export async function fetchSeasonHeatmap(loc?: string | null): Promise<SeasonHeatmapRow[]> {
   const era5Name = loc ?? "Ljubljana";
   return dsGet<SeasonHeatmapRow[]>(
-    `season_heatmap.json?_shape=array&era5_name__exact=${encodeURIComponent(era5Name)}&${dsCols(SEASON_HEATMAP_COLS)}&_size=500`
+    `season_heatmap.json?_shape=array&${shCol("era5_name")}__exact=${encodeURIComponent(era5Name)}&${dsCols(SEASON_HEATMAP_COLS)}&_size=500`
   );
 }
 
@@ -560,7 +591,7 @@ async function buildRegressionResult(
   era5Name: string, variable: string, month: number, day: number
 ): Promise<RegressionResult | null> {
   const rows = await dsGet<AnnualTrendRow[]>(
-    `annual_trend.json?_shape=array&era5_name__exact=${encodeURIComponent(era5Name)}&variable__exact=${encodeURIComponent(variable)}&month__exact=${month}&day__exact=${day}&_size=1`
+    `annual_trend.json?_shape=array&${atCol("era5_name")}__exact=${encodeURIComponent(era5Name)}&${atCol("variable")}__exact=${encodeURIComponent(variable)}&${atCol("month")}__exact=${month}&${atCol("day")}__exact=${day}&_size=1`
   );
   const r = rows[0];
   if (!r) return null;
@@ -636,8 +667,8 @@ export async function fetchEra5Tropical(
   // into `null` and rendering as an empty section. A genuinely empty result set
   // (no matching row) still returns null — that is legitimate "no data", not a fault.
   const rows = await dsGet<Array<Pick<DsTropical, "years_json" | "counts_json" | "nonzero_count" | "trend_json">>>(
-    `tropical.json?_shape=array&era5_name__exact=${encodeURIComponent(loc)}` +
-    `&kind__exact=${kind}&threshold__exact=${threshold}&streak__exact=${streak}&_size=1`
+    `tropical.json?_shape=array&${trCol("era5_name")}__exact=${encodeURIComponent(loc)}` +
+    `&${trCol("kind")}__exact=${kind}&${trCol("threshold")}__exact=${threshold}&${trCol("streak")}__exact=${streak}&_size=1`
   );
   const r = rows[0];
   if (!r) return null;
@@ -730,7 +761,7 @@ export async function fetchCalendar(
   loc: string, variable: string
 ): Promise<CalendarData> {
   const rows = await dsGet<CalendarRow[]>(
-    `annual_trend.json?_shape=array&era5_name__exact=${encodeURIComponent(loc)}&variable__exact=${encodeURIComponent(variable)}&${dsCols(CALENDAR_COLS)}&_size=400`
+    `annual_trend.json?_shape=array&${atCol("era5_name")}__exact=${encodeURIComponent(loc)}&${atCol("variable")}__exact=${encodeURIComponent(variable)}&${dsCols(CALENDAR_COLS)}&_size=400`
   );
   return { loc, var: variable, unit: "°C", method_label: "Theil-Sen + TFPW MK", rows };
 }
@@ -742,7 +773,7 @@ export async function fetchCalendar(
 // pooling; the precompute will eventually bake an era5:national row.)
 async function fetchNationalAnnualTrendRow(month: number, day: number): Promise<AnnualTrendRow | undefined> {
   const rows = await dsGet<AnnualTrendRow[]>(
-    `annual_trend.json?_shape=array&variable__exact=temperature_max&month__exact=${month}&day__exact=${day}&_size=50`
+    `annual_trend.json?_shape=array&${atCol("variable")}__exact=temperature_max&${atCol("month")}__exact=${month}&${atCol("day")}__exact=${day}&_size=50`
   );
   assertNationalStationRows(rows, "annual_trend");
   if (!rows.length) return undefined;
@@ -787,7 +818,7 @@ export async function fetchAnnualTrend(month: number, day: number, loc?: string 
   const r = era5Name === ERA5_NATIONAL
     ? await fetchNationalAnnualTrendRow(month, day)
     : (await dsGet<AnnualTrendRow[]>(
-        `annual_trend.json?_shape=array&era5_name__exact=${encodeURIComponent(era5Name)}&variable__exact=temperature_max&month__exact=${month}&day__exact=${day}&_size=1`
+        `annual_trend.json?_shape=array&${atCol("era5_name")}__exact=${encodeURIComponent(era5Name)}&${atCol("variable")}__exact=temperature_max&${atCol("month")}__exact=${month}&${atCol("day")}__exact=${day}&_size=1`
       ))[0];
   if (!r) throw new Error("No annual trend row");
   return {
