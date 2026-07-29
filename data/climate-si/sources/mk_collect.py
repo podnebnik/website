@@ -275,7 +275,7 @@ def fetch_location(loc):
         "start_date": fetch_start_date,
         "end_date":   fetch_end_date,
         "daily":      DAILY_VARIABLES,
-        "timezone":   "UTC",
+        "timezone":   "Europe/Ljubljana",  # D-4 (T-4.3b): local-day aggregation, not UTC
     }
 
     try:
