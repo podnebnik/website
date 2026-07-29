@@ -1,27 +1,22 @@
 # Typecheck allowlist — the ONLY TypeScript errors CI tolerates.
 #
-# `yarn typecheck` (tsc --noEmit, strict, noUncheckedIndexedAccess,
-# exactOptionalPropertyTypes) exits 2 on exactly these 8 errors. They are
-# Highcharts 12.6.0 typings-vs-runtime mismatches, deliberately NOT suppressed
-# (no `any`, no `@ts-ignore`) — see ticket T-5.8, which fixes them properly.
+# EMPTY as of T-5.8. `yarn typecheck` (tsc --noEmit, strict,
+# noUncheckedIndexedAccess, exactOptionalPropertyTypes) now exits 0: the eight
+# Highcharts 12.6.0 typings errors this file used to carry were resolved at their
+# root (null/undefined title suppression rewritten as `text: ""`, the yAxis title
+# null → undefined, the gauge pane `background: undefined` → `[]`, the arearange
+# cast retargeted to the exported `SeriesOptionsType`, and the tooltip formatter
+# retyped `this: Highcharts.Point` with its dead anomaly branch removed). No
+# `any`, no `@ts-ignore`, no config relaxed.
 #
 # The CI gate (`yarn typecheck:gate`, scripts/typecheck-gate.mjs) asserts the
 # live error set is EXACTLY this list — keyed by file, line, column and error
-# code. Any difference fails the build:
-#   * a 9th error, or a different error, is a regression — fix your code;
-#   * fixing/moving one of the 8 (e.g. a Highcharts bump, or T-5.8) also fails,
-#     ON PURPOSE — update this file in the same commit so the gate tracks reality.
+# code. With the list empty it asserts ZERO tolerated errors: any TypeScript
+# error at all now fails the build. If a future Highcharts bump reintroduces a
+# genuinely un-fixable typings-vs-runtime mismatch, add it here in the same
+# commit (with the reasoning in the commit message), keyed `path(line,col): TSxxxx`.
 #
 # Format: one entry per line, `path(line,col): TSxxxx`. Blank lines and lines
 # starting with `#` are ignored. Regenerate the canonical list with:
 #   yarn typecheck 2>&1 | grep -E '^\S.*\([0-9]+,[0-9]+\): error TS' \
 #     | sed -E 's/: error (TS[0-9]+).*/: \1/'
-
-code/ali-je-vroce-era5/charts/DistributionChart.tsx(46,10): TS2352
-code/ali-je-vroce-era5/charts/RegressionChart.tsx(39,23): TS2724
-code/ali-je-vroce-era5/charts/RegressionChart.tsx(77,33): TS2352
-code/ali-je-vroce-era5/charts/RegressionChart.tsx(98,36): TS2694
-code/ali-je-vroce-era5/charts/TodayGauge.tsx(44,41): TS2352
-code/ali-je-vroce-era5/charts/YearRoundChart.tsx(58,41): TS2352
-code/ali-je-vroce-era5/components/TodayLast7Chart.tsx(40,41): TS2352
-code/ali-je-vroce-era5/components/TodayTrendChart.tsx(53,41): TS2352

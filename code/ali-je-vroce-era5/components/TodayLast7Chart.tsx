@@ -46,7 +46,7 @@ export function TodayLast7Chart(props: Props) {
         borderWidth:     0,
         animation:       false,
       },
-      title:   { text: null },
+      title:   { text: "" },
       credits: { enabled: false },
       legend:  { enabled: false },
       // T-5.4a — screen-reader summary (Slovenian copy awaiting operator review)
@@ -73,7 +73,7 @@ export function TodayLast7Chart(props: Props) {
         min:           0,
         max:           CAT_LABELS.length - 1,
         tickPositions: [0, 1, 2, 3, 4],
-        title:         { text: null },
+        title:         { text: undefined },
         labels: {
           style:        { color: INK, fontFamily: "'JetBrains Mono', monospace", fontSize: "10px", fontWeight: "600", textOverflow: "none", whiteSpace: "nowrap" },
           align:        "right",

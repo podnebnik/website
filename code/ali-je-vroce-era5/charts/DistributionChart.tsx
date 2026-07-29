@@ -52,7 +52,7 @@ function buildOptions(r: TodayStatus): Highcharts.Options {
       animation:       false,
       style:           { fontFamily: "Space Grotesk, system-ui, sans-serif" },
     },
-    title:   { text: undefined },
+    title:   { text: "" },
     credits: { enabled: false },
     legend:  { enabled: false },
     // T-5.4a — screen-reader summary (Slovenian copy awaiting operator review)
@@ -108,7 +108,7 @@ function buildOptions(r: TodayStatus): Highcharts.Options {
       ],
     },
     yAxis: {
-      title:         { text: null },
+      title:         { text: undefined },
       labels:        { enabled: false },
       gridLineWidth: 0,
       lineWidth:     0,

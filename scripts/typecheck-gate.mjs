@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 // Typecheck gate for CI (ticket T-3.7).
 //
-// `tsc --noEmit` on this repo exits 2 on exactly 8 Highcharts typings errors
-// that are deliberately NOT suppressed (see T-5.8). A bare `yarn typecheck` in
-// CI would therefore always "fail", and a `|| true` would let a real 9th error
-// slip through as an old one gets fixed. This gate instead asserts the live
-// error set is EXACTLY the allowlist in tests/typecheck-allowlist.txt, keyed by
-// file, line, column and error code. Any drift — a new error, a different one,
-// OR one of the 8 disappearing — fails, loudly, and says what to do.
+// `tsc --noEmit` on this repo exits 0 as of T-5.8, which resolved the last of
+// the tolerated Highcharts typings errors — tests/typecheck-allowlist.txt is now
+// empty. This gate asserts the live error set is EXACTLY that allowlist, keyed by
+// file, line, column and error code; with the list empty it asserts ZERO errors.
+// Any drift — a new error, or a future re-added allowlist entry disappearing —
+// fails, loudly, and says what to do. (History: the allowlist once carried 8
+// deliberately-unsuppressed Highcharts 12.6.0 mismatches; a bare `|| true` would
+// have let a real regression slip through as one got fixed, hence this gate.)
 //
 // Exit 0: live set == allowlist. Exit 1: any difference (or tsc crashed).
 

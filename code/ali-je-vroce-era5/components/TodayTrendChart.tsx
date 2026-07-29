@@ -58,7 +58,7 @@ function TrendHighchart(props: ChartProps) {
         backgroundColor: "transparent",
         animation:       false,
       },
-      title:   { text: null },
+      title:   { text: "" },
       credits: { enabled: false },
       legend:  { enabled: false },
       // T-5.4a — screen-reader summary (Slovenian copy awaiting operator review)
@@ -95,7 +95,7 @@ function TrendHighchart(props: ChartProps) {
         }],
       },
       yAxis: {
-        title:         { text: null },
+        title:         { text: undefined },
         labels:        { format: "{value}°C", style: { color: INK_SOFT, ...MONO } },
         gridLineColor: "rgba(14,14,12,0.06)",
       },

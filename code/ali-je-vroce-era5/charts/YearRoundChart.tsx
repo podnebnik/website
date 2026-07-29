@@ -66,8 +66,8 @@ export function YearRoundChart(props: Props) {
         backgroundColor: "transparent",
         style:           { fontFamily: "Space Grotesk, system-ui, sans-serif" },
       },
-      title:    { text: undefined },
-      subtitle: { text: undefined },
+      title:    { text: "" },
+      subtitle: { text: "" },
       credits:  { enabled: false },
       legend:   { enabled: false },
       // T-5.4a — screen-reader summary (Slovenian copy awaiting operator review)
@@ -98,7 +98,7 @@ export function YearRoundChart(props: Props) {
         }],
       },
       yAxis: {
-        title:      { text: null },
+        title:      { text: undefined },
         labels: {
           format: "{value}",
           style:  { fontSize: "9px", fontFamily: "'JetBrains Mono', monospace", color: "#6B655B" },
