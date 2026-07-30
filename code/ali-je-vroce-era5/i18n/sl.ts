@@ -33,6 +33,11 @@ export const sl = {
     today: "danes",
     ci95: "95% CI",
     temp_c: "{temp} °C",
+    // T-5.14 — shared empty-state message for sections whose heading renders
+    // over a body that resolved to no rows (200 + []); covers the SPEI D-16
+    // withhold sentinel too. Neutral "this view" wording so it fits both the
+    // per-location sections and the national SPEI ones.
+    no_data: "Za ta prikaz ni podatkov.",
   },
 
   loading: "Nalaganje…",

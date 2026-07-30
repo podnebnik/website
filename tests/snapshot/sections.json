@@ -105,6 +105,7 @@
     "Show": "solid-js control flow.",
     "Suspense": "solid-js control flow.",
     "ErrorBoundary": "solid-js control flow (T-5.1). Wraps each section's fetch consumer so a failed fetch shows a visible SectionError instead of vanishing or blanking the page. Renders its children unchanged on success (no DOM wrapper), so it is transparent to the happy-path snapshot; the error branch is never exercised by the fixtures.",
+    "EmptyState": "The shared no-data message (EmptyState.tsx, T-5.14), used as the <Show> fallback for the two SPEI sections. Renders the static common.no_data string only when a fetch resolved to no rows; every snapshot case has data, so this branch is never exercised by the fixtures and it captures no numbers of its own.",
     "SiteMeta": "NOT a component. A type argument in createResource<SiteMeta> (AliJeVroceERA5.tsx:35) that the tag regex cannot distinguish from JSX. Classified explicitly rather than special-cased in the extractor, so the extractor stays dumb and auditable."
   },
 

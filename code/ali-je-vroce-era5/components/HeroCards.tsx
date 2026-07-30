@@ -1,6 +1,7 @@
 import { createResource, Show, ErrorBoundary } from "solid-js";
 import { fetchRegression } from "../api.ts";
 import { sectionErrorFallback } from "./SectionError.tsx";
+import { EmptyState } from "./EmptyState.tsx";
 import type { RegressionResult } from "../types.ts";
 import { t, fmtNum, fmtSigned } from "../i18n/format.ts";
 // T-5.5 — per-location content is centralised in the catalogue; read the raw
@@ -79,7 +80,7 @@ export function HeroCards(props: Props) {
 
   return (
     <ErrorBoundary fallback={sectionErrorFallback(refetch, "180px")}>
-      <Show when={resp()?.results?.length}>
+      <Show when={resp()?.results?.length} fallback={<EmptyState minHeight="180px" />}>
         <HeroCard res={resp()!.results[0]!} unit={resp()!.unit} dateLabel={resp()!.date_label} />
       </Show>
     </ErrorBoundary>

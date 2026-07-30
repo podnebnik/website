@@ -244,7 +244,7 @@ export function RegScatterCard() {
             <Show when={s.regData()} keyed>
               {(d) => (
                 <Show when={d.results.length > 0} fallback={
-                  <div style={{ flex: "1", display: "flex", "align-items": "center", "justify-content": "center", color: "var(--color-ink-soft)", "font-size": "13px", "min-height": "280px" }}>
+                  <div role="status" style={{ flex: "1", display: "flex", "align-items": "center", "justify-content": "center", color: "var(--color-ink-soft)", "font-size": "13px", "min-height": "280px" }}>
                     {t("reg.no_data")}
                   </div>
                 }>

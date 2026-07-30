@@ -2,6 +2,7 @@ import { createSignal, createResource, createMemo, Show, Suspense, ErrorBoundary
 import { fetchMeta, fetchPageData, fetchSpeiHeatmap, fetchSpeiStationSeasonal, dateToDoy, ERA5_NATIONAL, BASELINE_LABEL } from "./api.ts";
 import { today as todayIso } from "./clock.ts";
 import { sectionErrorFallback } from "./components/SectionError.tsx";
+import { EmptyState } from "./components/EmptyState.tsx";
 import { TodayCard } from "./components/TodayCard.tsx";
 import { DistributionChart } from "./charts/DistributionChart.tsx";
 import { TodayTrendChart } from "./components/TodayTrendChart.tsx";
@@ -271,7 +272,7 @@ function Era5Charts() {
         </div>
         <ErrorBoundary fallback={sectionErrorFallback(refetchSpei, "160px")}>
           <Suspense fallback={<div class="h-40 animate-pulse bg-[var(--color-paper-2)] rounded-xl" />}>
-            <Show when={speiData()?.available}>
+            <Show when={speiData()?.available} fallback={<EmptyState minHeight="160px" />}>
               <SpeiHeatmapChart data={speiData()!} />
             </Show>
           </Suspense>
@@ -288,7 +289,7 @@ function Era5Charts() {
         </div>
         <ErrorBoundary fallback={sectionErrorFallback(refetchSpeiStation, "400px")}>
           <Suspense fallback={<div class="animate-pulse rounded-xl bg-[var(--color-paper-2)]" style={{ height: "400px" }} />}>
-            <Show when={speiStationData()?.available}>
+            <Show when={speiStationData()?.available} fallback={<EmptyState minHeight="400px" />}>
               <SpeiTrendChartLazy data={speiStationData()!} />
             </Show>
           </Suspense>

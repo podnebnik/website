@@ -302,7 +302,7 @@ function RankBadge(props: { info: RankInfo; dayLabel: string }) {
 function UnavailableCard() {
   return (
     <div class="today-card">
-      <p class="today-explain">{t("today.unavailable")}</p>
+      <p role="status" class="today-explain">{t("today.unavailable")}</p>
     </div>
   );
 }
