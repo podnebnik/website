@@ -11,14 +11,16 @@ import { fetchEra5NationalWindowRow, fetchMeta } from "../../code/ali-je-vroce-e
 //
 // Fixture (served offline by setup.fixtures.ts):
 //   tests/fixtures/http/climate-si/daily_window__national-all__month-7__day-21.json
-//   18 rows, each with n_samples = 1140.
+//   18 rows, each with n_samples = 1149.
 //
-// Expected values hand-computed from the 18 fixture p50 values:
-//   Σ p50 = 25.65 + 24.97 + 25.21 + 24.68 + 26.62 + 24.41 + 11.19 + 24.89 + 25.37
-//         + 26.06 + 26.88 + 26.04 + 24.05 + 25.81 + 22.14 + 26.33 + 25.61 + 24.69
-//         = 440.60
-//   mean p50 over 18 = 440.60 / 18 = 24.4778 °C   ← Kredarica's 11.19 drags it down
-//   mean p50 over 17 = (440.60 − 11.19) / 17 = 25.2594 °C   ← what T-4.6 will produce
+// Values re-derived from the 18 fixture p50 values after the T-4.3b (D-4) meteo
+// pass — local-day aggregation and the 2026-07-22 record extension moved the
+// per-station window samples (1140 → 1149) and nudged most p50s:
+//   Σ p50 = 25.70 + 25.02 + 25.26 + 24.70 + 26.67 + 24.49 + 11.19 + 24.94 + 25.42
+//         + 26.07 + 26.93 + 26.09 + 24.05 + 25.81 + 22.19 + 26.38 + 25.66 + 24.74
+//         = 441.31
+//   mean p50 over 18 = 441.31 / 18 = 24.5172 °C   ← Kredarica's 11.19 drags it down
+//   mean p50 over 17 = (441.31 − 11.19) / 17 = 25.3012 °C   ← what T-4.6 will produce
 
 describe("fetchEra5NationalWindowRow — unweighted mean of the 18 stations", () => {
   // T-5.2: the national aggregate now asserts its row count against the station
@@ -31,13 +33,13 @@ describe("fetchEra5NationalWindowRow — unweighted mean of the 18 stations", ()
     const row = await fetchEra5NationalWindowRow(7, 21);
     expect(row).not.toBeNull();
 
-    // 18 × 1140 = 20520. The summed sample count is a clean integer tripwire on
-    // the station count: dropping Kredarica (T-4.6) makes this 17 × 1140 = 19380.
-    expect(row!.n_samples).toBe(20520);
+    // 18 × 1149 = 20682. The summed sample count is a clean integer tripwire on
+    // the station count: dropping Kredarica (T-4.6) makes this 17 × 1149 = 19533.
+    expect(row!.n_samples).toBe(20682);
 
-    // Mean p50 with Kredarica in the pool (24.4778); the 17-station mean would be
-    // 25.2594, so this assertion moves the moment Kredarica leaves the average.
-    expect(row!.p50).toBeCloseTo(24.4778, 3);
+    // Mean p50 with Kredarica in the pool (24.5172); the 17-station mean would be
+    // 25.3012, so this assertion moves the moment Kredarica leaves the average.
+    expect(row!.p50).toBeCloseTo(24.5172, 3);
 
     expect(row!.station).toBe("era5:national");
     expect(row!.year_min).toBe(1950);

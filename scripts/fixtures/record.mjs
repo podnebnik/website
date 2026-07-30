@@ -346,25 +346,35 @@ const coords = stationRows.map((s) => ({
 // O1 — per-station live forecast. api.ts:251-253
 // Only for the primary date: for every other date in the matrix the datasette
 // has a `daily` row, so api.ts:461 short-circuits and Open-Meteo is never called.
-for (const c of coords) {
+//
+// Restricted to snapshot_stations (T-4.3b, D-22). Only Ljubljana and Kredarica
+// ever reach the per-station Open-Meteo path in the snapshot (the *-forecast
+// cases in tests/snapshot/cases.json); the other 16 stations were recorded for
+// dropdown completeness but never referenced. Open-Meteo's free tier caps
+// throughput, and D-4's timezone move makes every re-record a full miss, so
+// recording all 18 would spend the budget on fixtures nothing reads. The
+// national case still exercises all 18 coordinates through the single O2 call.
+// timezone=Europe/Ljubljana matches api.ts openMeteoMax (D-4).
+for (const c of coords.filter((c) => snapshotStations.includes(c.name))) {
   add(
     "O1 open-meteo station",
     "api.ts:251-253",
     `${OM}?latitude=${c.lat}&longitude=${c.lon}&elevation=${c.elevation}` +
-      `&daily=temperature_2m_max&timezone=UTC&start_date=${primaryDate}&end_date=${primaryDate}`,
+      `&daily=temperature_2m_max&timezone=Europe%2FLjubljana&start_date=${primaryDate}&end_date=${primaryDate}`,
     `open-meteo/forecast__${slug(c.name)}__${primaryDate}.json`,
     stripGenerationTime,
   );
 }
 
 // O2 — national live forecast, all coordinates in one call. api.ts:264-271
+// timezone=Europe/Ljubljana matches api.ts openMeteoNationalMax (D-4, T-4.3b).
 add(
   "O2 open-meteo national",
   "api.ts:264-271",
   `${OM}?latitude=${coords.map((c) => c.lat).join(",")}` +
     `&longitude=${coords.map((c) => c.lon).join(",")}` +
     `&elevation=${coords.map((c) => c.elevation).join(",")}` +
-    `&daily=temperature_2m_max&timezone=UTC&start_date=${primaryDate}&end_date=${primaryDate}`,
+    `&daily=temperature_2m_max&timezone=Europe%2FLjubljana&start_date=${primaryDate}&end_date=${primaryDate}`,
   `open-meteo/forecast__national__${primaryDate}.json`,
   stripGenerationTime,
 );

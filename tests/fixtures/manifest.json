@@ -19,21 +19,30 @@
 
   "_dates_note": [
     "`primary` is what VITE_PINNED_DATE should be set to when running the app offline.",
-    "It is deliberately inside the ERA5-Land reanalysis lag (~5-10 days) so that the",
+    "It is deliberately PAST the end of the reanalysis-final `daily` table so that the",
     "Open-Meteo preliminary branch (api.ts:363, api.ts:466) is the one exercised on a",
     "default page load — that branch is the main source of day-to-day non-determinism",
-    "T-1.1 needs frozen.",
+    "T-1.1 needs frozen. Before the D-4 meteo pass this was 2026-07-21, then one day",
+    "inside the reanalysis lag; the pass extended the reanalysis-final `daily` table to",
+    "2026-07-22, so the primary date moved to 2026-07-29 (seven days past the reanalysis",
+    "end, inside the live production gap) to stay on the forecast branch (D-22).",
+    "2026-07-21 is kept as a `settled` date so its reanalysis today-card is covered too.",
     "",
     "The remaining dates are the T-1.1 (station, date) matrix, folded in now so that",
     "ticket does not need a second recording pass."
   ],
-  "primary_date": "2026-07-21",
+  "primary_date": "2026-07-29",
 
   "dates": [
     {
+      "date": "2026-07-29",
+      "role": "primary (forecast)",
+      "purpose": "Pinned 'today', seven days past the reanalysis-final end of the `daily` table (2026-07-22, the last source=era5 row; the 7 trailing days 07-23..07-29 are era5t and excluded at precompute_datasette.py:178). climate-si has no `daily` row for it, so fetchTodayStatus falls through to the live Open-Meteo forecast (api.ts:363 national, api.ts:466 per-station) and renders as preliminary — this is the case that keeps the 'napoved' badge (TodayCard.tsx) and is_preliminary under snapshot coverage after the D-4 meteo pass moved 2026-07-21 inside the record (D-22). It sits inside the real production gap (reanalysis lags ~a week, so the current day is served by forecast). Open-Meteo O1/O2 record for THIS date only (primary_date)."
+    },
+    {
       "date": "2026-07-21",
-      "role": "primary",
-      "purpose": "Pinned 'today'. One day before the T-1.2 recording date, so it falls inside the ERA5-Land reanalysis lag: climate-si has no `daily` row, and the page falls through to the live Open-Meteo forecast (api.ts:363 national, api.ts:466 per-station) and renders as preliminary. Freezing this is the whole point of the ticket."
+      "role": "settled (was primary before the D-4 meteo pass)",
+      "purpose": "Formerly the primary/forecast date. The T-4.3b regeneration extended the reanalysis-final `daily` table to 2026-07-22 (the last row with source=era5; the 7 trailing days are era5t and excluded at precompute_datasette.py:178), so this date now HAS a `daily` row and fetchTodayStatus takes the datasette-authoritative reanalysis branch — no Open-Meteo, no preliminary badge. Kept (D-22) because for the first time it exercises the ordinary reanalysis today-card near the record's leading edge, which the pre-pass fixtures never did. Datasette shapes only; no Open-Meteo fixture."
     },
     {
       "date": "2025-07-15",

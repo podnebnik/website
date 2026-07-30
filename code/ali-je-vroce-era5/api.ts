@@ -325,7 +325,7 @@ const OM = "https://api.open-meteo.com/v1/forecast";
 
 async function openMeteoMax(lat: number, lon: number, elevation: number, date: string): Promise<number | null> {
   try {
-    const resp = await fetch(`${OM}?latitude=${lat}&longitude=${lon}&elevation=${Math.round(elevation)}&daily=temperature_2m_max&timezone=UTC&start_date=${date}&end_date=${date}`);
+    const resp = await fetch(`${OM}?latitude=${lat}&longitude=${lon}&elevation=${Math.round(elevation)}&daily=temperature_2m_max&timezone=Europe%2FLjubljana&start_date=${date}&end_date=${date}`);
     if (!resp.ok) return null;
     const d = await resp.json() as { daily?: { temperature_2m_max?: (number | null)[] } };
     return d?.daily?.temperature_2m_max?.[0] ?? null;
@@ -343,7 +343,7 @@ async function openMeteoNationalMax(date: string): Promise<number | null> {
     const lats  = coords.map(c => c.lat).join(",");
     const lons  = coords.map(c => c.lon).join(",");
     const elevs = coords.map(c => Math.round(c.elevation)).join(",");
-    const resp = await fetch(`${OM}?latitude=${lats}&longitude=${lons}&elevation=${elevs}&daily=temperature_2m_max&timezone=UTC&start_date=${date}&end_date=${date}`);
+    const resp = await fetch(`${OM}?latitude=${lats}&longitude=${lons}&elevation=${elevs}&daily=temperature_2m_max&timezone=Europe%2FLjubljana&start_date=${date}&end_date=${date}`);
     if (!resp.ok) return null;
     const d = await resp.json();
     const arr = Array.isArray(d) ? d : [d];

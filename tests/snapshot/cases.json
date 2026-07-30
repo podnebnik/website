@@ -46,21 +46,42 @@
       "today_loc": "era5:national",
       "analysis_loc": "Ljubljana",
       "date": "2026-07-21",
-      "purpose": "THE DEFAULT PAGE LOAD, verbatim. Pinned 'today' sits inside the ERA5-Land reanalysis lag, so climate-si has no `daily` row and fetchTodayStatus falls through to the live Open-Meteo national average (api.ts:270) and marks the result preliminary — this is the case that pins the forecast 'napoved' badge string (TodayCard.tsx:203), made honest under T-4.13 (D-11), previously the inaccurate 'ERA5T · preliminarno'."
+      "purpose": "The national average near the record's leading edge. Since the D-4 meteo pass extended the reanalysis-final `daily` table to 2026-07-22 (D-22), this date now HAS datasette rows: fetchTodayStatus averages the per-station daily maxima client-side (api.ts:354-360), Open-Meteo is NOT called, and there is no preliminary badge. Before the pass this was the forecast/napoved case; that coverage moved to national-forecast (2026-07-29). Kept because it now exercises the ordinary reanalysis national today-card near the leading edge for the first time."
     },
     {
       "id": "ljubljana-primary",
       "today_loc": "Ljubljana",
       "analysis_loc": "Ljubljana",
       "date": "2026-07-21",
-      "purpose": "Lowland station on the preliminary branch: per-station Open-Meteo forecast downscaled to the station elevation (api.ts:466-468). The per-station counterpart to national-primary."
+      "purpose": "Lowland station near the record's leading edge. After the D-4 pass (D-22) 2026-07-21 has a `daily` row, so this takes the datasette-authoritative reanalysis branch (api.ts:458-462) — no Open-Meteo, no preliminary badge. Formerly the per-station forecast case; that coverage moved to ljubljana-forecast (2026-07-29)."
     },
     {
       "id": "kredarica-primary",
       "today_loc": "Kredarica",
       "analysis_loc": "Kredarica",
       "date": "2026-07-21",
-      "purpose": "Altitude station (D-5) on the preliminary branch. Kredarica is presented as an ERA5-Land grid cell at 1307 m; T-4.4 removes its lapse correction and this case is where that shows up first."
+      "purpose": "Altitude station (D-5) near the record's leading edge, datasette-authoritative reanalysis branch after the D-4 pass (D-22). Kredarica is an ERA5-Land grid cell at 1307 m with the lapse correction kept (D-5 reversed). Formerly the altitude forecast case; that coverage moved to kredarica-forecast (2026-07-29)."
+    },
+    {
+      "id": "national-forecast",
+      "today_loc": "era5:national",
+      "analysis_loc": "Ljubljana",
+      "date": "2026-07-29",
+      "purpose": "NEW under D-22. Pinned 'today' seven days past the reanalysis-final `daily` end (2026-07-22), so climate-si has no `daily` row and fetchTodayStatus falls through to the live Open-Meteo national average (api.ts:270), marked preliminary — the case that pins the forecast 'napoved' badge (TodayCard.tsx) on the national path after the meteo pass moved national-primary onto the reanalysis branch. Reproduces the live production gap: reanalysis lags ~a week, so the current day is always served by forecast."
+    },
+    {
+      "id": "ljubljana-forecast",
+      "today_loc": "Ljubljana",
+      "analysis_loc": "Ljubljana",
+      "date": "2026-07-29",
+      "purpose": "NEW under D-22. Lowland station on the preliminary branch: per-station Open-Meteo forecast downscaled to the station elevation (api.ts:466-468), pinned past the reanalysis end. The per-station counterpart to national-forecast and the successor to ljubljana-primary's old forecast role."
+    },
+    {
+      "id": "kredarica-forecast",
+      "today_loc": "Kredarica",
+      "analysis_loc": "Kredarica",
+      "date": "2026-07-29",
+      "purpose": "NEW under D-22. Altitude station (D-5) on the preliminary branch, pinned past the reanalysis end: per-station Open-Meteo forecast downscaled to Kredarica's true elevation. Successor to kredarica-primary's old forecast role and the altitude counterpart to national-forecast."
     },
     {
       "id": "national-settled",
