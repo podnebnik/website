@@ -23,7 +23,7 @@ import { climateRisks, heroContext } from "./hero-content.ts";
 //    nominative-count forms, correct for the only value that occurs (18 → "postaj")
 //    and a reasonable default otherwise. A native pass should confirm N=1,2.
 //  • Phrase-level English that was translated mechanically but may want polish:
-//    reg.no_data, reg.year_round_footer, hc.* (Highcharts lang, kept English AS-IS).
+//    reg.no_data, reg.year_round_footer.
 
 export const sl = {
   common: {
@@ -428,16 +428,41 @@ export const sl = {
     site_title: "Podnebnik · Ali je vroče?",
   },
 
-  // ── Highcharts `lang` — extracted AS-IS (English library defaults). D-8 is
-  // Slovenian-only, so these want translation, but the operator instruction for
-  // T-5.5 was to CENTRALISE them here without re-wording. FLAGGED for a Highcharts
-  // a11y-lang translation pass. Only the export-data "view as data table" affordance
-  // (exporting hidden, T-5.4a) surfaces these to a screen-reader today.
+  // ── Highcharts `lang` strings, translated to Slovenian (T-5.16, D-8).
+  //
+  // Group B (viewData/hideData/downloadCSV/downloadXLS) are the EXPORT CONTEXT-MENU
+  // item labels (Highcharts top-level `lang.*`). They are UNREACHABLE on this page:
+  // the a11y bootstrap ships `exporting: { enabled: false }` (T-5.4a), so the context
+  // menu is never rendered and these strings never surface to a screen reader. They
+  // are translated and retained so they are correct IF the export menu is ever
+  // enabled — not because they are heard today. (Earlier this block was left English
+  // with a comment claiming it was the surfaced affordance; that was wrong and sent
+  // T-5.16's inventory to the wrong key — see `hc.a11y.viewAsDataTableButtonText`.)
+  //
+  // `hc.a11y.*` (Group A) are the `lang.accessibility.*` strings a screen reader
+  // ACTUALLY reaches: the info region a11y module reads them regardless of the
+  // export menu. `{title}` / `{chartTitle}` are HIGHCHARTS format-string variables,
+  // passed through verbatim (`t()` leaves unknown `{name}` untouched, format.ts:129).
+  // Scope is Tier 1 only (static, first-heard strings); the templated chart-type /
+  // axis / series-summary strings are DELIBERATELY left to English defaults — see the
+  // omission comment in charts/highcharts-a11y.ts for why.
   hc: {
-    viewData: "View data table",
-    hideData: "Hide data table",
-    downloadCSV: "Download CSV",
-    downloadXLS: "Download XLS",
+    viewData: "Prikaži podatkovno tabelo",
+    hideData: "Skrij podatkovno tabelo",
+    downloadCSV: "Prenesi CSV",
+    downloadXLS: "Prenesi XLS",
+    a11y: {
+      defaultChartTitle:         "Graf",
+      chartContainerLabel:       "{title}. Interaktivni prikaz podatkov.",
+      svgContainerLabel:         "Interaktivni graf",
+      viewAsDataTableButtonText: "Prikaži kot podatkovno tabelo, {chartTitle}",
+      tableSummary:              "Tabelarni prikaz grafa.",
+      endOfChartMarker:          "Konec interaktivnega grafa.",
+      nullPointValue:            "Ni vrednosti",
+      axisCategories:            "kategorije",
+      axisTime:                  "čas",
+      axisValues:                "vrednosti",
+    },
   },
 } as const;
 
