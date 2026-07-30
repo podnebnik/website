@@ -1,6 +1,7 @@
 import { createResource, createMemo, Show, ErrorBoundary } from "solid-js";
 import { fetchEra5Tropical, isArsoLoc, ERA5_NATIONAL } from "../api.ts";
 import { sectionErrorFallback } from "../components/SectionError.tsx";
+import { EmptyState } from "../components/EmptyState.tsx";
 import { TropHighchart } from "./TropicalChart.tsx";
 import type { Config } from "./TropicalChart.tsx";
 import { t, fmtNum, fmtInt, fmtSigned } from "../i18n/format.ts";
@@ -131,6 +132,12 @@ export function Era5TropicalChart(props: Props) {
           </Show>
           <Show when={data.loading && !display()}>
             <div style={{ height: "300px" }} class="animate-pulse bg-[var(--color-paper-2)] rounded" />
+          </Show>
+          {/* T-5.14 — resolved to no row (fetchEra5Tropical → null): message in the
+              card body, not the card chrome + title over an empty chart. The
+              !loading guard keeps it from flashing during a station refetch. */}
+          <Show when={!data.loading && !display()}>
+            <EmptyState minHeight="300px" />
           </Show>
         </div>
 

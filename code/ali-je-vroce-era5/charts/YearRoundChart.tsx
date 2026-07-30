@@ -1,5 +1,6 @@
 import { onMount, onCleanup, createEffect } from "solid-js";
 import type { CalendarData } from "../api.ts";
+import { EmptyState } from "../components/EmptyState.tsx";
 import { enableChartA11y } from "./highcharts-a11y.ts";
 import { t, fmtNum, fmtSigned, fmtDoy, fmtMonthShort } from "../i18n/format.ts";
 
@@ -50,6 +51,12 @@ export function YearRoundChart(props: Props) {
   }
 
   onMount(async () => {
+    // T-5.14 — with no rows the chart would draw an empty titled/legended frame
+    // ("a calendar of nothing"); skip the build and render the message instead
+    // (see the return below). RegYearRoundCard's <Show> is `keyed` on the
+    // resource object, so this component is re-created per station — reading
+    // props.data.rows.length once here is safe.
+    if (props.data.rows.length === 0) return;
     const Highcharts = (await import("highcharts")).default;
     await enableChartA11y(Highcharts);
 
@@ -161,5 +168,7 @@ export function YearRoundChart(props: Props) {
 
   onCleanup(() => { chart?.destroy(); chart = null; });
 
-  return <div ref={container} style={{ "min-height": "180px" }} />;
+  return props.data.rows.length === 0
+    ? <EmptyState minHeight="180px" />
+    : <div ref={container} style={{ "min-height": "180px" }} />;
 }

@@ -1,6 +1,7 @@
 import { createResource, Show, Suspense, ErrorBoundary } from "solid-js";
 import { fetchSeasonHeatmap, isArsoLoc } from "../api.ts";
 import { sectionErrorFallback } from "../components/SectionError.tsx";
+import { EmptyState } from "../components/EmptyState.tsx";
 import { SeasonHeatmap } from "./SeasonHeatmap.tsx";
 
 interface Props {
@@ -29,6 +30,11 @@ export function Era5SeasonHeatmap(props: Props) {
         </Show>
         <Show when={data.loading && !display()}>
           <div class="h-40 animate-pulse bg-[var(--color-paper-2)] rounded-xl" />
+        </Show>
+        {/* T-5.14 — resolved to no rows: message, not a heading over blank space.
+            The !loading guard keeps it from flashing during a station refetch. */}
+        <Show when={!data.loading && (display()?.length ?? 0) === 0}>
+          <EmptyState minHeight="160px" />
         </Show>
       </Suspense>
     </ErrorBoundary>
