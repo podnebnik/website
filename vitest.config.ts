@@ -25,12 +25,13 @@ export default defineConfig({
     environment: "node",
     setupFiles: ["tests/unit/setup.fixtures.ts"],
     // The shim single-sources "today" from these; they must match
-    // tests/fixtures/index.json (primary_date 2026-07-21, datasette default
-    // base) or installFixtures() throws. VITE_FIXTURES=1 unlocks clock.ts's
-    // date override off the dev-server flag.
+    // tests/fixtures/index.json (primary_date 2026-07-29 after the D-4 meteo
+    // pass moved the pin past the reanalysis-final `daily` end, D-22; datasette
+    // default base) or installFixtures() throws. VITE_FIXTURES=1 unlocks
+    // clock.ts's date override off the dev-server flag.
     env: {
       VITE_FIXTURES: "1",
-      VITE_PINNED_DATE: "2026-07-21",
+      VITE_PINNED_DATE: "2026-07-29",
     },
   },
 });
