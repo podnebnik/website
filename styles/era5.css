@@ -149,16 +149,31 @@
 /* ── Methodology block + trust furniture (T-6.1 / T-6.2) ──────────────────── */
 .methodology { padding-top: 8px; padding-bottom: 56px; margin-top: 24px; border-top: 1px solid var(--color-rule); }
 .methodology-details { max-width: 760px; }
-.methodology-summary {
+/* T-5.20 — the today-card climate-context disclosure reuses this exact summary
+   treatment, so the two <details> on the page read as one mechanism. One
+   definition, two callers. */
+.methodology-summary,
+.today-context-summary {
   font-family: var(--font-mono); font-size: 12px; font-weight: 600; letter-spacing: 0.08em;
   text-transform: uppercase; color: var(--color-ink-soft); cursor: pointer;
   padding: 14px 0; list-style: none; display: flex; align-items: center; gap: 8px;
 }
-.methodology-summary::-webkit-details-marker { display: none; }
-.methodology-summary::before { content: "▸"; font-size: 10px; transition: transform 0.15s; }
-.methodology-details[open] .methodology-summary::before { transform: rotate(90deg); }
-.methodology-summary:hover { color: var(--color-ink); }
-.methodology-summary:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; border-radius: 3px; }
+.methodology-summary::-webkit-details-marker,
+.today-context-summary::-webkit-details-marker { display: none; }
+.methodology-summary::before,
+.today-context-summary::before { content: "▸"; font-size: 10px; transition: transform 0.15s; }
+.methodology-details[open] .methodology-summary::before,
+.today-context-details[open] .today-context-summary::before { transform: rotate(90deg); }
+.methodology-summary:hover,
+.today-context-summary:hover { color: var(--color-ink); }
+.methodology-summary:focus-visible,
+.today-context-summary:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; border-radius: 3px; }
+
+/* Keep the disclosure aligned with the other centred blocks in .today-card-data,
+   and remove the summary's top padding so it doesn't double the column gap. */
+.today-context-details { max-width: 900px; width: 100%; }
+.today-context-details .today-context-summary { padding-top: 0; }
+.today-context-details[open] .today-context { margin-top: 8px; }
 
 .methodology-body { max-width: 720px; padding: 4px 0 8px; }
 .methodology-h    { font-family: var(--font-sans); font-size: 16px; font-weight: 600; color: var(--color-ink); margin: 22px 0 6px; }

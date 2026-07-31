@@ -95,6 +95,10 @@ export const sl = {
     explain_station: "Temperatura na postaji {station}, razvrstena glede na zapise ERA5-Land od leta {year_min} za isto ±7-dnevno okno.",
     explain_national: "Današnji vrh je najvišja napovedana temperatura, razvrstena glede na zapise ERA5-Land od leta {year_min} za isto ±7-dnevno okno.",
 
+    // T-5.20 — this 83-word climate background is collapsed behind a <details>
+    // disclosure (the same native mechanism as the methodology panel). The
+    // summary is the always-visible collapsed-state label.
+    context_summary: "Podnebno ozadje",
     context: "Slovenija leži na stičišču štirih podnebnih con — alpske, sredozemske, celinsko in panonske — stisnjenih v eno izmed podnebno najbolj raznolikih držav v Evropi. Srednja Evropa se segreva približno 1,5-krat hitreje od svetovnega povprečja. Temperature so v zadnjih 70 letih narasle za skoraj 2 °C. Pomlad v Alpah prihaja vse prej, sredozemske suše segajo vse globlje v notranjost, severovzhodni panonski del pa se sooča z vedno hujšimi vročinskimi vali. Kar je bilo leta 1980 tipično poletje, danes sodi med hladnejšo polovico nedavnih desetletij.",
 
     last7_title: "Zadnjih 7 dni",
