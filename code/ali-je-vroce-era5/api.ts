@@ -312,6 +312,7 @@ export async function fetchEra5NationalWindowRow(month: number, day: number): Pr
     month, day,
     p5, p10, p20, p50, p80, p95,
     n_samples: rows.reduce((s, r) => s + (r.n_samples ?? 0), 0),
+    station_count: rows.length,
     year_min:  Math.min(...rows.map(r => r.year_min)),
     year_max:  Math.max(...rows.map(r => r.year_max)),
     distribution_json: JSON.stringify(averageDistributions(curves)),
@@ -453,7 +454,11 @@ export async function fetchTodayStatus(date: string, loc: string | null): Promis
       available: true, date,
       today_temp: parseFloat(todayTemp.toFixed(1)), is_preliminary: isPreliminary,
       percentile: cdfPercentile(dist, todayTemp), category_key: cat.category_key, color: cat.color,
-      n_samples: w.n_samples, year_min: w.year_min, year_max: w.year_max,
+      // Always set by fetchEra5NationalWindowRow (= pooled station count); `?? 1` only
+      // satisfies the optional type — a fallback of 1 would (correctly) trip the
+      // tooltip's per-station guard, since n_samples is the SUM across stations.
+      n_samples: w.n_samples, station_count: w.station_count ?? 1,
+      year_min: w.year_min, year_max: w.year_max,
       distribution: dist,
       cutoffs: { p5: w.p5, p10: w.p10, p20: w.p20, p50: w.p50, p80: w.p80, p95: w.p95 },
       day_label: dayLabel(month, day), month_num: month, day_num: day,
@@ -490,7 +495,8 @@ export async function fetchTodayStatus(date: string, loc: string | null): Promis
     available: true, date,
     today_temp: todayTemp, is_preliminary: isPreliminary,
     percentile: cdfPercentile(dist, todayTemp), category_key: cat.category_key, color: cat.color,
-    n_samples: w.n_samples, year_min: w.year_min, year_max: w.year_max,
+    n_samples: w.n_samples, station_count: 1,
+    year_min: w.year_min, year_max: w.year_max,
     distribution: dist,
     cutoffs: { p5: w.p5, p10: w.p10, p20: w.p20, p50: w.p50, p80: w.p80, p95: w.p95 },
     day_label: dayLabel(month, day), month_num: month, day_num: day,

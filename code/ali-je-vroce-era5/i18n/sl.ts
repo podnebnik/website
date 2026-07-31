@@ -135,11 +135,15 @@ export const sl = {
     zone_hot: "Vroče",
     zone_extreme: "Ekstremno",
     tooltip: "{temp} °C · {zone}",
-    // T-5.21: second tooltip line — approximate frequency of days in the hovered
+    // T-5.21/T-5.22: second tooltip line — approximate frequency of days in the hovered
     // whole-degree bin. "približno" labels it as an estimate (the count rides on a
     // smoothed KDE, not raw days); the bounds are named explicitly.
-    tooltip_freq: "približno {count, plural, one{# dan} two{# dneva} few{# dnevi} other{# dni}} med {lo} in {hi} °C",
-    tooltip_freq_lt1: "manj kot 1 dan med {lo} in {hi} °C",
+    tooltip_freq: "približno {count, plural, one{# dan} two{# dneva} few{# dnevi} other{# dni}} s temperaturo med {lo} in {hi} °C",
+    tooltip_freq_lt1: "manj kot 1 dan s temperaturo med {lo} in {hi} °C",
+    // National view: the curve is the mean of 18 stations, so the count is a per-station
+    // average ("povprečno … na postajo") — a real day count, not station-days (T-5.22).
+    tooltip_freq_nat: "povprečno {count, plural, one{# dan} two{# dneva} few{# dnevi} other{# dni}} na postajo s temperaturo med {lo} in {hi} °C",
+    tooltip_freq_nat_lt1: "povprečno manj kot 1 dan na postajo s temperaturo med {lo} in {hi} °C",
     today_line: "DANES: {temp} °C",
     band_below: "< {p}°C",
     band_range: "{a}–{b}°C",
