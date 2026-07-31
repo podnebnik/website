@@ -69,7 +69,9 @@ LAPSE_RATE       = 0.0065
 TREND_START_YEAR = CONFIG.get("trend_start_year", 1950)
 PROJ_END_YEAR    = CONFIG.get("projection_end_year", 2050)
 WINDOW_HALF      = 7    # days either side of target DOY for distribution/percentile
-TREND_WINDOW     = 30   # days either side for annual trend aggregation
+TREND_WINDOW     = 7    # days either side for annual trend aggregation (T-4.23: unified
+                        # with WINDOW_HALF — ±30 reached into late June/late August, which
+                        # is not "this day of year"; METHODOLOGY.md documents ±7 throughout)
 # Anomaly reference period (D-3): 1991-2020, the single baseline for season
 # categories and every anomaly/label on the page. NOT used by SPEI (see below) or
 # by the absolute tropical thresholds, which are baseline-independent.
