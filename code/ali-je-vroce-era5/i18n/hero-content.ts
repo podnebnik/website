@@ -246,7 +246,7 @@ Za vsak dan v letu stran prikaže **porazdelitev** preteklih vrednosti (kako pog
 - Nacionalna krivulja je **povprečje 18 krivulj posameznih postaj**, ne skupni bazen vzorcev — s čimer ohrani pomen »povprečja 18 postaj«.
 - Percentil je **pravi empirični percentil**, izračunan iz te krivulje (integral gostote do današnje vrednosti), ne približek iz barvnega pasu.
 
-Primerjalni vzorec za vsak koledarski dan je **združeno okno ±7 dni** čez vsa leta — tako ima vsak dan dovolj gost in stabilen vzorec. **29. februar** se pri tem pridruži oknu 28. februarja (redki prestopni dnevi se ne obravnavajo kot ločen, statistično šumeč dan).
+Primerjalni vzorec za vsak koledarski dan je **združeno okno ±7 dni** čez vsa leta — tako ima vsak dan dovolj gost in stabilen vzorec. **Isto okno ±7 dni** uporablja tudi letni trend: vsaka letna točka na grafu trenda je povprečje vrednosti v tem oknu za posamezno leto. **29. februar** se pri tem pridruži oknu 28. februarja (redki prestopni dnevi se ne obravnavajo kot ločen, statistično šumeč dan).
 
 ## Pragovi za »vroče«
 

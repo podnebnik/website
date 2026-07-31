@@ -21,15 +21,19 @@ function buildTrendSeries(d: AnnualTrend) {
   const fcLine   = d.projLine.x.map((x, i) => [x, d.projLine.y[i]]);
   const fcBand   = d.projLine.x.map((x, i) => [x, d.projLine.lower[i], d.projLine.upper[i]]);
   const milestoneYears = [2030, 2040, 2050];
+  // projLine is the straight fitted projection stored as two endpoints
+  // (year_max → proj_end_year). Place each milestone dot ON that line by linear
+  // interpolation between the endpoints — equivalently y = slope·year + intercept.
+  // The old code snapped each milestone to the NEARER of the two endpoints and
+  // reused that endpoint's y, so 2030 rendered year_max's value and 2040 rendered
+  // 2050's — two of the three dots landed off the line (T-4.23).
+  const [x0, x1] = d.projLine.x;
+  const [y0, y1] = d.projLine.y;
+  if (x0 === undefined || x1 === undefined || y0 === undefined || y1 === undefined || x1 === x0)
+    throw new Error("projLine needs two distinct endpoints to place milestones");
   const fcMilestones = milestoneYears.map((yr) => {
-    let best = 0, bestDiff = Infinity;
-    d.projLine.x.forEach((x, i) => { const diff = Math.abs(x - yr); if (diff < bestDiff) { bestDiff = diff; best = i; } });
-    const yAtBest = d.projLine.y[best];
-    // `best` indexes projLine.x; the two arrays are parallel. If they ever are not,
-    // the old code threw here on `.toFixed` of undefined — keep it a hard failure
-    // rather than quietly rendering NaN.
-    if (yAtBest === undefined) throw new Error(`projLine.y has no entry at index ${best}`);
-    return { x: yr, y: +yAtBest.toFixed(1) };
+    const y = y0 + ((yr - x0) * (y1 - y0)) / (x1 - x0);
+    return { x: yr, y: +y.toFixed(1) };
   });
   return { histLine, histBand, fcLine, fcBand, fcMilestones };
 }
