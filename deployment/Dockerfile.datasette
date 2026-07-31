@@ -80,6 +80,19 @@ RUN DB_PATH=/build/data/climate-si/data/raw/climate-si.db \
     uv run --project data/climate-si/sources --no-sync \
         python data/climate-si/sources/export_datasette_csv.py
 
+# ── T-5.17: fail the build if a derived table's bytes moved without the manifest ──
+# The nine CSVs export_datasette_csv.py just wrote are hashed and compared to the
+# committed data/climate-si/derived-tables.sha256. A pipeline change that moves
+# published output fails HERE — in the amd64 `generate-db` job, the ONLY place
+# generation runs (T-5.9) — until the manifest is regenerated in the same commit,
+# exactly as re-recording fixtures already is. This is T-5.3a's sha256 proof made
+# permanent, and unlike `yarn snapshot:check` it does NOT depend on a redeployed
+# stage: it catches a moved pipeline that a green snapshot cannot see.
+RUN TABLES_DIR=/build/data/climate-si/data \
+    uv run --project data/climate-si/sources --no-sync \
+        python data/climate-si/sources/check_table_hashes.py \
+        --manifest data/climate-si/derived-tables.sha256
+
 # --no-validate-arch=aarch64 skips the slow frictionless validation only under
 # arm64 emulation. This stage now always runs natively on amd64 (platform.machine()
 # == x86_64), so the guard is a no-op and the full validation runs — unchanged from
