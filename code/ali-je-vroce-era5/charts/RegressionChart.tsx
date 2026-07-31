@@ -1,6 +1,7 @@
 import { onMount, onCleanup, createEffect } from "solid-js";
 import type { RegressionResponse } from "../types.ts";
 import { enableChartA11y } from "./highcharts-a11y.ts";
+import { regressionTooltipHtml } from "./regression-tooltip.ts";
 import { t, fmtNum } from "../i18n/format.ts";
 
 interface Props {
@@ -95,9 +96,14 @@ export function RegressionChart(props: Props) {
       },
       tooltip: {
         shared: false,
+        // Read the unit through `() => props.data`, not the captured `d`, so the
+        // tooltip reflects the current data at hover time and cannot go stale (T-5.23).
         formatter(this: Highcharts.Point) {
-          const loc = (this.series.name ?? "").replace(/_/g, " ");
-          return t("regchart.tooltip", { loc, x: this.x, y: fmtNum(this.y as number, 2), unit: d.unit });
+          return regressionTooltipHtml(() => props.data, {
+            seriesName: this.series.name ?? "",
+            x:          this.x as number,
+            y:          this.y as number,
+          });
         },
       },
       xAxis: { type: "linear", title: { text: null }, gridLineWidth: 0, tickInterval: 10 },
