@@ -213,10 +213,17 @@ export function TodayCard(props: Props) {
             }
           </p>
 
-          {/* Climate context */}
-          <p class="today-context">
-            {t("today.context")}
-          </p>
+          {/* Climate context — collapsed by default behind a native <details>
+              disclosure, reusing the methodology panel's summary treatment
+              (T-5.20). Native <details>/<summary> is keyboard-operable and
+              announced as expandable with no ARIA of our own; the body stays in
+              the DOM (only visually collapsed), so the snapshot still sees it. */}
+          <details class="today-context-details">
+            <summary class="today-context-summary">{t("today.context_summary")}</summary>
+            <p class="today-context">
+              {t("today.context")}
+            </p>
+          </details>
 
           {/* Last 7 days */}
           <Show when={props.last7?.available && (props.last7?.days.length ?? 0) > 0}>
