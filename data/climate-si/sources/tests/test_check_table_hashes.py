@@ -1,13 +1,14 @@
-"""T-5.17 — the derived-table hash gate must PASS on a matching table set and FAIL
-loudly on any drift, and (the amendment) EXPLAIN what moved down to the column. This
-guards the pipeline-neutrality gate the same way test_validate.py guards the output
-validator: if a future edit weakens the check into a no-op, the negative cases here go
-red.
+"""T-5.17 — the derived-table hash gate must PASS on a matching table set, FAIL loudly
+on any GATED drift, EXPLAIN what moved down to the column, and treat an EXCLUDED column
+(tropical.trend_json) as informational — reported, never failed. This guards the
+pipeline-neutrality gate the same way test_validate.py guards the output validator: if a
+future edit weakens the check into a no-op, or silently widens the exclusion, the
+negative cases here go red.
 
-The gate is architecture-agnostic by construction — it hashes bytes — so these tests
-use tiny synthetic CSVs (no precompute run needed). That the REAL nine tables are
-byte-deterministic across runs is a separate property, verified in the T-5.17 session
-and re-checked at image-build time by the committed manifest.
+The gate is architecture-agnostic by construction — it hashes bytes — so these tests use
+tiny synthetic CSVs (no precompute run needed). Each synthetic table carries a gated
+scalar (`count`), a gated JSON column (`counts_json`) and `trend_json`, which is excluded
+for the `tropical` table only.
 """
 
 import json
@@ -18,12 +19,26 @@ from validate import TABLE_NAMES
 
 
 def _make_tables(tables_dir: Path) -> None:
-    """Write one small, distinct three-column CSV per derived table name."""
     tables_dir.mkdir(parents=True, exist_ok=True)
     for i, name in enumerate(TABLE_NAMES):
         (tables_dir / f"climate-si.{name}.csv").write_text(
-            f"era5_name,count,trend_json\nStat{i},{i},{json.dumps({'aic': i})}\n"
+            f"era5_name,count,counts_json,trend_json\n"
+            f"Stat{i},{i},{json.dumps([i])},{json.dumps({'aic': i})}\n"
         )
+
+
+def _set_field(path: Path, column: str, value: str) -> None:
+    """Rewrite the single data row's `column` to `value`, leaving the rest byte-identical."""
+    import csv
+    rows = list(csv.DictReader(open(path, newline="")))
+    hdr = list(rows[0].keys())
+    rows[0][column] = value
+    import io
+    buf = io.StringIO()
+    w = csv.DictWriter(buf, fieldnames=hdr)
+    w.writeheader()
+    w.writerows(rows)
+    path.write_text(buf.getvalue())
 
 
 def test_write_then_check_passes(tmp_path):
@@ -33,50 +48,73 @@ def test_write_then_check_passes(tmp_path):
 
     assert cth._write(tables, manifest) == 0
     assert manifest.exists()
-    lines = manifest.read_text().splitlines()
-    # One file-level line per table (the gate) plus one line per column (the diagnostic).
-    file_lines = [l for l in lines if "#" not in l]
-    col_lines = [l for l in lines if "#" in l]
+    text = manifest.read_text()
+    # The header states the exclusion, in the manifest itself.
+    assert "EXCLUDED FROM THE GATE" in text
+    assert "climate-si.tropical.csv#trend_json" in text
+    data_lines = [l for l in text.splitlines() if l and not l.startswith("#")]
+    file_lines = [l for l in data_lines if "#" not in l]
+    col_lines = [l for l in data_lines if "#" in l]
     assert len(file_lines) == len(TABLE_NAMES)
-    assert len(col_lines) == 3 * len(TABLE_NAMES)  # three columns each
-    for line in lines:
+    assert len(col_lines) == 4 * len(TABLE_NAMES)  # four columns each
+    for line in data_lines:
         digest, sep, fname = line.partition("  ")
         assert sep == "  " and len(digest) == 64 and fname.startswith("climate-si.")
 
     assert cth._check(tables, manifest) == 0
 
 
-def test_check_fails_when_a_table_moves(tmp_path):
+def test_gated_column_move_fails(tmp_path):
     tables = tmp_path / "data"
     manifest = tmp_path / "derived-tables.sha256"
     _make_tables(tables)
     cth._write(tables, manifest)
 
-    moved = tables / "climate-si.daily.csv"
-    moved.write_text(moved.read_text().replace("Stat1", "StatX"))
+    _set_field(tables / "climate-si.daily.csv", "count", "999")
     assert cth._check(tables, manifest) == 1
 
 
-def test_check_names_the_moved_column(tmp_path, capsys):
-    """The self-diagnosis: on failure the check must name the column that moved and
-    leave the others listed as unchanged — that is what tells a fitted display stat
-    (trend_json) from a deterministic count (T-5.17 amendment)."""
+def test_gated_move_names_the_column(tmp_path, capsys):
     tables = tmp_path / "data"
     manifest = tmp_path / "derived-tables.sha256"
     _make_tables(tables)
     cth._write(tables, manifest)
 
-    # Move ONLY trend_json in one table, leave era5_name / count byte-identical.
-    idx = TABLE_NAMES.index("tropical")
-    t = tables / "climate-si.tropical.csv"
-    t.write_text(f"era5_name,count,trend_json\nStat{idx},{idx},{json.dumps({'aic': 999})}\n")
-
+    _set_field(tables / "climate-si.daily.csv", "counts_json", json.dumps([42]))
     assert cth._check(tables, manifest) == 1
     err = capsys.readouterr().err
-    assert "climate-si.tropical.csv" in err
-    assert "trend_json" in err
-    # era5_name and count must be reported UNCHANGED, not moved.
-    assert "column(s) moved: ['trend_json']" in err
+    assert "GATED column(s) moved: ['counts_json']" in err
+
+
+def test_excluded_trend_json_drift_passes_with_note(tmp_path, capsys):
+    """The tropical.trend_json exclusion: an arch-sensitive fit column must NOT fail the
+    build, but its drift must stay VISIBLE as an informational note."""
+    tables = tmp_path / "data"
+    manifest = tmp_path / "derived-tables.sha256"
+    _make_tables(tables)
+    cth._write(tables, manifest)
+
+    _set_field(tables / "climate-si.tropical.csv", "trend_json", json.dumps({"aic": 999}))
+    assert cth._check(tables, manifest) == 0            # PASS, not fail
+    err = capsys.readouterr().err
+    assert "NOTE — informational" in err and "trend_json" in err
+
+
+def test_gated_move_fails_even_alongside_excluded_drift(tmp_path, capsys):
+    """A moved COUNT must fail even when the excluded trend_json also moved — the
+    exclusion must never mask a gated column."""
+    tables = tmp_path / "data"
+    manifest = tmp_path / "derived-tables.sha256"
+    _make_tables(tables)
+    cth._write(tables, manifest)
+
+    t = tables / "climate-si.tropical.csv"
+    _set_field(t, "trend_json", json.dumps({"aic": 999}))
+    _set_field(t, "counts_json", json.dumps([7]))
+    assert cth._check(tables, manifest) == 1
+    err = capsys.readouterr().err
+    assert "GATED column(s) moved: ['counts_json']" in err
+    assert "NOTE — informational" in err  # trend_json still reported
 
 
 def test_reference_diff_reports_json_key_and_both_sides(tmp_path, capsys):
@@ -84,17 +122,14 @@ def test_reference_diff_reports_json_key_and_both_sides(tmp_path, capsys):
     reference = tmp_path / "ref"
     manifest = tmp_path / "derived-tables.sha256"
     _make_tables(tables)
-    _make_tables(reference)          # identical baseline …
-    cth._write(reference, manifest)  # … and its manifest
+    _make_tables(reference)
+    cth._write(reference, manifest)
 
-    # Now move trend_json.aic in the current set only.
-    t = tables / "climate-si.spei.csv"
-    t.write_text(t.read_text().rsplit(",", 1)[0] + "," + json.dumps({"aic": 42}) + "\n")
-
+    # Move a GATED JSON column so the gate fails and the reference diff runs.
+    _set_field(tables / "climate-si.spei.csv", "counts_json", json.dumps([42]))
     assert cth._check(tables, manifest, reference) == 1
     err = capsys.readouterr().err
-    assert "first differing key" in err and "'aic'" in err
-    assert "42" in err  # the current-side value appears
+    assert "first differing key" in err and "42" in err
 
 
 def test_check_fails_on_missing_manifest(tmp_path):
@@ -109,6 +144,7 @@ def test_manifest_roundtrips(tmp_path):
     computed = cth._compute(tables)
     assert set(computed) == set(TABLE_NAMES)
     assert all("file" in e and "columns" in e for e in computed.values())
+    # The generated header is comment-only, so parsing recovers exactly the data.
     assert cth._parse_manifest(cth._manifest_text(computed)) == computed
 
 
@@ -117,3 +153,12 @@ def test_json_key_diff_dict_and_list():
     assert cth._json_key_diff("[1, 2, 3]", "[1, 9, 3]") == "[1] 2 vs 9"
     assert cth._json_key_diff("[1, 2]", "[1, 2, 3]") == "length 2 vs 3"
     assert cth._json_key_diff("not json", "also not") is None
+
+
+def test_tropical_trend_json_is_excluded_by_config():
+    """Guard the exclusion set itself: if someone widens it, this makes them update the
+    test deliberately."""
+    assert cth.GATE_EXCLUDED == {"tropical": {"trend_json": cth.GATE_EXCLUDED["tropical"]["trend_json"]}}
+    assert cth._is_excluded("tropical", "trend_json")
+    assert not cth._is_excluded("tropical", "counts_json")
+    assert not cth._is_excluded("daily", "trend_json")

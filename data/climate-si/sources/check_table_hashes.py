@@ -29,6 +29,15 @@ differ across machines. Point `--reference <dir>` at the other CSV set (when bot
 one machine) to also get bounded row-level diffs with both sides — for a long JSON column
 it reports the differing JSON KEY and its two values, not the whole blob.
 
+Gated vs informational columns
+------------------------------
+`tropical.trend_json` is the output of that iterative fit and DID differ between amd64 and
+aarch64 (T-5.17 amendment), so it is listed in GATE_EXCLUDED: still hashed and recorded,
+its drift printed as a NOTE, but never failing the build — demanding byte-identity from an
+optimiser across architectures would guarantee recurring false failures. Every other
+column, including the tropical COUNTS, stays gated. GATE_EXCLUDED is the single source of
+truth; the manifest header is generated from it so the file always states its exclusions.
+
 What is hashed, and where it runs
 ---------------------------------
 The nine derived CSV EXPORTS (export_datasette_csv.py output: pandas to_csv, index-less,
@@ -83,6 +92,35 @@ DEFAULT_MANIFEST = Path(__file__).parent.parent / "derived-tables.sha256"
 _MAX_DIFF_ROWS = 8
 _MAX_VAL = 160
 
+# ── Columns EXCLUDED from the gate (T-5.17 amendment) ────────────────────────────
+# A column listed here is still hashed and recorded, but a mismatch is reported as
+# INFORMATIONAL and does NOT fail the build. This is the ONLY source of truth for the
+# exclusion — the manifest header is generated from it, so the two cannot drift, and
+# removing an entry here makes the gate fail-closed (the column becomes gated again).
+#
+# `tropical.trend_json` is excluded because it is the output of an iterative
+# negative-binomial GLM fit (precompute_datasette.py:_tropical_trend). An optimiser's
+# convergence path is architecture-sensitive: amd64 and aarch64 differ in the last
+# digits, and a marginal fit can converge on one and fail (→ withheld `{}`) on the
+# other — CI showed 30 fit failures on amd64 vs 28 on aarch64. Demanding byte-identity
+# from that across architectures guarantees recurring false failures. The COUNTS a
+# reader sees (counts_json, years_json, nonzero_count) are deterministic and stay
+# GATED. The fit-failure behaviour itself is tracked as a separate finding, not here.
+GATE_EXCLUDED: dict[str, dict[str, str]] = {
+    "tropical": {
+        "trend_json":
+            "iterative negative-binomial fit; optimiser path is architecture-sensitive "
+            "(30 fit failures on amd64 vs 28 on aarch64), so byte-identity across "
+            "architectures cannot be required. Recorded as informational so drift stays "
+            "visible without failing the build. Gated counts: counts_json, years_json, "
+            "nonzero_count. See T-5.17.",
+    },
+}
+
+
+def _is_excluded(table: str, column: str) -> bool:
+    return column in GATE_EXCLUDED.get(table, {})
+
 
 def _csv_path(tables_dir: Path, name: str) -> Path:
     return tables_dir / f"climate-si.{name}.csv"
@@ -126,16 +164,47 @@ def _compute(tables_dir: Path) -> dict[str, dict]:
     return out
 
 
+def _manifest_header() -> str:
+    """Generated FROM GATE_EXCLUDED so the file always states its own exclusions and the
+    reason, and never drifts from the code that enforces them."""
+    out = [
+        "# T-5.17 — sha256 manifest of the nine derived CSV exports.",
+        "# Recomputed by the datasette image build (generate-db, amd64); the build FAILS",
+        "# if any GATED column moved without this file being updated in the same commit.",
+        "# Each table has a file-level hash and one hash per column, `<file>#<column>`.",
+        "# The gate uses the file hash for tables with no excluded column, and the",
+        "# per-column hashes for tables that have one.",
+        "#",
+        "# EXCLUDED FROM THE GATE — recorded as informational; a mismatch is REPORTED,",
+        "# never fails the build. Do not gate these (see GATE_EXCLUDED in",
+        "# check_table_hashes.py, the single source of truth):",
+    ]
+    for table in sorted(GATE_EXCLUDED):
+        for col, reason in GATE_EXCLUDED[table].items():
+            out.append(f"#   climate-si.{table}.csv#{col}")
+            words, line = reason.split(), "#     "
+            for w in words:
+                if len(line) + len(w) + 1 > 78:
+                    out.append(line)
+                    line = "#     " + w
+                else:
+                    line += (" " if line != "#     " else "") + w
+            out.append(line)
+    out.append("#")
+    return "\n".join(out) + "\n"
+
+
 def _manifest_text(manifest: dict[str, dict]) -> str:
-    """`shasum -a 256` format (two spaces). One file line per table, then one line per
-    column tagged `<file>#<column>`, columns in CSV order. Sorted by table name."""
+    """`shasum -a 256` format (two spaces). A generated header states the gate
+    exclusions, then one file line per table and one line per column `<file>#<column>`,
+    columns in CSV order. Sorted by table name."""
     lines: list[str] = []
     for name in sorted(manifest):
         entry = manifest[name]
         lines.append(f"{entry['file']}  climate-si.{name}.csv")
         for col, digest in entry["columns"].items():
             lines.append(f"{digest}  climate-si.{name}.csv#{col}")
-    return "".join(f"{line}\n" for line in lines)
+    return _manifest_header() + "".join(f"{line}\n" for line in lines)
 
 
 def _parse_manifest(text: str) -> dict[str, dict]:
@@ -228,7 +297,10 @@ def _write(tables_dir: Path, manifest: Path) -> int:
     computed = _compute(tables_dir)
     manifest.write_text(_manifest_text(computed))
     ncols = sum(len(e["columns"]) for e in computed.values())
+    nexcl = sum(len(v) for v in GATE_EXCLUDED.values())
     print(f"Wrote {len(computed)} table + {ncols} column hashes → {manifest}")
+    print(f"  {nexcl} column(s) excluded from the gate (informational): "
+          f"{[f'{t}.{c}' for t, cols in GATE_EXCLUDED.items() for c in cols]}")
     for name in sorted(computed):
         print(f"  {computed[name]['file']}  climate-si.{name}.csv")
     return 0
@@ -248,35 +320,61 @@ def _check(tables_dir: Path, manifest: Path, reference: Path | None = None) -> i
 
     missing = [n for n in TABLE_NAMES if n not in expected]
     extra = [n for n in expected if n not in TABLE_NAMES]
-    moved = [n for n in TABLE_NAMES
-             if n in expected and actual[n]["file"] != expected[n]["file"]]
 
-    if not (missing or extra or moved):
-        print(f"OK — all {len(TABLE_NAMES)} derived tables match {manifest.name}.")
+    # Per table, split moved columns into GATED (fail) and EXCLUDED (informational).
+    gated: dict[str, list[str]] = {}   # table -> gated columns that moved
+    info: dict[str, list[str]] = {}    # table -> excluded columns that moved
+    structural: list[str] = []         # file moved but no column did (whitespace/layout)
+    for n in TABLE_NAMES:
+        if n not in expected:
+            continue
+        exp_cols, act_cols = expected[n].get("columns", {}), actual[n]["columns"]
+        if not exp_cols:  # legacy manifest with no per-column hashes: gate on file hash
+            if actual[n]["file"] != expected[n]["file"]:
+                gated[n] = []
+            continue
+        moved = [c for c in act_cols if exp_cols.get(c) != act_cols[c]]
+        g = [c for c in moved if not _is_excluded(n, c)]
+        i = [c for c in moved if _is_excluded(n, c)]
+        if g:
+            gated[n] = g
+        if i:
+            info[n] = i
+        if actual[n]["file"] != expected[n]["file"] and not moved:
+            structural.append(n)
+
+    # Informational drift is always reported — that is how excluded-column drift stays
+    # visible (e.g. tropical.trend_json across architectures) without failing the build.
+    for n, cols in info.items():
+        for c in cols:
+            print(f"NOTE — informational (not gated): climate-si.{n}.csv#{c} moved "
+                  f"(expected {expected[n]['columns'][c][:12]}…, "
+                  f"actual {actual[n]['columns'][c][:12]}…). "
+                  f"Excluded: {GATE_EXCLUDED[n][c].split(';')[0]}.", file=sys.stderr)
+
+    if not (missing or extra or gated or structural):
+        gcols = sum(len(cs) for cs in info.values())
+        note = f" ({gcols} informational column drift noted above)" if gcols else ""
+        print(f"OK — all gated columns match {manifest.name}{note}.")
         return 0
 
-    print("FAIL — derived tables do not match the committed manifest.", file=sys.stderr)
+    print("FAIL — gated derived-table columns do not match the committed manifest.",
+          file=sys.stderr)
     for n in missing:
         print(f"  MISSING from manifest: {n}", file=sys.stderr)
     for n in extra:
         print(f"  UNKNOWN in manifest:   {n}", file=sys.stderr)
-    for n in moved:
+    for n in sorted(set(gated) | set(structural)):
         print(f"  MOVED: climate-si.{n}.csv", file=sys.stderr)
         print(f"         expected {expected[n]['file']}", file=sys.stderr)
         print(f"         actual   {actual[n]['file']}", file=sys.stderr)
-        # Name the exact column(s) that moved — the self-diagnosis, no reference needed.
-        exp_cols = expected[n].get("columns", {})
-        if exp_cols:
-            cols_moved = [c for c, h in actual[n]["columns"].items()
-                          if c not in exp_cols or exp_cols[c] != h]
-            unchanged = [c for c in actual[n]["columns"] if c not in cols_moved]
-            print(f"         column(s) moved: {cols_moved or '(none — file differs but '
-                  f'no column hash did; check line endings)'}", file=sys.stderr)
-            print(f"         column(s) unchanged: {unchanged}", file=sys.stderr)
+        if n in structural:
+            print("         (file differs but no column hash did — check line "
+                  "endings / column order)", file=sys.stderr)
         else:
-            print("         (manifest has no per-column hashes; regenerate with --write)",
-                  file=sys.stderr)
-        # Full both-sides row diff only when a reference CSV set is available locally.
+            unchanged = [c for c in actual[n]["columns"] if c not in gated[n]]
+            print(f"         GATED column(s) moved: {gated[n]}", file=sys.stderr)
+            print(f"         column(s) unchanged:   {unchanged}", file=sys.stderr)
         if reference is not None:
             ref_csv = _csv_path(reference, n)
             if ref_csv.exists():
@@ -285,7 +383,7 @@ def _check(tables_dir: Path, manifest: Path, reference: Path | None = None) -> i
                 print(f"      (no reference CSV at {ref_csv})", file=sys.stderr)
 
     print(
-        "\nA derived table's bytes changed. If the move is intended, regenerate the\n"
+        "\nA GATED derived-table column changed. If the move is intended, regenerate the\n"
         "manifest in the SAME commit: `python check_table_hashes.py --write` (on native\n"
         "amd64), and update tests/fixtures + tests/snapshot as usual. If it is NOT\n"
         "intended, a pipeline change moved published output — investigate before merging.\n"

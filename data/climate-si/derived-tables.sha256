@@ -1,3 +1,20 @@
+# T-5.17 — sha256 manifest of the nine derived CSV exports.
+# Recomputed by the datasette image build (generate-db, amd64); the build FAILS
+# if any GATED column moved without this file being updated in the same commit.
+# Each table has a file-level hash and one hash per column, `<file>#<column>`.
+# The gate uses the file hash for tables with no excluded column, and the
+# per-column hashes for tables that have one.
+#
+# EXCLUDED FROM THE GATE — recorded as informational; a mismatch is REPORTED,
+# never fails the build. Do not gate these (see GATE_EXCLUDED in
+# check_table_hashes.py, the single source of truth):
+#   climate-si.tropical.csv#trend_json
+#     iterative negative-binomial fit; optimiser path is
+#     architecture-sensitive (30 fit failures on amd64 vs 28 on aarch64), so
+#     byte-identity across architectures cannot be required. Recorded as
+#     informational so drift stays visible without failing the build. Gated
+#     counts: counts_json, years_json, nonzero_count. See T-5.17.
+#
 067f3119f8a3109619b0f8b2bd4930133296ef86abd4b7d42042f3c313c472a9  climate-si.annual_trend.csv
 b6a4391a213937b94e9f70e34241d4087b9f05233346675563aea17c003a24ca  climate-si.annual_trend.csv#era5_name
 0d2764a3d0762e670ff6f1b73e573e4619bd297724d376edeb3c09bb859e9e27  climate-si.annual_trend.csv#station_id
