@@ -1,7 +1,12 @@
-// T-5.21 / T-5.22 — the distribution-chart tooltip's "frequency line": how many
-// comparison days fall in the hovered whole-degree bin. Pure logic, split out of
-// DistributionChart.tsx so it can be unit-tested without the solid/Highcharts import
-// chain (CLAUDE.md: put pure logic in a helper and test the helper directly).
+// T-5.21 / T-5.22 — the distribution-chart tooltip logic: the zone label and the
+// "frequency line" (how many comparison days fall in the hovered whole-degree bin).
+// Pure logic, split out of DistributionChart.tsx so it can be unit-tested without the
+// solid/Highcharts import chain (CLAUDE.md: put pure logic in a helper and test the
+// helper directly), and so the whole tooltip string is derived from a plain data
+// object — the component formatter passes the CURRENT data at hover time (T-5.22 B).
+
+import type { TodayStatus } from "../types.ts";
+import { t, fmtNum, fmtInt } from "../i18n/format.ts";
 
 // Bin width is a fixed 1 °C, NOT the served grid spacing: that spacing (≈0.13 °C) is a
 // linspace(200) artefact, and a count per 0.13 °C would be a fraction of a day. The
@@ -84,4 +89,43 @@ export function assertFrequencySane(
       `per-station sample ${Math.round(ceiling)} — the day-count multiplier is wrong`,
     );
   }
+}
+
+// Full tooltip HTML for the hovered temperature, derived ENTIRELY from `d`. The chart
+// formatter calls this with the CURRENT data at hover time — never a mount-time capture
+// — so both the zone label (from d.cutoffs) and the day-count (from d.distribution /
+// d.n_samples / d.station_count) always match the location on screen. The pre-T-5.22
+// formatter closed over the mount-time snapshot, so after a location switch it kept
+// classifying against the FIRST location's cutoffs and counting against its curve — a
+// defect that predated T-5.21 (the zone label) and that T-5.21's impossible count made
+// visible. Returns "" when the data has no distribution/cutoffs yet.
+export function distributionTooltipHtml(d: TodayStatus, temp: number): string {
+  const c    = d.cutoffs;
+  const dist = d.distribution;
+  if (!c || !dist || dist.length < 2) return "";
+
+  const zone =
+    temp < c.p10 ? t("dist.zone_cold") :
+    temp < c.p20 ? t("dist.zone_cool") :
+    temp < c.p80 ? t("dist.zone_normal") :
+    temp < c.p95 ? t("dist.zone_hot") : t("dist.zone_extreme");
+  const line1 = t("dist.tooltip", { temp: fmtNum(temp, 1), zone });
+
+  // Per-station: "približno N dni …". National (mean-of-stations curve): "povprečno N
+  // dni na postajo …", dividing the summed n_samples by the station count so the figure
+  // is a real day count, not station-days (T-5.22). See binDays for the rationale.
+  const nSamples     = d.n_samples ?? 0;
+  const stationCount = d.station_count ?? 1;
+  const perStationN  = stationCount > 0 ? nSamples / stationCount : nSamples;
+  const isNational   = stationCount > 1;
+  const lo   = Math.floor(temp);
+  const hi   = lo + 1;
+  const days = binDays(dist, temp, perStationN);
+  const line2 = days === 0
+    ? t(isNational ? "dist.tooltip_freq_nat_lt1" : "dist.tooltip_freq_lt1",
+        { lo: fmtInt(lo), hi: fmtInt(hi) })
+    : t(isNational ? "dist.tooltip_freq_nat" : "dist.tooltip_freq",
+        { count: days, lo: fmtInt(lo), hi: fmtInt(hi) });
+
+  return `${line1}<br>${line2}`;
 }

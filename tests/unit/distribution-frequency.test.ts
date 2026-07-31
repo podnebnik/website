@@ -6,7 +6,9 @@ import {
   binDays,
   densityAt,
   assertFrequencySane,
+  distributionTooltipHtml,
 } from "../../code/ali-je-vroce-era5/charts/distribution-frequency.ts";
+import type { TodayStatus } from "../../code/ali-je-vroce-era5/types.ts";
 
 // T-5.22 — the distribution tooltip's "frequency line" once reported impossible
 // counts on the national view: it multiplied the mean-of-18-stations density by the
@@ -115,5 +117,47 @@ describe("assertFrequencySane — the loud guard that was missing", () => {
   it("is inert on empty or degenerate input", () => {
     expect(() => assertFrequencySane([], 100, 100, 1)).not.toThrow();
     expect(() => assertFrequencySane(FIX.Ljubljana.dist, 0, 0, 1)).not.toThrow();
+  });
+});
+
+describe("distributionTooltipHtml — derives the WHOLE tooltip from the passed data (T-5.22 B)", () => {
+  // The pre-existing bug: the formatter closed over mount-time cutoffs + distribution,
+  // so after a location switch the zone label and count reflected the FIRST location.
+  // This function takes the data as an argument, so the component can pass live data;
+  // these tests prove the output tracks the argument, not any captured state.
+  const asStatus = (f: Fixture, station_count: number): TodayStatus => ({
+    available: true,
+    n_samples: f.n_samples,
+    station_count,
+    distribution: f.dist,
+    // Cutoffs chosen so 26 °C lands in a DIFFERENT zone per fixture, to catch a
+    // frozen-cutoffs regression: "normal" for MS, "hot" for the tight-banded one.
+    cutoffs: { p5: 10, p10: 15, p20: 18, p50: 24, p80: 30, p95: 34 },
+  });
+
+  it("zone label + count are computed from the argument's cutoffs and curve", () => {
+    const ms = asStatus(FIX.Murska_Sobota, 1);
+    const out = distributionTooltipHtml(ms, 26);
+    // 26 < p80(30) → "Normalno"; count from MS curve at bin centre 26.5.
+    expect(out).toContain("Normalno");
+    expect(out).toContain(String(binDays(FIX.Murska_Sobota.dist, 26, FIX.Murska_Sobota.n_samples)));
+  });
+
+  it("switching the data object switches BOTH zone and count (no stale capture)", () => {
+    const station = distributionTooltipHtml(asStatus(FIX.Ljubljana, 1), 26);
+    const national = distributionTooltipHtml(asStatus(FIX.national, FIX.national.station_count!), 26);
+    // Per-station form vs national "na postajo" form — different by data alone.
+    expect(station).toContain("s temperaturo med 26 in 27 °C");
+    expect(station).not.toContain("na postajo");
+    expect(national).toContain("na postajo");
+    // And the national count is the per-station-divided figure, never station-days.
+    const perN = FIX.national.n_samples / FIX.national.station_count!;
+    expect(national).toContain(String(binDays(FIX.national.dist, 26, perN)));
+    expect(national).not.toContain("2021");
+    expect(national).not.toContain("1534");
+  });
+
+  it("returns empty string when the data has no distribution/cutoffs yet", () => {
+    expect(distributionTooltipHtml({ available: false }, 26)).toBe("");
   });
 });
