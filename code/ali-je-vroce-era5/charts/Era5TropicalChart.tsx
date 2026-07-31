@@ -23,7 +23,7 @@ const ERA5_CONFIGS: Record<string, Config> = {
       ` na leto · lapsna korekcija nadmorske višine · ERA5-Land`,
     tooltipNoun:      t("tropical.noun_days"),
     plainDesc:        (th) => t("tropical.plain_desc_days", { th: fmtInt(th) }),
-    plainNoun:        t("tropical.plain_noun_days"),
+    plainNounInstr:   t("tropical.instr_days"),
   },
   nights: {
     kind:             "nights",
@@ -35,7 +35,7 @@ const ERA5_CONFIGS: Record<string, Config> = {
       ` na leto · lapsna korekcija nadmorske višine · ERA5-Land`,
     tooltipNoun:      t("tropical.noun_nights"),
     plainDesc:        (th) => t("tropical.plain_desc_nights", { th: fmtInt(th) }),
-    plainNoun:        t("tropical.plain_noun_nights"),
+    plainNounInstr:   t("tropical.instr_nights"),
   },
 };
 
@@ -98,7 +98,7 @@ export function Era5TropicalChart(props: Props) {
   const noTrendReason = () => {
     const d = display();
     if (!d || d.trend.model_used) return null;
-    return t("tropical.no_trend", { plainNoun: cfg().plainNoun, count: d.nonzero_count });
+    return t("tropical.no_trend", { instr: cfg().plainNounInstr, count: d.nonzero_count });
   };
 
   return (

@@ -81,14 +81,14 @@ export const sl = {
     // ARSO cutoffs vs ERA5 record — kept as separate templates as in TodayCard.
     desc_arso_freezing: "Med najhladnejšimi {d} v naših zapisih ARSO.",
     desc_arso_cold: "Hladneje od večine izmerjenih {d}.",
-    desc_arso_nope: "Točno takšno, kot {d} v {country} ponavadi je.",
+    desc_arso_nope: "Točno takšno, kot {d} v Sloveniji ponavadi je.",
     desc_arso_hot: "Med najtoplejšimi {d} v naših zapisih.",
-    desc_arso_hell: "Izjemna vročina — vrh 5 % vseh {d} glede na meritve ARSO.",
+    desc_arso_hell: "Izjemna vročina — med najtoplejšimi 5 % vseh {d} glede na meritve ARSO.",
     desc_era5_freezing: "Med najhladnejšimi {d} v naših {record_years} letih zapisov.",
     desc_era5_cold: "Hladneje od večine izmerjenih {d}.",
-    desc_era5_nope: "Točno takšno, kot {d} v {country} ponavadi je.",
+    desc_era5_nope: "Točno takšno, kot {d} v Sloveniji ponavadi je.",
     desc_era5_hot: "Med najtoplejšimi {d} v naših zapisih.",
-    desc_era5_hell: "Izjemna vročina — vrh 5 % vseh {d} od {year_min}.",
+    desc_era5_hell: "Izjemna vročina — med najtoplejšimi 5 % vseh {d} od {year_min}.",
 
     national_explain: "Povprečje najvišjih dnevnih temperatur {count, plural, one{# slovenske postaje} two{# slovenskih postaj} few{# slovenskih postaj} other{# slovenskih postaj}} (nadmorska višina {elMin}–{elMax} m), razvrščeno glede na zapise ERA5-Land od leta {yearMin} za isto ±7-dnevno okno.",
     explain_arso: "Temperatura na ARSO postaji {label}, razvrstena glede na percentilne zapise ARSO meritev.",
@@ -116,7 +116,7 @@ export const sl = {
 
     chart_title_nat: "Dnevne najvišje temperature v Sloveniji za dva tedna okoli {day} od {year_min}",
     chart_title_station: "Dnevne najvišje temperature na postaji {station} za dva tedna okoli {day} od {year_min}",
-    chart_explain: "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+    chart_explain: "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
     // {region} = "Slovenija" | "Danes"
     foot2: "{region}: {temp} °C · {pct}. percentil · mediana {median} °C · {count, plural, one{# opazovanje} two{# opazovanji} few{# opazovanja} other{# opazovanj}} · {year_min}–{year_max}",
     foot2_region_nat: "Slovenija",
@@ -343,8 +343,17 @@ export const sl = {
     unit_nights: "noči",
     noun_days: "Tropski dnevi",
     noun_nights: "Tropske noči",
+    // T-5.19 — `plain_noun_days`/`plain_noun_nights` are the nominative-singular
+    // forms; they are now UNUSED (their only consumer, no_trend, moved to the
+    // pre-declined instrumental forms below). Left in place, not deleted, per the
+    // ticket — removal is its own change.
     plain_noun_days: "tropski dan",
     plain_noun_nights: "tropska noč",
+    // Instrumental-plural forms for no_trend's "z {instr}" — Slovene morphology the
+    // old "z {plainNoun}i" concatenation could not produce (it rendered the
+    // ungrammatical "z tropski dani" / "z tropska noči").
+    instr_days: "tropskimi dnevi",
+    instr_nights: "tropskimi nočmi",
     ctrl_threshold: "Prag:",
     ctrl_streak_days: "Min. zap. dni:",
     ctrl_streak_nights: "Min. zap. noči:",
@@ -367,7 +376,7 @@ export const sl = {
     dir_more: "več",
     dir_less: "manj",
     plain: "{plainDesc} Postaja {station} kaže {sig}: grobe {dpd} {dir} {unit} na desetletje. {forward}",
-    no_trend: "Premalo let z {plainNoun}i za izračun trenda ({count, plural, one{# leto} two{# leti} few{# leta} other{# let}} z vrednostjo > 0). Potrebnih je vsaj 10.",
+    no_trend: "Premalo let z {instr} za izračun trenda ({count, plural, one{# leto} two{# leti} few{# leta} other{# let}} z vrednostjo > 0). Potrebnih je vsaj 10.",
     a11y: "Stolpčni prikaz letnega števila — {noun}, torej koliko {unit} na leto preseže izbrani temperaturni prag — z modelom trenda negativne binomske regresije in intervalom zaupanja; zadnji stolpec je leto v teku.",
   },
 

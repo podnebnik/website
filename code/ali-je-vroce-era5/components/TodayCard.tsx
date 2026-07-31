@@ -17,7 +17,10 @@ const CATEGORIES: Record<string, string> = {
 };
 
 // T-5.5 — category descriptions live in the catalogue (today.desc_{arso,era5}_*),
-// parameterised on {d} / {country} / {record_years} / {year_min}.
+// parameterised on {d} / {record_years} / {year_min}.
+// T-5.19 — the former {country} placeholder was always fed the nominative
+// "Slovenija", producing the ungrammatical "v Slovenija"; the locative "v Sloveniji"
+// is now baked into the two desc_*_nope strings, so no country param is passed.
 function catDesc(catKey: string, r: TodayStatus): string {
   const isArso = r.loc ? isArsoLoc(r.loc) : false;
   const d = fmtDayLabel(r.day_label ?? "");
@@ -27,7 +30,6 @@ function catDesc(catKey: string, r: TodayStatus): string {
   const yearMax = r.year_max ?? todayYear();
   return t(`today.desc_${isArso ? "arso" : "era5"}_${catKey}`, {
     d,
-    country: "Slovenija",
     year_min: yearMin,
     record_years: yearMax - yearMin + 1,
   });

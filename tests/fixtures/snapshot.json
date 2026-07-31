@@ -30197,7 +30197,7 @@
           "header": "Tropski dnevi · Kredarica",
           "coverage": "77 let · 0 z vrednostjo > 0",
           "paragraphs": [
-            "Premalo let z tropski dani za izračun trenda (0 let z vrednostjo > 0). Potrebnih je vsaj 10."
+            "Premalo let z tropskimi dnevi za izračun trenda (0 let z vrednostjo > 0). Potrebnih je vsaj 10."
           ]
         },
         "current_year_bar": {
@@ -30663,7 +30663,7 @@
           "header": "Tropske noči · Kredarica",
           "coverage": "77 let · 0 z vrednostjo > 0",
           "paragraphs": [
-            "Premalo let z tropska noči za izračun trenda (0 let z vrednostjo > 0). Potrebnih je vsaj 10."
+            "Premalo let z tropskimi nočmi za izračun trenda (0 let z vrednostjo > 0). Potrebnih je vsaj 10."
           ]
         },
         "current_year_bar": {
@@ -31893,7 +31893,7 @@
           },
           "category_label": "Normalno",
           "category_color": "rgb(231, 217, 184)",
-          "description": "Točno takšno, kot 21. jul. v Slovenija ponavadi je.",
+          "description": "Točno takšno, kot 21. jul. v Sloveniji ponavadi je.",
           "percentile": "38",
           "percentile_label": "percentil",
           "samples": "20.682 vzorcev",
@@ -32851,7 +32851,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature v Sloveniji za dva tedna okoli 21. jul. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
         "footer": "Slovenija: 23,8 °C · 38. percentil · mediana 24,5 °C · 20.682 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -35251,7 +35251,7 @@
           },
           "category_label": "Normalno",
           "category_color": "rgb(231, 217, 184)",
-          "description": "Točno takšno, kot 21. jul. v Slovenija ponavadi je.",
+          "description": "Točno takšno, kot 21. jul. v Sloveniji ponavadi je.",
           "percentile": "49",
           "percentile_label": "percentil",
           "samples": "1149 vzorcev",
@@ -36400,7 +36400,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 21. jul. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
         "footer": "Danes: 24,9 °C · 49. percentil · mediana 24,9 °C · 1149 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -38800,7 +38800,7 @@
           },
           "category_label": "Normalno",
           "category_color": "rgb(231, 217, 184)",
-          "description": "Točno takšno, kot 21. jul. v Slovenija ponavadi je.",
+          "description": "Točno takšno, kot 21. jul. v Sloveniji ponavadi je.",
           "percentile": "28",
           "percentile_label": "percentil",
           "samples": "1149 vzorcev",
@@ -39949,7 +39949,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Kredarica za dva tedna okoli 21. jul. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
         "footer": "Danes: 9,0 °C · 28. percentil · mediana 11,2 °C · 1149 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -42349,7 +42349,7 @@
           },
           "category_label": "Peklensko",
           "category_color": "rgb(150, 44, 26)",
-          "description": "Izjemna vročina — vrh 5 % vseh 29. jul. od 1950.",
+          "description": "Izjemna vročina — med najtoplejšimi 5 % vseh 29. jul. od 1950.",
           "percentile": "97",
           "percentile_label": "percentil",
           "samples": "20.538 vzorcev",
@@ -43307,7 +43307,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature v Sloveniji za dva tedna okoli 29. jul. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
         "footer": "Slovenija: 32,5 °C · 97. percentil · mediana 24,7 °C · 20.538 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -45707,7 +45707,7 @@
           },
           "category_label": "Peklensko",
           "category_color": "rgb(150, 44, 26)",
-          "description": "Izjemna vročina — vrh 5 % vseh 29. jul. od 1950.",
+          "description": "Izjemna vročina — med najtoplejšimi 5 % vseh 29. jul. od 1950.",
           "percentile": "99",
           "percentile_label": "percentil",
           "samples": "1141 vzorcev",
@@ -46856,7 +46856,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 29. jul. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
         "footer": "Danes: 34,8 °C · 99. percentil · mediana 25,0 °C · 1141 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -49256,7 +49256,7 @@
           },
           "category_label": "Peklensko",
           "category_color": "rgb(150, 44, 26)",
-          "description": "Izjemna vročina — vrh 5 % vseh 29. jul. od 1950.",
+          "description": "Izjemna vročina — med najtoplejšimi 5 % vseh 29. jul. od 1950.",
           "percentile": "95",
           "percentile_label": "percentil",
           "samples": "1141 vzorcev",
@@ -50405,7 +50405,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Kredarica za dva tedna okoli 29. jul. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
         "footer": "Danes: 16,8 °C · 95. percentil · mediana 11,3 °C · 1141 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -53763,7 +53763,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature v Sloveniji za dva tedna okoli 15. jul. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
         "footer": "Slovenija: 28,0 °C · 78. percentil · mediana 24,3 °C · 20.790 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -57312,7 +57312,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 15. jul. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
         "footer": "Danes: 29,7 °C · 90. percentil · mediana 24,7 °C · 1155 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -60861,7 +60861,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Kredarica za dva tedna okoli 15. jul. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
         "footer": "Danes: 13,9 °C · 80. percentil · mediana 10,9 °C · 1155 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -65816,7 +65816,7 @@
           },
           "category_label": "Normalno",
           "category_color": "rgb(231, 217, 184)",
-          "description": "Točno takšno, kot 1. mar. v Slovenija ponavadi je.",
+          "description": "Točno takšno, kot 1. mar. v Sloveniji ponavadi je.",
           "percentile": "78",
           "percentile_label": "percentil",
           "samples": "1174 vzorcev",
@@ -66947,7 +66947,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 1. mar. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
         "footer": "Danes: 10,9 °C · 78. percentil · mediana 7,2 °C · 1174 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -69347,7 +69347,7 @@
           },
           "category_label": "Normalno",
           "category_color": "rgb(231, 217, 184)",
-          "description": "Točno takšno, kot 28. feb. v Slovenija ponavadi je.",
+          "description": "Točno takšno, kot 28. feb. v Sloveniji ponavadi je.",
           "percentile": "69",
           "percentile_label": "percentil",
           "samples": "1174 vzorcev",
@@ -70496,7 +70496,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 28. feb. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
         "footer": "Danes: 9,4 °C · 69. percentil · mediana 7,1 °C · 1174 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -72896,7 +72896,7 @@
           },
           "category_label": "Normalno",
           "category_color": "rgb(231, 217, 184)",
-          "description": "Točno takšno, kot 1. mar. v Slovenija ponavadi je.",
+          "description": "Točno takšno, kot 1. mar. v Sloveniji ponavadi je.",
           "percentile": "68",
           "percentile_label": "percentil",
           "samples": "1174 vzorcev",
@@ -74045,7 +74045,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 1. mar. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
         "footer": "Danes: 9,4 °C · 68. percentil · mediana 7,2 °C · 1174 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -77594,7 +77594,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 1. jan. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
         "footer": "Danes: 8,4 °C · 91. percentil · mediana 3,3 °C · 1148 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -79994,7 +79994,7 @@
           },
           "category_label": "Normalno",
           "category_color": "rgb(231, 217, 184)",
-          "description": "Točno takšno, kot 31. dec. v Slovenija ponavadi je.",
+          "description": "Točno takšno, kot 31. dec. v Sloveniji ponavadi je.",
           "percentile": "34",
           "percentile_label": "percentil",
           "samples": "1147 vzorcev",
@@ -81143,7 +81143,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 31. dec. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
         "footer": "Danes: 1,5 °C · 34. percentil · mediana 3,3 °C · 1147 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -83535,7 +83535,7 @@
           },
           "category_label": "Peklensko",
           "category_color": "rgb(150, 44, 26)",
-          "description": "Izjemna vročina — vrh 5 % vseh 3. avg. od 1950.",
+          "description": "Izjemna vročina — med najtoplejšimi 5 % vseh 3. avg. od 1950.",
           "percentile": "99",
           "percentile_label": "percentil",
           "samples": "1140 vzorcev",
@@ -84684,7 +84684,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 3. avg. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
         "footer": "Danes: 35,6 °C · 99. percentil · mediana 25,1 °C · 1140 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -87076,7 +87076,7 @@
           },
           "category_label": "Peklensko",
           "category_color": "rgb(150, 44, 26)",
-          "description": "Izjemna vročina — vrh 5 % vseh 3. avg. od 1950.",
+          "description": "Izjemna vročina — med najtoplejšimi 5 % vseh 3. avg. od 1950.",
           "percentile": "100",
           "percentile_label": "percentil",
           "samples": "1140 vzorcev",
@@ -88225,7 +88225,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Kredarica za dva tedna okoli 3. avg. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
         "footer": "Danes: 21,7 °C · 100. percentil · mediana 11,4 °C · 1140 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -91766,7 +91766,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 7. feb. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
         "footer": "Danes: −5,8 °C · 3. percentil · mediana 4,8 °C · 1155 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -95328,7 +95328,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Kredarica za dva tedna okoli 7. jan. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
         "footer": "Danes: −23,7 °C · 0. percentil · mediana −8,8 °C · 1154 opazovanj · 1950–2026"
       },
       "today_trend": {

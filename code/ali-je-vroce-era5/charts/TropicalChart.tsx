@@ -43,7 +43,7 @@ export interface Config {
   subLabel:         (th: number, st: number) => string;
   tooltipNoun:      string;
   plainDesc:        (th: number) => string;
-  plainNoun:        string;
+  plainNounInstr:   string;  // instrumental-plural noun for no_trend ("z {instr}")
 }
 
 const INK      = "#0E0E0C";
