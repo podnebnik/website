@@ -16,6 +16,19 @@ depend on stage at all. It fires ONLY when the derived output actually moves —
 signal — and the fix is the same deliberate, reviewable act re-recording fixtures already
 is: regenerate and commit the new manifest, in the same commit that moved the numbers.
 
+Self-diagnosis (T-5.17 amendment)
+---------------------------------
+The gate fires in the amd64 `generate-db` job, and the amd64 CSV it built is never
+uploaded — so the check must explain itself from what it has. The manifest therefore
+carries, besides the file-level hash that IS the gate, a per-COLUMN hash for every table.
+On failure the check names the exact column(s) whose bytes moved, which is usually enough
+to tell a fitted display statistic (tropical's `trend_json`, output of an iterative
+NB-GLM whose optimiser path is architecture-sensitive) from a deterministic COUNT
+(`counts_json`, `years_json`, `nonzero_count`) that a reader sees and that must never
+differ across machines. Point `--reference <dir>` at the other CSV set (when both are on
+one machine) to also get bounded row-level diffs with both sides — for a long JSON column
+it reports the differing JSON KEY and its two values, not the whole blob.
+
 What is hashed, and where it runs
 ---------------------------------
 The nine derived CSV EXPORTS (export_datasette_csv.py output: pandas to_csv, index-less,
@@ -27,15 +40,12 @@ production serves.
 Determinism was verified before relying on it (T-5.17): two full precompute+export runs on
 the same inputs produced byte-identical CSVs on all nine tables, and forcing a different
 BLAS thread count (a reduction-order perturbation of the same class as a cross-architecture
-ULP difference) changed nothing — precompute rounds every value to a fixed number of
-decimals (2–6 dp), which absorbs float noise ~six orders of magnitude below the rounding
-step. precompute uses no RNG, no wall-clock and no set/dict ordering in its output.
+ULP difference) changed nothing. precompute rounds every value to a fixed number of
+decimals and uses no RNG, no wall-clock and no set/dict ordering in its output.
 
-⚠ The manifest is an amd64 artifact by construction. Generation runs ONCE, on native
-amd64, in the `generate-db` job (T-5.9) — this check runs in the same builder, on the same
-architecture, so the committed hashes and the recomputed hashes share an environment. Do
-NOT regenerate the manifest under emulation: emulated-amd64 floating point is not native
-amd64 and may not reproduce CI's hashes.
+⚠ The manifest is an amd64 artifact by construction: generation runs ONCE, on native
+amd64, in the `generate-db` job (T-5.9), and this check runs in the same builder. Do NOT
+regenerate it under emulation — emulated-amd64 floating point is not native amd64.
 
 Usage
 -----
@@ -43,13 +53,18 @@ Usage
     TABLES_DIR=/build/data/climate-si/data \
         python check_table_hashes.py --manifest data/climate-si/derived-tables.sha256
 
+    # check with row-level diffs against another CSV set (both must be local)
+    TABLES_DIR=.../amd64  python check_table_hashes.py --reference .../aarch64
+
     # write: regenerate the manifest after a DELIBERATE pipeline change
     TABLES_DIR=.../data python check_table_hashes.py --write \
         --manifest data/climate-si/derived-tables.sha256
 """
 
 import argparse
+import csv
 import hashlib
+import json
 import os
 import sys
 from pathlib import Path
@@ -64,12 +79,16 @@ from validate import TABLE_NAMES
 DEFAULT_TABLES_DIR = Path(__file__).parent.parent / "data"
 DEFAULT_MANIFEST = Path(__file__).parent.parent / "derived-tables.sha256"
 
+# How much of a failing diff to print — enough to diagnose, never the whole table.
+_MAX_DIFF_ROWS = 8
+_MAX_VAL = 160
+
 
 def _csv_path(tables_dir: Path, name: str) -> Path:
     return tables_dir / f"climate-si.{name}.csv"
 
 
-def _sha256(path: Path) -> str:
+def _file_hash(path: Path) -> str:
     h = hashlib.sha256()
     with open(path, "rb") as fo:
         for chunk in iter(lambda: fo.read(1 << 20), b""):
@@ -77,9 +96,25 @@ def _sha256(path: Path) -> str:
     return h.hexdigest()
 
 
-def _compute(tables_dir: Path) -> dict[str, str]:
-    """sha256 of every derived CSV export, keyed by table name. Missing file → exit."""
-    out: dict[str, str] = {}
+def _column_hashes(path: Path) -> dict[str, str]:
+    """sha256 per column, over the RAW csv cell strings in row order — no float reparse,
+    so the diagnostic introduces no noise of its own. Order-sensitive, so it moves iff a
+    cell in that column moves."""
+    with open(path, newline="") as fo:
+        reader = csv.reader(fo)
+        header = next(reader, [])
+        hs = [hashlib.sha256() for _ in header]
+        for row in reader:
+            for i, cell in enumerate(row):
+                if i < len(hs):
+                    hs[i].update(cell.encode("utf-8"))
+                    hs[i].update(b"\n")
+    return {col: hs[i].hexdigest() for i, col in enumerate(header)}
+
+
+def _compute(tables_dir: Path) -> dict[str, dict]:
+    """For every derived table: its file hash and per-column hashes. Missing file → exit."""
+    out: dict[str, dict] = {}
     for name in TABLE_NAMES:
         path = _csv_path(tables_dir, name)
         if not path.exists():
@@ -87,41 +122,119 @@ def _compute(tables_dir: Path) -> dict[str, str]:
                 f"derived CSV not found: {path}\n"
                 f"Run precompute_datasette.py then export_datasette_csv.py first."
             )
-        out[name] = _sha256(path)
+        out[name] = {"file": _file_hash(path), "columns": _column_hashes(path)}
     return out
 
 
-def _manifest_text(hashes: dict[str, str]) -> str:
-    """`shasum -a 256` format (two spaces), one line per table, sorted by table name."""
-    return "".join(
-        f"{hashes[name]}  climate-si.{name}.csv\n" for name in sorted(hashes)
-    )
+def _manifest_text(manifest: dict[str, dict]) -> str:
+    """`shasum -a 256` format (two spaces). One file line per table, then one line per
+    column tagged `<file>#<column>`, columns in CSV order. Sorted by table name."""
+    lines: list[str] = []
+    for name in sorted(manifest):
+        entry = manifest[name]
+        lines.append(f"{entry['file']}  climate-si.{name}.csv")
+        for col, digest in entry["columns"].items():
+            lines.append(f"{digest}  climate-si.{name}.csv#{col}")
+    return "".join(f"{line}\n" for line in lines)
 
 
-def _parse_manifest(text: str) -> dict[str, str]:
-    out: dict[str, str] = {}
+def _parse_manifest(text: str) -> dict[str, dict]:
+    out: dict[str, dict] = {}
     for line in text.splitlines():
         line = line.strip()
         if not line or line.startswith("#"):
             continue
-        digest, _, fname = line.partition("  ")
-        if not fname:
+        digest, sep, fname = line.partition("  ")
+        if not sep:
             sys.exit(f"malformed manifest line (expected '<sha256>  <file>'): {line!r}")
+        fname, _, col = fname.partition("#")
         name = fname.removeprefix("climate-si.").removesuffix(".csv")
-        out[name] = digest
+        entry = out.setdefault(name, {"file": None, "columns": {}})
+        if col:
+            entry["columns"][col] = digest
+        else:
+            entry["file"] = digest
     return out
 
 
+def _truncate(s: str) -> str:
+    return s if len(s) <= _MAX_VAL else s[:_MAX_VAL] + f"…(+{len(s) - _MAX_VAL})"
+
+
+def _json_key_diff(a: str, b: str) -> str | None:
+    """For two JSON blobs, return a compact description of the FIRST differing key/index
+    and both values, rather than dumping the whole thing. None if not both JSON."""
+    try:
+        ja, jb = json.loads(a), json.loads(b)
+    except (ValueError, TypeError):
+        return None
+    if isinstance(ja, dict) and isinstance(jb, dict):
+        for k in sorted(set(ja) | set(jb)):
+            if ja.get(k) != jb.get(k):
+                return f"[{k!r}] {ja.get(k)!r} vs {jb.get(k)!r}"
+    if isinstance(ja, list) and isinstance(jb, list):
+        if len(ja) != len(jb):
+            return f"length {len(ja)} vs {len(jb)}"
+        for i, (x, y) in enumerate(zip(ja, jb)):
+            if x != y:
+                return f"[{i}] {x!r} vs {y!r}"
+    return None
+
+
+def _short_context(row: dict[str, str], differing: str) -> str:
+    """The identifying (short, non-blob) fields of a row, for locating the diff."""
+    bits = [f"{k}={v}" for k, v in row.items()
+            if k != differing and len(v) <= 24 and not k.endswith("_json")]
+    return ", ".join(bits)
+
+
+def _diff_rows(current: Path, reference: Path) -> None:
+    """Print bounded row-level diffs between two CSVs, aligned by row index (precompute
+    output order is deterministic). Both sides shown; JSON columns reduced to the key."""
+    with open(current, newline="") as fo:
+        cur = list(csv.DictReader(fo))
+    with open(reference, newline="") as fo:
+        ref = list(csv.DictReader(fo))
+
+    if len(cur) != len(ref):
+        print(f"      row COUNT differs: {len(cur)} (current) vs {len(ref)} (reference)",
+              file=sys.stderr)
+
+    shown = 0
+    total = 0
+    for i in range(min(len(cur), len(ref))):
+        cols = [c for c in cur[i] if cur[i].get(c) != ref[i].get(c)]
+        if not cols:
+            continue
+        total += 1
+        if shown >= _MAX_DIFF_ROWS:
+            continue
+        shown += 1
+        ctx = _short_context(cur[i], cols[0])
+        print(f"      row {i} ({ctx or '—'})", file=sys.stderr)
+        for c in cols:
+            cv, rv = cur[i].get(c, ""), ref[i].get(c, "")
+            jk = _json_key_diff(cv, rv) if c.endswith("_json") else None
+            if jk is not None:
+                print(f"        {c}: first differing key {jk}", file=sys.stderr)
+            else:
+                print(f"        {c}: {_truncate(cv)}  (current)", file=sys.stderr)
+                print(f"        {c}: {_truncate(rv)}  (reference)", file=sys.stderr)
+    print(f"      {total} row(s) differ in this table"
+          + (f" (showing {shown})" if total > shown else ""), file=sys.stderr)
+
+
 def _write(tables_dir: Path, manifest: Path) -> int:
-    hashes = _compute(tables_dir)
-    manifest.write_text(_manifest_text(hashes))
-    print(f"Wrote {len(hashes)} table hashes → {manifest}")
-    for name in sorted(hashes):
-        print(f"  {hashes[name]}  climate-si.{name}.csv")
+    computed = _compute(tables_dir)
+    manifest.write_text(_manifest_text(computed))
+    ncols = sum(len(e["columns"]) for e in computed.values())
+    print(f"Wrote {len(computed)} table + {ncols} column hashes → {manifest}")
+    for name in sorted(computed):
+        print(f"  {computed[name]['file']}  climate-si.{name}.csv")
     return 0
 
 
-def _check(tables_dir: Path, manifest: Path) -> int:
+def _check(tables_dir: Path, manifest: Path, reference: Path | None = None) -> int:
     if not manifest.exists():
         print(
             f"FAIL — manifest not found: {manifest}\n"
@@ -135,29 +248,51 @@ def _check(tables_dir: Path, manifest: Path) -> int:
 
     missing = [n for n in TABLE_NAMES if n not in expected]
     extra = [n for n in expected if n not in TABLE_NAMES]
-    moved = [n for n in TABLE_NAMES if n in expected and actual[n] != expected[n]]
+    moved = [n for n in TABLE_NAMES
+             if n in expected and actual[n]["file"] != expected[n]["file"]]
 
-    if missing or extra or moved:
-        print("FAIL — derived tables do not match the committed manifest.", file=sys.stderr)
-        for n in missing:
-            print(f"  MISSING from manifest: {n}", file=sys.stderr)
-        for n in extra:
-            print(f"  UNKNOWN in manifest:   {n}", file=sys.stderr)
-        for n in moved:
-            print(f"  MOVED: climate-si.{n}.csv", file=sys.stderr)
-            print(f"         expected {expected[n]}", file=sys.stderr)
-            print(f"         actual   {actual[n]}", file=sys.stderr)
-        print(
-            "\nA derived table's bytes changed. If the move is intended, regenerate the\n"
-            "manifest in the SAME commit: `python check_table_hashes.py --write` (on native\n"
-            "amd64), and update tests/fixtures + tests/snapshot as usual. If it is NOT\n"
-            "intended, a pipeline change moved published output — investigate before merging.",
-            file=sys.stderr,
-        )
-        return 1
+    if not (missing or extra or moved):
+        print(f"OK — all {len(TABLE_NAMES)} derived tables match {manifest.name}.")
+        return 0
 
-    print(f"OK — all {len(TABLE_NAMES)} derived tables match {manifest.name}.")
-    return 0
+    print("FAIL — derived tables do not match the committed manifest.", file=sys.stderr)
+    for n in missing:
+        print(f"  MISSING from manifest: {n}", file=sys.stderr)
+    for n in extra:
+        print(f"  UNKNOWN in manifest:   {n}", file=sys.stderr)
+    for n in moved:
+        print(f"  MOVED: climate-si.{n}.csv", file=sys.stderr)
+        print(f"         expected {expected[n]['file']}", file=sys.stderr)
+        print(f"         actual   {actual[n]['file']}", file=sys.stderr)
+        # Name the exact column(s) that moved — the self-diagnosis, no reference needed.
+        exp_cols = expected[n].get("columns", {})
+        if exp_cols:
+            cols_moved = [c for c, h in actual[n]["columns"].items()
+                          if c not in exp_cols or exp_cols[c] != h]
+            unchanged = [c for c in actual[n]["columns"] if c not in cols_moved]
+            print(f"         column(s) moved: {cols_moved or '(none — file differs but '
+                  f'no column hash did; check line endings)'}", file=sys.stderr)
+            print(f"         column(s) unchanged: {unchanged}", file=sys.stderr)
+        else:
+            print("         (manifest has no per-column hashes; regenerate with --write)",
+                  file=sys.stderr)
+        # Full both-sides row diff only when a reference CSV set is available locally.
+        if reference is not None:
+            ref_csv = _csv_path(reference, n)
+            if ref_csv.exists():
+                _diff_rows(_csv_path(tables_dir, n), ref_csv)
+            else:
+                print(f"      (no reference CSV at {ref_csv})", file=sys.stderr)
+
+    print(
+        "\nA derived table's bytes changed. If the move is intended, regenerate the\n"
+        "manifest in the SAME commit: `python check_table_hashes.py --write` (on native\n"
+        "amd64), and update tests/fixtures + tests/snapshot as usual. If it is NOT\n"
+        "intended, a pipeline change moved published output — investigate before merging.\n"
+        "Pass --reference <dir> with the other CSV set for row-level, both-sides diffs.",
+        file=sys.stderr,
+    )
+    return 1
 
 
 def main() -> int:
@@ -166,6 +301,9 @@ def main() -> int:
                     help="regenerate the manifest instead of checking against it")
     ap.add_argument("--manifest", type=Path, default=None,
                     help=f"manifest path (default: {DEFAULT_MANIFEST})")
+    ap.add_argument("--reference", type=Path, default=None,
+                    help="directory holding the OTHER climate-si.*.csv set, for "
+                         "row-level both-sides diffs on failure")
     args = ap.parse_args()
 
     tables_dir = Path(os.environ.get("TABLES_DIR", str(DEFAULT_TABLES_DIR)))
@@ -173,7 +311,7 @@ def main() -> int:
 
     if args.write:
         return _write(tables_dir, manifest)
-    return _check(tables_dir, manifest)
+    return _check(tables_dir, manifest, args.reference)
 
 
 if __name__ == "__main__":
