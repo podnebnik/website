@@ -10,6 +10,10 @@ export interface TodayStatus {
   category_key?: string;
   color?:       string;
   n_samples?:   number;
+  // National aggregate: how many stations were pooled (for the national view `n_samples`
+  // is the SUM across stations); 1 on a single station. Used to recover per-station
+  // day-counts in the distribution tooltip (T-5.22). Absent → treat as 1.
+  station_count?: number;
   year_min?:    number;
   year_max?:    number;
   distribution?: [number, number][];
@@ -70,6 +74,9 @@ export interface DailyWindowRow extends Pick<
   | "n_samples" | "year_min" | "year_max" | "distribution_json"
 > {
   station: string;
+  // National synthetic row only: number of stations pooled into this aggregate
+  // (`n_samples` is their SUM). Undefined on real per-station datasette rows. T-5.22.
+  station_count?: number;
 }
 
 /** Site metadata — built client-side in api.ts:173 from the datasette stations
