@@ -153,7 +153,7 @@ export const sl = {
   trend: {
     title_station: "Najvišje temperature na postaji {station} okoli {day} · {yearMin}–{yearMax} · trend s projekcijo do 2050",
     title_nat: "Najvišje temperature v Sloveniji okoli {day} · {yearMin}–{yearMax} · trend s projekcijo do 2050",
-    explain: "Vsaka pika je povprečje {source} v ±7-dnevnem oknu okoli tega datuma za vsako leto od {yearMin}. Trend Theil-Sen je {trend} °C/desetletje ({sig}). Po tem tempu projekcija kaže {proj2050} °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+    explain: "Vsaka pika je povprečna vrednost ({source}) v ±7-dnevnem oknu okoli tega datuma za vsako leto od {yearMin}. Trend Theil-Sen je {trend} °C/desetletje ({sig}). Po tem tempu projekcija kaže {proj2050} °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
     explain_source_station: "lapsno popravljene dnevne najvišje temperature na postaji {station}",
     explain_source_nat: "nacionalne povprečne dnevne najvišje temperature vseh {count, plural, one{# postaje} two{# postaj} few{# postaj} other{# postaj}}",
     foot: "Theil-Sen + TFPW MK: {trend} °C/desetletje · {sig} · τ = {tau} · 95% CI · {count, plural, one{# leto} two{# leti} few{# leta} other{# let}}",
