@@ -4,7 +4,7 @@ import { isArsoLoc, daysInMonth } from "../api.ts";
 import { todayYear } from "../clock.ts";
 import { TodayFlag } from "./TodayFlag.tsx";
 import { TodayGauge } from "../charts/TodayGauge.tsx";
-import { t, fmtNum, fmtInt, fmtMonthDay, fmtMonthLong } from "../i18n/format.ts";
+import { t, fmtNum, fmtInt, fmtMonthDay, fmtMonthDayYear, fmtMonthLong } from "../i18n/format.ts";
 
 const TodayLast7Chart = lazy(() => import("./TodayLast7Chart.tsx").then(m => ({ default: m.TodayLast7Chart })));
 
@@ -63,9 +63,18 @@ function fmtDayLabel(dl: string): string {
   const m = EN_MONTHS[mon ?? ""] ?? 0;
   return m ? fmtMonthDay(m, Number(day)) : "??";
 }
-function fmtDate(dateStr: string): string {
-  const [, mm, dd] = dateStr.split("-");
-  return fmtMonthDay(Number(mm), Number(dd));
+// The hero badge (T-5.33). Show the year ONLY when the selected date is not in the
+// device-current year — then "1. avg." would silently read as today's year while the
+// reader is looking at, say, 1994 data. `currentYear` is the device year (clock.ts,
+// Europe/Ljubljana), threaded in as props.today's year — NOT the record end or the
+// served-data end, which lag it. The year comes from Intl (fmtMonthDayYear), same
+// boundary as every other date on the page (format.ts:68).
+function fmtDate(dateStr: string, currentYear: number): string {
+  const [yy, mm, dd] = dateStr.split("-");
+  const y = Number(yy);
+  return y === currentYear
+    ? fmtMonthDay(Number(mm), Number(dd))
+    : fmtMonthDayYear(Number(mm), Number(dd), y);
 }
 
 function addDays(dateStr: string, n: number): string {
@@ -299,8 +308,9 @@ function RankBadge(props: { info: RankInfo; dayLabel: string }) {
 // an error to hide. Split from the DOY picker on purpose (state type, bounds, month-wrap
 // and leap handling all differ); it reuses the .reg-cal-* CSS and the fmtMonthLong month
 // names, so no content has a second source of truth (D-18 / T-5.26). Popover is closed by
-// default → adds no rendered text; the badge text (fmtDate) is unchanged, so the snapshot
-// (r.txt(".today-date-badge")) stays byte-identical.
+// default → adds no rendered text. The badge text (fmtDate) now appends the year for a
+// non-current-year date (T-5.33), so the snapshot leaf (r.txt(".today-date-badge")) moves
+// for any case pinned outside the device-current year — text only, no number.
 function pad2(n: number): string { return String(n).padStart(2, "0"); }
 function isoOf(y: number, m: number, d: number): string { return `${y}-${pad2(m)}-${pad2(d)}`; }
 
@@ -411,7 +421,7 @@ function HeroDatePicker(props: { date: string; today: string; onDateChange: (d: 
         onClick={() => (calOpen() ? closeCal(false) : openCal())}
         onKeyDown={onTriggerKey}
       >
-        {fmtDate(props.date)}
+        {fmtDate(props.date, maxYear())}
       </div>
       <Show when={calOpen()}>
         <div
