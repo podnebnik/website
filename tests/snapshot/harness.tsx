@@ -484,12 +484,12 @@ function captureTodayCard(unit: Unit, status: TodayStatus, last7: Last7): any {
     },
     // The same numbers as the reader sees them, formatting included.
     rendered: {
-      // The date/location control is outside the Show, so it renders either way.
+      // The date control is outside the Show, so it renders either way.
       date_badge: r.txt(".today-date-badge"),
-      // T-4.18: the station selector, whose options were previously uncaptured.
-      // Renders in both branches (TodayCard.tsx:125-145 sits before the available
-      // Show); the national option carries the T-4.6 "povprečje N postaj" label.
-      loc_select: r.select(".today-loc-select"),
+      // T-5.35: the hero's inline location <select> was retired — the floating
+      // chooser (RegressionPanel.tsx, `structural` in sections.json) is now the
+      // single location control page-wide, and it displays no captured value of its
+      // own. The station labels it lists are still watched via global.meta.stations.
       category_label: ok ? r.txt(".today-cat") : r.optional(".today-cat", why),
       category_color: ok
         ? r.style(".today-cat", "color")
@@ -1014,7 +1014,6 @@ export async function run(): Promise<RunResult> {
           today={today}
           loading={false}
           onDateChange={() => {}}
-          onLocChange={() => {}}
           nationalLoc={ERA5_NATIONAL}
         />
       ),

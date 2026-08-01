@@ -74,15 +74,17 @@ function Dashboard(props: { meta: SiteMeta }) {
 
   const [mapLoc, setMapLoc] = createSignal<string | null>(null);
 
-  // T-5.27 — the floating station chooser reveals once the reader scrolls into the
-  // trends region; this anchors on the "Analiza trendov" heading.
-  let trendsAnchor: HTMLDivElement | undefined;
+  // T-5.35 — the floating chooser is present from page load (it is the only location
+  // control now). It anchors on the hero (today-status) section to decide when to
+  // offer the national "Slovenija" option: 19 entries while the hero is in view, 18
+  // once it is not (D-27).
+  let heroAnchor: HTMLElement | undefined;
 
   return (
     <div>
 
       {/* ── Today status section ──────────────────────────────────── */}
-      <section class="today-status">
+      <section class="today-status" ref={heroAnchor}>
         <div class="sec-heading">
           <div class="today-heading-text">
             <span class="today-heading-title">{t("sections.today_title")}</span>
@@ -105,7 +107,6 @@ function Dashboard(props: { meta: SiteMeta }) {
                 today={today}
                 loading={pageData.loading}
                 onDateChange={setDate}
-                onLocChange={(v) => setLoc(v === "" ? ERA5_NATIONAL : (v || ERA5_NATIONAL))}
                 nationalLoc={ERA5_NATIONAL}
               />
             )}
@@ -151,7 +152,22 @@ function Dashboard(props: { meta: SiteMeta }) {
         syncLoc={mapLoc}
         onLocChange={setMapLoc}
       >
-        <div class="sec-hs" ref={trendsAnchor}>{t("sections.trends_analysis")}</div>
+        {/* T-5.35 / D-27 — the single location control, over the hero and every
+            section below. Placed FIRST inside the panel (right after the hero's date
+            controls in tab order) so a keyboard user reaches the only location
+            control early, not at the end of the document. It is position:fixed, so
+            DOM order sets tab order, not visual placement. It reads/writes the hero's
+            `loc` and the regression store's station, asymmetrically (see the
+            component). */}
+        <FloatingStationChooser
+          heroAnchor={() => heroAnchor}
+          heroLoc={loc}
+          onHeroLocChange={(v) => setLoc(v === "" ? ERA5_NATIONAL : (v || ERA5_NATIONAL))}
+          nationalLoc={ERA5_NATIONAL}
+          nationalCount={era5Stations.length}
+        />
+
+        <div class="sec-hs">{t("sections.trends_analysis")}</div>
 
         <RegToolbar />
 
@@ -196,10 +212,6 @@ function Dashboard(props: { meta: SiteMeta }) {
         </div>
 
         <Era5Charts />
-
-        {/* T-5.27 / D-26 — single location control for everything above, in the
-            bottom-right corner. Inside the panel so it drives the regression store. */}
-        <FloatingStationChooser anchor={() => trendsAnchor} />
 
       </RegressionPanel>
 
@@ -281,7 +293,13 @@ function Era5Charts() {
         <ErrorBoundary fallback={sectionErrorFallback(refetchSpei, "160px")}>
           <Suspense fallback={<div class="h-40 animate-pulse bg-[var(--color-paper-2)] rounded-xl" />}>
             <Show when={speiData()?.available} fallback={<EmptyState minHeight="160px" />}>
-              <SpeiHeatmapChart data={speiData()!} />
+              {/* T-5.38 — this section reads the `spei` table and is GENUINELY national
+                  (no per-station dimension exists in the data). With the chooser now
+                  setting one station for every other section below the hero, a silent
+                  national section reads as *that station's* drought index; name it, in
+                  the graph zone, matching D-7's canonical name. The sibling "Sušni
+                  trend po postaji — SPEI" (spei_station) IS per-station and says so. */}
+              <SpeiHeatmapChart data={speiData()!} label={t("today.loc_national", { count: s.meta.stations.length })} />
             </Show>
           </Suspense>
         </ErrorBoundary>

@@ -7,6 +7,7 @@ import { fetchRegression, fetchCalendar, varLabel as varLabelOf,
          monthDayToDoy, doyToMonthDay, MONTH_LEN } from "../api.ts";
 import { sectionErrorFallback } from "./SectionError.tsx";
 import { t, fmtSigned, fmtDoy, fmtMonthLong } from "../i18n/format.ts";
+import { readUiPrefs, writeUiPref } from "../prefs.ts";
 
 const RegressionChart = lazy(() => import("../charts/RegressionChart.tsx").then(m => ({ default: m.RegressionChart })));
 const YearRoundChart  = lazy(() => import("../charts/YearRoundChart.tsx").then(m => ({ default: m.YearRoundChart })));
@@ -420,48 +421,99 @@ export function RegYearRoundCard() {
   );
 }
 
-// ── Floating station chooser (T-5.27 / D-26) ──────────────────────────────────
+// ── Floating station chooser (T-5.27 / D-26 / D-27) ───────────────────────────
 //
-// The single location control for every section below "Analiza trendov". Fixed to
-// the bott-right corner, revealed once the reader has scrolled into the trends
-// region (the `anchor` element passes the viewport top), and SHOWN WHEN SCROLLING
-// STOPS — it fades out on scroll-start and back in on scroll-stop, so it never
-// flickers on a gesture. It stays visible while open or while it holds focus, so a
-// keyboard user is never chasing a moving target. The list EXPANDS UPWARD (it opens
-// over content already read, not down into charts not yet reached), which is exactly
-// why it cannot be a native <select> — the browser owns that dropdown's direction.
-// Everything a native control gives for free is therefore built here: roving-tabindex
-// keyboard, focus return, outside-click dismissal, listbox/option semantics.
-export function FloatingStationChooser(props: { anchor: () => HTMLElement | undefined }) {
+// The single location control for the WHOLE page — over the hero and every section
+// below it (T-5.35 retired the hero's inline <select>). Fixed to the bottom-right
+// corner. It is PRESENT AT PAGE LOAD, not gated on scrolling into a region: with the
+// select gone it is the only way to change location, so it cannot hide until the
+// reader scrolls. Once scrolling begins it fades out on scroll-start and back in on
+// scroll-stop (so it never flickers on a gesture), and stays visible while open or
+// while it holds focus, so a keyboard user never chases a moving target.
+//
+// Its option list is POSITION-DEPENDENT (D-27): 19 entries (Slovenija + 18 stations)
+// while the hero is in view, 18 once it is not. The propagation is ASYMMETRIC and
+// that is the point — picking a STATION sets it everywhere (hero + body + map), so
+// the common case behaves as one control; picking SLOVENIJA sets the HERO ONLY and
+// leaves the body on its previous station. Forced by the data: annual_trend /
+// season_heatmap / calendar / tropical have no national row (api.ts:696), so
+// propagating national downward would blank five sections at once. Slovenija is
+// therefore offered ONLY where the hero can show it, and is never reachable below.
+//
+// The list EXPANDS UPWARD (over content already read, not down into charts not yet
+// reached), which is exactly why it cannot be a native <select> — the browser owns
+// that dropdown's direction. Everything a native control gives for free is built
+// here: roving-tabindex keyboard, focus return, outside-click dismissal,
+// listbox/option semantics.
+//
+// FIRST-USE CUE (T-5.35): because the icon is now the only location control, a
+// first-time reader must notice it. The cue has a non-motion base that works under
+// prefers-reduced-motion — an accent ring on the trigger plus the location label
+// shown beside the icon (only while the hero is in view, where there is room; below
+// the hero it would recreate the overlap the icon-only resting state was made to fix,
+// T-5.27) — with a FINITE 3-iteration ripple added on top under no-preference only
+// (no unconditional blinking; T-5.15 guard). It is dismissed permanently on the first
+// OPEN (a selection is not required), persisted in localStorage (prefs.ts); if
+// storage is unavailable the cue simply shows again.
+interface ChooserOpt { name: string; label: string; national: boolean; }
+export function FloatingStationChooser(props: {
+  heroAnchor:      () => HTMLElement | undefined;  // the today-status section
+  heroLoc:         () => string | null;            // the hero's current location
+  onHeroLocChange: (loc: string) => void;          // write the hero's location
+  nationalLoc:     string;                          // ERA5_NATIONAL sentinel
+  nationalCount:   number;                          // station count for the label
+}) {
   const s = useReg();
 
-  // Alphabetical by the DIACRITIC display name, locale-aware (Slovene collation:
-  // Č/Š/Ž sort right after C/S/Z, not by code point).
-  const stations = createMemo(() =>
-    [...s.meta.stations].sort((a, b) =>
-      (a.label ?? a.name).localeCompare(b.label ?? b.name, "sl")),
-  );
-
   const [open,        setOpen]        = createSignal(false);
-  const [inRegion,    setInRegion]    = createSignal(false);
+  const [heroInView,  setHeroInView]  = createSignal(false);
   const [scrolling,   setScrolling]   = createSignal(false);
   const [focusWithin, setFocusWithin] = createSignal(false);
   const [focusIdx,    setFocusIdx]    = createSignal(0);
+  const [seen,        setSeen]        = createSignal(true);  // default hidden → no
+  // flash for returning readers; onMount reads storage and reveals the cue if fresh.
 
-  const shown = () => inRegion() && (open() || focusWithin() || !scrolling());
+  const shown      = () => open() || focusWithin() || !scrolling();
+  const cueActive  = () => !seen();
+  const showLabel  = () => heroInView();   // label persists over the hero (self-
+  // describing sole control; there is room there and no overlap to recreate)
+
+  const nationalLabel = () => t("today.loc_national", { count: props.nationalCount });
+
+  // Stations sorted by the DIACRITIC display name, Slovene collation (Č/Š/Ž sort
+  // right after C/S/Z, not by code point).
+  const stationOpts = createMemo<ChooserOpt[]>(() =>
+    [...s.meta.stations]
+      .sort((a, b) => (a.label ?? a.name).localeCompare(b.label ?? b.name, "sl"))
+      .map(st => ({ name: st.name, label: st.label ?? st.name, national: false })),
+  );
+  const options = createMemo<ChooserOpt[]>(() =>
+    heroInView()
+      ? [{ name: props.nationalLoc, label: nationalLabel(), national: true }, ...stationOpts()]
+      : stationOpts(),
+  );
+
+  // What the control REPRESENTS: the hero's location while the hero is in view (so the
+  // sole control names what the reader is looking at, national included), the body
+  // station once scrolled past it. Drives the trigger label, aria name, and highlight.
+  const currentLoc   = () => (heroInView() ? props.heroLoc() : s.selLoc());
+  const currentLabel = () => {
+    const l = currentLoc();
+    return l === props.nationalLoc ? nationalLabel() : s.stationLabel(l ?? "");
+  };
 
   let triggerRef: HTMLButtonElement | undefined;
   let listRef:    HTMLUListElement  | undefined;
   const optRefs: (HTMLLIElement | undefined)[] = [];
   let alignFoot = false;
 
-  const REVEAL_AT      = 72;   // px from viewport top the trends heading must pass
+  const HERO_MARGIN    = 72;   // hero counts as "in view" until its bottom passes this
   const SCROLL_STOP_MS = 160;
   let stopTimer: number | undefined;
 
   const recompute = () => {
-    const el = props.anchor();
-    setInRegion(!!el && el.getBoundingClientRect().top < REVEAL_AT);
+    const el = props.heroAnchor();
+    setHeroInView(!!el && el.getBoundingClientRect().bottom > HERO_MARGIN);
   };
   const onScroll = () => {
     recompute();
@@ -471,7 +523,8 @@ export function FloatingStationChooser(props: { anchor: () => HTMLElement | unde
   };
 
   onMount(() => {
-    recompute();  // the page may load already scrolled into the region
+    recompute();  // the page may load already scrolled past the hero
+    if (readUiPrefs().locChooserSeen !== true) setSeen(false);  // fresh reader → cue
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", recompute, { passive: true });
   });
@@ -481,8 +534,17 @@ export function FloatingStationChooser(props: { anchor: () => HTMLElement | unde
     if (stopTimer) clearTimeout(stopTimer);
   });
 
+  // First OPEN dismisses the cue permanently — opening is enough, a selection is not
+  // required. Fails toward showing again if the write is unavailable (prefs.ts).
+  const markSeen = () => {
+    if (seen()) return;
+    setSeen(true);
+    writeUiPref("locChooserSeen", true);
+  };
+
   const openMenu = () => {
-    const idx = stations().findIndex(st => st.name === s.selLoc());
+    markSeen();
+    const idx = options().findIndex(o => o.name === currentLoc());
     setFocusIdx(idx < 0 ? 0 : idx);
     alignFoot = true;   // pin the current selection to the foot of the list on open
     setOpen(true);
@@ -491,8 +553,16 @@ export function FloatingStationChooser(props: { anchor: () => HTMLElement | unde
     setOpen(false);
     if (returnFocus) triggerRef?.focus();
   };
+  // Asymmetric propagation (D-27): a station sets hero + body + map; Slovenija sets
+  // the hero only and leaves the body (and the map) on their previous station, since
+  // national has no per-station analysis to show.
   const choose = (name: string) => {
-    s.setLoc(name);
+    if (name === props.nationalLoc) {
+      props.onHeroLocChange(name);
+    } else {
+      props.onHeroLocChange(name);
+      s.setLoc(name);
+    }
     closeMenu(true);
   };
 
@@ -519,7 +589,7 @@ export function FloatingStationChooser(props: { anchor: () => HTMLElement | unde
     }
   };
   const onListKey = (e: KeyboardEvent) => {
-    const n = stations().length;
+    const n = options().length;
     const i = focusIdx();
     switch (e.key) {
       case "ArrowDown": e.preventDefault(); setFocusIdx(Math.min(n - 1, i + 1)); break;
@@ -527,7 +597,7 @@ export function FloatingStationChooser(props: { anchor: () => HTMLElement | unde
       case "Home":      e.preventDefault(); setFocusIdx(0);     break;
       case "End":       e.preventDefault(); setFocusIdx(n - 1); break;
       case "Enter":
-      case " ":         e.preventDefault(); choose(stations()[i]!.name); break;
+      case " ":         e.preventDefault(); choose(options()[i]!.name); break;
       case "Escape":    e.preventDefault(); closeMenu(true);   break;
       case "Tab":       closeMenu(false);  break;   // let focus leave naturally
     }
@@ -536,8 +606,7 @@ export function FloatingStationChooser(props: { anchor: () => HTMLElement | unde
   return (
     <div
       class="fsc"
-      classList={{ "fsc--region": inRegion(), "fsc--shown": shown() }}
-      aria-hidden={!inRegion()}
+      classList={{ "fsc--shown": shown() }}
       onFocusIn={() => setFocusWithin(true)}
       onFocusOut={(e) => {
         if (!(e.currentTarget as HTMLElement).contains(e.relatedTarget as Node | null)) setFocusWithin(false);
@@ -546,9 +615,9 @@ export function FloatingStationChooser(props: { anchor: () => HTMLElement | unde
       <Show when={open()}>
         <div class="fsc-overlay" onClick={() => closeMenu(false)} />
         <ul ref={listRef} class="fsc-list" role="listbox" aria-label={t("floc.listbox")} onKeyDown={onListKey}>
-          <For each={stations()}>
-            {(st, i) => {
-              const selected = () => st.name === s.selLoc();
+          <For each={options()}>
+            {(o, i) => {
+              const selected = () => o.name === currentLoc();
               return (
                 <li
                   ref={(el) => (optRefs[i()] = el)}
@@ -557,27 +626,28 @@ export function FloatingStationChooser(props: { anchor: () => HTMLElement | unde
                   role="option"
                   aria-selected={selected()}
                   tabindex={focusIdx() === i() ? 0 : -1}
-                  onClick={() => choose(st.name)}
+                  onClick={() => choose(o.name)}
                 >
-                  {st.label ?? st.name}
+                  {o.label}
                 </li>
               );
             }}
           </For>
         </ul>
       </Show>
-      {/* Resting state is a compact location-pin icon, not a labelled pill — a wide
-          "Lokacija · <station>" bar overlapped the content to its left. The current
-          station is not hidden: every chart below names it (part 3), and it is the
-          trigger's accessible name + hover title here. */}
+      {/* Resting state: a compact location-pin icon; over the hero it widens to show
+          the current location label (self-describing sole control). Its accessible
+          name + hover title always carry the current location, so a screen-reader
+          user gets what a sighted reader sees regardless of the label's visibility. */}
       <button
         ref={triggerRef}
         type="button"
         class="fsc-trigger"
+        classList={{ "fsc-trigger--wide": showLabel(), "fsc-trigger--cue": cueActive() }}
         aria-haspopup="listbox"
         aria-expanded={open()}
-        aria-label={t("floc.pick", { station: s.locLabel() })}
-        title={s.locLabel()}
+        aria-label={t("floc.pick", { station: currentLabel() })}
+        title={currentLabel()}
         onClick={() => (open() ? closeMenu(false) : openMenu())}
         onKeyDown={onTriggerKey}
       >
@@ -585,6 +655,9 @@ export function FloatingStationChooser(props: { anchor: () => HTMLElement | unde
           <path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z" />
           <circle cx="12" cy="10" r="2.5" />
         </svg>
+        <Show when={showLabel()}>
+          <span class="fsc-label">{currentLabel()}</span>
+        </Show>
       </button>
     </div>
   );

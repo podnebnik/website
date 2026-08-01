@@ -68,7 +68,6 @@
 .today-date-badge:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 1px; }
 .today-nav-btn { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 7px; border: 1px solid var(--color-rule-2); background: var(--color-card); color: var(--color-ink); cursor: pointer; flex-shrink: 0; }
 .today-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-.today-loc-select { font-family: var(--font-mono,'JetBrains Mono',monospace); font-weight: 600; font-size: 12px; background: var(--color-card); border: 1px solid var(--color-rule-2); border-radius: 7px; padding: 4px 8px; margin-left: 6px; color: var(--color-ink); cursor: pointer; max-width: 150px; }
 
 .today-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 4px; }
 .today-card { background: transparent; border: none; border-radius: var(--radius,10px); padding: 16px 28px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; min-width: 0; grid-column: 1 / -1; }
@@ -244,24 +243,49 @@
 .reg-cal-day:disabled { opacity: 0.28; cursor: not-allowed; background: transparent; }
 .reg-cal-day:disabled:hover { background: transparent; }
 
-/* ── T-5.27: floating station chooser — the single location control below the hero ──
-   Fixed bottom-right; the option list EXPANDS UPWARD, which is why this cannot be a
-   native <select> (the browser owns that dropdown's direction). Hidden until the
-   reader scrolls into the trends region (.fsc--region), then shown only when scrolling
-   STOPS (.fsc--shown); an open menu, or focus inside it, keeps it shown so a keyboard
-   user is never chasing it. The fade is the page's FIRST motion, so it is gated on
-   prefers-reduced-motion (T-5.15) — reduced-motion users get an instant show/hide. */
-.fsc { display: none; position: fixed; right: 20px; bottom: 20px; z-index: 40; }
-.fsc.fsc--region { display: block; opacity: 0; pointer-events: none; }
-.fsc.fsc--region.fsc--shown { opacity: 1; pointer-events: auto; }
+/* ── T-5.27 / T-5.35: floating station chooser — the single location control ──
+   Fixed bottom-right, over the hero AND every section below (T-5.35 retired the
+   hero <select>). The option list EXPANDS UPWARD, which is why this cannot be a
+   native <select> (the browser owns that dropdown's direction). It is PRESENT AT
+   PAGE LOAD (opacity 0 only while actively scrolling), shown again when scrolling
+   STOPS (.fsc--shown); an open menu, or focus inside it, keeps it shown so a
+   keyboard user is never chasing it. The fade is gated on prefers-reduced-motion
+   (T-5.15) — reduced-motion users get an instant show/hide. */
+.fsc { position: fixed; right: 20px; bottom: 20px; z-index: 40; opacity: 0; pointer-events: none; }
+.fsc.fsc--shown { opacity: 1; pointer-events: auto; }
 @media (prefers-reduced-motion: no-preference) {
-  .fsc.fsc--region { transition: opacity 0.18s ease; }
+  .fsc { transition: opacity 0.18s ease; }
 }
 .fsc-overlay { position: fixed; inset: 0; z-index: 1; }
 .fsc-trigger { position: relative; z-index: 2; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--color-rule-2); background: var(--color-card); box-shadow: 0 6px 20px rgba(14, 14, 12, 0.18); cursor: pointer; color: var(--color-ink); }
 .fsc-trigger:hover { background: var(--color-paper-2); }
 .fsc-trigger:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
 .fsc-pin { display: block; }
+
+/* T-5.35 — over the hero the trigger widens to show the current location label, so
+   the sole control is self-describing where there is room; below the hero it
+   collapses to the bare icon (a labelled pill there overlapped content, T-5.27). */
+.fsc-trigger--wide { width: auto; grid-auto-flow: column; gap: 9px; padding: 0 16px 0 13px; border-radius: 24px; }
+.fsc-label { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.03em; color: var(--color-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 46vw; }
+
+/* T-5.35 — FIRST-USE CUE, shown until the reader first OPENS the chooser. Base layer
+   (BOTH motion modes): an accent ring so the sole control announces itself without
+   motion. Overlay (no-preference ONLY): a FINITE 3-iteration ripple — never an
+   unconditional blink, which is exactly what prefers-reduced-motion suppresses and
+   the page's only such guard exists to honour (T-5.15). Under `reduce` the ripple is
+   absent and the ring + hero label carry the cue. */
+.fsc-trigger--cue { box-shadow: 0 0 0 3px var(--color-accent), 0 6px 20px rgba(14, 14, 12, 0.18); }
+.fsc-trigger--cue::after {
+  content: ""; position: absolute; inset: -3px; border-radius: inherit;
+  border: 2px solid var(--color-accent); opacity: 0; pointer-events: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .fsc-trigger--cue::after { animation: fsc-ping 1.4s ease-out 3; }
+}
+@keyframes fsc-ping {
+  0%   { transform: scale(1);   opacity: 0.5; }
+  100% { transform: scale(1.6); opacity: 0;   }
+}
 .fsc-list { position: absolute; right: 0; bottom: calc(100% + 8px); z-index: 2; margin: 0; padding: 4px; list-style: none; background: var(--color-card); border: 1px solid var(--color-rule-2); border-radius: var(--radius, 10px); box-shadow: 0 8px 24px rgba(14, 14, 12, 0.18); min-width: 200px; max-width: calc(100vw - 40px); max-height: 60vh; overflow-y: auto; }
 .fsc-opt { padding: 7px 12px; border-radius: 7px; font-family: var(--font-sans); font-size: 13px; color: var(--color-ink); cursor: pointer; white-space: nowrap; }
 .fsc-opt:hover { background: var(--color-paper-2); }
