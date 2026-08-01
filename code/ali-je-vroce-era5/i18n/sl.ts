@@ -98,6 +98,16 @@ export const sl = {
   today: {
     prev_day: "Prejšnji dan",
     next_day: "Naslednji dan",
+    // T-5.32 — accessible names for the HERO date-picker popover. Month names and the
+    // selected date come from Intl (i18n/format.ts); only this framing prose is here.
+    // Kept separate from the reg.* calendar strings, whose "dan v letu" framing is for
+    // the yearless DOY control, not a real date.
+    pick_date: "Izberi datum",
+    cal_dialog: "Koledar — izbira datuma",
+    cal_prev_month: "Prejšnji mesec",
+    cal_next_month: "Naslednji mesec",
+    cal_prev_year: "Prejšnje leto",
+    cal_next_year: "Naslednje leto",
     loc_national: "Slovenija — povprečje {count, plural, one{# postaja} two{# postaji} few{# postaje} other{# postaj}}",
     arso_group: "ARSO postaje",
     era5_group: "ERA5 postaje",
