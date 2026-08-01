@@ -63,7 +63,11 @@ export interface SpeiData {
   era5_last: string;
 }
 
-export interface SpeiHeatmapProps { data: SpeiData; }
+// T-5.38 — `label` names the section's location. This heatmap is GENUINELY national
+// (the `spei` table has no per-station dimension), so with the chooser now setting a
+// station for the sibling sections it must say so in the graph zone, like the other
+// sections do (Era5SeasonHeatmap.tsx). Rendered exactly as there (.era5-chart-loc).
+export interface SpeiHeatmapProps { data: SpeiData; label?: string | undefined; }
 interface TipData { row: SpeiRow; px: number; py: number; }
 
 export function SpeiHeatmap(props: SpeiHeatmapProps) {
@@ -165,6 +169,11 @@ export function SpeiHeatmap(props: SpeiHeatmapProps) {
 
   return (
     <div>
+      {/* T-5.38 — name the location, as the other below-hero sections do. This one is
+          national and stays so; the label discloses that (D-7 canonical wording). */}
+      <Show when={props.label}>
+        <div class="era5-chart-loc">{props.label}</div>
+      </Show>
       {/* Controls */}
       <div class="shm-controls">
         <For each={MODES}>

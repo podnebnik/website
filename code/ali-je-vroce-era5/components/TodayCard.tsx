@@ -82,8 +82,10 @@ interface Props {
   today:        string;
   loading:      boolean;
   onDateChange: (d: string) => void;
-  onLocChange:  (v: string) => void;
-  nationalLoc?: string;  // loc key for the "Slovenija" option (e.g. "arso:national")
+  // T-5.35 — the hero's inline location <select> was retired; the floating chooser
+  // (RegressionPanel.tsx) is now the single location control page-wide. `nationalLoc`
+  // is still needed to pick the national explain copy below.
+  nationalLoc?: string;  // loc key for the national series (e.g. "era5:national")
 }
 
 export function TodayCard(props: Props) {
@@ -116,27 +118,6 @@ export function TodayCard(props: Props) {
             <polyline points="9 18 15 12 9 6"/>
           </svg>
         </button>
-        <select
-          class="today-loc-select"
-          value={r().loc === props.nationalLoc ? (props.nationalLoc ?? "") : r().loc ?? ""}
-          onChange={(e) => props.onLocChange(e.currentTarget.value)}
-        >
-          <option value={props.nationalLoc ?? ""}>{t("today.loc_national", { count: props.meta.stations.filter(s => s.source === "era5").length })}</option>
-          <Show when={props.meta.stations.some(s => s.source === "arso")}>
-            <optgroup label={t("today.arso_group")}>
-              <For each={props.meta.stations.filter(s => s.source === "arso")}>
-                {(s) => <option value={s.name}>{s.label}</option>}
-              </For>
-            </optgroup>
-          </Show>
-          <Show when={props.meta.stations.some(s => s.source === "era5")}>
-            <optgroup label={t("today.era5_group")}>
-              <For each={props.meta.stations.filter(s => s.source === "era5")}>
-                {(s) => <option value={s.name}>{s.label ?? s.name}</option>}
-              </For>
-            </optgroup>
-          </Show>
-        </select>
       </div>
 
       {/* ── Data content — dims while loading to cover stale→fresh transition ── */}
