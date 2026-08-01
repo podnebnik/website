@@ -62,6 +62,9 @@ function verdictHtml(st: RegressionResult["stats"], unit: string): string {
 
 interface Props {
   loc:        string | null;
+  // T-5.27 part (3) — the DIACRITIC display name (station.label). loc is the ASCII
+  // era5_name key used for fetching; the card must show the label, not the key.
+  label?:     string | undefined;
   doy:        number;
   dateLabel?: string;
 }
@@ -81,14 +84,17 @@ export function HeroCards(props: Props) {
   return (
     <ErrorBoundary fallback={sectionErrorFallback(refetch, "180px")}>
       <Show when={resp()?.results?.length} fallback={<EmptyState minHeight="180px" />}>
-        <HeroCard res={resp()!.results[0]!} unit={resp()!.unit} dateLabel={resp()!.date_label} />
+        <HeroCard res={resp()!.results[0]!} unit={resp()!.unit} dateLabel={resp()!.date_label} label={props.label} />
       </Show>
     </ErrorBoundary>
   );
 }
 
-function HeroCard(props: { res: RegressionResult; unit: string; dateLabel: string }) {
+function HeroCard(props: { res: RegressionResult; unit: string; dateLabel: string; label?: string | undefined }) {
   const res = () => props.res;
+  // Display name (label) for what the reader sees; res().loc stays the ASCII key for
+  // the heroContext / climateRisks lookups below.
+  const displayName = () => props.label ?? res().loc.replace(/_/g, " ");
   const st  = () => res().stats;
   const cat = () => trendCategory(st().trend10);
   const isPos = () => st().trend10 >= 0;
@@ -102,7 +108,7 @@ function HeroCard(props: { res: RegressionResult; unit: string; dateLabel: strin
   return (
     <div
       role="group"
-      aria-label={t("hero.group_a11y", { station: res().loc.replace(/_/g, " ") })}
+      aria-label={t("hero.group_a11y", { station: displayName() })}
       style={{
       background:    "var(--color-card)",
       border:        "1px solid var(--color-rule)",
@@ -118,7 +124,7 @@ function HeroCard(props: { res: RegressionResult; unit: string; dateLabel: strin
           {/* Eyebrow */}
           <div style={{ display: "flex", "align-items": "center", gap: "6px", "margin-bottom": "12px", "flex-wrap": "wrap" }}>
             <span style={{ ...SANS, "font-size": "15px", "font-weight": "600", color: "var(--color-ink)" }}>
-              {res().loc.replace(/_/g, " ")}
+              {displayName()}
             </span>
             <span style={{ width: "4px", height: "4px", "border-radius": "50%", background: "var(--color-ink-soft)", display: "inline-block", "flex-shrink": "0" }} />
             <span style={{ ...MONO, "font-size": "10px", color: "var(--color-ink-soft)", "letter-spacing": "0.06em", "text-transform": "uppercase" }}>

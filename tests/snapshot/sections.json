@@ -99,6 +99,7 @@
 
   "structural": {
     "Dashboard": "Local layout wrapper for the whole page (AliJeVroceERA5.tsx:43). The harness mirrors its composition; it renders no numbers itself.",
+    "FloatingStationChooser": "The single below-hero location control (T-5.27 / D-26, RegressionPanel.tsx). Like TropControls, it displays no data of its own — it WRITES the regression store's location (s.setLoc), and that location drives every analysis capture (RegScatterCard title, RegYearRoundCard, tropical, season, hero). Its markup is a station list; the snapshot cannot scroll or interact with it and there is no rendered number to watch. The station it selects is pinned per case by cases.json analysis_loc (via syncLoc), exactly as before.",
     "Era5Charts": "Local layout wrapper for the lower sections (AliJeVroceERA5.tsx:207). Renders no numbers itself.",
     "TropControls": "Threshold and streak inputs (AliJeVroceERA5.tsx:181). Their VALUES are pinned in cases.json analysis_defaults and drive the tropical captures; the control markup itself displays no data.",
     "RegressionPanel": "Context provider only (RegressionPanel.tsx:121). Supplies the analysis store to the cards, renders no DOM of its own.",

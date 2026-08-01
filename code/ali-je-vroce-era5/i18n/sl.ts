@@ -230,7 +230,6 @@ export const sl = {
     var_et0: "ET₀ (mm)",
 
     location: "Lokacija",
-    select_locations: "Izberite lokacije (največ 6)",
     variable: "Spremenljivka",
     day: "Dan",
     // T-5.28 — accessible names for the day-of-year calendar picker. The month and
@@ -239,7 +238,6 @@ export const sl = {
     calendar: "Koledar — izbira dneva v letu",
     prev_month: "Prejšnji mesec",
     next_month: "Naslednji mesec",
-    locations_multi: "{count, plural, one{# lokacija} two{# lokaciji} few{# lokacije} other{# lokacij}}",
 
     years_sig: "{count, plural, one{# leto} two{# leti} few{# leta} other{# let}} · {sig}",
     change_over_record: "sprememba v celotnem obdobju",
@@ -256,6 +254,13 @@ export const sl = {
 
     explain_reg: "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija",
     explain_cal: "Trend na desetletje za vsak dan v letu · rdeča = ogrevanje · modra = ohlajanje · prosojnost = statistična značilnost",
+  },
+
+  // T-5.27 — floating station chooser (the single location control below the hero).
+  // Accessible names only; the station names themselves are the display labels.
+  floc: {
+    pick: "Izberi lokacijo (trenutno {station})",
+    listbox: "Seznam lokacij",
   },
 
   // RegressionChart (Highcharts)

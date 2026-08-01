@@ -64,6 +64,7 @@
       "EmptyState",
       "Era5Charts",
       "ErrorBoundary",
+      "FloatingStationChooser",
       "RegressionPanel",
       "Show",
       "SiteMeta",
@@ -132,7 +133,7 @@
         },
         {
           "name": "Novo_Mesto",
-          "label": "Novo Mesto",
+          "label": "Novo mesto",
           "lat": 45.8011,
           "lon": 15.17,
           "elevation": 220
@@ -188,7 +189,7 @@
         },
         {
           "name": "Kocevje",
-          "label": "Kocevje",
+          "label": "Kočevje",
           "lat": 45.6433,
           "lon": 14.8619,
           "elevation": 467
@@ -202,14 +203,14 @@
         },
         {
           "name": "Domzale",
-          "label": "Domzale",
+          "label": "Domžale",
           "lat": 46.1375,
           "lon": 14.5942,
           "elevation": 301
         },
         {
           "name": "Ratece",
-          "label": "Ratece",
+          "label": "Rateče",
           "lat": 46.4967,
           "lon": 13.7131,
           "elevation": 864
@@ -325,7 +326,7 @@
                 },
                 {
                   "color": "#c25a2c",
-                  "label": "Novo Mesto",
+                  "label": "Novo mesto",
                   "lat": 45.8011,
                   "lon": 15.17,
                   "marker": {
@@ -429,7 +430,7 @@
                 },
                 {
                   "color": "#c8b97a",
-                  "label": "Kocevje",
+                  "label": "Kočevje",
                   "lat": 45.6433,
                   "lon": 14.8619,
                   "marker": {
@@ -455,7 +456,7 @@
                 },
                 {
                   "color": "#c25a2c",
-                  "label": "Domzale",
+                  "label": "Domžale",
                   "lat": 46.1375,
                   "lon": 14.5942,
                   "marker": {
@@ -468,7 +469,7 @@
                 },
                 {
                   "color": "#a3c4a0",
-                  "label": "Ratece",
+                  "label": "Rateče",
                   "lat": 46.4967,
                   "lon": 13.7131,
                   "marker": {
@@ -31876,7 +31877,7 @@
               "Celje",
               "Kranj",
               "Koper",
-              "Novo Mesto",
+              "Novo mesto",
               "Murska Sobota",
               "Nova Gorica",
               "Postojna",
@@ -31884,10 +31885,10 @@
               "Velenje",
               "Trbovlje",
               "Tolmin",
-              "Kocevje",
+              "Kočevje",
               "Ilirska Bistrica",
-              "Domzale",
-              "Ratece",
+              "Domžale",
+              "Rateče",
               "Kredarica"
             ]
           },
@@ -33654,7 +33655,6 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LokacijaLjubljana",
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
             "Dan21. jul.◀▶"
           ],
@@ -33669,8 +33669,8 @@
             ]
           },
           "day_label": "21. jul.",
-          "title": "Najvišja temperatura · 21. jul.",
-          "subtitle": "Ljubljana",
+          "title": "Ljubljana · Najvišja temperatura",
+          "subtitle": "21. jul.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,34",
           "total_change": "+4,35°C",
           "total_change_color": "rgb(204, 34, 34)",
@@ -35234,7 +35234,7 @@
               "Celje",
               "Kranj",
               "Koper",
-              "Novo Mesto",
+              "Novo mesto",
               "Murska Sobota",
               "Nova Gorica",
               "Postojna",
@@ -35242,10 +35242,10 @@
               "Velenje",
               "Trbovlje",
               "Tolmin",
-              "Kocevje",
+              "Kočevje",
               "Ilirska Bistrica",
-              "Domzale",
-              "Ratece",
+              "Domžale",
+              "Rateče",
               "Kredarica"
             ]
           },
@@ -37203,7 +37203,6 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LokacijaLjubljana",
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
             "Dan21. jul.◀▶"
           ],
@@ -37218,8 +37217,8 @@
             ]
           },
           "day_label": "21. jul.",
-          "title": "Najvišja temperatura · 21. jul.",
-          "subtitle": "Ljubljana",
+          "title": "Ljubljana · Najvišja temperatura",
+          "subtitle": "21. jul.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,34",
           "total_change": "+4,35°C",
           "total_change_color": "rgb(204, 34, 34)",
@@ -38783,7 +38782,7 @@
               "Celje",
               "Kranj",
               "Koper",
-              "Novo Mesto",
+              "Novo mesto",
               "Murska Sobota",
               "Nova Gorica",
               "Postojna",
@@ -38791,10 +38790,10 @@
               "Velenje",
               "Trbovlje",
               "Tolmin",
-              "Kocevje",
+              "Kočevje",
               "Ilirska Bistrica",
-              "Domzale",
-              "Ratece",
+              "Domžale",
+              "Rateče",
               "Kredarica"
             ]
           },
@@ -40752,7 +40751,6 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LokacijaKredarica",
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
             "Dan21. jul.◀▶"
           ],
@@ -40767,8 +40765,8 @@
             ]
           },
           "day_label": "21. jul.",
-          "title": "Najvišja temperatura · 21. jul.",
-          "subtitle": "Kredarica",
+          "title": "Kredarica · Najvišja temperatura",
+          "subtitle": "21. jul.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,25",
           "total_change": "+2,74°C",
           "total_change_color": "rgb(204, 34, 34)",
@@ -42332,7 +42330,7 @@
               "Celje",
               "Kranj",
               "Koper",
-              "Novo Mesto",
+              "Novo mesto",
               "Murska Sobota",
               "Nova Gorica",
               "Postojna",
@@ -42340,10 +42338,10 @@
               "Velenje",
               "Trbovlje",
               "Tolmin",
-              "Kocevje",
+              "Kočevje",
               "Ilirska Bistrica",
-              "Domzale",
-              "Ratece",
+              "Domžale",
+              "Rateče",
               "Kredarica"
             ]
           },
@@ -44110,7 +44108,6 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LokacijaLjubljana",
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
             "Dan29. jul.◀▶"
           ],
@@ -44125,8 +44122,8 @@
             ]
           },
           "day_label": "29. jul.",
-          "title": "Najvišja temperatura · 29. jul.",
-          "subtitle": "Ljubljana",
+          "title": "Ljubljana · Najvišja temperatura",
+          "subtitle": "29. jul.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,33",
           "total_change": "+3,76°C",
           "total_change_color": "rgb(204, 34, 34)",
@@ -45690,7 +45687,7 @@
               "Celje",
               "Kranj",
               "Koper",
-              "Novo Mesto",
+              "Novo mesto",
               "Murska Sobota",
               "Nova Gorica",
               "Postojna",
@@ -45698,10 +45695,10 @@
               "Velenje",
               "Trbovlje",
               "Tolmin",
-              "Kocevje",
+              "Kočevje",
               "Ilirska Bistrica",
-              "Domzale",
-              "Ratece",
+              "Domžale",
+              "Rateče",
               "Kredarica"
             ]
           },
@@ -47659,7 +47656,6 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LokacijaLjubljana",
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
             "Dan29. jul.◀▶"
           ],
@@ -47674,8 +47670,8 @@
             ]
           },
           "day_label": "29. jul.",
-          "title": "Najvišja temperatura · 29. jul.",
-          "subtitle": "Ljubljana",
+          "title": "Ljubljana · Najvišja temperatura",
+          "subtitle": "29. jul.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,33",
           "total_change": "+3,76°C",
           "total_change_color": "rgb(204, 34, 34)",
@@ -49239,7 +49235,7 @@
               "Celje",
               "Kranj",
               "Koper",
-              "Novo Mesto",
+              "Novo mesto",
               "Murska Sobota",
               "Nova Gorica",
               "Postojna",
@@ -49247,10 +49243,10 @@
               "Velenje",
               "Trbovlje",
               "Tolmin",
-              "Kocevje",
+              "Kočevje",
               "Ilirska Bistrica",
-              "Domzale",
-              "Ratece",
+              "Domžale",
+              "Rateče",
               "Kredarica"
             ]
           },
@@ -51208,7 +51204,6 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LokacijaKredarica",
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
             "Dan29. jul.◀▶"
           ],
@@ -51223,8 +51218,8 @@
             ]
           },
           "day_label": "29. jul.",
-          "title": "Najvišja temperatura · 29. jul.",
-          "subtitle": "Kredarica",
+          "title": "Kredarica · Najvišja temperatura",
+          "subtitle": "29. jul.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,26",
           "total_change": "+2,40°C",
           "total_change_color": "rgb(204, 34, 34)",
@@ -52788,7 +52783,7 @@
               "Celje",
               "Kranj",
               "Koper",
-              "Novo Mesto",
+              "Novo mesto",
               "Murska Sobota",
               "Nova Gorica",
               "Postojna",
@@ -52796,10 +52791,10 @@
               "Velenje",
               "Trbovlje",
               "Tolmin",
-              "Kocevje",
+              "Kočevje",
               "Ilirska Bistrica",
-              "Domzale",
-              "Ratece",
+              "Domžale",
+              "Rateče",
               "Kredarica"
             ]
           },
@@ -54566,7 +54561,6 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LokacijaLjubljana",
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
             "Dan15. jul.◀▶"
           ],
@@ -54581,8 +54575,8 @@
             ]
           },
           "day_label": "15. jul.",
-          "title": "Najvišja temperatura · 15. jul.",
-          "subtitle": "Ljubljana",
+          "title": "Ljubljana · Najvišja temperatura",
+          "subtitle": "15. jul.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,30",
           "total_change": "+3,54°C",
           "total_change_color": "rgb(204, 34, 34)",
@@ -56146,7 +56140,7 @@
               "Celje",
               "Kranj",
               "Koper",
-              "Novo Mesto",
+              "Novo mesto",
               "Murska Sobota",
               "Nova Gorica",
               "Postojna",
@@ -56154,10 +56148,10 @@
               "Velenje",
               "Trbovlje",
               "Tolmin",
-              "Kocevje",
+              "Kočevje",
               "Ilirska Bistrica",
-              "Domzale",
-              "Ratece",
+              "Domžale",
+              "Rateče",
               "Kredarica"
             ]
           },
@@ -58115,7 +58109,6 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LokacijaLjubljana",
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
             "Dan15. jul.◀▶"
           ],
@@ -58130,8 +58123,8 @@
             ]
           },
           "day_label": "15. jul.",
-          "title": "Najvišja temperatura · 15. jul.",
-          "subtitle": "Ljubljana",
+          "title": "Ljubljana · Najvišja temperatura",
+          "subtitle": "15. jul.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,30",
           "total_change": "+3,54°C",
           "total_change_color": "rgb(204, 34, 34)",
@@ -59695,7 +59688,7 @@
               "Celje",
               "Kranj",
               "Koper",
-              "Novo Mesto",
+              "Novo mesto",
               "Murska Sobota",
               "Nova Gorica",
               "Postojna",
@@ -59703,10 +59696,10 @@
               "Velenje",
               "Trbovlje",
               "Tolmin",
-              "Kocevje",
+              "Kočevje",
               "Ilirska Bistrica",
-              "Domzale",
-              "Ratece",
+              "Domžale",
+              "Rateče",
               "Kredarica"
             ]
           },
@@ -61664,7 +61657,6 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LokacijaKredarica",
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
             "Dan15. jul.◀▶"
           ],
@@ -61679,8 +61671,8 @@
             ]
           },
           "day_label": "15. jul.",
-          "title": "Najvišja temperatura · 15. jul.",
-          "subtitle": "Kredarica",
+          "title": "Kredarica · Najvišja temperatura",
+          "subtitle": "15. jul.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,19",
           "total_change": "+1,72°C",
           "total_change_color": "rgb(204, 34, 34)",
@@ -62436,7 +62428,7 @@
               "Celje",
               "Kranj",
               "Koper",
-              "Novo Mesto",
+              "Novo mesto",
               "Murska Sobota",
               "Nova Gorica",
               "Postojna",
@@ -62444,10 +62436,10 @@
               "Velenje",
               "Trbovlje",
               "Tolmin",
-              "Kocevje",
+              "Kočevje",
               "Ilirska Bistrica",
-              "Domzale",
-              "Ratece",
+              "Domžale",
+              "Rateče",
               "Kredarica"
             ]
           },
@@ -62532,7 +62524,6 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LokacijaLjubljana",
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
             "Dan28. feb.◀▶"
           ],
@@ -62547,8 +62538,8 @@
             ]
           },
           "day_label": "28. feb.",
-          "title": "Najvišja temperatura · 28. feb.",
-          "subtitle": "Ljubljana",
+          "title": "Ljubljana · Najvišja temperatura",
+          "subtitle": "28. feb.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,21",
           "total_change": "+4,40°C",
           "total_change_color": "rgb(204, 34, 34)",
@@ -63304,7 +63295,7 @@
               "Celje",
               "Kranj",
               "Koper",
-              "Novo Mesto",
+              "Novo mesto",
               "Murska Sobota",
               "Nova Gorica",
               "Postojna",
@@ -63312,10 +63303,10 @@
               "Velenje",
               "Trbovlje",
               "Tolmin",
-              "Kocevje",
+              "Kočevje",
               "Ilirska Bistrica",
-              "Domzale",
-              "Ratece",
+              "Domžale",
+              "Rateče",
               "Kredarica"
             ]
           },
@@ -63400,7 +63391,6 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LokacijaKredarica",
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
             "Dan28. feb.◀▶"
           ],
@@ -63415,8 +63405,8 @@
             ]
           },
           "day_label": "28. feb.",
-          "title": "Najvišja temperatura · 28. feb.",
-          "subtitle": "Kredarica",
+          "title": "Kredarica · Najvišja temperatura",
+          "subtitle": "28. feb.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,16",
           "total_change": "+2,90°C",
           "total_change_color": "rgb(204, 34, 34)",
@@ -64172,7 +64162,7 @@
               "Celje",
               "Kranj",
               "Koper",
-              "Novo Mesto",
+              "Novo mesto",
               "Murska Sobota",
               "Nova Gorica",
               "Postojna",
@@ -64180,10 +64170,10 @@
               "Velenje",
               "Trbovlje",
               "Tolmin",
-              "Kocevje",
+              "Kočevje",
               "Ilirska Bistrica",
-              "Domzale",
-              "Ratece",
+              "Domžale",
+              "Rateče",
               "Kredarica"
             ]
           },
@@ -64219,7 +64209,6 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LokacijaLjubljana",
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
             "Dan28. feb.◀▶"
           ],
@@ -64234,8 +64223,8 @@
             ]
           },
           "day_label": "28. feb.",
-          "title": "Najvišja temperatura · 28. feb.",
-          "subtitle": "Ljubljana",
+          "title": "Ljubljana · Najvišja temperatura",
+          "subtitle": "28. feb.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,21",
           "total_change": "+4,40°C",
           "total_change_color": "rgb(204, 34, 34)",
@@ -65799,7 +65788,7 @@
               "Celje",
               "Kranj",
               "Koper",
-              "Novo Mesto",
+              "Novo mesto",
               "Murska Sobota",
               "Nova Gorica",
               "Postojna",
@@ -65807,10 +65796,10 @@
               "Velenje",
               "Trbovlje",
               "Tolmin",
-              "Kocevje",
+              "Kočevje",
               "Ilirska Bistrica",
-              "Domzale",
-              "Ratece",
+              "Domžale",
+              "Rateče",
               "Kredarica"
             ]
           },
@@ -67750,7 +67739,6 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LokacijaLjubljana",
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
             "Dan1. mar.◀▶"
           ],
@@ -67765,8 +67753,8 @@
             ]
           },
           "day_label": "1. mar.",
-          "title": "Najvišja temperatura · 1. mar.",
-          "subtitle": "Ljubljana",
+          "title": "Ljubljana · Najvišja temperatura",
+          "subtitle": "1. mar.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,21",
           "total_change": "+4,29°C",
           "total_change_color": "rgb(204, 34, 34)",
@@ -69330,7 +69318,7 @@
               "Celje",
               "Kranj",
               "Koper",
-              "Novo Mesto",
+              "Novo mesto",
               "Murska Sobota",
               "Nova Gorica",
               "Postojna",
@@ -69338,10 +69326,10 @@
               "Velenje",
               "Trbovlje",
               "Tolmin",
-              "Kocevje",
+              "Kočevje",
               "Ilirska Bistrica",
-              "Domzale",
-              "Ratece",
+              "Domžale",
+              "Rateče",
               "Kredarica"
             ]
           },
@@ -71299,7 +71287,6 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LokacijaLjubljana",
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
             "Dan28. feb.◀▶"
           ],
@@ -71314,8 +71301,8 @@
             ]
           },
           "day_label": "28. feb.",
-          "title": "Najvišja temperatura · 28. feb.",
-          "subtitle": "Ljubljana",
+          "title": "Ljubljana · Najvišja temperatura",
+          "subtitle": "28. feb.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,21",
           "total_change": "+4,40°C",
           "total_change_color": "rgb(204, 34, 34)",
@@ -72879,7 +72866,7 @@
               "Celje",
               "Kranj",
               "Koper",
-              "Novo Mesto",
+              "Novo mesto",
               "Murska Sobota",
               "Nova Gorica",
               "Postojna",
@@ -72887,10 +72874,10 @@
               "Velenje",
               "Trbovlje",
               "Tolmin",
-              "Kocevje",
+              "Kočevje",
               "Ilirska Bistrica",
-              "Domzale",
-              "Ratece",
+              "Domžale",
+              "Rateče",
               "Kredarica"
             ]
           },
@@ -74848,7 +74835,6 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LokacijaLjubljana",
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
             "Dan1. mar.◀▶"
           ],
@@ -74863,8 +74849,8 @@
             ]
           },
           "day_label": "1. mar.",
-          "title": "Najvišja temperatura · 1. mar.",
-          "subtitle": "Ljubljana",
+          "title": "Ljubljana · Najvišja temperatura",
+          "subtitle": "1. mar.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,21",
           "total_change": "+4,29°C",
           "total_change_color": "rgb(204, 34, 34)",
@@ -76428,7 +76414,7 @@
               "Celje",
               "Kranj",
               "Koper",
-              "Novo Mesto",
+              "Novo mesto",
               "Murska Sobota",
               "Nova Gorica",
               "Postojna",
@@ -76436,10 +76422,10 @@
               "Velenje",
               "Trbovlje",
               "Tolmin",
-              "Kocevje",
+              "Kočevje",
               "Ilirska Bistrica",
-              "Domzale",
-              "Ratece",
+              "Domžale",
+              "Rateče",
               "Kredarica"
             ]
           },
@@ -78397,7 +78383,6 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LokacijaLjubljana",
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
             "Dan1. jan.◀▶"
           ],
@@ -78412,8 +78397,8 @@
             ]
           },
           "day_label": "1. jan.",
-          "title": "Najvišja temperatura · 1. jan.",
-          "subtitle": "Ljubljana",
+          "title": "Ljubljana · Najvišja temperatura",
+          "subtitle": "1. jan.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,24",
           "total_change": "+3,73°C",
           "total_change_color": "rgb(204, 34, 34)",
@@ -79977,7 +79962,7 @@
               "Celje",
               "Kranj",
               "Koper",
-              "Novo Mesto",
+              "Novo mesto",
               "Murska Sobota",
               "Nova Gorica",
               "Postojna",
@@ -79985,10 +79970,10 @@
               "Velenje",
               "Trbovlje",
               "Tolmin",
-              "Kocevje",
+              "Kočevje",
               "Ilirska Bistrica",
-              "Domzale",
-              "Ratece",
+              "Domžale",
+              "Rateče",
               "Kredarica"
             ]
           },
@@ -81938,7 +81923,6 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LokacijaLjubljana",
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
             "Dan31. dec.◀▶"
           ],
@@ -81953,8 +81937,8 @@
             ]
           },
           "day_label": "31. dec.",
-          "title": "Najvišja temperatura · 31. dec.",
-          "subtitle": "Ljubljana",
+          "title": "Ljubljana · Najvišja temperatura",
+          "subtitle": "31. dec.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,27",
           "total_change": "+3,90°C",
           "total_change_color": "rgb(204, 34, 34)",
@@ -83518,7 +83502,7 @@
               "Celje",
               "Kranj",
               "Koper",
-              "Novo Mesto",
+              "Novo mesto",
               "Murska Sobota",
               "Nova Gorica",
               "Postojna",
@@ -83526,10 +83510,10 @@
               "Velenje",
               "Trbovlje",
               "Tolmin",
-              "Kocevje",
+              "Kočevje",
               "Ilirska Bistrica",
-              "Domzale",
-              "Ratece",
+              "Domžale",
+              "Rateče",
               "Kredarica"
             ]
           },
@@ -85479,7 +85463,6 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LokacijaLjubljana",
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
             "Dan3. avg.◀▶"
           ],
@@ -85494,8 +85477,8 @@
             ]
           },
           "day_label": "3. avg.",
-          "title": "Najvišja temperatura · 3. avg.",
-          "subtitle": "Ljubljana",
+          "title": "Ljubljana · Najvišja temperatura",
+          "subtitle": "3. avg.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,28",
           "total_change": "+3,13°C",
           "total_change_color": "rgb(204, 34, 34)",
@@ -87059,7 +87042,7 @@
               "Celje",
               "Kranj",
               "Koper",
-              "Novo Mesto",
+              "Novo mesto",
               "Murska Sobota",
               "Nova Gorica",
               "Postojna",
@@ -87067,10 +87050,10 @@
               "Velenje",
               "Trbovlje",
               "Tolmin",
-              "Kocevje",
+              "Kočevje",
               "Ilirska Bistrica",
-              "Domzale",
-              "Ratece",
+              "Domžale",
+              "Rateče",
               "Kredarica"
             ]
           },
@@ -89020,7 +89003,6 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LokacijaKredarica",
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
             "Dan3. avg.◀▶"
           ],
@@ -89035,8 +89017,8 @@
             ]
           },
           "day_label": "3. avg.",
-          "title": "Najvišja temperatura · 3. avg.",
-          "subtitle": "Kredarica",
+          "title": "Kredarica · Najvišja temperatura",
+          "subtitle": "3. avg.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,22",
           "total_change": "+2,04°C",
           "total_change_color": "rgb(204, 34, 34)",
@@ -90600,7 +90582,7 @@
               "Celje",
               "Kranj",
               "Koper",
-              "Novo Mesto",
+              "Novo mesto",
               "Murska Sobota",
               "Nova Gorica",
               "Postojna",
@@ -90608,10 +90590,10 @@
               "Velenje",
               "Trbovlje",
               "Tolmin",
-              "Kocevje",
+              "Kočevje",
               "Ilirska Bistrica",
-              "Domzale",
-              "Ratece",
+              "Domžale",
+              "Rateče",
               "Kredarica"
             ]
           },
@@ -92569,7 +92551,6 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LokacijaLjubljana",
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
             "Dan7. feb.◀▶"
           ],
@@ -92584,8 +92565,8 @@
             ]
           },
           "day_label": "7. feb.",
-          "title": "Najvišja temperatura · 7. feb.",
-          "subtitle": "Ljubljana",
+          "title": "Ljubljana · Najvišja temperatura",
+          "subtitle": "7. feb.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,25",
           "total_change": "+4,38°C",
           "total_change_color": "rgb(204, 34, 34)",
@@ -94162,7 +94143,7 @@
               "Celje",
               "Kranj",
               "Koper",
-              "Novo Mesto",
+              "Novo mesto",
               "Murska Sobota",
               "Nova Gorica",
               "Postojna",
@@ -94170,10 +94151,10 @@
               "Velenje",
               "Trbovlje",
               "Tolmin",
-              "Kocevje",
+              "Kočevje",
               "Ilirska Bistrica",
-              "Domzale",
-              "Ratece",
+              "Domžale",
+              "Rateče",
               "Kredarica"
             ]
           },
@@ -96131,7 +96112,6 @@
       "analysis": {
         "rendered": {
           "toolbar": [
-            "LokacijaKredarica",
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
             "Dan7. jan.◀▶"
           ],
@@ -96146,8 +96126,8 @@
             ]
           },
           "day_label": "7. jan.",
-          "title": "Najvišja temperatura · 7. jan.",
-          "subtitle": "Kredarica",
+          "title": "Kredarica · Najvišja temperatura",
+          "subtitle": "7. jan.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,28",
           "total_change": "+4,16°C",
           "total_change_color": "rgb(204, 34, 34)",
