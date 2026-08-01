@@ -27,17 +27,13 @@ name: "Daily data refresh"
 # PR is opened. The PR body states that it carries no automated checks by design
 # and links this run's log so a reviewer can see exactly what was checked.
 #
-# WHY THE HASH MANIFEST IS CHECKED IN-JOB, and fails LOUDLY (T-5.43, D-29 (i)):
-# new data legitimately moves the T-5.17 derived-table hashes, so after merge the
-# datasette image build (generate-db) would fail on main until the manifest is
-# regenerated. Because the GITHUB_TOKEN PR runs no checks (D-19), THIS job is the
-# only place that move is caught before it reaches main. It does NOT regenerate
-# the manifest silently: it opens the raw-append PR (so the exact appends are on a
-# branch a human can complete) and then fails the run, with instructions to
-# regenerate the manifest on amd64 in the SAME PR and trace the moved values —
-# exactly the deliberate act T-4.25 performed by hand. Regenerating silently would
-# make the one context with fresh data and a real rebuild the one context that
-# never asks whether the output moved for a defensible reason.
+# NO HASH MANIFEST IS CHECKED HERE (T-5.43, D-29). The T-5.17 gate used to hash the
+# LIVE derived output; a daily refresh moves that every day, so gating on it would go
+# red daily and be ignored. The "did the CODE change what the pipeline produces?"
+# question now lives in tests/test_reference_manifest.py, which hashes precompute over
+# a FROZEN fixture and moves only on code changes — and code enters only through human
+# PRs, never a data-only refresh. So this job just validates the new data and opens a
+# clean, mergeable PR; nothing here reddens on a legitimate data move.
 
 on:
   workflow_dispatch:
@@ -176,36 +172,12 @@ jobs:
       # the nine derived tables here. precompute_datasette.main() runs validate_tables
       # BEFORE the first to_sql, so a violation aborts non-zero and no PR is opened.
       # Network-free: it computes only from the raw CSVs on disk. DB output is gitignored.
-      # The BLAS thread pins mirror the Dockerfile db-export stage exactly (T-5.17):
-      # generate-db builds the shipped manifest single-threaded on amd64, so the DB
-      # this step builds must too, or the hash check below would report a spurious
-      # move from reduction-order float noise rather than from the new data.
       - name: Validate derived pipeline (precompute + validate)
         id: precompute
         if: steps.scope.outputs.changed == 'true'
         env:
           DATA_DIR: data/climate-si/data/raw
-          OMP_NUM_THREADS: "1"
-          OPENBLAS_NUM_THREADS: "1"
-          MKL_NUM_THREADS: "1"
-          NUMEXPR_NUM_THREADS: "1"
-          VECLIB_MAXIMUM_THREADS: "1"
         run: uv run --project data/climate-si/sources python data/climate-si/sources/precompute_datasette.py
-
-      # Derived-table hash contract (T-5.17), via the shared composite so this and
-      # the datasette image build check ONE definition (check_table_hashes.py) — the
-      # D-18/D-19 anti-duplication rule. This step does NOT fail on a move; it exports
-      # the CSVs from the DB precompute just wrote and reports `moved` + `report`.
-      # The gate is the separate "Fail loudly ..." step AFTER the PR opens (D-29 (i)),
-      # so the exact appends reach a branch a human can complete before the run reddens.
-      - name: Check derived-table hash manifest
-        id: hash_check
-        if: steps.scope.outputs.changed == 'true'
-        uses: ./.github/actions/check-table-hashes
-        with:
-          db-path: data/climate-si/data/raw/climate-si.db
-          out-dir: data/climate-si/data
-          manifest: data/climate-si/derived-tables.sha256
 
       # Open the PR with first-party tooling only (git + gh) — no third-party action,
       # so no extra pinned supply-chain dependency. Unique dated branch per run means a
@@ -234,8 +206,6 @@ jobs:
           RUN_ID: ${{ github.run_id }}
           STATIONS: ${{ steps.scope.outputs.stations }}
           COUNT: ${{ steps.scope.outputs.count }}
-          HASHES_MOVED: ${{ steps.hash_check.outputs.moved }}
-          HASH_REPORT: ${{ steps.hash_check.outputs.report }}
         run: |
           set -euo pipefail
           date_tag="$(date -u +%Y%m%d)"
@@ -262,41 +232,6 @@ jobs:
           # written". This is the one partial state that leaves data on origin.
           echo "pushed=true" >> "$GITHUB_OUTPUT"
 
-          # New data almost always moves the T-5.17 derived-table hashes. When it
-          # does, this PR is NOT mergeable as-is: the datasette image build on main
-          # would fail on the stale manifest. The run reddens at the gate step after
-          # this one (D-29 (i), fail loudly, no silent regeneration); the PR body
-          # tells the reviewer exactly how to complete it. When nothing moved (rare
-          # — e.g. only trailing era5t rows that round identical), the section is
-          # omitted and the PR is mergeable directly.
-          manifest_section=""
-          if [ "${HASHES_MOVED:-false}" = "true" ]; then
-            manifest_section=$(cat <<EOF
-
-          ### ⚠️ Derived-table hash manifest MUST be regenerated before merge
-          The new data moved the T-5.17 derived-table hashes. This is EXPECTED when
-          fresh data arrives — not a defect — but the manifest
-          (\`data/climate-si/derived-tables.sha256\`) no longer matches, so merging
-          as-is would fail the datasette image build on \`main\`.
-
-          To complete this PR (the same deliberate act as T-4.25):
-          1. Check out this branch (\`${branch}\`) on **native amd64** (the manifest
-             is an amd64 artifact; do not regenerate under emulation).
-          2. Regenerate: precompute → export → \`check_table_hashes.py --write\`.
-          3. Commit the updated manifest **to this same branch**, with the moved
-             values traced in the commit/PR message.
-          4. Then merge.
-
-          <details><summary>What moved (from the run)</summary>
-
-          \`\`\`
-          ${HASH_REPORT}
-          \`\`\`
-          </details>
-          EOF
-          )
-          fi
-
           cat > /tmp/pr-body.md <<EOF
           ## Daily raw data refresh
 
@@ -315,8 +250,12 @@ jobs:
           1. \`validate_raw.py\` — raw-input schema (same contract as the PR gate).
           2. \`precompute_datasette.py\` — builds and validates all nine derived tables.
 
+          The derived-table hash gate is NOT re-checked here: it hashes a frozen fixture
+          (tests/test_reference_manifest.py), so it moves only on code changes, and this
+          PR is data-only. Merging to \`main\` triggers the normal build + datasette image.
+
           **Run log (what was checked):** ${run_url}
-          ${manifest_section}
+
           ### A human must review before merge
           Confirm the appended dates/values look right, then merge. Merging to \`main\`
           triggers the normal build + datasette image (which re-validates).
@@ -329,36 +268,6 @@ jobs:
             --body-file /tmp/pr-body.md \
             --label data-refresh
 
-      # Fail loudly on a moved hash manifest (D-29 (i)) — AFTER the PR is open, so the
-      # exact raw appends are on the branch and a human can regenerate the manifest
-      # into the SAME PR (per its body) rather than re-fetching. This step reddens the
-      # run; it is deliberately NOT routed to the T-6.6a incident issue (see the alert
-      # condition below), because new data moves the hashes on essentially every run
-      # and a daily incident issue would be the cry-wolf failure T-6.6a exists to avoid.
-      # The message here is self-contained: it is the run-log artefact for the move.
-      - name: Fail loudly if the hash manifest moved
-        id: hash_gate
-        if: steps.scope.outputs.changed == 'true' && steps.hash_check.outputs.moved == 'true'
-        env:
-          HASH_REPORT: ${{ steps.hash_check.outputs.report }}
-          PR_BRANCH: ${{ steps.open_pr.outputs.branch }}
-        run: |
-          echo "::error::Derived-table hash manifest moved — EXPECTED with new data, but this PR is not mergeable until the manifest is regenerated."
-          echo "The daily append moved the T-5.17 derived-table hashes. This is normal,"
-          echo "not a defect: the served numbers legitimately shift when fresh data lands."
-          echo
-          echo "What moved:"
-          echo "${HASH_REPORT}"
-          echo
-          echo "What to do (the same deliberate act as T-4.25):"
-          echo "  - the raw appends are on branch '${PR_BRANCH}' (PR already open);"
-          echo "  - on NATIVE amd64, regenerate: precompute -> export ->"
-          echo "    check_table_hashes.py --write (do NOT regenerate under emulation);"
-          echo "  - commit data/climate-si/derived-tables.sha256 to that SAME branch,"
-          echo "    tracing the moved values in the message; then merge."
-          echo "Merging without it fails the datasette image build on main."
-          exit 1
-
       # --- Failure alerting (T-6.6a) ------------------------------------------
       # D-19 makes the refresh validate in-job and open NO PR on failure, which
       # makes "a real failure" indistinguishable from "no new data today" unless a
@@ -367,7 +276,7 @@ jobs:
       #
       # Fires on ANY real INCIDENT (fetch, scope-assert, validate-raw, precompute,
       # PR-open, or an infra failure of checkout/setup-uv). Deliberately does NOT
-      # fire in three cases:
+      # fire in two cases:
       #   * the confirmation guard aborted — `steps.confirm.outcome == 'failure'`
       #     means someone dispatched manually without typing `spend-quota`; that is
       #     a user error, not an incident. NOTE the condition tests `!= 'failure'`,
@@ -375,11 +284,6 @@ jobs:
       #     'skipped'), and `== 'success'` would then wrongly suppress every
       #     scheduled incident — the exact coupling T-5.43 had to fix when the guard
       #     became dispatch-only;
-      #   * the hash manifest moved — `steps.hash_gate.outcome == 'failure'` is the
-      #     EXPECTED daily "new data moved the hashes, regenerate the manifest"
-      #     signal (D-29 (i)). It reddens the run and is documented in the open PR;
-      #     routing it here would post a refresh-failure issue every day and drown
-      #     real incidents — the cry-wolf failure T-6.6a exists to avoid;
       #   * the job SUCCEEDED — which includes the legitimate "nothing changed, no
       #     PR" path, where the scope step exits 0 and `failure()` is false.
       # Dedupe: repeat incidents COMMENT on the one open `refresh-failure` issue
@@ -389,7 +293,7 @@ jobs:
       # dedupe label exists via the SAME action the PR label uses, so there is one
       # way to ensure a label, not two copies (D-18/D-19).
       - name: Ensure refresh-failure label
-        if: failure() && steps.confirm.outcome != 'failure' && steps.hash_gate.outcome != 'failure'
+        if: failure() && steps.confirm.outcome != 'failure'
         uses: ./.github/actions/ensure-label
         with:
           name: refresh-failure
@@ -398,7 +302,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Alert on refresh failure
-        if: failure() && steps.confirm.outcome != 'failure' && steps.hash_gate.outcome != 'failure'
+        if: failure() && steps.confirm.outcome != 'failure'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
@@ -409,7 +313,6 @@ jobs:
           SCOPE_OUTCOME: ${{ steps.scope.outcome }}
           VALIDATE_RAW_OUTCOME: ${{ steps.validate_raw.outcome }}
           PRECOMPUTE_OUTCOME: ${{ steps.precompute.outcome }}
-          HASH_CHECK_OUTCOME: ${{ steps.hash_check.outcome }}
           OPEN_PR_OUTCOME: ${{ steps.open_pr.outcome }}
           PR_BRANCH: ${{ steps.open_pr.outputs.branch }}
           PR_PUSHED: ${{ steps.open_pr.outputs.pushed }}
@@ -417,9 +320,7 @@ jobs:
           set -euo pipefail
 
           # Which step failed — the first in run order whose outcome is 'failure'
-          # (earlier steps are 'success', later ones 'skipped'). The hash_gate step
-          # is NOT here: its failure is the expected data-moved signal and is
-          # excluded from this alert entirely (see the `if:` above).
+          # (earlier steps are 'success', later ones 'skipped').
           if [ "$CHECKOUT_OUTCOME" = "failure" ]; then
             failed="Checkout repository (infrastructure)"
           elif [ "$SETUP_UV_OUTCOME" = "failure" ]; then
@@ -432,8 +333,6 @@ jobs:
             failed="Validate raw station inputs (validate_raw.py)"
           elif [ "$PRECOMPUTE_OUTCOME" = "failure" ]; then
             failed="Validate derived pipeline (precompute_datasette.py)"
-          elif [ "$HASH_CHECK_OUTCOME" = "failure" ]; then
-            failed="Check derived-table hash manifest (CSV export failed — not a hash move)"
           elif [ "$OPEN_PR_OUTCOME" = "failure" ]; then
             failed="Open pull request with raw appends"
           else

@@ -152,6 +152,17 @@ jobs:
         with:
           version: 'latest'
 
+      # Single-threaded BLAS pins mirror the datasette image build (T-5.17). The
+      # reference-manifest test (T-5.43) hashes precompute over a frozen fixture;
+      # gated columns are thread-independent (T-4.25, verified), so this is
+      # belt-and-suspenders, not load-bearing — the pin keeps the hash stable across
+      # any runner regardless.
       - name: Pipeline unit tests
         run: uv run pytest
         working-directory: data/climate-si/sources
+        env:
+          OMP_NUM_THREADS: "1"
+          OPENBLAS_NUM_THREADS: "1"
+          MKL_NUM_THREADS: "1"
+          NUMEXPR_NUM_THREADS: "1"
+          VECLIB_MAXIMUM_THREADS: "1"
