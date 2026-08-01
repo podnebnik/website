@@ -65,11 +65,31 @@ export function fmtSigned(n: number, digits = 2): string {
   return nf({ minimumFractionDigits: digits, maximumFractionDigits: digits, signDisplay: "always" }).format(preRound(n, digits));
 }
 
+// ── The i18n boundary (D-8, refined T-5.28) ─────────────────────────────────────
+// DATE and NUMBER formatting comes from `Intl` under the `sl-SI` locale (the
+// helpers below and the `Intl.NumberFormat` cache above) — this is the SOLE source
+// of every Slovenian month name, weekday, decimal comma and thousands separator on
+// the page, and it is deliberate (T-5.5 operator decision). ALL OTHER Slovenian
+// prose lives in `i18n/sl.ts`. So a month name generated here is NOT a D-8 bypass to
+// be "fixed" by hand-typing it into the catalogue: doing that would create a second
+// source of truth for the same twelve words, free to diverge with nothing comparing
+// them (the failure D-18 and T-5.26 exist to prevent). Extend the locale surface by
+// adding a helper HERE (one place, several callers), never by calling `Intl` inline
+// in a component.
+
 const dtMonthShort = new Intl.DateTimeFormat(LOCALE, { month: "short" });
 
 /** Slovenian short month name for a 1..12 month, e.g. 7 → "jul.". */
 export function fmtMonthShort(month: number): string {
   return dtMonthShort.format(new Date(2001, month - 1, 1));
+}
+
+const dtMonthLong = new Intl.DateTimeFormat(LOCALE, { month: "long" });
+
+/** Slovenian full month name for a 1..12 month, e.g. 8 → "avgust". Slovenian
+ * months are lowercase; capitalise for a heading with CSS, not string surgery. */
+export function fmtMonthLong(month: number): string {
+  return dtMonthLong.format(new Date(2001, month - 1, 1));
 }
 
 const dtShort = new Intl.DateTimeFormat(LOCALE, { day: "numeric", month: "short" });

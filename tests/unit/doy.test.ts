@@ -4,7 +4,7 @@
 // calls delegateEvents() at load); moving it here removed that coupling.
 import { describe, expect, it } from "vitest";
 
-import { dateToDoy, monthDayToDoy, doyToMonthDay } from "../../code/ali-je-vroce-era5/api.ts";
+import { dateToDoy, monthDayToDoy, doyToMonthDay, MONTH_LEN } from "../../code/ali-je-vroce-era5/api.ts";
 
 // T-4.5 — day-of-year conversions, AFTER the leap-year fix. The island now uses ONE
 // convention: a FIXED non-leap 365-slot year, with 29 Feb folded into 28 Feb / DOY 59
@@ -108,5 +108,37 @@ describe("FIXED round-trip (T-4.5): non-leap forward + non-leap inverse agree", 
   it("sends 2024-02-29 (leap day) to 28 February (D-12 fold)", () => {
     const doy = dateToDoy("2024-02-29"); // 59
     expect(doyToMonthDay(doy)).toEqual({ month: 2, day: 28 });
+  });
+});
+
+// T-5.28 — the calendar picker sizes each month's day grid from MONTH_LEN and maps a
+// clicked (month, day) straight through monthDayToDoy. These pin the two things the
+// operator flagged: February must offer 29 days (and not error), and no month may
+// offer a day it doesn't have (no "31 April"). Values hand-computed, not read back.
+describe("MONTH_LEN — the picker's per-month day counts (T-5.28)", () => {
+  it("is 12 months, February 29, summing to 366 (leap day selectable)", () => {
+    expect(MONTH_LEN.length).toBe(12);
+    expect(MONTH_LEN[1]).toBe(29);
+    expect(MONTH_LEN.reduce((a, b) => a + b, 0)).toBe(366);
+  });
+
+  it("gives 30 days to April, June, September, November (no 31st offered)", () => {
+    for (const m of [4, 6, 9, 11]) expect(MONTH_LEN[m - 1]).toBe(30);
+  });
+
+  it("every selectable (month, day) maps to a valid 1..365 DOY", () => {
+    for (let m = 1; m <= 12; m++) {
+      for (let day = 1; day <= MONTH_LEN[m - 1]!; day++) {
+        const doy = monthDayToDoy(m, day);
+        expect(doy).toBeGreaterThanOrEqual(1);
+        expect(doy).toBeLessThanOrEqual(365);
+      }
+    }
+  });
+
+  it("selecting 29 February does not error and folds to DOY 59, like 28 February", () => {
+    // The exact path a Feb-29 click walks: monthDayToDoy(calMonth=2, day=29).
+    expect(monthDayToDoy(2, 29)).toBe(59);
+    expect(monthDayToDoy(2, 28)).toBe(59);
   });
 });
