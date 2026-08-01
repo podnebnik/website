@@ -196,6 +196,8 @@ Stran uporablja **reanalizo ERA5-Land**, dostopano prek **arhivskega API-ja Open
 
 Reanaliza ni isto kot meritev postaje. Je rekonstrukcija preteklega vremena, ki jo model ustvari z asimilacijo številnih virov opazovanj. Prednost je enotna, prostorsko in časovno polna pokritost brez vrzeli; slabost je, da posamezna mrežna celica ne ujame lokalnih posebnosti (npr. mestnega toplotnega otoka ali natančne mikrolokacije postaje).
 
+Zadnjih ~6 dni prihaja iz predhodne različice reanalize (ERA5T), zato se te vrednosti lahko še spremenijo.
+
 Za današnje in najnovejše vrednosti, kjer reanaliza še ni na voljo, stran uporabi napoved Open-Meteo. Takšna vrednost je na strani označena z **»napoved«**; reanalizne vrednosti oznake nimajo.
 
 ## Postaje

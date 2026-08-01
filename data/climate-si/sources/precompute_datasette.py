@@ -29,6 +29,7 @@ import sqlite3
 import yaml
 
 import validate as pipeline_validate
+import validate_raw
 
 # T-5.1 Part 3: the global `warnings.filterwarnings("ignore")` was removed. It hid
 # every warning the pipeline raised — including real numerical issues (degenerate NB
@@ -177,7 +178,25 @@ def load_all() -> pd.DataFrame:
         sys.exit(f"No CSV files found in {DATA_DIR}")
     data = pd.concat(dfs, ignore_index=True)
     data = data[data["date"] <= pd.Timestamp.today()]
-    data = data[data["source"] != "era5t"]   # exclude preliminary ERA5T rows
+    # T-5.42/D-28 — ALLOW-LIST, not block-list. Accept only the provenance values that
+    # validate_raw already sanctions and FAIL LOUDLY on anything else, instead of the old
+    # `source != "era5t"` block-list that let ANY unrecognised value — a renamed variant, a
+    # typo, a live 'forecast' — flow silently into every derived table (percentiles, trends,
+    # tropical counts, SPEI). Sharing validate_raw.ALLOWED_SOURCES keeps the raw guard and
+    # this publish guard from drifting; a new source must be added there deliberately (the
+    # same committed expectation as D-18's datapackage and T-6.6b's ensure-label).
+    # D-28 (variant A): 'era5t' (preliminary reanalysis, revised in place) IS published
+    # alongside 'era5' (final), so the served `daily` end tracks the raw record (~6 days
+    # newer) instead of trailing it — the ~6 days the forecast fallback used to fill.
+    allowed_sources = set(validate_raw.ALLOWED_SOURCES)
+    unknown_sources = sorted(set(data["source"].unique()) - allowed_sources)
+    if unknown_sources:
+        sys.exit(
+            f"precompute load_all: unrecognised source value(s) {unknown_sources} in the "
+            f"raw CSVs — allowed sources are {sorted(allowed_sources)}. A new source must "
+            f"be added to validate_raw.ALLOWED_SOURCES deliberately; it is not published "
+            f"silently (T-5.42/D-28)."
+        )
     data["year"]  = data["date"].dt.year
     data["month"] = data["date"].dt.month
     # Fixed-lapse elevation correction, applied UNIFORMLY to every station

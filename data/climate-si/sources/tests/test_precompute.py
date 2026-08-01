@@ -10,6 +10,7 @@ moves a value fails loudly.
 
 import numpy as np
 import pandas as pd
+import pytest
 from pytest import approx
 
 import precompute_datasette as pc
@@ -104,17 +105,19 @@ def test_lapse_correction_is_uniform_and_covers_kredarica(tmp_path, monkeypatch)
         "2000-01-01,10.0,2.0,6.0,0.0,era5\n"      # no offset -> unchanged
         "2000-01-02,12.0,4.0,8.0,-100.0,era5\n"   # -100 m -> -0.65 °C
         "2000-01-03,8.0,0.0,4.0,-1207.0,era5\n"   # Kredarica-like (grid 1307 m, stn 2514 m) -> -7.8455 °C
-        "2000-01-04,20.0,10.0,15.0,-100.0,era5t\n"  # preliminary -> dropped by load_all
+        "2000-01-04,20.0,10.0,15.0,-100.0,era5t\n"  # preliminary -> PUBLISHED (D-28 variant A)
     )
     monkeypatch.setattr(pc, "DATA_DIR", tmp_path)
 
     data = pc.load_all()
 
-    # era5t rows are excluded (source filter), leaving the three era5 days.
+    # T-5.42/D-28: era5t is now on the allow-list and PUBLISHED alongside era5, so all
+    # four days survive (the old block-list dropped the era5t day).
     assert set(data["date"].dt.strftime("%Y-%m-%d")) == {
         "2000-01-01",
         "2000-01-02",
         "2000-01-03",
+        "2000-01-04",
     }
 
     by_date = data.set_index(data["date"].dt.strftime("%Y-%m-%d"))
@@ -122,9 +125,28 @@ def test_lapse_correction_is_uniform_and_covers_kredarica(tmp_path, monkeypatch)
     assert by_date.loc["2000-01-01", "temperature_max_corr"] == approx(10.0)       # 10 + 0
     assert by_date.loc["2000-01-02", "temperature_max_corr"] == approx(11.35)      # 12 - 0.65
     assert by_date.loc["2000-01-03", "temperature_max_corr"] == approx(0.1545)     # 8 - 7.8455 (Kredarica corrected)
+    # the era5t row gets the SAME uniform correction as any era5 row.
+    assert by_date.loc["2000-01-04", "temperature_max_corr"] == approx(19.35)      # 20 - 0.65 (era5t)
     # min and mean use the same offset.
     assert by_date.loc["2000-01-02", "temperature_min_corr"] == approx(3.35)       # 4 - 0.65
     assert by_date.loc["2000-01-02", "temperature_mean_corr"] == approx(7.35)      # 8 - 0.65
+
+
+def test_load_all_rejects_unknown_source(tmp_path, monkeypatch):
+    # T-5.42: the source filter is an ALLOW-LIST — an unrecognised provenance value must
+    # FAIL LOUDLY (SystemExit in load_all) rather than flow silently into the derived
+    # tables, as the old `source != "era5t"` block-list would have let it.
+    csv = tmp_path / "Test.csv"
+    csv.write_text(
+        "date,temperature_max,temperature_min,temperature_mean,elevation_diff_m,source\n"
+        "2000-01-01,10.0,2.0,6.0,0.0,era5\n"
+        "2000-01-02,12.0,4.0,8.0,0.0,forecast\n"   # not on the allow-list
+    )
+    monkeypatch.setattr(pc, "DATA_DIR", tmp_path)
+
+    with pytest.raises(SystemExit) as exc:
+        pc.load_all()
+    assert "forecast" in str(exc.value)
 
 
 def test_lapse_rate_constant():
