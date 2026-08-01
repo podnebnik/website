@@ -100,6 +100,16 @@ export function fmtMonthDay(month: number, day: number): string {
   return dtShort.format(new Date(2001, month - 1, day));
 }
 
+const dtShortYear = new Intl.DateTimeFormat(LOCALE, { day: "numeric", month: "short", year: "numeric" });
+
+/** Slovenian short date WITH the year, e.g. (8, 1, 1994) → "1. avg. 1994". The
+ * real year is passed (not the 2001 stand-in of fmtMonthDay) so a leap day like
+ * (2, 29, 2024) renders — the year is genuine and Intl formats it as a bare "1994"
+ * (no thousands grouping for a year). */
+export function fmtMonthDayYear(month: number, day: number, year: number): string {
+  return dtShortYear.format(new Date(year, month - 1, day));
+}
+
 /** Slovenian short date for a day-of-year (1..365 on the 2001 non-leap calendar). */
 export function fmtDoy(doy: number): string {
   const d = new Date(Date.UTC(2001, 0, 1));
