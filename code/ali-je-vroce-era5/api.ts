@@ -192,6 +192,16 @@ function assertNationalStationRows(rows: readonly unknown[], table: string): voi
 // without mounting the Solid island (tests/unit/doy.test.ts).
 export const MONTH_LEN = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] as const;
 
+// T-5.32: YEAR-AWARE day count for the HERO date picker, which — unlike the yearless
+// DOY control — selects a real dated day and must offer 29 February only in leap
+// years. `new Date(year, month, 0)` rolls to the last day of `month` (1..12), so its
+// `getDate()` is that month's length for THAT year: Feb → 29 in 2024, 28 in 2023.
+// Pure arithmetic on explicit arguments, no clock read (see the clock.ts audit note),
+// so it is unit-tested without mounting the Solid island (tests/unit/hero-date.test.ts).
+export function daysInMonth(year: number, month: number): number {
+  return new Date(year, month, 0).getDate();
+}
+
 export function doyToMonthDay(doy: number): { month: number; day: number } {
   const d = new Date(Date.UTC(2001, 0, 1));
   d.setUTCDate(d.getUTCDate() + doy - 1);

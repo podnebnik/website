@@ -1,10 +1,10 @@
-import { Show, For, createSignal, lazy, Suspense } from "solid-js";
+import { Show, For, createSignal, createEffect, lazy, Suspense } from "solid-js";
 import type { TodayStatus, Last7, SiteMeta, RankInfo } from "../types.ts";
-import { isArsoLoc } from "../api.ts";
+import { isArsoLoc, daysInMonth } from "../api.ts";
 import { todayYear } from "../clock.ts";
 import { TodayFlag } from "./TodayFlag.tsx";
 import { TodayGauge } from "../charts/TodayGauge.tsx";
-import { t, fmtNum, fmtInt, fmtMonthDay } from "../i18n/format.ts";
+import { t, fmtNum, fmtInt, fmtMonthDay, fmtMonthLong } from "../i18n/format.ts";
 
 const TodayLast7Chart = lazy(() => import("./TodayLast7Chart.tsx").then(m => ({ default: m.TodayLast7Chart })));
 
@@ -105,7 +105,7 @@ export function TodayCard(props: Props) {
             <polyline points="15 18 9 12 15 6"/>
           </svg>
         </button>
-        <div class="today-date-badge">{fmtDate(props.date)}</div>
+        <HeroDatePicker date={props.date} today={props.today} onDateChange={props.onDateChange} />
         <button
           class="today-nav-btn"
           aria-label={t("today.next_day")}
@@ -303,6 +303,183 @@ function RankBadge(props: { info: RankInfo; dayLabel: string }) {
             </For>
           </div>
         </div>
+      </Show>
+    </div>
+  );
+}
+
+// ── Hero date picker (T-5.32) ───────────────────────────────────────────────────
+// A calendar popover on the hero date badge. UNLIKE the yearless DOY picker (RegToolbar,
+// T-5.28) this selects a real dated day, so it carries a YEAR row and year-aware month
+// lengths — 29 February appears only in leap years, via daysInMonth (api.ts). Bounds are
+// the record: 1950-01-01 to device-"today" (props.today). The ~6 reanalysis-gap days at
+// the tail are WITHIN bounds and deliberately NOT disabled — selecting one is the default
+// view's normal state (the Open-Meteo forecast path with the "napoved" badge, D-24), not
+// an error to hide. Split from the DOY picker on purpose (state type, bounds, month-wrap
+// and leap handling all differ); it reuses the .reg-cal-* CSS and the fmtMonthLong month
+// names, so no content has a second source of truth (D-18 / T-5.26). Popover is closed by
+// default → adds no rendered text; the badge text (fmtDate) is unchanged, so the snapshot
+// (r.txt(".today-date-badge")) stays byte-identical.
+function pad2(n: number): string { return String(n).padStart(2, "0"); }
+function isoOf(y: number, m: number, d: number): string { return `${y}-${pad2(m)}-${pad2(d)}`; }
+
+function HeroDatePicker(props: { date: string; today: string; onDateChange: (d: string) => void }) {
+  const [calOpen,    setCalOpen]    = createSignal(false);
+  const [calYear,    setCalYear]    = createSignal(1950);
+  const [calMonth,   setCalMonth]   = createSignal(1);   // 1..12 shown in the grid
+  const [focusedDay, setFocusedDay] = createSignal(1);   // roving-tabindex day
+  let triggerRef: HTMLDivElement | undefined;
+  const dayRefs: (HTMLButtonElement | undefined)[] = [];
+
+  const maxYear  = () => Number(props.today.slice(0, 4));
+  const maxMonth = () => Number(props.today.slice(5, 7));
+  const maxDay   = () => Number(props.today.slice(8, 10));
+
+  const monthLen = () => daysInMonth(calYear(), calMonth());
+  // Last selectable day of the viewed month: its length, except the record-end month,
+  // which stops at device-today. (No lower cut: the min is 1950-01-01, and month nav is
+  // bounded to >= 1950-01 below, so no day in a viewable month falls before the min.)
+  const lastDay = () =>
+    calYear() === maxYear() && calMonth() === maxMonth()
+      ? Math.min(maxDay(), monthLen())
+      : monthLen();
+  const dayDisabled = (day: number) => isoOf(calYear(), calMonth(), day) > props.today;
+
+  const clampFocus = () => setFocusedDay(d => Math.min(Math.max(1, d), lastDay()));
+
+  const atFirstMonth = () => calYear() <= 1950 && calMonth() <= 1;
+  const atLastMonth  = () => calYear() >= maxYear() && calMonth() >= maxMonth();
+  const atFirstYear  = () => calYear() <= 1950;
+  const atLastYear   = () => calYear() >= maxYear();
+
+  const openCal = () => {
+    setCalYear(Number(props.date.slice(0, 4)));
+    setCalMonth(Number(props.date.slice(5, 7)));
+    setFocusedDay(Number(props.date.slice(8, 10)));
+    setCalOpen(true);
+  };
+  const closeCal = (returnFocus: boolean) => {
+    setCalOpen(false);
+    if (returnFocus) triggerRef?.focus();
+  };
+  const selectDay = (day: number) => {
+    props.onDateChange(isoOf(calYear(), calMonth(), day));
+    closeCal(true);
+  };
+  const stepMonth = (delta: number) => {
+    let y = calYear();
+    let m = calMonth() + delta;
+    if (m < 1)  { m = 12; y -= 1; }
+    if (m > 12) { m = 1;  y += 1; }
+    if (y < 1950) { y = 1950; m = 1; }                                   // clamp to record start
+    if (y > maxYear() || (y === maxYear() && m > maxMonth())) { y = maxYear(); m = maxMonth(); }  // to record end
+    setCalYear(y); setCalMonth(m); clampFocus();
+  };
+  const stepYear = (delta: number) => {
+    let y = Math.min(maxYear(), Math.max(1950, calYear() + delta));
+    let m = calMonth();
+    if (y === maxYear() && m > maxMonth()) m = maxMonth();
+    setCalYear(y); setCalMonth(m); clampFocus();
+  };
+
+  // Move DOM focus to the roving day button when the target day or open-state changes.
+  // Month/year nav that leaves focusedDay unchanged keeps focus naturally — Solid's <For>
+  // reuses the day button (same primitive key), so the focused element survives the
+  // re-render; only a clamp (shorter month) changes focusedDay and re-runs this. Mirrors
+  // the verified T-5.28 approach.
+  createEffect(() => {
+    if (calOpen()) dayRefs[focusedDay()]?.focus();
+  });
+
+  const onTriggerKey = (e: KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " " || e.key === "ArrowDown") {
+      e.preventDefault();
+      openCal();
+    }
+  };
+  const onGridKey = (e: KeyboardEvent) => {
+    const last = lastDay();
+    const d = focusedDay();
+    switch (e.key) {
+      case "ArrowRight": e.preventDefault(); setFocusedDay(Math.min(last, d + 1)); break;
+      case "ArrowLeft":  e.preventDefault(); setFocusedDay(Math.max(1, d - 1));    break;
+      case "ArrowDown":  e.preventDefault(); setFocusedDay(Math.min(last, d + 7)); break;
+      case "ArrowUp":    e.preventDefault(); setFocusedDay(Math.max(1, d - 7));    break;
+      case "Home":       e.preventDefault(); setFocusedDay(1);    break;
+      case "End":        e.preventDefault(); setFocusedDay(last); break;
+      // PageUp/Down step the month; with Shift they step the year (big jumps without a
+      // 76-option dropdown).
+      case "PageUp":     e.preventDefault(); e.shiftKey ? stepYear(-1) : stepMonth(-1); break;
+      case "PageDown":   e.preventDefault(); e.shiftKey ? stepYear(1)  : stepMonth(1);  break;
+      case "Enter":
+      case " ":          e.preventDefault(); selectDay(focusedDay()); break;
+      case "Escape":     e.preventDefault(); closeCal(true); break;
+    }
+  };
+
+  return (
+    <div class="today-date-badge-wrap">
+      <div
+        ref={triggerRef}
+        class="today-date-badge"
+        role="button"
+        tabindex="0"
+        aria-haspopup="dialog"
+        aria-expanded={calOpen()}
+        aria-label={t("today.pick_date")}
+        onClick={() => (calOpen() ? closeCal(false) : openCal())}
+        onKeyDown={onTriggerKey}
+      >
+        {fmtDate(props.date)}
+      </div>
+      <Show when={calOpen()}>
+        <div
+          class="reg-cal-pop"
+          role="dialog"
+          aria-label={t("today.cal_dialog")}
+          onKeyDown={(e) => { if (e.key === "Escape") { e.preventDefault(); closeCal(true); } }}
+        >
+          {/* Year row — the substance of this ticket: reaching a distant year without
+              hundreds of ‹ clicks. */}
+          <div class="reg-cal-head">
+            <button type="button" class="reg-cal-nav" aria-label={t("today.cal_prev_year")} disabled={atFirstYear()} onClick={() => stepYear(-1)}>◀</button>
+            <span class="reg-cal-title">{calYear()}</span>
+            <button type="button" class="reg-cal-nav" aria-label={t("today.cal_next_year")} disabled={atLastYear()} onClick={() => stepYear(1)}>▶</button>
+          </div>
+          {/* Month row */}
+          <div class="reg-cal-head">
+            <button type="button" class="reg-cal-nav" aria-label={t("today.cal_prev_month")} disabled={atFirstMonth()} onClick={() => stepMonth(-1)}>◀</button>
+            <span class="reg-cal-title">{fmtMonthLong(calMonth())}</span>
+            <button type="button" class="reg-cal-nav" aria-label={t("today.cal_next_month")} disabled={atLastMonth()} onClick={() => stepMonth(1)}>▶</button>
+          </div>
+          <div class="reg-cal-grid" onKeyDown={onGridKey}>
+            <For each={Array.from({ length: monthLen() }, (_, i) => i + 1)}>
+              {(day) => {
+                const selected = () =>
+                  Number(props.date.slice(0, 4)) === calYear() &&
+                  Number(props.date.slice(5, 7)) === calMonth() &&
+                  Number(props.date.slice(8, 10)) === day;
+                return (
+                  <button
+                    type="button"
+                    ref={(el) => (dayRefs[day] = el)}
+                    class="reg-cal-day"
+                    // Full dated label (day, month name, year) — Intl month name, raw
+                    // year (NO thousands grouping: "1994", never "1.994").
+                    aria-label={`${day}. ${fmtMonthLong(calMonth())} ${calYear()}`}
+                    aria-pressed={selected()}
+                    disabled={dayDisabled(day)}
+                    tabindex={focusedDay() === day ? 0 : -1}
+                    onClick={() => selectDay(day)}
+                  >
+                    {day}
+                  </button>
+                );
+              }}
+            </For>
+          </div>
+        </div>
+        <div style={{ position: "fixed", inset: "0", "z-index": "9" }} onClick={() => closeCal(false)} />
       </Show>
     </div>
   );
