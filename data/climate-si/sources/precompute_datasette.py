@@ -598,6 +598,39 @@ def _tropical_trend(fit_years, fit_counts, years) -> dict:
         X_c    = sm.add_constant(years_arr - year_mean)
         fitted = sm.NegativeBinomial(fit_counts, X_c).fit(disp=False, maxiter=200)
 
+        # T-4.24: withhold on an UNTRUSTWORTHY fit, using the optimiser's own
+        # diagnostics — the convergence flag and whether the parameter covariance
+        # is finite and positive-definite. This is NOT a p-value threshold and NOT
+        # a perturbation test: the criterion is strictly "the optimiser did not
+        # produce a fit we can stand behind", judged by the fit itself.
+        #   Why this matters: for a handful of over-dispersed, near-flat count
+        # series the NB2 log-likelihood is almost flat in the slope, so BFGS does
+        # not converge and the Hessian is near-singular. Such a fit still yields
+        # numbers, but its p-value is meaningless — it swings across its whole
+        # range (0.0001 ↔ 0.9999) under a perturbation ten orders of magnitude
+        # below measurement precision, and that p drives a reader-facing
+        # significance verdict and whether a 2050 projection renders. So two builds
+        # of one commit could show a reader a different climate claim. We decline to
+        # publish a number we cannot stand behind — the same principle as D-16's
+        # SPEI withhold, applied to a second estimator. Reproducibility is pinned
+        # separately (BLAS/OpenMP threads fixed in the generate-db build), but that
+        # only makes the fit reproducible, not trustworthy; this gate is the real
+        # fix. A more robust estimator is the open follow-up (T-4.24 backlog note),
+        # not a v1 change.
+        #   NB: covariance singularity often surfaces instead as an exception in
+        # get_prediction() below (a LinAlgError caught by the except); this explicit
+        # check catches the arches/paths where the inverse comes back non-finite or
+        # non-PD without raising. Both routes end in the same {} withhold.
+        cov = np.asarray(fitted.cov_params(), dtype=float)
+        cov_ok = bool(np.all(np.isfinite(cov)))
+        if cov_ok:
+            cov_sym = 0.5 * (cov + cov.T)
+            cov_ok = bool(np.all(np.linalg.eigvalsh(cov_sym) > 0.0))
+        if not (bool(fitted.mle_retvals.get("converged", False)) and cov_ok):
+            reason = "did not converge" if not fitted.mle_retvals.get("converged", False) else "non-PD covariance"
+            print(f"  tropical NB fit withheld ({reason})", file=sys.stderr)
+            return {}
+
         x_dense = np.linspace(years[0], years[-1], len(years))
         X_dense = sm.add_constant(x_dense - year_mean)
         pred_df = fitted.get_prediction(X_dense).summary_frame(alpha=0.05)

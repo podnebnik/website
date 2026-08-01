@@ -197,3 +197,94 @@ def test_spei_fit_success_returns_monotone_values(monkeypatch):
     assert result is not None
     assert len(result) == len(all_vals)
     assert all(result[i] <= result[i + 1] + 1e-9 for i in range(len(result) - 1))
+
+
+# ── Tropical NB trend withholds an UNTRUSTWORTHY fit (T-4.24) ─────────────────
+#
+# The fit is withheld — trend_json = {} — not only on too-little data (<10 non-zero
+# years) or an exception, but now also when the optimiser's OWN diagnostics say the
+# fit is not trustworthy: it did not converge, or its parameter covariance is not
+# finite/positive-definite. The criterion is deliberately NOT a p-value threshold
+# and NOT a perturbation test. These tests force each branch with a stubbed fit so
+# the gate is exercised without depending on a specific ill-conditioned series.
+
+
+class _StubFit:
+    def __init__(self, converged, cov):
+        self.mle_retvals = {"converged": converged}
+        self._cov = np.asarray(cov, dtype=float)
+
+    def cov_params(self):
+        return self._cov
+
+
+class _StubModel:
+    def __init__(self, converged, cov):
+        self._converged, self._cov = converged, cov
+
+    def fit(self, *a, **k):
+        return _StubFit(self._converged, self._cov)
+
+
+def _sufficient_series():
+    # Passes the <10-years / <10-nonzero insufficiency gate so the fit path runs.
+    years = list(range(2000, 2021))          # 21 years
+    counts = [c + 1 for c in range(21)]      # all non-zero, ascending
+    return years, counts
+
+
+def test_tropical_trend_withholds_when_not_converged(monkeypatch, capsys):
+    years, counts = _sufficient_series()
+    monkeypatch.setattr(
+        pc.sm, "NegativeBinomial",
+        lambda endog, exog: _StubModel(converged=False, cov=np.eye(3)),
+    )
+    result = pc._tropical_trend(years[:-1], counts[:-1], years)
+    assert result == {}, "a non-converged fit must be withheld, not published"
+    err = capsys.readouterr().err
+    assert "tropical NB fit withheld" in err and "did not converge" in err
+
+
+def test_tropical_trend_withholds_on_nonfinite_covariance(monkeypatch, capsys):
+    years, counts = _sufficient_series()
+    bad = np.eye(3); bad[0, 0] = np.nan
+    monkeypatch.setattr(
+        pc.sm, "NegativeBinomial",
+        lambda endog, exog: _StubModel(converged=True, cov=bad),
+    )
+    result = pc._tropical_trend(years[:-1], counts[:-1], years)
+    assert result == {}, "a non-finite covariance must be withheld"
+    assert "non-PD covariance" in capsys.readouterr().err
+
+
+def test_tropical_trend_withholds_on_non_pd_covariance(monkeypatch, capsys):
+    years, counts = _sufficient_series()
+    non_pd = np.array([[1.0, 0.0, 0.0], [0.0, -1.0, 0.0], [0.0, 0.0, 1.0]])  # neg eigenvalue
+    monkeypatch.setattr(
+        pc.sm, "NegativeBinomial",
+        lambda endog, exog: _StubModel(converged=True, cov=non_pd),
+    )
+    result = pc._tropical_trend(years[:-1], counts[:-1], years)
+    assert result == {}, "a non-positive-definite covariance must be withheld"
+    assert "non-PD covariance" in capsys.readouterr().err
+
+
+def test_tropical_trend_withholds_insufficient_data():
+    # <10 non-zero years -> withheld BEFORE any fit (the genuine-insufficiency path,
+    # unchanged by T-4.24). No stub: it must never reach the optimiser.
+    years = list(range(2000, 2021))
+    counts = [0] * 16 + [1, 2, 3, 4, 5]      # only 5 non-zero
+    assert pc._tropical_trend(years[:-1], counts[:-1], years) == {}
+
+
+def test_tropical_trend_success_returns_nb_model():
+    # Happy path: a realistic over-dispersed rising count series (the shape a real
+    # warming station shows) converges and publishes a trend. Hardcoded (no RNG) so
+    # the test is deterministic; a perfectly smooth series is degenerate for NB2
+    # (alpha -> 0) and would not converge — exactly the kind the gate now withholds.
+    years = list(range(1980, 2021))
+    counts = [4, 4, 5, 0, 5, 2, 7, 3, 8, 2, 7, 8, 3, 3, 7, 5, 5, 4, 13, 6, 6,
+              17, 8, 8, 4, 2, 15, 16, 18, 6, 13, 9, 12, 9, 10, 7, 9, 15, 13, 17, 31]
+    result = pc._tropical_trend(years[:-1], counts[:-1], years)
+    assert result.get("model_used") == "nb"
+    assert "p_value" in result and "rate_per_year" in result

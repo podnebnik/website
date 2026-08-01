@@ -390,6 +390,14 @@ export const sl = {
     dir_less: "manj",
     plain: "{plainDesc} Postaja {station} kaže {sig}: grobe {dpd} {dir} {unit} na desetletje. {forward}",
     no_trend: "Premalo let z {instr} za izračun trenda ({count, plural, one{# leto} two{# leti} few{# leta} other{# let}} z vrednostjo > 0). Potrebnih je vsaj 10.",
+    // T-4.24 — a SECOND withhold reason. `no_trend` above is the honest message
+    // when there is too little data (<10 non-zero years). But the trend fit is now
+    // also withheld when the negative-binomial model does not converge or its
+    // covariance is unreliable (an ill-conditioned, near-flat series). Those series
+    // DO have enough years, so `no_trend`'s "at least 10 needed" would be false —
+    // showing "(45 z vrednostjo > 0). Potrebnih je vsaj 10." is self-contradictory.
+    // This message states the real reason without over-claiming.
+    no_trend_unreliable: "Trenda za to kombinacijo praga in zaporedja ni bilo mogoče zanesljivo oceniti (statistični model ni dal zanesljivega rezultata), zato ga ne prikazujemo. Letno štetje ostaja prikazano.",
     a11y: "Stolpčni prikaz letnega števila — {noun}, torej koliko {unit} na leto preseže izbrani temperaturni prag — z modelom trenda negativne binomske regresije in intervalom zaupanja; zadnji stolpec je leto v teku.",
   },
 
