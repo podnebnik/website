@@ -1,0 +1,72 @@
+name: 'Check climate-si derived-table hash manifest'
+description: >
+  Runner-side caller of the T-5.17 derived-table hash contract. Exports the nine
+  derived CSVs from a built climate-si.db (export_datasette_csv.py) and runs
+  check_table_hashes.py against data/climate-si/derived-tables.sha256 — the single
+  definition of what each table's hash IS (check_table_hashes._compute /
+  _manifest_text). The datasette image build (generate-db, Dockerfile db-export)
+  runs the SAME script directly as a hard build gate; a Docker RUN cannot `uses:` a
+  composite, so this action is the OTHER caller (data-refresh.yaml) of that one
+  definition — the D-18/D-19 anti-duplication rule, honoured at the script layer.
+  This is deliberately a SEPARATE action from validate-raw-data, not a variant of
+  it: validate-raw-data takes a raw-CSV directory; this takes a built DB, a table
+  export and the manifest. Different inputs, different job — forcing them together
+  would be duplication wearing a shared name.
+  It does NOT fail the job on a move. It reports `moved` (+ the check output) as
+  outputs so the caller can still open its PR and then gate loudly on its own terms
+  — see the fail-loudly semantics (D-29 (i)) in data-refresh.yaml. Callers must have
+  already built the SQLite (precompute_datasette.py) and installed uv.
+inputs:
+  db-path:
+    description: Path to the built climate-si SQLite (precompute writes DATA_DIR/climate-si.db).
+    required: true
+  out-dir:
+    description: Directory to export the nine CSVs into; also the TABLES_DIR the check hashes.
+    required: true
+  manifest:
+    description: Path to the committed derived-tables.sha256 manifest.
+    required: true
+outputs:
+  moved:
+    description: '"true" if any GATED derived-table column moved versus the manifest, else "false".'
+    value: ${{ steps.check.outputs.moved }}
+  report:
+    description: The full check_table_hashes.py output (names the tables/columns that moved).
+    value: ${{ steps.check.outputs.report }}
+runs:
+  using: 'composite'
+  steps:
+    - name: Export the nine derived CSVs from the built DB
+      shell: bash
+      env:
+        DB_PATH: ${{ inputs.db-path }}
+        OUT_DIR: ${{ inputs.out-dir }}
+      run: uv run --project data/climate-si/sources python data/climate-si/sources/export_datasette_csv.py
+
+    - name: Compare the derived-table hashes against the manifest
+      id: check
+      shell: bash
+      env:
+        TABLES_DIR: ${{ inputs.out-dir }}
+        MANIFEST: ${{ inputs.manifest }}
+      run: |
+        # check_table_hashes.py exits 0 when every gated column matches, non-zero
+        # when one moved (a trend_json-only drift is informational and still exits 0).
+        # We capture the exit code rather than let it fail the step, so the caller
+        # (data-refresh.yaml) can open its PR and THEN gate loudly — D-29 (i).
+        set +e
+        report="$(uv run --project data/climate-si/sources \
+          python data/climate-si/sources/check_table_hashes.py --manifest "$MANIFEST" 2>&1)"
+        code=$?
+        set -e
+        echo "$report"
+        {
+          echo "report<<HASHREPORT_EOF"
+          echo "$report"
+          echo "HASHREPORT_EOF"
+        } >> "$GITHUB_OUTPUT"
+        if [ "$code" -eq 0 ]; then
+          echo "moved=false" >> "$GITHUB_OUTPUT"
+        else
+          echo "moved=true" >> "$GITHUB_OUTPUT"
+        fi
