@@ -6,7 +6,7 @@ import { EmptyState } from "./components/EmptyState.tsx";
 import { TodayCard } from "./components/TodayCard.tsx";
 import { DistributionChart } from "./charts/DistributionChart.tsx";
 import { TodayTrendChart } from "./components/TodayTrendChart.tsx";
-import { RegressionPanel, RegToolbar, RegScatterCard, RegYearRoundCard, useReg,
+import { RegressionPanel, RegToolbar, RegScatterCard, RegYearRoundCard, FloatingStationChooser, useReg,
          panelHStyle, panelTitleStyle, panelSubStyle } from "./components/RegressionPanel.tsx";
 import { MethodologyPanel } from "./components/MethodologyPanel.tsx";
 import type { SiteMeta } from "./types.ts";
@@ -73,6 +73,10 @@ function Dashboard(props: { meta: SiteMeta }) {
   const last7Data = () => pageDataResolved()?.last7;
 
   const [mapLoc, setMapLoc] = createSignal<string | null>(null);
+
+  // T-5.27 — the floating station chooser reveals once the reader scrolls into the
+  // trends region; this anchors on the "Analiza trendov" heading.
+  let trendsAnchor: HTMLDivElement | undefined;
 
   return (
     <div>
@@ -147,7 +151,7 @@ function Dashboard(props: { meta: SiteMeta }) {
         syncLoc={mapLoc}
         onLocChange={setMapLoc}
       >
-        <div class="sec-hs">{t("sections.trends_analysis")}</div>
+        <div class="sec-hs" ref={trendsAnchor}>{t("sections.trends_analysis")}</div>
 
         <RegToolbar />
 
@@ -192,6 +196,10 @@ function Dashboard(props: { meta: SiteMeta }) {
         </div>
 
         <Era5Charts />
+
+        {/* T-5.27 / D-26 — single location control for everything above, in the
+            bottom-right corner. Inside the panel so it drives the regression store. */}
+        <FloatingStationChooser anchor={() => trendsAnchor} />
 
       </RegressionPanel>
 
@@ -249,7 +257,7 @@ function Era5Charts() {
           {t("sections.location_details")}
         </div>
         <Suspense fallback={<div style={{ height: "180px" }} class="animate-pulse rounded-xl bg-[var(--color-paper-2)]" />}>
-          <HeroCardsPanel loc={loc()} doy={s.doy()} />
+          <HeroCardsPanel loc={loc()} label={st()?.label} doy={s.doy()} />
         </Suspense>
       </section>
 

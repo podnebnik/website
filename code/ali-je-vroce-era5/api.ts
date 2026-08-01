@@ -27,6 +27,8 @@ import { CAT_COLORS, cdfPercentile } from "./percentile.ts";
 import { calendarDateIn, LJUBLJANA_TZ } from "./clock.ts";
 // T-5.5 (D-8) — Slovenian catalogue + Slovenian number/date formatting.
 import { t, fmtNum, fmtMonthDay } from "./i18n/format.ts";
+// T-5.27 — nominative diacritic station display names (no datasette column has them).
+import { displayNameFor } from "./i18n/station-names.ts";
 
 // podnebnik.org datasette serves each DB at the root (no /datasette prefix),
 // e.g. https://stage-data.podnebnik.org/climate-si — override with VITE_DATASETTE_URL for dev.
@@ -409,9 +411,16 @@ export async function fetchMeta(): Promise<SiteMeta> {
     era5Stations.map(s => [s.era5_name, { lat: s.lat, lon: s.lon, elevation: s.elevation }])
   );
 
+  // T-5.27 — `label` is the nominative DIACRITIC display name, authored in
+  // i18n/station-names.ts. The datasette `name` column is ASCII (era5_name with
+  // underscores→spaces), `official_name` is the ARSO station identity (a different
+  // place for six towns), and `name_locative` is the locative case — none is the
+  // display name (see that file). `s.name` is now unused for display but stays in
+  // STATIONS_COLS: the fixture layer keys on the exact request URL, so dropping the
+  // column would turn every offline run into a miss (same reason `station_id` stays).
   const stations = era5Stations.map(s => ({
     name:      s.era5_name,
-    label:     s.name,
+    label:     displayNameFor(s.era5_name),
     source:    "era5" as const,
     lat:       s.lat,
     lon:       s.lon,

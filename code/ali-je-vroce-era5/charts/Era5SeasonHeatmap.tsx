@@ -26,6 +26,12 @@ export function Era5SeasonHeatmap(props: Props) {
     <ErrorBoundary fallback={sectionErrorFallback(refetch, "160px")}>
       <Suspense fallback={<div class="h-40 animate-pulse bg-[var(--color-paper-2)] rounded-xl" />}>
         <Show when={(display()?.length ?? 0) > 0}>
+          {/* T-5.27 part (3) — the chart's station is set by the off-screen floating
+              chooser, so it must name it here (previously the `label` prop was unused
+              and the season chart showed no location at all). */}
+          <Show when={props.label}>
+            <div class="era5-chart-loc">{props.label}</div>
+          </Show>
           <SeasonHeatmap data={display()!} />
         </Show>
         <Show when={data.loading && !display()}>

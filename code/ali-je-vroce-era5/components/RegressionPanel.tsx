@@ -1,5 +1,5 @@
 import { createSignal, createResource, createEffect, createMemo, createContext, useContext,
-         Show, Suspense, ErrorBoundary, For, lazy } from "solid-js";
+         onMount, onCleanup, Show, Suspense, ErrorBoundary, For, lazy } from "solid-js";
 import type { JSXElement } from "solid-js";
 import type { SiteMeta } from "../types.ts";
 import type { RegressionParams } from "../api.ts";
@@ -39,10 +39,25 @@ function doyToLabel(doy: number): string {
 function createStore(props: ProviderProps) {
   const defaultLoc = () => props.meta.default_location ?? "Ljubljana";
 
+  // T-5.27 / D-26 — the location below the hero is now a SINGLE station. `selLocs`
+  // is kept as an always-length-1 array only so the fetch layer (RegressionParams.locs
+  // → fetchRegression maps over it, RegressionChart plots one series per result) is
+  // untouched; the multi-station selector and its ≥1 toggle are gone. National is not
+  // offered below the hero — annual_trend / season_heatmap / tropical / calendar have
+  // no national row and fetchEra5Tropical returns null for it (api.ts), so the floating
+  // chooser lists the 18 stations only.
   const [selLocs,  setSelLocs]  = createSignal<string[]>([defaultLoc()]);
   const [selVar,   setSelVar]   = createSignal("temperature_max");
   const [doy,      setDoy]      = createSignal(props.defaultDoy);
-  const [locOpen,  setLocOpen]  = createSignal(false);
+
+  const selLoc = () => selLocs()[0] ?? defaultLoc();
+  // The single writer for the below-hero location. It also notifies the page via
+  // onLocChange (→ setMapLoc), so the station map's highlight and panel title follow
+  // the floating chooser, and vice-versa (a map click flows back through syncLoc).
+  const setLoc = (name: string) => {
+    setSelLocs([name]);
+    props.onLocChange?.(name);
+  };
 
   createEffect(() => {
     const ext = props.syncLoc?.();
@@ -78,34 +93,28 @@ function createStore(props: ProviderProps) {
     if (!s) return null;
     return trend10() * s.n_years / 10;
   };
+  // T-5.31 family (recorded in 1a): station.name is the ASCII era5_name key,
+  // station.label is the diacritic display name. Always show the label.
   const stationLabel = (name: string) => {
     const st = props.meta.stations.find(s => s.name === name);
     return (st?.label ?? name).replace(/_/g, " ");
   };
-  const locLabel   = () => {
-    const locs = selLocs();
-    return locs.length === 1 ? stationLabel(locs[0]!) : t("reg.locations_multi", { count: locs.length });
-  };
+  const locLabel   = () => stationLabel(selLoc());
   const varLabel   = () => VARIABLES.find(([k]) => k === selVar())?.[1] ?? selVar();
-  const chartTitle = () => `${varLabel().split("(")[0]!.trim()} · ${doyToLabel(doy())}`;
-  const chartSub   = () => selLocs().map(stationLabel).join(", ");
-
-  function toggleLoc(name: string) {
-    setSelLocs(prev => {
-      if (prev.includes(name)) return prev.length > 1 ? prev.filter(l => l !== name) : prev;
-      return [...prev, name].slice(0, 6);
-    });
-  }
+  // T-5.27 part (3): the scatter card now names its station in the TITLE (it was only
+  // in the subtitle), so a reader whose station is set by the off-screen floating
+  // chooser can read the chart on its own. The day moves to the subtitle.
+  const chartTitle = () => `${stationLabel(selLoc())} · ${varLabel().split("(")[0]!.trim()}`;
+  const chartSub   = () => doyToLabel(doy());
 
   return {
     meta: props.meta,
-    selLocs, setSelLocs, selVar, setSelVar,
+    selLocs, setSelLocs, selLoc, setLoc, selVar, setSelVar,
     doy, setDoy,
-    locOpen, setLocOpen,
     regData, calData, refetchReg, refetchCal,
     isPrecip, stats0, trend10, trendColor, totalChange,
-    locLabel, varLabel, chartTitle, chartSub,
-    toggleLoc, doyToLabel, VARIABLES,
+    stationLabel, locLabel, varLabel, chartTitle, chartSub,
+    doyToLabel, VARIABLES,
   };
 }
 
@@ -189,36 +198,11 @@ export function RegToolbar() {
   return (
     <div class="reg-toolbar">
 
-      {/* Location */}
-      <div style={{ position: "relative" }}>
-        <div style={pillGroupStyle}>
-          <span style={pgkStyle}>{t("reg.location")}</span>
-          <button style={locBtnStyle} onClick={() => s.setLocOpen(v => !v)}>
-            <span>{s.locLabel()}</span>
-            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
-          </button>
-        </div>
-        <Show when={s.locOpen()}>
-          <div style={locMenuStyle} onClick={(e) => e.stopPropagation()}>
-            <div style={locMenuHeaderStyle}>
-              <span style={{ "font-size": "11px", "font-weight": "600", "font-family": "var(--font-sans)" }}>{t("reg.select_locations")}</span>
-              <button style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-ink-soft)", "font-size": "14px" }} onClick={() => s.setLocOpen(false)}>✕</button>
-            </div>
-            <For each={s.meta.stations}>
-              {(st) => {
-                const active = () => s.selLocs().includes(st.name);
-                return (
-                  <label style={{ display: "flex", "align-items": "center", gap: "8px", padding: "5px 12px", cursor: "pointer", "font-size": "12px", "font-family": "var(--font-sans)", color: "var(--color-ink)", background: active() ? "var(--color-paper-2)" : "transparent" }}>
-                    <input type="checkbox" checked={active()} onChange={() => s.toggleLoc(st.name)} />
-                    {st.label ?? st.name}
-                  </label>
-                );
-              }}
-            </For>
-          </div>
-          <div style={{ position: "fixed", inset: "0", "z-index": "9" }} onClick={() => s.setLocOpen(false)} />
-        </Show>
-      </div>
+      {/* T-5.27 / D-26 — the inline LOKACIJA multi-select was RETIRED here. The single
+          location for every section below "Analiza trendov" is now the floating
+          FloatingStationChooser (bottom-right corner); multi-station comparison was
+          dropped deliberately. The store keeps `selLocs` as a length-1 array so the
+          fetch layer is unchanged. */}
 
       {/* Variable */}
       <div style={pillGroupStyle}>
@@ -403,7 +387,7 @@ export function RegYearRoundCard() {
 
       <div style={panelHStyle}>
         <div style={{ "min-width": "0" }}>
-          <div style={panelTitleStyle}>{t("reg.year_round_title", { station: s.selLocs()[0]?.replace(/_/g, " ") ?? "" })}</div>
+          <div style={panelTitleStyle}>{t("reg.year_round_title", { station: s.stationLabel(s.selLoc()) })}</div>
           <div style={{ ...panelSubStyle, "margin-top": "3px" }}>
             {(s.VARIABLES.find(([k]) => k === s.selVar())?.[1] ?? s.selVar()).split("(")[0]!.trim()}
             {" · Theil-Sen + MK"}
@@ -432,6 +416,176 @@ export function RegYearRoundCard() {
         <p style={panelExplainStyle}>{s.meta.strings.explain_cal}</p>
       </Show>
 
+    </div>
+  );
+}
+
+// ── Floating station chooser (T-5.27 / D-26) ──────────────────────────────────
+//
+// The single location control for every section below "Analiza trendov". Fixed to
+// the bott-right corner, revealed once the reader has scrolled into the trends
+// region (the `anchor` element passes the viewport top), and SHOWN WHEN SCROLLING
+// STOPS — it fades out on scroll-start and back in on scroll-stop, so it never
+// flickers on a gesture. It stays visible while open or while it holds focus, so a
+// keyboard user is never chasing a moving target. The list EXPANDS UPWARD (it opens
+// over content already read, not down into charts not yet reached), which is exactly
+// why it cannot be a native <select> — the browser owns that dropdown's direction.
+// Everything a native control gives for free is therefore built here: roving-tabindex
+// keyboard, focus return, outside-click dismissal, listbox/option semantics.
+export function FloatingStationChooser(props: { anchor: () => HTMLElement | undefined }) {
+  const s = useReg();
+
+  // Alphabetical by the DIACRITIC display name, locale-aware (Slovene collation:
+  // Č/Š/Ž sort right after C/S/Z, not by code point).
+  const stations = createMemo(() =>
+    [...s.meta.stations].sort((a, b) =>
+      (a.label ?? a.name).localeCompare(b.label ?? b.name, "sl")),
+  );
+
+  const [open,        setOpen]        = createSignal(false);
+  const [inRegion,    setInRegion]    = createSignal(false);
+  const [scrolling,   setScrolling]   = createSignal(false);
+  const [focusWithin, setFocusWithin] = createSignal(false);
+  const [focusIdx,    setFocusIdx]    = createSignal(0);
+
+  const shown = () => inRegion() && (open() || focusWithin() || !scrolling());
+
+  let triggerRef: HTMLButtonElement | undefined;
+  let listRef:    HTMLUListElement  | undefined;
+  const optRefs: (HTMLLIElement | undefined)[] = [];
+  let alignFoot = false;
+
+  const REVEAL_AT      = 72;   // px from viewport top the trends heading must pass
+  const SCROLL_STOP_MS = 160;
+  let stopTimer: number | undefined;
+
+  const recompute = () => {
+    const el = props.anchor();
+    setInRegion(!!el && el.getBoundingClientRect().top < REVEAL_AT);
+  };
+  const onScroll = () => {
+    recompute();
+    setScrolling(true);
+    if (stopTimer) clearTimeout(stopTimer);
+    stopTimer = window.setTimeout(() => setScrolling(false), SCROLL_STOP_MS);
+  };
+
+  onMount(() => {
+    recompute();  // the page may load already scrolled into the region
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", recompute, { passive: true });
+  });
+  onCleanup(() => {
+    window.removeEventListener("scroll", onScroll);
+    window.removeEventListener("resize", recompute);
+    if (stopTimer) clearTimeout(stopTimer);
+  });
+
+  const openMenu = () => {
+    const idx = stations().findIndex(st => st.name === s.selLoc());
+    setFocusIdx(idx < 0 ? 0 : idx);
+    alignFoot = true;   // pin the current selection to the foot of the list on open
+    setOpen(true);
+  };
+  const closeMenu = (returnFocus: boolean) => {
+    setOpen(false);
+    if (returnFocus) triggerRef?.focus();
+  };
+  const choose = (name: string) => {
+    s.setLoc(name);
+    closeMenu(true);
+  };
+
+  // Move DOM focus to the roving option on open / navigation. On open, scroll the
+  // selected option to the FOOT of the list (nearest the trigger); during arrow
+  // navigation, only nudge it into view.
+  createEffect(() => {
+    if (!open()) return;
+    const el = optRefs[focusIdx()];
+    if (!el) return;
+    el.focus({ preventScroll: true });
+    if (alignFoot && listRef) {
+      listRef.scrollTop = Math.max(0, el.offsetTop + el.offsetHeight - listRef.clientHeight);
+      alignFoot = false;
+    } else {
+      el.scrollIntoView({ block: "nearest" });
+    }
+  });
+
+  const onTriggerKey = (e: KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " " || e.key === "ArrowUp" || e.key === "ArrowDown") {
+      e.preventDefault();
+      openMenu();
+    }
+  };
+  const onListKey = (e: KeyboardEvent) => {
+    const n = stations().length;
+    const i = focusIdx();
+    switch (e.key) {
+      case "ArrowDown": e.preventDefault(); setFocusIdx(Math.min(n - 1, i + 1)); break;
+      case "ArrowUp":   e.preventDefault(); setFocusIdx(Math.max(0, i - 1));     break;
+      case "Home":      e.preventDefault(); setFocusIdx(0);     break;
+      case "End":       e.preventDefault(); setFocusIdx(n - 1); break;
+      case "Enter":
+      case " ":         e.preventDefault(); choose(stations()[i]!.name); break;
+      case "Escape":    e.preventDefault(); closeMenu(true);   break;
+      case "Tab":       closeMenu(false);  break;   // let focus leave naturally
+    }
+  };
+
+  return (
+    <div
+      class="fsc"
+      classList={{ "fsc--region": inRegion(), "fsc--shown": shown() }}
+      aria-hidden={!inRegion()}
+      onFocusIn={() => setFocusWithin(true)}
+      onFocusOut={(e) => {
+        if (!(e.currentTarget as HTMLElement).contains(e.relatedTarget as Node | null)) setFocusWithin(false);
+      }}
+    >
+      <Show when={open()}>
+        <div class="fsc-overlay" onClick={() => closeMenu(false)} />
+        <ul ref={listRef} class="fsc-list" role="listbox" aria-label={t("floc.listbox")} onKeyDown={onListKey}>
+          <For each={stations()}>
+            {(st, i) => {
+              const selected = () => st.name === s.selLoc();
+              return (
+                <li
+                  ref={(el) => (optRefs[i()] = el)}
+                  class="fsc-opt"
+                  classList={{ "fsc-opt--sel": selected() }}
+                  role="option"
+                  aria-selected={selected()}
+                  tabindex={focusIdx() === i() ? 0 : -1}
+                  onClick={() => choose(st.name)}
+                >
+                  {st.label ?? st.name}
+                </li>
+              );
+            }}
+          </For>
+        </ul>
+      </Show>
+      {/* Resting state is a compact location-pin icon, not a labelled pill — a wide
+          "Lokacija · <station>" bar overlapped the content to its left. The current
+          station is not hidden: every chart below names it (part 3), and it is the
+          trigger's accessible name + hover title here. */}
+      <button
+        ref={triggerRef}
+        type="button"
+        class="fsc-trigger"
+        aria-haspopup="listbox"
+        aria-expanded={open()}
+        aria-label={t("floc.pick", { station: s.locLabel() })}
+        title={s.locLabel()}
+        onClick={() => (open() ? closeMenu(false) : openMenu())}
+        onKeyDown={onTriggerKey}
+      >
+        <svg class="fsc-pin" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z" />
+          <circle cx="12" cy="10" r="2.5" />
+        </svg>
+      </button>
     </div>
   );
 }
@@ -473,38 +627,6 @@ const pillStyle: Record<string, string> = {
   color:          "var(--color-ink)",
   cursor:         "pointer",
   "font-family":  "var(--font-sans)",
-};
-
-const locBtnStyle: Record<string, string> = {
-  ...pillStyle,
-  display:       "flex",
-  "align-items": "center",
-  gap:           "5px",
-  background:    "var(--color-card)",
-};
-
-const locMenuStyle: Record<string, string> = {
-  position:        "absolute",
-  top:             "calc(100% + 6px)",
-  left:            "0",
-  "z-index":       "10",
-  background:      "var(--color-card)",
-  border:          "1px solid var(--color-rule-2)",
-  "border-radius": "var(--radius, 10px)",
-  "box-shadow":    "0 8px 24px rgba(14,14,12,0.12)",
-  "min-width":     "180px",
-  "max-height":    "280px",
-  overflow:        "auto",
-};
-
-const locMenuHeaderStyle: Record<string, string> = {
-  display:           "flex",
-  "align-items":     "center",
-  "justify-content": "space-between",
-  padding:           "8px 12px",
-  "border-bottom":   "1px solid var(--color-rule)",
-  "font-size":       "11px",
-  color:             "var(--color-ink-soft)",
 };
 
 const playBtnStyle: Record<string, string> = {
