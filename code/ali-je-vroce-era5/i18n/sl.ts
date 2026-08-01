@@ -223,6 +223,12 @@ export const sl = {
     select_locations: "Izberite lokacije (največ 6)",
     variable: "Spremenljivka",
     day: "Dan",
+    // T-5.28 — accessible names for the day-of-year calendar picker. The month and
+    // day NAMES come from Intl (i18n/format.ts); only this framing prose is here.
+    pick_day: "Izberi dan v letu",
+    calendar: "Koledar — izbira dneva v letu",
+    prev_month: "Prejšnji mesec",
+    next_month: "Naslednji mesec",
     locations_multi: "{count, plural, one{# lokacija} two{# lokaciji} few{# lokacije} other{# lokacij}}",
 
     years_sig: "{count, plural, one{# leto} two{# leti} few{# leta} other{# let}} · {sig}",

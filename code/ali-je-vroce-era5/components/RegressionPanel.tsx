@@ -3,9 +3,10 @@ import { createSignal, createResource, createEffect, createMemo, createContext, 
 import type { JSXElement } from "solid-js";
 import type { SiteMeta } from "../types.ts";
 import type { RegressionParams } from "../api.ts";
-import { fetchRegression, fetchCalendar, varLabel as varLabelOf } from "../api.ts";
+import { fetchRegression, fetchCalendar, varLabel as varLabelOf,
+         monthDayToDoy, doyToMonthDay, MONTH_LEN } from "../api.ts";
 import { sectionErrorFallback } from "./SectionError.tsx";
-import { t, fmtSigned, fmtDoy } from "../i18n/format.ts";
+import { t, fmtSigned, fmtDoy, fmtMonthLong } from "../i18n/format.ts";
 
 const RegressionChart = lazy(() => import("../charts/RegressionChart.tsx").then(m => ({ default: m.RegressionChart })));
 const YearRoundChart  = lazy(() => import("../charts/YearRoundChart.tsx").then(m => ({ default: m.YearRoundChart })));
@@ -28,6 +29,10 @@ interface ProviderProps {
 function doyToLabel(doy: number): string {
   return fmtDoy(doy);
 }
+
+// T-5.28 — the calendar picker sizes each month's day grid from MONTH_LEN (api.ts).
+// No weekday columns: the control has no year, so weekday alignment would be arbitrary
+// and would misrepresent a day-of-year selection as a dated day.
 
 // ── Store factory ─────────────────────────────────────────────────────────────
 
@@ -123,6 +128,64 @@ export function RegressionPanel(props: ProviderProps) {
 
 export function RegToolbar() {
   const s = useReg();
+
+  // ── Calendar picker state (T-5.28) ─────────────────────────────────────────
+  const [calOpen,    setCalOpen]    = createSignal(false);
+  const [calMonth,   setCalMonth]   = createSignal(1);   // 1..12 shown in the grid
+  const [focusedDay, setFocusedDay] = createSignal(1);   // roving-tabindex day
+  let triggerRef: HTMLDivElement | undefined;
+  const dayRefs: (HTMLButtonElement | undefined)[] = [];
+
+  const openCal = () => {
+    const { month, day } = doyToMonthDay(s.doy());
+    setCalMonth(month);
+    setFocusedDay(day);
+    setCalOpen(true);
+  };
+  const closeCal = (returnFocus: boolean) => {
+    setCalOpen(false);
+    if (returnFocus) triggerRef?.focus();
+  };
+  const selectDay = (day: number) => {
+    s.setDoy(monthDayToDoy(calMonth(), day));
+    closeCal(true);
+  };
+  const stepMonth = (delta: number) => {
+    const m = ((calMonth() - 1 + delta + 12) % 12) + 1;  // wrap 1..12 (yearless)
+    setCalMonth(m);
+    setFocusedDay(d => Math.min(d, MONTH_LEN[m - 1]!));
+  };
+
+  // Move DOM focus to the roving day button whenever the target day, the month, or
+  // open-state changes (the grid re-renders on month change, so refs are rebuilt).
+  createEffect(() => {
+    if (calOpen()) dayRefs[focusedDay()]?.focus();
+  });
+
+  const onTriggerKey = (e: KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " " || e.key === "ArrowDown") {
+      e.preventDefault();
+      openCal();
+    }
+  };
+  const onGridKey = (e: KeyboardEvent) => {
+    const len = MONTH_LEN[calMonth() - 1]!;
+    const d = focusedDay();
+    switch (e.key) {
+      case "ArrowRight": e.preventDefault(); setFocusedDay(Math.min(len, d + 1)); break;
+      case "ArrowLeft":  e.preventDefault(); setFocusedDay(Math.max(1, d - 1));   break;
+      case "ArrowDown":  e.preventDefault(); setFocusedDay(Math.min(len, d + 7)); break;
+      case "ArrowUp":    e.preventDefault(); setFocusedDay(Math.max(1, d - 7));   break;
+      case "Home":       e.preventDefault(); setFocusedDay(1);   break;
+      case "End":        e.preventDefault(); setFocusedDay(len); break;
+      case "PageUp":     e.preventDefault(); stepMonth(-1); break;
+      case "PageDown":   e.preventDefault(); stepMonth(1);  break;
+      case "Enter":
+      case " ":          e.preventDefault(); selectDay(focusedDay()); break;
+      case "Escape":     e.preventDefault(); closeCal(true); break;
+    }
+  };
+
   return (
     <div class="reg-toolbar">
 
@@ -188,8 +251,62 @@ export function RegToolbar() {
       {/* DOY control */}
       <div class="reg-doy-ctrl">
         <span style={{ "font-family": "var(--font-mono)", "font-size": "9px", "letter-spacing": "0.12em", "text-transform": "uppercase", color: "var(--color-ink-soft)", "white-space": "nowrap" }}>{t("reg.day")}</span>
-        <div style={{ "font-family": "var(--font-mono)", "font-weight": "600", "font-size": "13px", background: "var(--color-card)", border: "1px solid var(--color-rule-2)", "border-radius": "7px", padding: "4px 10px", "min-width": "60px", "text-align": "center", "white-space": "nowrap" }}>
-          {s.doyToLabel(s.doy())}
+        {/* T-5.28: the "1. avg." display doubles as the calendar trigger. Kept a
+            <div role="button"> (not a native <button>) so it stays the first
+            `.reg-doy-ctrl > div` the snapshot reads as `day_label`; the popover is a
+            SIBLING of the trigger, never a descendant (no button-in-button). */}
+        <div class="reg-doy-label">
+          <div
+            ref={triggerRef}
+            class="reg-doy-value"
+            role="button"
+            tabindex="0"
+            aria-haspopup="dialog"
+            aria-expanded={calOpen()}
+            aria-label={t("reg.pick_day")}
+            onClick={() => (calOpen() ? closeCal(false) : openCal())}
+            onKeyDown={onTriggerKey}
+          >
+            {s.doyToLabel(s.doy())}
+          </div>
+          <Show when={calOpen()}>
+            <div
+              class="reg-cal-pop"
+              role="dialog"
+              aria-label={t("reg.calendar")}
+              onKeyDown={(e) => { if (e.key === "Escape") { e.preventDefault(); closeCal(true); } }}
+            >
+              <div class="reg-cal-head">
+                <button type="button" class="reg-cal-nav" aria-label={t("reg.prev_month")} onClick={() => stepMonth(-1)}>◀</button>
+                <span class="reg-cal-title">{fmtMonthLong(calMonth())}</span>
+                <button type="button" class="reg-cal-nav" aria-label={t("reg.next_month")} onClick={() => stepMonth(1)}>▶</button>
+              </div>
+              <div class="reg-cal-grid" onKeyDown={onGridKey}>
+                <For each={Array.from({ length: MONTH_LEN[calMonth() - 1]! }, (_, i) => i + 1)}>
+                  {(day) => {
+                    const selected = () => {
+                      const md = doyToMonthDay(s.doy());
+                      return md.month === calMonth() && md.day === day;
+                    };
+                    return (
+                      <button
+                        type="button"
+                        ref={(el) => (dayRefs[day] = el)}
+                        class="reg-cal-day"
+                        aria-label={`${day}. ${fmtMonthLong(calMonth())}`}
+                        aria-pressed={selected()}
+                        tabindex={focusedDay() === day ? 0 : -1}
+                        onClick={() => selectDay(day)}
+                      >
+                        {day}
+                      </button>
+                    );
+                  }}
+                </For>
+              </div>
+            </div>
+            <div style={{ position: "fixed", inset: "0", "z-index": "9" }} onClick={() => closeCal(false)} />
+          </Show>
         </div>
         <div class="reg-doy-slider">
           <input

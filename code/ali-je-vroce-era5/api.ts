@@ -185,6 +185,13 @@ function assertNationalStationRows(rows: readonly unknown[], table: string): voi
 }
 
 
+// T-5.28: day counts per month on the FIXED non-leap 2001 calendar the DOY helpers
+// walk. February keeps 29 so the leap day is SELECTABLE in the calendar picker —
+// monthDayToDoy(2,29) folds it to DOY 59 (28 Feb's slot, D-12). Lives here beside the
+// DOY conversions so "the shape of the year" has one home and can be unit-tested
+// without mounting the Solid island (tests/unit/doy.test.ts).
+export const MONTH_LEN = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] as const;
+
 export function doyToMonthDay(doy: number): { month: number; day: number } {
   const d = new Date(Date.UTC(2001, 0, 1));
   d.setUTCDate(d.getUTCDate() + doy - 1);

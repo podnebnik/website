@@ -214,6 +214,24 @@
 .reg-doy-ctrl   { display: flex; align-items: center; gap: 8px; padding: 4px 4px 4px 10px; border-radius: 10px; background: var(--color-paper); height: 36px; }
 .reg-doy-slider { height: 28px; background: var(--color-card); border: 1px solid var(--color-rule-2); border-radius: 7px; display: flex; align-items: center; padding: 0 8px; width: 180px; }
 
+/* ── T-5.28: day-of-year calendar picker ─────────────────────────────────────
+   Opens from the "1. avg." label; a yearless month + day-number grid (no weekday
+   columns — the control selects a day-of-year, not a dated day). No transition, so
+   there is nothing for prefers-reduced-motion to suppress (T-5.15). */
+.reg-doy-label  { position: relative; }
+.reg-doy-value  { font-family: var(--font-mono); font-weight: 600; font-size: 13px; background: var(--color-card); border: 1px solid var(--color-rule-2); border-radius: 7px; padding: 4px 10px; min-width: 60px; text-align: center; white-space: nowrap; cursor: pointer; }
+.reg-doy-value:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 1px; }
+.reg-cal-pop    { position: absolute; top: calc(100% + 6px); left: 50%; transform: translateX(-50%); z-index: 10; background: var(--color-card); border: 1px solid var(--color-rule-2); border-radius: var(--radius, 10px); box-shadow: 0 8px 24px rgba(14, 14, 12, 0.12); padding: 10px; width: 236px; }
+.reg-cal-head   { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.reg-cal-title  { font-family: var(--font-sans); font-size: 13px; font-weight: 600; color: var(--color-ink); text-transform: capitalize; }
+.reg-cal-nav    { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 6px; border: 1px solid var(--color-rule); background: var(--color-card); cursor: pointer; color: var(--color-ink); font-size: 10px; }
+.reg-cal-nav:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 1px; }
+.reg-cal-grid   { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+.reg-cal-day    { aspect-ratio: 1; border: 1px solid transparent; border-radius: 6px; background: var(--color-paper); cursor: pointer; font-family: var(--font-mono); font-size: 11px; color: var(--color-ink); display: grid; place-items: center; }
+.reg-cal-day:hover { background: var(--color-paper-2); }
+.reg-cal-day:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 1px; }
+.reg-cal-day[aria-pressed="true"] { background: var(--color-ink); color: #fff; border-color: var(--color-ink); }
+
 @media (max-width: 700px) {
   .main-row { grid-template-columns: 1fr; padding: 10px 14px 0; }
   .reg-card--cal { margin: 10px 14px 0; }
