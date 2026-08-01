@@ -98,7 +98,14 @@ export function Era5TropicalChart(props: Props) {
   const noTrendReason = () => {
     const d = display();
     if (!d || d.trend.model_used) return null;
-    return t("tropical.no_trend", { instr: cfg().plainNounInstr, count: d.nonzero_count });
+    // T-4.24 — two distinct withhold reasons. The pipeline's insufficiency gate is
+    // <10 non-zero years (precompute_datasette.py:593); with ≥10 the withhold is a
+    // convergence/covariance failure instead, so the "at least 10 needed" wording
+    // would be false. Branch on the count the pipeline gates on so the message
+    // never contradicts the visible year count.
+    if (d.nonzero_count < 10)
+      return t("tropical.no_trend", { instr: cfg().plainNounInstr, count: d.nonzero_count });
+    return t("tropical.no_trend_unreliable");
   };
 
   return (

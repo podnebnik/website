@@ -72,7 +72,20 @@ RUN ls -al /build/
 # still-committed emissions/temperature packages) exactly as before — building
 # var/sqlite and the datasette metadata/inspect files unchanged.
 RUN uv sync --project data/climate-si/sources --locked
+# T-4.24: pin BLAS/OpenMP to a single thread for the precompute. The tropical
+# negative-binomial trend fit is ill-conditioned for a few near-flat count series,
+# so its optimiser path is sensitive to floating-point reduction order — and with
+# multi-threaded OpenBLAS that order varies run-to-run on the SAME amd64 runner,
+# making `trend_json` non-reproducible between two builds of one commit (T-5.17
+# found this; two native-amd64 runs produced different trend_json hashes). Single
+# threaded, the reduction order is fixed and the build is reproducible. This is
+# NECESSARY but NOT sufficient — a reproducible fit can still be an untrustworthy
+# one, which is why _tropical_trend also withholds non-converged / singular fits.
+# generate-db is the ONLY place the numpy-heavy pipeline runs (T-5.9), so pinning
+# here covers every shipped value. The one-off cost is negligible at this data size.
 RUN DATA_DIR=/build/data/climate-si/data/raw \
+    OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+    NUMEXPR_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1 \
     uv run --project data/climate-si/sources --no-sync \
         python data/climate-si/sources/precompute_datasette.py
 RUN DB_PATH=/build/data/climate-si/data/raw/climate-si.db \
