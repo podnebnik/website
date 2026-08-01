@@ -920,17 +920,15 @@ def build_spei_station(data: pd.DataFrame, stations_df: pd.DataFrame) -> pd.Data
     return pd.DataFrame(out_rows)
 
 
-def main():
-    print(f"Writing to {DB_PATH}")
+def build_all_tables(data):
+    """Build all nine derived tables in memory from loaded station data.
 
-    print("\nLoading ERA5 station CSVs…")
-    data = load_all()
-    print(f"  {len(data):,} rows · {data['location'].nunique()} stations · "
-          f"{data['year'].min()}–{data['year'].max()}")
-
-    # Build every table in memory first. Nothing is written to the database until
-    # validation (T-3.6) has passed, so a broken regeneration cannot publish a
-    # subtly-wrong table quietly — it aborts non-zero before the first to_sql.
+    The single build sequence, shared by main() (which then validates + writes to
+    SQLite) and tests/test_reference_manifest.py (which hashes the output over a
+    frozen fixture, T-5.43). No I/O and no validation — callers own those. Keeping
+    one sequence means the reference-manifest gate exercises exactly the builders
+    that ship, not a copy that could drift.
+    """
     print("\n[1/9] Building stations table…")
     stations_df = build_stations(data)
     print(f"  {len(stations_df)} stations "
@@ -960,7 +958,7 @@ def main():
     print("\n[9/9] Computing spei_station (per-station SPEI-3/SPEI-30 trends)…")
     ss_df = build_spei_station(data, stations_df)
 
-    tables = {
+    return {
         "stations": stations_df,
         "daily": daily_df,
         "daily_percentiles": perc_df,
@@ -971,6 +969,20 @@ def main():
         "spei": spei_df,
         "spei_station": ss_df,
     }
+
+
+def main():
+    print(f"Writing to {DB_PATH}")
+
+    print("\nLoading ERA5 station CSVs…")
+    data = load_all()
+    print(f"  {len(data):,} rows · {data['location'].nunique()} stations · "
+          f"{data['year'].min()}–{data['year'].max()}")
+
+    # Build every table in memory first. Nothing is written to the database until
+    # validation (T-3.6) has passed, so a broken regeneration cannot publish a
+    # subtly-wrong table quietly — it aborts non-zero before the first to_sql.
+    tables = build_all_tables(data)
 
     # ── Validate before publishing (T-3.6) ─────────────────────────────────────
     print("\nValidating output tables…")

@@ -1,16 +1,21 @@
-name: "Weekly data refresh"
+name: "Daily data refresh"
 
-# Weekly refresh of the committed raw ERA5-Land station CSVs
+# Daily refresh of the committed raw ERA5-Land station CSVs
 # (data/climate-si/data/raw/<Station>.csv). The job runs mk_collect.py in
 # DIFFERENTIAL mode, validates the result end to end, and opens a PULL REQUEST
 # with raw appends only. It NEVER pushes to main — a human reviews and merges.
 #
-# WHY THE SCHEDULE IS COMMENTED OUT (T-5.7d, lands disabled):
-# enable the `schedule:` block below only after the T-4.3b meteo pass has landed
-# — a weekly refresh running against data mid-regeneration leaves two data
-# generations open at once and the fixture re-record cannot settle.
+# WHY THE SCHEDULE IS NOW ENABLED (T-5.43, D-29):
+# T-5.7d shipped this workflow deliberately inert behind two conditions, and BOTH
+# are now satisfied — the T-4.3b meteo pass has landed and refresh-failure
+# alerting exists (T-6.6a). D-29 sets the cadence to DAILY (not D-9's weekly):
+# D-28 now publishes preliminary era5t rows, bringing the served data to ~0 days
+# behind raw, so a weekly schedule would reintroduce as a cadence the six-day gap
+# D-28 just removed from the pipeline. Costs are nil and measured (D-29): Actions
+# minutes are free on public repos, a refresh is 18 light Open-Meteo differentials
+# that trip no rate limit, and a daily append adds a few bytes per file.
 #
-# WHY VALIDATION RUNS IN THIS JOB, not only on the PR (the (d) design decision):
+# WHY VALIDATION RUNS IN THIS JOB, not only on the PR (D-19):
 # a pull request opened with the workflow's GITHUB_TOKEN does NOT trigger
 # `on: pull_request` workflows (GitHub suppresses it to avoid recursive runs).
 # So validate-data.yaml and docker-data.yaml will NOT auto-run on the PR this
@@ -21,22 +26,33 @@ name: "Weekly data refresh"
 # the PR only if both pass. Any validation failure fails the run loudly and no
 # PR is opened. The PR body states that it carries no automated checks by design
 # and links this run's log so a reviewer can see exactly what was checked.
+#
+# NO HASH MANIFEST IS CHECKED HERE (T-5.43, D-29). The T-5.17 gate used to hash the
+# LIVE derived output; a daily refresh moves that every day, so gating on it would go
+# red daily and be ignored. The "did the CODE change what the pipeline produces?"
+# question now lives in tests/test_reference_manifest.py, which hashes precompute over
+# a FROZEN fixture and moves only on code changes — and code enters only through human
+# PRs, never a data-only refresh. So this job just validates the new data and opens a
+# clean, mergeable PR; nothing here reddens on a legitimate data move.
 
 on:
   workflow_dispatch:
     inputs:
       confirm:
         description: >
-          Type spend-quota to confirm. A run FETCHES from Open-Meteo, takes
-          roughly 20 minutes, and consumes free-tier quota reserved for the
-          T-4.3b meteo pass. Leave blank / any other value and the run aborts.
+          Type spend-quota to confirm. A run FETCHES from Open-Meteo and opens a
+          pull request. The scheduled run bypasses this guard (it cannot type);
+          the guard stays on MANUAL dispatch because that is the accident-prone
+          path. Leave blank / any other value and the run aborts.
         required: true
         default: ''
-  # schedule:
-  #   # Enable ONLY after the T-4.3b meteo pass has landed (see header). A weekly
-  #   # refresh running mid-regeneration opens a second data generation before the
-  #   # first has settled and the fixture re-record then has no fixed point.
-  #   - cron: '17 4 * * 1'  # Mondays 04:17 UTC
+  schedule:
+    # Daily at 01:17 UTC. Cron is UTC: that is 03:17 CEST in summer and drifts to
+    # 02:17 CET in winter — either way the small hours, off the top of the hour
+    # (:17, not :00) because every cron fires on the hour and GitHub queues
+    # scheduled jobs under load then. Enabled by T-5.43 (D-29); see the header for
+    # the two conditions (T-4.3b landed, T-6.6a exists) that gated it until now.
+    - cron: '17 1 * * *'  # daily 01:17 UTC
 
 # Two refreshes must never race the same raw CSVs. Do not cancel an in-flight
 # run: it may be mid-commit, and cancelling could leave a half-pushed branch.
@@ -57,26 +73,31 @@ jobs:
   refresh:
     runs-on: ubuntu-latest
     steps:
-      # D-19 (second clause): commenting out `schedule:` does NOT make this
-      # workflow safe to land — workflow_dispatch leaves it one click away in the
-      # Actions UI, and an accidental run costs two un-repeatable things. This
-      # guard runs FIRST, before checkout/uv/anything, and aborts unless the
-      # dispatcher typed the exact confirmation string. Do not remove it until
-      # the T-4.3b meteo pass has landed (same condition as enabling `schedule:`).
+      # MANUAL-dispatch guard (T-5.43). The SCHEDULED run bypasses this entirely
+      # (`if:` below): a cron run cannot type anything, and D-29 removed the
+      # reason the guard blocked all runs — the free-tier quota it protected was
+      # reserved for the T-4.3b meteo pass, which has landed, and the mixed-
+      # timezone stash it warned about is gone. The guard STAYS on manual dispatch
+      # because that remains the accident-prone path: a stray click in the Actions
+      # UI still fetches and opens a PR. It runs FIRST, before checkout/uv, and
+      # aborts unless the dispatcher typed the exact confirmation string. On a
+      # scheduled run this step is skipped, so its outcome is 'skipped' — the
+      # failure-alert condition below is written to treat that as "no user error
+      # to suppress", not as a reason to stay silent.
       - name: Require explicit confirmation
         id: confirm
+        if: github.event_name == 'workflow_dispatch'
         env:
           CONFIRM: ${{ github.event.inputs.confirm }}
         run: |
           if [ "$CONFIRM" != "spend-quota" ]; then
             echo "::error::Refresh aborted: confirmation input was not 'spend-quota'."
-            echo "This guard exists because a run is NOT free or reversible:"
-            echo "  - it fetches ~20 min from Open-Meteo, spending free-tier quota"
-            echo "    reserved for the T-4.3b meteo pass;"
-            echo "  - it writes UTC-aggregated appends (mk_collect.py timezone=UTC)"
-            echo "    onto raw CSVs for which stash@{0} holds Europe/Ljubljana"
-            echo "    conversions on 11 of 18 stations — a run mixes two conventions."
-            echo "Re-dispatch with confirm=spend-quota only if you truly mean to spend it."
+            echo "This guard exists because a MANUAL run is not free or silent:"
+            echo "  - it fetches from Open-Meteo (18 light differentials) and"
+            echo "  - it opens a pull request against main."
+            echo "The scheduled daily run does this on its own; dispatch manually"
+            echo "only to force an off-schedule refresh."
+            echo "Re-dispatch with confirm=spend-quota only if you truly mean it."
             exit 1
           fi
           echo "Confirmation received (spend-quota) — proceeding with the refresh."
@@ -172,7 +193,7 @@ jobs:
         with:
           name: data-refresh
           color: D5C9EF
-          description: "Automated: weekly raw ERA5-Land refresh PR"
+          description: "Automated: daily raw ERA5-Land refresh PR"
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Open pull request with raw appends
@@ -200,7 +221,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git switch -c "$branch"
           git add data/climate-si/data/raw/*.csv
-          git commit -m "data: weekly raw ERA5-Land refresh (${date_tag})"
+          git commit -m "data: daily raw ERA5-Land refresh (${date_tag})"
 
           # persist-credentials:false left no git credential — push over an explicit
           # tokened URL (GH_TOKEN is masked in logs). A new branch each run = plain push.
@@ -212,7 +233,7 @@ jobs:
           echo "pushed=true" >> "$GITHUB_OUTPUT"
 
           cat > /tmp/pr-body.md <<EOF
-          ## Weekly raw data refresh
+          ## Daily raw data refresh
 
           Differential refresh of the committed ERA5-Land raw station CSVs
           (\`mk_collect.py\`, no \`--force-refresh\`). This PR contains **raw appends only**.
@@ -229,6 +250,10 @@ jobs:
           1. \`validate_raw.py\` — raw-input schema (same contract as the PR gate).
           2. \`precompute_datasette.py\` — builds and validates all nine derived tables.
 
+          The derived-table hash gate is NOT re-checked here: it hashes a frozen fixture
+          (tests/test_reference_manifest.py), so it moves only on code changes, and this
+          PR is data-only. Merging to \`main\` triggers the normal build + datasette image.
+
           **Run log (what was checked):** ${run_url}
 
           ### A human must review before merge
@@ -239,43 +264,45 @@ jobs:
           gh pr create \
             --base main \
             --head "$branch" \
-            --title "Weekly raw data refresh (${date_tag})" \
+            --title "Daily raw data refresh (${date_tag})" \
             --body-file /tmp/pr-body.md \
             --label data-refresh
 
       # --- Failure alerting (T-6.6a) ------------------------------------------
       # D-19 makes the refresh validate in-job and open NO PR on failure, which
-      # makes "a real failure" indistinguishable from "no new data this week"
-      # unless a human happens to watch the run. This step closes that gap and is
-      # the HARD prerequisite (D-19) for ever uncommenting the `schedule:` block.
+      # makes "a real failure" indistinguishable from "no new data today" unless a
+      # human happens to watch the run. This step closes that gap and was the HARD
+      # prerequisite (D-19) for enabling the `schedule:` block (done in T-5.43).
       #
-      # Fires on ANY real failure (fetch, scope-assert, validate-raw, precompute,
+      # Fires on ANY real INCIDENT (fetch, scope-assert, validate-raw, precompute,
       # PR-open, or an infra failure of checkout/setup-uv). Deliberately does NOT
       # fire in two cases:
-      #   * the confirmation guard aborted — `steps.confirm.outcome != 'success'`
-      #     means someone dispatched without typing `spend-quota`; that is a user
-      #     error, not an incident, and alerting on it would train people to
-      #     ignore these issues (D-19 second clause, ticket step 1b);
-      #   * the job SUCCEEDED — which includes the legitimate "nothing changed,
-      #     no PR" path, where the scope step exits 0 and the job is green, so
-      #     `failure()` is false and this step never runs.
-      # Dedupe: repeat failures COMMENT on the one open `refresh-failure` issue
-      # rather than opening a new one, so a stuck weekly refresh cannot produce 52
-      # issues. The body names the failed step, links the run, and — critically —
-      # states whether anything was written to origin (only the PR step pushes).
-      # Ensure the dedupe label exists via the SAME action the PR label uses, so
-      # there is one way to ensure a label, not two copies (D-18/D-19).
+      #   * the confirmation guard aborted — `steps.confirm.outcome == 'failure'`
+      #     means someone dispatched manually without typing `spend-quota`; that is
+      #     a user error, not an incident. NOTE the condition tests `!= 'failure'`,
+      #     NOT `== 'success'`: on a SCHEDULED run the guard is SKIPPED (outcome
+      #     'skipped'), and `== 'success'` would then wrongly suppress every
+      #     scheduled incident — the exact coupling T-5.43 had to fix when the guard
+      #     became dispatch-only;
+      #   * the job SUCCEEDED — which includes the legitimate "nothing changed, no
+      #     PR" path, where the scope step exits 0 and `failure()` is false.
+      # Dedupe: repeat incidents COMMENT on the one open `refresh-failure` issue
+      # rather than opening a new one, so a stuck refresh cannot produce 365 issues.
+      # The body names the failed step, links the run, and — critically — states
+      # whether anything was written to origin (only the PR step pushes). Ensure the
+      # dedupe label exists via the SAME action the PR label uses, so there is one
+      # way to ensure a label, not two copies (D-18/D-19).
       - name: Ensure refresh-failure label
-        if: failure() && steps.confirm.outcome == 'success'
+        if: failure() && steps.confirm.outcome != 'failure'
         uses: ./.github/actions/ensure-label
         with:
           name: refresh-failure
           color: B60205
-          description: "Automated: a weekly data-refresh run failed"
+          description: "Automated: a daily data-refresh run failed"
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Alert on refresh failure
-        if: failure() && steps.confirm.outcome == 'success'
+        if: failure() && steps.confirm.outcome != 'failure'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
@@ -325,9 +352,9 @@ jobs:
           fi
 
           cat > "${RUNNER_TEMP}/issue-body.md" <<EOF
-          ## Weekly data refresh FAILED
+          ## Daily data refresh FAILED
 
-          The \`Weekly data refresh\` run did not complete. Under D-19 the refresh
+          The \`Daily data refresh\` run did not complete. Under D-19 the refresh
           validates in-job and opens **no PR** on failure, so this would otherwise
           be silent — hence this issue.
 
@@ -361,7 +388,7 @@ jobs:
           else
             echo "No open refresh-failure issue — creating one."
             gh issue create \
-              --title "Weekly data refresh failed" \
+              --title "Daily data refresh failed" \
               --body-file "${RUNNER_TEMP}/issue-body.md" \
               --label refresh-failure
           fi

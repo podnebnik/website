@@ -1,6 +1,17 @@
 """
 T-5.17 — a committed sha256 manifest of the derived tables, so a pipeline change
-that MOVES published output fails CI until the manifest is updated in the same commit.
+that MOVES published output fails until the manifest is updated in the same commit.
+
+⚠ T-5.43 changed WHAT this hashes. The manifest USED to cover precompute's output over
+the LIVE raw data, checked in the datasette image build. Once the data refresh went
+daily that moved every day and would have reddened daily — worse than no gate — so the
+live-data check (Dockerfile db-export RUN, committed data/climate-si/derived-tables.sha256)
+was retired. This module's LOGIC is unchanged; it now serves the frozen-reference gate,
+tests/test_reference_manifest.py, which hashes precompute over a small committed fixture
+so the manifest moves only on CODE changes. The manifest lives at
+tests/fixtures/reference-tables.sha256 and is regenerated via that module's
+`_write_reference_manifest()`. The paragraphs below describe the original live-data role
+and still explain the hashing mechanics (per-column hashes, GATE_EXCLUDED, determinism).
 
 Why this exists
 ---------------
@@ -58,16 +69,21 @@ regenerate it under emulation — emulated-amd64 floating point is not native am
 
 Usage
 -----
-    # check (default): compare freshly-exported CSVs against the committed manifest
-    TABLES_DIR=/build/data/climate-si/data \
-        python check_table_hashes.py --manifest data/climate-si/derived-tables.sha256
+    # The frozen-reference gate calls _check / _write via tests/test_reference_manifest.py
+    # (which sets TABLES_DIR to a temp export dir and passes the reference manifest); a
+    # code change that moves the fixture output is re-recorded with:
+    #     python -c "import tests.test_reference_manifest as t; t._write_reference_manifest()"
+
+    # check (default): compare freshly-exported CSVs against a manifest
+    TABLES_DIR=<export-dir> \
+        python check_table_hashes.py --manifest tests/fixtures/reference-tables.sha256
 
     # check with row-level diffs against another CSV set (both must be local)
     TABLES_DIR=.../amd64  python check_table_hashes.py --reference .../aarch64
 
-    # write: regenerate the manifest after a DELIBERATE pipeline change
-    TABLES_DIR=.../data python check_table_hashes.py --write \
-        --manifest data/climate-si/derived-tables.sha256
+    # write: regenerate the manifest after a DELIBERATE code change
+    TABLES_DIR=<export-dir> python check_table_hashes.py --write \
+        --manifest tests/fixtures/reference-tables.sha256
 """
 
 import argparse
@@ -82,11 +98,12 @@ from pathlib import Path
 # (same reasoning as D-18's single column declaration).
 from validate import TABLE_NAMES
 
-# Defaults mirror validate.py: TABLES_DIR is where export_datasette_csv.py writes the nine
-# climate-si.<table>.csv files; the manifest sits beside datapackage.yaml as a peer data
-# contract for the derived tables.
+# TABLES_DIR is where export_datasette_csv.py writes the nine climate-si.<table>.csv files.
+# DEFAULT_MANIFEST points at the frozen-reference manifest (T-5.43); the old live-data
+# manifest (data/climate-si/derived-tables.sha256) was retired. Callers pass --manifest
+# explicitly, so this default is a fallback only.
 DEFAULT_TABLES_DIR = Path(__file__).parent.parent / "data"
-DEFAULT_MANIFEST = Path(__file__).parent.parent / "derived-tables.sha256"
+DEFAULT_MANIFEST = Path(__file__).parent / "tests" / "fixtures" / "reference-tables.sha256"
 
 # How much of a failing diff to print — enough to diagnose, never the whole table.
 _MAX_DIFF_ROWS = 8
