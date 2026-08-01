@@ -35407,11 +35407,11 @@
               "min": 0,
               "max": 4,
               "categories": [
-                "Zmrzujoče",
                 "Hladno",
+                "Sveže",
                 "Normalno",
                 "Vroče",
-                "Peklensko"
+                "Ekstremno"
               ],
               "plot_lines": [],
               "plot_bands": [
@@ -35503,7 +35503,7 @@
                     "y": 3
                   },
                   {
-                    "catName": "Peklensko",
+                    "catName": "Ekstremno",
                     "color": "#962c1a",
                     "label": "15.07",
                     "pct": 97.5,
@@ -38896,11 +38896,11 @@
               "min": 0,
               "max": 4,
               "categories": [
-                "Zmrzujoče",
                 "Hladno",
+                "Sveže",
                 "Normalno",
                 "Vroče",
-                "Peklensko"
+                "Ekstremno"
               ],
               "plot_lines": [],
               "plot_bands": [
@@ -42347,7 +42347,7 @@
               "Kredarica"
             ]
           },
-          "category_label": "Peklensko",
+          "category_label": "Ekstremno",
           "category_color": "rgb(150, 44, 26)",
           "description": "Izjemna vročina — med najtoplejšimi 5 % vseh 29. jul. od 1950.",
           "percentile": "97",
@@ -45705,7 +45705,7 @@
               "Kredarica"
             ]
           },
-          "category_label": "Peklensko",
+          "category_label": "Ekstremno",
           "category_color": "rgb(150, 44, 26)",
           "description": "Izjemna vročina — med najtoplejšimi 5 % vseh 29. jul. od 1950.",
           "percentile": "99",
@@ -45803,11 +45803,11 @@
               "min": 0,
               "max": 4,
               "categories": [
-                "Zmrzujoče",
                 "Hladno",
+                "Sveže",
                 "Normalno",
                 "Vroče",
-                "Peklensko"
+                "Ekstremno"
               ],
               "plot_lines": [],
               "plot_bands": [
@@ -49254,7 +49254,7 @@
               "Kredarica"
             ]
           },
-          "category_label": "Peklensko",
+          "category_label": "Ekstremno",
           "category_color": "rgb(150, 44, 26)",
           "description": "Izjemna vročina — med najtoplejšimi 5 % vseh 29. jul. od 1950.",
           "percentile": "95",
@@ -49352,11 +49352,11 @@
               "min": 0,
               "max": 4,
               "categories": [
-                "Zmrzujoče",
                 "Hladno",
+                "Sveže",
                 "Normalno",
                 "Vroče",
-                "Peklensko"
+                "Ekstremno"
               ],
               "plot_lines": [],
               "plot_bands": [
@@ -56259,11 +56259,11 @@
               "min": 0,
               "max": 4,
               "categories": [
-                "Zmrzujoče",
                 "Hladno",
+                "Sveže",
                 "Normalno",
                 "Vroče",
-                "Peklensko"
+                "Ekstremno"
               ],
               "plot_lines": [],
               "plot_bands": [
@@ -59808,11 +59808,11 @@
               "min": 0,
               "max": 4,
               "categories": [
-                "Zmrzujoče",
                 "Hladno",
+                "Sveže",
                 "Normalno",
                 "Vroče",
-                "Peklensko"
+                "Ekstremno"
               ],
               "plot_lines": [],
               "plot_bands": [
@@ -59877,7 +59877,7 @@
                     "y": 2
                   },
                   {
-                    "catName": "Hladno",
+                    "catName": "Sveže",
                     "color": "#6c8fb6",
                     "label": "12.07",
                     "pct": 15,
@@ -59904,7 +59904,7 @@
                     "y": 2
                   },
                   {
-                    "catName": "Hladno",
+                    "catName": "Sveže",
                     "color": "#6c8fb6",
                     "label": "09.07",
                     "pct": 15,
@@ -65903,11 +65903,11 @@
               "min": 0,
               "max": 4,
               "categories": [
-                "Zmrzujoče",
                 "Hladno",
+                "Sveže",
                 "Normalno",
                 "Vroče",
-                "Peklensko"
+                "Ekstremno"
               ],
               "plot_lines": [],
               "plot_bands": [
@@ -69443,11 +69443,11 @@
               "min": 0,
               "max": 4,
               "categories": [
-                "Zmrzujoče",
                 "Hladno",
+                "Sveže",
                 "Normalno",
                 "Vroče",
-                "Peklensko"
+                "Ekstremno"
               ],
               "plot_lines": [],
               "plot_bands": [
@@ -72992,11 +72992,11 @@
               "min": 0,
               "max": 4,
               "categories": [
-                "Zmrzujoče",
                 "Hladno",
+                "Sveže",
                 "Normalno",
                 "Vroče",
-                "Peklensko"
+                "Ekstremno"
               ],
               "plot_lines": [],
               "plot_bands": [
@@ -76541,11 +76541,11 @@
               "min": 0,
               "max": 4,
               "categories": [
-                "Zmrzujoče",
                 "Hladno",
+                "Sveže",
                 "Normalno",
                 "Vroče",
-                "Peklensko"
+                "Ekstremno"
               ],
               "plot_lines": [],
               "plot_bands": [
@@ -80090,11 +80090,11 @@
               "min": 0,
               "max": 4,
               "categories": [
-                "Zmrzujoče",
                 "Hladno",
+                "Sveže",
                 "Normalno",
                 "Vroče",
-                "Peklensko"
+                "Ekstremno"
               ],
               "plot_lines": [],
               "plot_bands": [
@@ -83533,7 +83533,7 @@
               "Kredarica"
             ]
           },
-          "category_label": "Peklensko",
+          "category_label": "Ekstremno",
           "category_color": "rgb(150, 44, 26)",
           "description": "Izjemna vročina — med najtoplejšimi 5 % vseh 3. avg. od 1950.",
           "percentile": "99",
@@ -83631,11 +83631,11 @@
               "min": 0,
               "max": 4,
               "categories": [
-                "Zmrzujoče",
                 "Hladno",
+                "Sveže",
                 "Normalno",
                 "Vroče",
-                "Peklensko"
+                "Ekstremno"
               ],
               "plot_lines": [],
               "plot_bands": [
@@ -83673,7 +83673,7 @@
                 "type": "line",
                 "data": [
                   {
-                    "catName": "Peklensko",
+                    "catName": "Ekstremno",
                     "color": "#962c1a",
                     "label": "03.08",
                     "pct": 97.5,
@@ -83682,7 +83682,7 @@
                     "y": 4
                   },
                   {
-                    "catName": "Peklensko",
+                    "catName": "Ekstremno",
                     "color": "#962c1a",
                     "label": "02.08",
                     "pct": 97.5,
@@ -83718,7 +83718,7 @@
                     "y": 2
                   },
                   {
-                    "catName": "Peklensko",
+                    "catName": "Ekstremno",
                     "color": "#962c1a",
                     "label": "29.07",
                     "pct": 97.5,
@@ -83727,7 +83727,7 @@
                     "y": 4
                   },
                   {
-                    "catName": "Peklensko",
+                    "catName": "Ekstremno",
                     "color": "#962c1a",
                     "label": "28.07",
                     "pct": 97.5,
@@ -87074,7 +87074,7 @@
               "Kredarica"
             ]
           },
-          "category_label": "Peklensko",
+          "category_label": "Ekstremno",
           "category_color": "rgb(150, 44, 26)",
           "description": "Izjemna vročina — med najtoplejšimi 5 % vseh 3. avg. od 1950.",
           "percentile": "100",
@@ -87172,11 +87172,11 @@
               "min": 0,
               "max": 4,
               "categories": [
-                "Zmrzujoče",
                 "Hladno",
+                "Sveže",
                 "Normalno",
                 "Vroče",
-                "Peklensko"
+                "Ekstremno"
               ],
               "plot_lines": [],
               "plot_bands": [
@@ -87214,7 +87214,7 @@
                 "type": "line",
                 "data": [
                   {
-                    "catName": "Peklensko",
+                    "catName": "Ekstremno",
                     "color": "#962c1a",
                     "label": "03.08",
                     "pct": 97.5,
@@ -87223,7 +87223,7 @@
                     "y": 4
                   },
                   {
-                    "catName": "Peklensko",
+                    "catName": "Ekstremno",
                     "color": "#962c1a",
                     "label": "02.08",
                     "pct": 97.5,
@@ -87259,7 +87259,7 @@
                     "y": 2
                   },
                   {
-                    "catName": "Peklensko",
+                    "catName": "Ekstremno",
                     "color": "#962c1a",
                     "label": "29.07",
                     "pct": 97.5,
@@ -87268,7 +87268,7 @@
                     "y": 4
                   },
                   {
-                    "catName": "Peklensko",
+                    "catName": "Ekstremno",
                     "color": "#962c1a",
                     "label": "28.07",
                     "pct": 97.5,
@@ -90615,7 +90615,7 @@
               "Kredarica"
             ]
           },
-          "category_label": "Zmrzujoče",
+          "category_label": "Hladno",
           "category_color": "rgb(58, 90, 138)",
           "description": "Med najhladnejšimi 7. feb. v naših 77 letih zapisov.",
           "percentile": "3",
@@ -90713,11 +90713,11 @@
               "min": 0,
               "max": 4,
               "categories": [
-                "Zmrzujoče",
                 "Hladno",
+                "Sveže",
                 "Normalno",
                 "Vroče",
-                "Peklensko"
+                "Ekstremno"
               ],
               "plot_lines": [],
               "plot_bands": [
@@ -90755,7 +90755,7 @@
                 "type": "line",
                 "data": [
                   {
-                    "catName": "Zmrzujoče",
+                    "catName": "Hladno",
                     "color": "#3a5a8a",
                     "label": "07.02",
                     "pct": 5,
@@ -90764,7 +90764,7 @@
                     "y": 0
                   },
                   {
-                    "catName": "Zmrzujoče",
+                    "catName": "Hladno",
                     "color": "#3a5a8a",
                     "label": "06.02",
                     "pct": 5,
@@ -90773,7 +90773,7 @@
                     "y": 0
                   },
                   {
-                    "catName": "Zmrzujoče",
+                    "catName": "Hladno",
                     "color": "#3a5a8a",
                     "label": "05.02",
                     "pct": 5,
@@ -90782,7 +90782,7 @@
                     "y": 0
                   },
                   {
-                    "catName": "Zmrzujoče",
+                    "catName": "Hladno",
                     "color": "#3a5a8a",
                     "label": "04.02",
                     "pct": 5,
@@ -90791,7 +90791,7 @@
                     "y": 0
                   },
                   {
-                    "catName": "Zmrzujoče",
+                    "catName": "Hladno",
                     "color": "#3a5a8a",
                     "label": "03.02",
                     "pct": 5,
@@ -90800,7 +90800,7 @@
                     "y": 0
                   },
                   {
-                    "catName": "Zmrzujoče",
+                    "catName": "Hladno",
                     "color": "#3a5a8a",
                     "label": "02.02",
                     "pct": 5,
@@ -90809,7 +90809,7 @@
                     "y": 0
                   },
                   {
-                    "catName": "Zmrzujoče",
+                    "catName": "Hladno",
                     "color": "#3a5a8a",
                     "label": "01.02",
                     "pct": 5,
@@ -94177,7 +94177,7 @@
               "Kredarica"
             ]
           },
-          "category_label": "Zmrzujoče",
+          "category_label": "Hladno",
           "category_color": "rgb(58, 90, 138)",
           "description": "Med najhladnejšimi 7. jan. v naših 77 letih zapisov.",
           "percentile": "0",
@@ -94275,11 +94275,11 @@
               "min": 0,
               "max": 4,
               "categories": [
-                "Zmrzujoče",
                 "Hladno",
+                "Sveže",
                 "Normalno",
                 "Vroče",
-                "Peklensko"
+                "Ekstremno"
               ],
               "plot_lines": [],
               "plot_bands": [
@@ -94317,7 +94317,7 @@
                 "type": "line",
                 "data": [
                   {
-                    "catName": "Zmrzujoče",
+                    "catName": "Hladno",
                     "color": "#3a5a8a",
                     "label": "07.01",
                     "pct": 5,
@@ -94326,7 +94326,7 @@
                     "y": 0
                   },
                   {
-                    "catName": "Zmrzujoče",
+                    "catName": "Hladno",
                     "color": "#3a5a8a",
                     "label": "06.01",
                     "pct": 5,
@@ -94335,7 +94335,7 @@
                     "y": 0
                   },
                   {
-                    "catName": "Zmrzujoče",
+                    "catName": "Hladno",
                     "color": "#3a5a8a",
                     "label": "05.01",
                     "pct": 5,
@@ -94344,7 +94344,7 @@
                     "y": 0
                   },
                   {
-                    "catName": "Zmrzujoče",
+                    "catName": "Hladno",
                     "color": "#3a5a8a",
                     "label": "04.01",
                     "pct": 5,
@@ -94353,7 +94353,7 @@
                     "y": 0
                   },
                   {
-                    "catName": "Zmrzujoče",
+                    "catName": "Hladno",
                     "color": "#3a5a8a",
                     "label": "03.01",
                     "pct": 5,
@@ -94362,7 +94362,7 @@
                     "y": 0
                   },
                   {
-                    "catName": "Hladno",
+                    "catName": "Sveže",
                     "color": "#6c8fb6",
                     "label": "02.01",
                     "pct": 15,
@@ -94371,7 +94371,7 @@
                     "y": 1
                   },
                   {
-                    "catName": "Zmrzujoče",
+                    "catName": "Hladno",
                     "color": "#3a5a8a",
                     "label": "01.01",
                     "pct": 5,

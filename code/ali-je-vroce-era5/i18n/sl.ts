@@ -15,7 +15,9 @@ import { climateRisks, heroContext } from "./hero-content.ts";
 // fmtSigned); "#" inside a plural form renders the grouped integer.
 //
 // ── FLAGGED FOR CONTENT REVIEW (not resolved here) ────────────────────────────
-//  • Register/wording: "Peklensko" / "Izjemna vročina" (today.cat_hell), the
+//  • Register/wording: the five category NAMES are now unified and neutral
+//    (T-5.26 / D-25 — "Zmrzujoče"/"Peklensko" RETIRED; see the CAT block below).
+//    Still flagged: the "Izjemna vročina" phrasing in today.desc_*_hell, and the
 //    "stoletni"/"Sto let" verdict framing (hero.verdict_*) overstating the ~76-yr
 //    record — both deferred from T-5.4a.
 //  • The governed-genitive numeral agreement in "povprečje/vseh {N} postaj" is
@@ -24,6 +26,34 @@ import { climateRisks, heroContext } from "./hero-content.ts";
 //    and a reasonable default otherwise. A native pass should confirm N=1,2.
 //  • Phrase-level English that was translated mechanically but may want polish:
 //    reg.no_data, reg.year_round_footer.
+
+// ── T-5.26 (D-25): the ONE category vocabulary ────────────────────────────────
+// The five percentile bands — split identically at p10/p20/p80/p95 by
+// `categorizeEra5` (api.ts) and the distribution zones (charts/) — are named in
+// exactly ONE place: here. Every consumer reads THESE five words:
+//   • the today card            (today.cat_*)
+//   • the "Zadnjih 7 dni" strip  (last7.cat_* — Y-axis + tooltip + a11y)
+//   • the distribution chart     (dist.zone_* — legend + tooltip)
+//   • the season heatmap         (season.cat_* — words + percentile-range suffix)
+// so the same band can never again be named two ways. T-5.21 found it named two
+// ways, with "Hladno" denoting DIFFERENT bands in the card vs the chart.
+//
+// Register is NEUTRAL by decision, not accident (D-25): a category label sits next
+// to a number where a measurement is expected, so the editorialising "Zmrzujoče"
+// (<p10) and "Peklensko" (>p95) are RETIRED in favour of the chart's plain words.
+// The page keeps its vivid framing where it belongs — in the title "Ali je vroče?".
+// A designer revisiting this should know the plain word was chosen ON PURPOSE.
+//
+// Keyed by percentile band, low→high. NOTE: the internal CategoryKey identifiers
+// (freezing/cold/nope/hot/hell in api.ts + CAT_COLORS) are band IDs, not the
+// display register — freezing→"Hladno", hell→"Ekstremno".
+const CAT = {
+  below_p10: "Hladno",     // < p10
+  p10_p20:   "Sveže",      // p10–p20
+  p20_p80:   "Normalno",   // p20–p80
+  p80_p95:   "Vroče",      // p80–p95
+  above_p95: "Ekstremno",  // > p95
+} as const;
 
 export const sl = {
   common: {
@@ -72,11 +102,13 @@ export const sl = {
     arso_group: "ARSO postaje",
     era5_group: "ERA5 postaje",
 
-    cat_freezing: "Zmrzujoče",
-    cat_cold: "Hladno",
-    cat_nope: "Normalno",
-    cat_hot: "Vroče",
-    cat_hell: "Peklensko",
+    // T-5.26/D-25: neutral labels from the single CAT source (freezing→"Hladno",
+    // hell→"Ekstremno"). The key names are the legacy CategoryKey band IDs.
+    cat_freezing: CAT.below_p10,
+    cat_cold: CAT.p10_p20,
+    cat_nope: CAT.p20_p80,
+    cat_hot: CAT.p80_p95,
+    cat_hell: CAT.above_p95,
 
     // ARSO cutoffs vs ERA5 record — kept as separate templates as in TodayCard.
     desc_arso_freezing: "Med najhladnejšimi {d} v naših zapisih ARSO.",
@@ -129,11 +161,13 @@ export const sl = {
 
   // DistributionChart
   dist: {
-    zone_cold: "Hladno",
-    zone_cool: "Sveže",
-    zone_normal: "Normalno",
-    zone_hot: "Vroče",
-    zone_extreme: "Ekstremno",
+    // T-5.26/D-25: from the single CAT source (unchanged words — the chart already
+    // used the neutral vocabulary; now it and the card share one definition).
+    zone_cold: CAT.below_p10,
+    zone_cool: CAT.p10_p20,
+    zone_normal: CAT.p20_p80,
+    zone_hot: CAT.p80_p95,
+    zone_extreme: CAT.above_p95,
     tooltip: "{temp} °C · {zone}",
     // T-5.21/T-5.22: second tooltip line — approximate frequency of days in the hovered
     // whole-degree bin. "približno" labels it as an estimate (the count rides on a
@@ -153,13 +187,15 @@ export const sl = {
 
   // TodayLast7Chart
   last7: {
-    cat_freezing: "Zmrzujoče",
-    cat_cold: "Hladno",
-    cat_nope: "Normalno",
-    cat_hot: "Vroče",
-    cat_hell: "Peklensko",
+    // T-5.26/D-25: neutral labels from the single CAT source (freezing→"Hladno",
+    // hell→"Ekstremno"), so the strip's Y-axis matches the card and the chart.
+    cat_freezing: CAT.below_p10,
+    cat_cold: CAT.p10_p20,
+    cat_nope: CAT.p20_p80,
+    cat_hot: CAT.p80_p95,
+    cat_hell: CAT.above_p95,
     tooltip: "{label}: {cat} · {temp} °C ({pct}. percentil)",
-    a11y: "Gibanje toplotne kategorije v zadnjih sedmih dneh — vsaka točka je en dan, uvrščen od zmrzujoče do peklensko glede na zgodovinske percentile.",
+    a11y: `Gibanje toplotne kategorije v zadnjih sedmih dneh — vsaka točka je en dan, uvrščen od ${CAT.below_p10.toLowerCase()} do ${CAT.above_p95.toLowerCase()} glede na zgodovinske percentile.`,
   },
 
   // TodayTrendChart (annual trend + projection)
@@ -259,11 +295,13 @@ export const sl = {
     label_Summer: "Poletje",
     label_Spring: "Pomlad",
     label_Winter: "Zima",
-    cat_cold: "Hladno (<10. pct)",
-    cat_cool: "Sveže (10–20. pct)",
-    cat_normal: "Normalno (20–80. pct)",
-    cat_hot: "Vroče (80–95. pct)",
-    cat_extreme: "Ekstremno (>95. pct)",
+    // T-5.26/D-25: the band word comes from the single CAT source; this surface
+    // appends the explicit percentile range. Same words as everywhere else.
+    cat_cold: `${CAT.below_p10} (<10. pct)`,
+    cat_cool: `${CAT.p10_p20} (10–20. pct)`,
+    cat_normal: `${CAT.p20_p80} (20–80. pct)`,
+    cat_hot: `${CAT.p80_p95} (80–95. pct)`,
+    cat_extreme: `${CAT.above_p95} (>95. pct)`,
     mode_all: "Vse letne čase",
     mode_extremes: "Samo ekstremi",
     anim_stop: "⏹ Ustavi",
