@@ -316,7 +316,7 @@ function Era5Charts() {
         <ErrorBoundary fallback={sectionErrorFallback(refetchSpeiStation, "400px")}>
           <Suspense fallback={<div class="animate-pulse rounded-xl bg-[var(--color-paper-2)]" style={{ height: "400px" }} />}>
             <Show when={speiStationData()?.available} fallback={<EmptyState minHeight="400px" />}>
-              <SpeiTrendChartLazy data={speiStationData()!} />
+              <SpeiTrendChartLazy data={speiStationData()!} loc={loc()} label={st()?.label} />
             </Show>
           </Suspense>
         </ErrorBoundary>

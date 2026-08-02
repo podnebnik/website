@@ -737,9 +737,15 @@ export async function run(): Promise<RunResult> {
 
   const speiStation = await fetchSpeiStationSeasonal();
   assertNoMisses("global.spei_station (fetch)");
+  // T-5.36 — SpeiTrendChart no longer has its own station picker; the page-wide
+  // floating chooser sets it. Mount with the page default (meta.default_location),
+  // the station the reader sees before touching the chooser — replacing the retired
+  // picker's alphabetical-first default.
+  const speiDefaultLoc   = meta.default_location ?? "Ljubljana";
+  const speiDefaultLabel = era5Stations.find((s) => s.name === speiDefaultLoc)?.label;
   const speiStationUnit = await mount(
     "global.spei_station",
-    () => <SpeiTrendChart data={speiStation} />,
+    () => <SpeiTrendChart data={speiStation} loc={speiDefaultLoc} label={speiDefaultLabel} />,
     1,
   );
 
@@ -845,8 +851,10 @@ export async function run(): Promise<RunResult> {
       baseline: speiStation.baseline,
       station_count: Object.keys(speiStation.stations ?? {}).length,
       default_view: {
-        _note: "What SpeiTrendChart.tsx:139-140 selects with no interaction.",
-        station: Object.keys(speiStation.stations ?? {}).sort()[0] ?? null,
+        _note: "T-5.36 — station is set by the page-wide floating chooser (props.loc), " +
+          "not an own picker; the default here is meta.default_location, what the reader " +
+          "sees before touching the chooser. Period defaults to Summer.",
+        station: speiDefaultLoc,
         period: "Summer",
         rendered: read(speiStationUnit).all("p"),
       },
