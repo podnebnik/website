@@ -19,6 +19,12 @@ const VAR_KEYS = [
 ];
 const VARIABLES: [string, string][] = VAR_KEYS.map(k => [k, varLabelOf(k)]);
 
+// T-4.26b (D-34) — the selectable trend half-windows, ascending. ±7 is the published
+// default and the ONLY one served by the `annual_trend` table (api.annualTrendSource);
+// ±3/±15/±45 come from `annual_trend_windows` (T-4.26a). The control drives the panel
+// and the year-round calendar; the hero above is fixed at ±7.
+const WINDOWS = [3, 7, 15, 45] as const;
+
 interface ProviderProps {
   meta:         SiteMeta;
   defaultDoy:   number;
@@ -50,6 +56,9 @@ function createStore(props: ProviderProps) {
   const [selLocs,  setSelLocs]  = createSignal<string[]>([defaultLoc()]);
   const [selVar,   setSelVar]   = createSignal("temperature_max");
   const [doy,      setDoy]      = createSignal(props.defaultDoy);
+  // T-4.26b (D-34) — the trend half-window, ±7 default (the published value). Only the
+  // surfaces BELOW the control read it (params + calParams below); the hero does not.
+  const [selWindow, setSelWindow] = createSignal<number>(7);
 
   const selLoc = () => selLocs()[0] ?? defaultLoc();
   // The single writer for the below-hero location. It also notifies the page via
@@ -73,16 +82,18 @@ function createStore(props: ProviderProps) {
     locs:   selLocs(),
     var:    selVar(),
     doy:    doy(),
+    window: selWindow(),
   }));
   const [regData, { refetch: refetchReg }] = createResource(params, fetchRegression);
 
   const calParams = createMemo(() => ({
     loc:     selLocs()[0] ?? defaultLoc(),
     var:     selVar(),
+    window:  selWindow(),
   }));
   const [calData, { refetch: refetchCal }] = createResource(
     calParams,
-    p => fetchCalendar(p.loc, p.var),
+    p => fetchCalendar(p.loc, p.var, p.window),
   );
 
   const isPrecip   = () => selVar() === "precipitation_sum" || selVar() === "et0_evapotranspiration";
@@ -116,10 +127,11 @@ function createStore(props: ProviderProps) {
     meta: props.meta,
     selLocs, setSelLocs, selLoc, setLoc, selVar, setSelVar,
     doy, setDoy,
+    selWindow, setSelWindow,
     regData, calData, refetchReg, refetchCal,
     isPrecip, stats0, trend10, trendColor, totalChange,
     stationLabel, locLabel, varLabel, chartTitle, chartSub,
-    doyToLabel, VARIABLES,
+    doyToLabel, VARIABLES, WINDOWS,
   };
 }
 
@@ -235,6 +247,25 @@ export function RegToolbar() {
         </div>
       </div>
 
+      {/* Window (T-4.26b / D-34) — placed AFTER the variable <select> on purpose: the
+          snapshot's variable_select capture reads querySelector("select") (the FIRST
+          select), so a second select ahead of it would hijack that capture. Drives ONLY
+          the panel + calendar below; the hero omits window and stays on annual_trend. */}
+      <div style={pillGroupStyle}>
+        <span style={pgkStyle}>{t("reg.window")}</span>
+        <div style={{ ...pillStyle, "padding-right": "4px" }}>
+          <select
+            value={String(s.selWindow())}
+            style={selectStyle}
+            onChange={(e) => s.setSelWindow(Number(e.currentTarget.value))}
+          >
+            <For each={s.WINDOWS}>
+              {(w) => <option value={String(w)}>{t("reg.window_opt", { n: w })}</option>}
+            </For>
+          </select>
+        </div>
+      </div>
+
       {/* NB: former "Method" (Theil-Sen/OLS) and "Elevation corr." toolbar controls
           were removed in T-4.15 — they were dead. Their signals fed
           RegressionParams.corr/method, but fetchRegression reads the precomputed
@@ -308,6 +339,13 @@ export function RegToolbar() {
         </div>
       </div>
 
+      {/* Per-window explanation (T-4.26b / D-34) — a full-width row beneath the controls:
+          flex-basis:100% makes the wrapping toolbar drop it onto its own line. It is a
+          direct .reg-toolbar > div so the snapshot captures it (it would be a blind spot
+          otherwise). Copy changes with the selected window and explains WHY the numbers
+          move for that window (instability at ±3, seasonal contamination at ±15/±45). */}
+      <div style={windowExplStyle}>{t(`reg.window_expl_${s.selWindow()}`)}</div>
+
     </div>
   );
 }
@@ -352,7 +390,7 @@ export function RegScatterCard() {
                     {t("reg.no_data")}
                   </div>
                 }>
-                  <RegressionChart data={d} chartId={`reg-${s.selVar()}-${s.doy()}-${s.selLocs().join("_")}`} />
+                  <RegressionChart data={d} chartId={`reg-${s.selVar()}-${s.doy()}-w${s.selWindow()}-${s.selLocs().join("_")}`} />
                 </Show>
               )}
             </Show>
@@ -394,6 +432,8 @@ export function RegYearRoundCard() {
           <div style={{ ...panelSubStyle, "margin-top": "3px" }}>
             {(s.VARIABLES.find(([k]) => k === s.selVar())?.[1] ?? s.selVar()).split("(")[0]!.trim()}
             {" · Theil-Sen + MK"}
+            {/* T-4.26b (D-34) — name the window the calendar's colours are computed at. */}
+            {" · "}{t("reg.window_cal_label", { n: s.selWindow() })}
           </div>
         </div>
         <div style={panelSubStyle}>{t("reg.year_round_sub")}</div>
@@ -688,6 +728,30 @@ const pgkStyle: Record<string, string> = {
   "padding-right": "8px",
   "margin-right":  "2px",
   "white-space":   "nowrap",
+};
+
+// T-4.26b — the transparent chevron <select> used inside a pill (matches the variable
+// selector at RegToolbar; kept a separate const rather than reflowing the variable
+// select's inline style, so that call site stays byte-identical).
+const selectStyle: Record<string, string> = {
+  background: "transparent", border: "none", "font-size": "12px", color: "var(--color-ink)",
+  "font-family": "var(--font-sans)", cursor: "pointer", "padding-right": "16px", appearance: "none",
+  "background-image": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='%236B655B'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E\")",
+  "background-repeat": "no-repeat", "background-position": "right 2px center",
+};
+
+// T-4.26b — the per-window explanatory line. flex-basis:100% drops it to its own
+// full-width row inside the wrapping toolbar; capped width keeps it readable.
+const windowExplStyle: Record<string, string> = {
+  "flex-basis":  "100%",
+  width:         "100%",
+  "max-width":   "660px",
+  margin:        "0",
+  "padding-top": "2px",
+  "font-family": "var(--font-sans)",
+  "font-size":   "12px",
+  color:         "var(--color-ink-soft)",
+  "line-height": "1.5",
 };
 
 const pillStyle: Record<string, string> = {
