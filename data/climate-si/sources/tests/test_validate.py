@@ -138,6 +138,38 @@ def _build_valid_tables(config: dict) -> dict[str, pd.DataFrame]:
         for var in trend_vars
     ])
 
+    # annual_trend_windows — same shape as annual_trend plus a `window` column, one row
+    # per station × variable × window (3/15/45). ±7 is NOT present here (it lives only in
+    # annual_trend); the uniqueness key includes `window` (T-4.26a, Option C).
+    annual_trend_windows = pd.DataFrame([
+        {
+            "era5_name": s["name"],
+            "station_id": _sid(i),
+            "variable": var,
+            "month": 1,
+            "day": 15,
+            "day_label": "Jan 15",
+            "year_min": 2000,
+            "year_max": 2011,
+            "trend10": 0.5,
+            "p_val": 0.5,
+            "tau": 0.1,
+            "n_years": 12,
+            "proj_end_year": 2050,
+            "slope": 0.05,
+            "intercept": 1.0,
+            "slope_hi": 0.06,
+            "intercept_hi": 1.1,
+            "slope_lo": 0.04,
+            "intercept_lo": 0.9,
+            "scatter_json": '[{"x":2000,"y":1.0}]',
+            "window": win,
+        }
+        for i, s in enumerate(stations_cfg)
+        for var in trend_vars
+        for win in (3, 15, 45)
+    ])
+
     # season_heatmap — one normal-category row per station.
     season_heatmap = pd.DataFrame([
         {
@@ -209,6 +241,7 @@ def _build_valid_tables(config: dict) -> dict[str, pd.DataFrame]:
         "daily_percentiles": daily_percentiles,
         "daily_window": daily_window,
         "annual_trend": annual_trend,
+        "annual_trend_windows": annual_trend_windows,
         "season_heatmap": season_heatmap,
         "tropical": tropical,
         "spei": spei,

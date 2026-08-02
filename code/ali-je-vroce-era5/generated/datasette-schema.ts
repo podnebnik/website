@@ -62,6 +62,55 @@ export const ANNUAL_TREND_COLUMNS = [
 ] as const;
 export type AnnualTrendCol = (typeof ANNUAL_TREND_COLUMNS)[number];
 
+export interface DsAnnualTrendWindows {
+  era5_name: string;
+  station_id: number;
+  variable: string;
+  month: number;
+  day: number;
+  day_label: string;
+  year_min: number;
+  year_max: number;
+  trend10: number;
+  p_val: number;
+  tau: number;
+  n_years: number;
+  proj_end_year: number;
+  slope: number;
+  intercept: number;
+  slope_hi: number;
+  intercept_hi: number;
+  slope_lo: number;
+  intercept_lo: number;
+  scatter_json: string;
+  window: number;
+}
+
+export const ANNUAL_TREND_WINDOWS_COLUMNS = [
+  "era5_name",
+  "station_id",
+  "variable",
+  "month",
+  "day",
+  "day_label",
+  "year_min",
+  "year_max",
+  "trend10",
+  "p_val",
+  "tau",
+  "n_years",
+  "proj_end_year",
+  "slope",
+  "intercept",
+  "slope_hi",
+  "intercept_hi",
+  "slope_lo",
+  "intercept_lo",
+  "scatter_json",
+  "window",
+] as const;
+export type AnnualTrendWindowsCol = (typeof ANNUAL_TREND_WINDOWS_COLUMNS)[number];
+
 export interface DsDaily {
   station_id: number;
   era5_name: string;
