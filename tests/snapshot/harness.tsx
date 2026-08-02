@@ -658,12 +658,14 @@ function TodayChartCopy(props: { data: TodayStatus; isNat: boolean }) {
   );
 }
 
-/** Mirrors AliJeVroceERA5.tsx:155-158 — the map panel header. */
-function MapPanelHeader(props: { mapLoc: string | null; stationCount: number }) {
+/** Mirrors AliJeVroceERA5.tsx — the map panel header. T-5.40 (B1): the title now
+ *  shows the DIACRITIC display name of the selected station (via stationLabelOf),
+ *  not the ASCII era5_name; `label` is that resolved value. */
+function MapPanelHeader(props: { label: string | null; stationCount: number }) {
   return (
     <div>
       <div class="mirror-panel-title">
-        {props.mapLoc ? props.mapLoc.replace(/_/g, " ") : t("map.panel_title_all", { count: props.stationCount })}
+        {props.label ?? t("map.panel_title_all", { count: props.stationCount })}
       </div>
       <div class="mirror-panel-sub">{t("map.panel_sub_count", { count: props.stationCount })}</div>
     </div>
@@ -703,7 +705,7 @@ export async function run(): Promise<RunResult> {
   // ── global ──────────────────────────────────────────────────────────────────
   const mapUnit = await mount(
     "global.station_map",
-    () => <StationMap meta={era5Meta()} loc={null} onSelect={() => {}} />,
+    () => <StationMap meta={era5Meta()} loc={null} />,
     1, // the mapChart (StationMap.tsx:47)
   );
 
@@ -712,7 +714,7 @@ export async function run(): Promise<RunResult> {
   // is a displayed number no component owns.
   const mapHeaderUnit = await mount(
     "global.map_panel_header",
-    () => <MapPanelHeader mapLoc={null} stationCount={era5Stations.length} />,
+    () => <MapPanelHeader label={labelOf(era5Meta().default_location!)} stationCount={era5Stations.length} />,
     0,
   );
 
@@ -817,10 +819,13 @@ export async function run(): Promise<RunResult> {
       charts: mapUnit.charts.map(extractChart),
       panel_header: {
         _note:
-          "Raw JSX in AliJeVroceERA5.tsx:137-145, owned by no component and therefore " +
+          "Raw JSX in AliJeVroceERA5.tsx, owned by no component and therefore " +
           "invisible to the section-set assertion. Mirrored by MapPanelHeader in " +
           "harness.tsx and checked against the source by main.mjs assertMirroredCopy. " +
-          "`station_count` is the same figure the _size=50 cap would truncate (T-5.2).",
+          "T-5.40 (B1): `title` now shows the selected station's DIACRITIC display name " +
+          "(the body opens on Ljubljana), not the ASCII era5_name or an all-stations " +
+          "line. `station_count` is the same figure the _size=50 cap would truncate " +
+          "(T-5.2).",
         title: read(mapHeaderUnit).txt(".mirror-panel-title"),
         station_count: read(mapHeaderUnit).txt(".mirror-panel-sub"),
       },

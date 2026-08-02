@@ -53,13 +53,17 @@ function createStore(props: ProviderProps) {
 
   const selLoc = () => selLocs()[0] ?? defaultLoc();
   // The single writer for the below-hero location. It also notifies the page via
-  // onLocChange (→ setMapLoc), so the station map's highlight and panel title follow
-  // the floating chooser, and vice-versa (a map click flows back through syncLoc).
+  // onLocChange (→ setMapLoc), so the station map's header and marker highlight follow
+  // the floating chooser's selection. T-5.39 retired the reverse path: the map is an
+  // orientation aid only now, no longer a chooser, so it no longer writes back.
   const setLoc = (name: string) => {
     setSelLocs([name]);
     props.onLocChange?.(name);
   };
 
+  // syncLoc is a controlled-location input: an external signal that pins the station.
+  // Production no longer wires it (the station map used to, via mapLoc, until T-5.39);
+  // it remains the seam the snapshot harness uses to set a station per case.
   createEffect(() => {
     const ext = props.syncLoc?.();
     if (ext) setSelLocs([ext]);

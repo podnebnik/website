@@ -64,6 +64,12 @@ function Dashboard(props: { meta: SiteMeta }) {
   const defaultDoy = createMemo(() => dateToDoy(date()));
   const era5Meta = (): SiteMeta => ({ ...props.meta, stations: era5Stations, default_location: defaultLoc });
 
+  // T-5.40 (B1) — the map card header must show the DIACRITIC display name, not the
+  // ASCII era5_name. The map's own point labels already resolve via station.label
+  // (StationMap.tsx); this makes the header read the same authored field (T-5.27).
+  const stationLabelOf = (name: string | null): string | null =>
+    name == null ? null : (era5Stations.find(s => s.name === name)?.label ?? name);
+
   const [pageData, { refetch: refetchPageData }] = createResource(
     () => ({ date: date(), loc: loc() }),
     ({ date, loc }) => fetchPageData(date, loc),
@@ -72,7 +78,13 @@ function Dashboard(props: { meta: SiteMeta }) {
   const todayData = () => pageDataResolved()?.status;
   const last7Data = () => pageDataResolved()?.last7;
 
-  const [mapLoc, setMapLoc] = createSignal<string | null>(null);
+  // T-5.39 — `mapLoc` now MIRRORS the below-hero selection; it no longer writes it.
+  // It is set only by the store's `setLoc` (via onLocChange, i.e. the floating
+  // chooser) and read by the map card's header + marker highlight, so the map
+  // reflects the chosen station. It opens on the body's default station (Ljubljana),
+  // matching what the analysis below is actually showing. The retired click-to-select
+  // path (map → store via syncLoc) is gone.
+  const [mapLoc, setMapLoc] = createSignal<string | null>(defaultLoc);
 
   // T-5.35 — the floating chooser is present from page load (it is the only location
   // control now). It anchors on the hero (today-status) section to decide when to
@@ -149,7 +161,6 @@ function Dashboard(props: { meta: SiteMeta }) {
       <RegressionPanel
         meta={era5Meta()}
         defaultDoy={defaultDoy()}
-        syncLoc={mapLoc}
         onLocChange={setMapLoc}
       >
         {/* T-5.35 / D-27 — the single location control, over the hero and every
@@ -178,7 +189,7 @@ function Dashboard(props: { meta: SiteMeta }) {
             <div style={{ ...panelHStyle, background: "var(--color-card)" }}>
               <div>
                 <div style={panelTitleStyle}>
-                  {mapLoc() ? mapLoc()!.replace(/_/g, " ") : t("map.panel_title_all", { count: era5Stations.length })}
+                  {stationLabelOf(mapLoc()) ?? t("map.panel_title_all", { count: era5Stations.length })}
                 </div>
                 <div style={{ ...panelSubStyle, "margin-top": "3px" }}>
                   {t("map.panel_sub_count", { count: era5Stations.length })}
@@ -186,7 +197,7 @@ function Dashboard(props: { meta: SiteMeta }) {
               </div>
             </div>
             <Suspense fallback={<div style={{ height: "280px" }} class="animate-pulse bg-[var(--color-paper-2)]" />}>
-              <StationMap meta={era5Meta()} loc={mapLoc()} onSelect={setMapLoc} />
+              <StationMap meta={era5Meta()} loc={mapLoc()} />
             </Suspense>
             <div style={{ padding: "8px 12px 10px", "border-top": "1px solid var(--color-rule)", display: "flex", gap: "10px", "flex-wrap": "wrap", background: "var(--color-card)" }}>
               {([

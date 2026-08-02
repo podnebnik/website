@@ -4,9 +4,8 @@ import type { SiteMeta } from "../types.ts";
 import { t } from "../i18n/format.ts";
 
 interface Props {
-  meta:     SiteMeta;
-  loc:      string | null;
-  onSelect: (loc: string | null) => void;
+  meta: SiteMeta;
+  loc:  string | null;
 }
 
 // Elevation → fill colour (matches the original Flask SPA palette)
@@ -16,6 +15,49 @@ function elevColor(elev: number): string {
   if (elev > 400)  return "#c8b97a";
   return "#c25a2c";
 }
+
+// T-5.40 (B2/B3) — the 18 stations are a fixed, known set, and Highcharts' only
+// built-in collision handling for mappoint labels is to HIDE whichever ones overlap
+// (dataLabels.allowOverlap:false). That is forbidden here: a station whose name
+// silently vanishes defeats the map's whole purpose (showing where the 18 stations
+// are). So the labels are placed deterministically instead — `allowOverlap:true`
+// keeps every one drawn, and these per-point offsets:
+//   • steer the western-most and eastern-most labels INLAND so they are not clipped
+//     at the card edge (B2 — "ova Gorica"); and
+//   • spread the crowded central cluster apart (B3 — Ljubljana / Domžale / Kranj /
+//     Trbovlje overlapping).
+// A per-point object merges over the series-level dataLabels, so unlisted stations
+// keep the default centred label above the point; listed ones override only the
+// keys named. Keyed on era5_name (station.name).
+const LABEL_PLACEMENT: Record<string,
+  { align?: "left" | "center" | "right"; verticalAlign?: "top" | "middle" | "bottom"; x?: number; y?: number }
+> = {
+  // Western edge — label extends east (inland), so its start sits on the point and
+  // nothing runs off the left of the card.
+  Nova_Gorica: { align: "left",  x: 5 },
+  // Koper is the coastal SW tip; its label extends WEST (open space) so it clears
+  // Ilirska Bistrica, which sits at almost the same latitude just to the east.
+  Koper:       { align: "right", x: -5 },
+  Tolmin:      { align: "left",  x: 5 },
+  Ratece:      { align: "left",  x: 5 },
+  // Postojna extends WEST so it clears Ljubljana's dropped label to its north-east.
+  Postojna:    { align: "right", x: -5 },
+  // Eastern edge — label extends west (inland).
+  Murska_Sobota: { align: "right", x: -5 },
+  Ptuj:          { align: "right", x: -5 },
+  Maribor:       { align: "right", x: -5 },
+  // Central cluster — pull the four crowded labels apart.
+  Kranj:     { align: "right", x: -5, y: -9 }, // west, lifted clear of Tolmin
+  Ljubljana: { verticalAlign: "top", y: 12 },  // below its own point
+  Domzale:   { align: "left",  x: 5 },         // east
+  Trbovlje:  { align: "left",  x: 5, y: 2 },   // east, nudged down
+  // Kredarica keeps the default (centred, above): the alpine outlier sits north of
+  // the cluster with clear space above it.
+};
+// Verified with real Highcharts across card widths 290–600 px (the map card is
+// min(460px, 44%) of the trend row, and drops to full width below the 700 px
+// breakpoint): every one of the 18 labels renders in full with no overlap and no
+// edge clip. See PROGRESS for the measurement.
 
 export function StationMap(props: Props) {
   let container!: HTMLDivElement;
@@ -34,6 +76,7 @@ export function StationMap(props: Props) {
         lineColor: s.name === loc ? "#1a1a18" : "#fff",
         symbol:    "circle",
       },
+      dataLabels: LABEL_PLACEMENT[s.name],
     }));
   }
 
@@ -69,7 +112,9 @@ export function StationMap(props: Props) {
       },
       mapNavigation: {
         enabled: true,
-        buttonOptions: { verticalAlign: "bottom" },
+        // T-5.40 — bottom-RIGHT (the Adriatic/Croatia corner, no station near it) so
+        // the zoom buttons do not sit on top of Koper's label in the south-west.
+        buttonOptions: { verticalAlign: "bottom", align: "right" },
       },
       plotOptions: {
         series: { states: { inactive: { opacity: 1 } } },
@@ -98,11 +143,16 @@ export function StationMap(props: Props) {
           type: "mappoint",
           name: "Postaje",
           data: buildPoints(currentLoc),
-          cursor: "pointer",
           findNearestPointBy: "xy",
           stickyTracking: false,
           dataLabels: {
             enabled: true,
+            // T-5.40 — keep every station's name visible (never drop a label) and let
+            // labels draw past the plot edge; LABEL_PLACEMENT (above) keeps them from
+            // colliding or clipping.
+            allowOverlap: true,
+            crop: false,
+            overflow: "allow",
             formatter(this: any) { return this.point.label ?? this.point.name; },
             style: {
               fontSize: "8px",
@@ -113,14 +163,8 @@ export function StationMap(props: Props) {
             },
             y: -2,
           },
-          point: {
-            events: {
-              click(this: any) {
-                const name: string = this.name;
-                props.onSelect(props.loc === name ? null : name);
-              },
-            },
-          },
+          // T-5.39 — the map is an orientation aid, not a chooser: no click handler,
+          // no pointer cursor. The floating chooser is the single location control.
         },
       ],
     } as any);

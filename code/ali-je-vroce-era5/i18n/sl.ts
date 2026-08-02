@@ -462,7 +462,7 @@ export const sl = {
 
   // StationMap + map legend
   map: {
-    a11y: "Zemljevid Slovenije z merilnimi postajami; barva točke označuje višinski pas postaje. Postajo lahko izberete tudi s spustnim seznamom v analizi trendov.",
+    a11y: "Zemljevid Slovenije z merilnimi postajami; barva točke označuje višinski pas postaje, izbrana postaja pa je poudarjena. Postajo izberete z izbirnikom lokacije.",
     panel_title_all: "Slovenija — vseh {count, plural, one{# postaja} two{# postaji} few{# postaje} other{# postaj}}",
     panel_sub_count: "{count, plural, one{# postaja} two{# postaji} few{# postaje} other{# postaj}} · ERA5",
     legend_alpine: "Alpska (>1500m)",
