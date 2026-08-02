@@ -147,16 +147,27 @@ function SpeiScatterChart(props: ChartProps) {
 
 // ── Main component ────────────────────────────────────────────────────────────
 
-export interface SpeiTrendChartProps { data: SpeiStationData; }
+export interface SpeiTrendChartProps {
+  data:   SpeiStationData;
+  // T-5.36 / D-26 — the location is set by the page-wide floating chooser, not an
+  // own picker (retired here; the sibling "Sezonski sušni indeks" is national and
+  // untouched). `loc` is the era5_name key that indexes `data.stations`; `label` is
+  // the diacritic display name (i18n/station-names via meta.stations). The period
+  // control below is NOT a location control and stays.
+  loc:    string | null;
+  label?: string | undefined;
+}
 
 export function SpeiTrendChart(props: SpeiTrendChartProps) {
-  const stations = createMemo(() => Object.keys(props.data.stations).sort());
+  const [period, setPeriod] = createSignal<Period>("Summer");
 
-  const [station, setStation] = createSignal<string>(stations()[0] ?? "");
-  const [period,  setPeriod]  = createSignal<Period>("Summer");
+  // T-5.36 part (3) — the section still NAMES its station in the panel header, since
+  // its location is now set by a possibly-off-screen control. Show the diacritic
+  // display name; ASCII era5_name is the last-resort fallback.
+  const stationName = () => props.label ?? (props.loc ?? "").replace(/_/g, " ");
 
   const series = createMemo((): SpeiSeries | null =>
-    props.data.stations[station()]?.[period()] ?? null
+    (props.loc ? props.data.stations[props.loc] : undefined)?.[period()] ?? null
   );
 
   const isMonth = createMemo(() => (MONTHS as readonly string[]).includes(period()));
@@ -210,16 +221,6 @@ export function SpeiTrendChart(props: SpeiTrendChartProps) {
 
   // ── Button styles ──────────────────────────────────────────────────────────
 
-  function stationBtnStyle(s: string) {
-    const active = station() === s;
-    return {
-      "font-family": "var(--font-sans)", "font-size": "11px", padding: "4px 10px",
-      "border-radius": "20px", border: "1px solid var(--color-rule-2)", cursor: "pointer",
-      background: active ? "var(--color-ink)" : "var(--color-card)",
-      color: active ? "#fff" : "var(--color-ink-soft)",
-    };
-  }
-
   function periodBtnStyle(p: Period) {
     const active = period() === p;
     return {
@@ -236,18 +237,7 @@ export function SpeiTrendChart(props: SpeiTrendChartProps) {
   return (
     <div>
 
-      {/* Station row */}
-      <div style={{ display: "flex", "flex-wrap": "wrap", gap: "6px", margin: "0 40px 10px" }}>
-        <For each={stations()}>
-          {(s) => (
-            <button style={stationBtnStyle(s)} onClick={() => setStation(s)}>
-              {s.replace(/_/g, " ")}
-            </button>
-          )}
-        </For>
-      </div>
-
-      {/* Season + month row */}
+      {/* Season + month row (the station is set by the page-wide floating chooser) */}
       <div style={{ display: "flex", "flex-wrap": "wrap", gap: "5px", "align-items": "center", margin: "0 40px 14px" }}>
         <For each={SEASONS}>
           {(s) => <button style={periodBtnStyle(s)} onClick={() => setPeriod(s)}>{periodLabel(s)}</button>}
@@ -266,7 +256,7 @@ export function SpeiTrendChart(props: SpeiTrendChartProps) {
           <div style={{ padding: "12px 16px 10px", "border-bottom": "1px solid var(--color-rule)", display: "flex", "justify-content": "space-between", "align-items": "flex-start", gap: "12px" }}>
             <div>
               <div style={{ "font-family": "var(--font-sans)", "font-weight": "500", "font-size": "14px", color: "var(--color-ink)" }}>
-                {station().replace(/_/g, " ")} — {periodLabel(period())} {scaleLabel()}
+                {stationName()} — {periodLabel(period())} {scaleLabel()}
               </div>
               <Show when={series()}>
                 {(s) => (
