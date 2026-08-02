@@ -111,7 +111,8 @@ SPEI_CAT_COLOR = {
 
 TABLE_NAMES = [
     "stations", "daily", "daily_percentiles", "daily_window",
-    "annual_trend", "season_heatmap", "tropical", "spei", "spei_station",
+    "annual_trend", "annual_trend_windows", "season_heatmap", "tropical",
+    "spei", "spei_station",
 ]
 
 
@@ -359,6 +360,47 @@ def _schema_annual_trend(station_names: list[str], max_year: int, dp_columns) ->
                      error="n_years inconsistent with year_min/year_max span"),
         ],
         unique=["era5_name", "variable", "month", "day"],
+    )
+
+
+def _schema_annual_trend_windows(station_names: list[str], max_year: int, dp_columns) -> pa.DataFrameSchema:
+    # Exploratory sibling of annual_trend (T-4.26a, Option C): identical fit columns PLUS a
+    # `window` half-width, holding ONLY the non-default windows (±3/±15/±45 — ±7 is NOT
+    # duplicated here). The uniqueness key gains `window`, since one (station, variable,
+    # month, day) now has one row PER window.
+    year = pa.Check.in_range(DATA_START_YEAR, max_year)
+    specs = {
+        "era5_name": pa.Column(str, pa.Check.isin(station_names)),
+        "station_id": _STATION_ID_NULLABLE,
+        "variable": pa.Column(str, pa.Check.isin(sorted(TREND_VARIABLES))),
+        "month": pa.Column(int, pa.Check.in_range(1, 12), coerce=True),
+        "day": pa.Column(int, pa.Check.in_range(1, 31), coerce=True),
+        "day_label": pa.Column(str),
+        "year_min": pa.Column(int, year, coerce=True),
+        "year_max": pa.Column(int, year, coerce=True),
+        "trend10": pa.Column(float, coerce=True),
+        "p_val": pa.Column(float, pa.Check.in_range(0.0, 1.0), coerce=True),
+        "tau": pa.Column(float, pa.Check.in_range(-1.0, 1.0), coerce=True),
+        "n_years": pa.Column(int, pa.Check.ge(10), coerce=True),
+        "proj_end_year": pa.Column(int, coerce=True),
+        "slope": pa.Column(float, coerce=True),
+        "intercept": pa.Column(float, coerce=True),
+        "slope_hi": pa.Column(float, coerce=True),
+        "intercept_hi": pa.Column(float, coerce=True),
+        "slope_lo": pa.Column(float, coerce=True),
+        "intercept_lo": pa.Column(float, coerce=True),
+        "scatter_json": pa.Column(str, _json_parseable("scatter_json")),
+        "window": pa.Column(int, pa.Check.isin([3, 15, 45]), coerce=True),
+    }
+    return _strict_schema(
+        "annual_trend_windows", specs, dp_columns,
+        checks=[
+            pa.Check(lambda df: df["year_min"] <= df["year_max"],
+                     error="year_min > year_max"),
+            pa.Check(lambda df: df["n_years"] == (df["year_max"] - df["year_min"] + 1),
+                     error="n_years inconsistent with year_min/year_max span"),
+        ],
+        unique=["era5_name", "variable", "month", "day", "window"],
     )
 
 
@@ -627,6 +669,7 @@ def validate_tables(tables: dict[str, pd.DataFrame], config: dict | None = None)
         "daily_percentiles": lambda: _schema_daily_percentiles(max_year, dp_columns),
         "daily_window": lambda: _schema_daily_window(station_names, max_year, dp_columns),
         "annual_trend": lambda: _schema_annual_trend(station_names, max_year, dp_columns),
+        "annual_trend_windows": lambda: _schema_annual_trend_windows(station_names, max_year, dp_columns),
         "season_heatmap": lambda: _schema_season_heatmap(station_names, max_year, dp_columns),
         "tropical": lambda: _schema_tropical(station_names, dp_columns),
         "spei": lambda: _schema_spei(max_year, dp_columns),

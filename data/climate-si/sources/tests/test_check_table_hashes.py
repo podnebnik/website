@@ -110,7 +110,9 @@ def test_gated_move_fails_even_alongside_excluded_drift(tmp_path, capsys):
 
     t = tables / "climate-si.tropical.csv"
     _set_field(t, "trend_json", json.dumps({"aic": 999}))
-    _set_field(t, "counts_json", json.dumps([7]))
+    # A collision-proof sentinel: the synthetic counts_json is json.dumps([idx]) where idx is
+    # tropical's position in TABLE_NAMES, so the moved value must not equal any table index.
+    _set_field(t, "counts_json", json.dumps([999]))
     assert cth._check(tables, manifest) == 1
     err = capsys.readouterr().err
     assert "GATED column(s) moved: ['counts_json']" in err

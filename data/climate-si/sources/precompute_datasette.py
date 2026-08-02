@@ -73,6 +73,11 @@ WINDOW_HALF      = 7    # days either side of target DOY for distribution/percen
 TREND_WINDOW     = 7    # days either side for annual trend aggregation (T-4.23: unified
                         # with WINDOW_HALF — ±30 reached into late June/late August, which
                         # is not "this day of year"; METHODOLOGY.md documents ±7 throughout)
+# Exploratory-only half-widths for the SEPARATE annual_trend_windows table (T-4.26a,
+# Option C). ±7 is the published window and lives ONLY in annual_trend — it is NOT
+# duplicated here (a second stored copy of a published number is D-18's drift hazard).
+# These three windows feed no reader in this ticket; the toolbar control is T-4.26b.
+EXPLORATION_WINDOWS = (3, 15, 45)
 # Anomaly reference period (D-3): 1991-2020, the single baseline for season
 # categories and every anomaly/label on the page. NOT used by SPEI (see below) or
 # by the absolute tropical thresholds, which are baseline-independent.
@@ -398,8 +403,12 @@ VARIABLES = {
 SUM_VARIABLES = {"precipitation_sum", "et0_evapotranspiration"}
 
 def _annual_trend_row(era5_name: str, station_id, loc_data: pd.DataFrame,
-                      month: int, day: int, variable: str, col: str) -> dict | None:
-    w       = window_filter(loc_data, month, day, TREND_WINDOW)
+                      month: int, day: int, variable: str, col: str,
+                      half: int = TREND_WINDOW) -> dict | None:
+    # `half` defaults to TREND_WINDOW so the published annual_trend build (build_annual_trend
+    # below) is byte-identical; build_annual_trend_windows passes the exploratory half-widths.
+    # The module-global TREND_WINDOW is never mutated — the window is a plain argument.
+    w       = window_filter(loc_data, month, day, half)
     agg_fn  = "sum" if variable in SUM_VARIABLES else "mean"
     annual  = (
         w.groupby("_window_year")[col].agg(agg_fn).dropna()
@@ -477,6 +486,42 @@ def build_annual_trend(data: pd.DataFrame, stations_df: pd.DataFrame) -> pd.Data
                     done += 1
                     if done % 500 == 0:
                         print(f"  annual_trend {done}/{total} ({done/total*100:.0f}%)", end="\r", flush=True)
+    print()
+    return pd.DataFrame(rows)
+
+
+def build_annual_trend_windows(data: pd.DataFrame, stations_df: pd.DataFrame) -> pd.DataFrame:
+    """Exploratory sibling of annual_trend holding ONLY the non-default half-widths
+    (EXPLORATION_WINDOWS = 3/15/45). Identical fit code (_annual_trend_row → window_filter
+    + theilslopes + yue_wang_modification_test), so every exploratory number is comparable
+    to the published ±7 one — the sole difference is the window half-width and the extra
+    `window` column. ±7 is NOT emitted here; it keeps its single home in annual_trend
+    (T-4.26a, Option C). No frontend reader queries this table yet — that is T-4.26b."""
+    sid_map = stations_df.set_index("era5_name")["station_id"].to_dict()
+    rows    = []
+    station_names = sorted(data["location"].unique())
+    total = len(station_names) * len(VARIABLES) * 365 * len(EXPLORATION_WINDOWS)
+    done  = 0
+    for half in EXPLORATION_WINDOWS:
+        for era5_name in station_names:
+            loc      = data[data["location"] == era5_name]
+            station_id = sid_map.get(era5_name)
+            for variable, col in VARIABLES.items():
+                for month in range(1, 13):
+                    for day in range(1, 32):
+                        try:
+                            pd.Timestamp(2001, month, day)
+                        except ValueError:
+                            continue
+                        row = _annual_trend_row(era5_name, station_id, loc, month, day,
+                                                variable, col, half=half)
+                        if row:
+                            row["window"] = half
+                            rows.append(row)
+                        done += 1
+                        if done % 500 == 0:
+                            print(f"  annual_trend_windows {done}/{total} ({done/total*100:.0f}%)",
+                                  end="\r", flush=True)
     print()
     return pd.DataFrame(rows)
 
@@ -929,33 +974,36 @@ def build_all_tables(data):
     one sequence means the reference-manifest gate exercises exactly the builders
     that ship, not a copy that could drift.
     """
-    print("\n[1/9] Building stations table…")
+    print("\n[1/10] Building stations table…")
     stations_df = build_stations(data)
     print(f"  {len(stations_df)} stations "
           f"({stations_df['station_id'].notna().sum()} with Vremenar ID)")
 
-    print("\n[2/9] Building daily table…")
+    print("\n[2/10] Building daily table…")
     daily_df = build_daily(data, stations_df)
 
-    print("\n[3/9] Computing daily_percentiles (per station × DOY, mean temp)…")
+    print("\n[3/10] Computing daily_percentiles (per station × DOY, mean temp)…")
     perc_df = build_daily_percentiles(data, stations_df)
 
-    print("\n[4/9] Computing daily_window (per station × DOY, KDE of max temp)…")
+    print("\n[4/10] Computing daily_window (per station × DOY, KDE of max temp)…")
     dw_df = build_daily_window(data, stations_df)
 
-    print("\n[5/9] Computing annual_trend (per station × variable × DOY)…")
+    print("\n[5/10] Computing annual_trend (per station × variable × DOY)…")
     at_df = build_annual_trend(data, stations_df)
 
-    print("\n[6/9] Computing season_heatmap (per station × year × season)…")
+    print("\n[6/10] Computing annual_trend_windows (exploratory ±3/±15/±45)…")
+    atw_df = build_annual_trend_windows(data, stations_df)
+
+    print("\n[7/10] Computing season_heatmap (per station × year × season)…")
     sh_df = build_season_heatmap(data, stations_df)
 
-    print("\n[7/9] Computing tropical (days/nights × threshold × streak, NB GLM)…")
+    print("\n[8/10] Computing tropical (days/nights × threshold × streak, NB GLM)…")
     tr_df = build_tropical(data, stations_df)
 
-    print("\n[8/9] Computing spei (national seasonal drought heatmap)…")
+    print("\n[9/10] Computing spei (national seasonal drought heatmap)…")
     spei_df = build_spei_heatmap(data)
 
-    print("\n[9/9] Computing spei_station (per-station SPEI-3/SPEI-30 trends)…")
+    print("\n[10/10] Computing spei_station (per-station SPEI-3/SPEI-30 trends)…")
     ss_df = build_spei_station(data, stations_df)
 
     return {
@@ -964,6 +1012,7 @@ def build_all_tables(data):
         "daily_percentiles": perc_df,
         "daily_window": dw_df,
         "annual_trend": at_df,
+        "annual_trend_windows": atw_df,
         "season_heatmap": sh_df,
         "tropical": tr_df,
         "spei": spei_df,
@@ -1002,6 +1051,7 @@ def main():
     cur.execute("CREATE INDEX IF NOT EXISTS idx_perc_sid_date ON daily_percentiles(station_id, date)")
     cur.execute("CREATE INDEX IF NOT EXISTS idx_dw_station_md ON daily_window(era5_name, month, day)")
     cur.execute("CREATE INDEX IF NOT EXISTS idx_at_station_md ON annual_trend(era5_name, variable, month, day)")
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_atw_station_md ON annual_trend_windows(era5_name, variable, month, day, window)")
     cur.execute("CREATE INDEX IF NOT EXISTS idx_sh_station ON season_heatmap(era5_name, y)")
     cur.execute("CREATE INDEX IF NOT EXISTS idx_trop ON tropical(era5_name, kind, threshold, streak)")
     cur.execute("CREATE INDEX IF NOT EXISTS idx_spei_xy ON spei(x, y)")

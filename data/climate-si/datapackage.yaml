@@ -104,6 +104,80 @@ resources:
     - name: scatter_json
       type: string
       title: Per-year scatter points (JSON)
+- name: annual_trend_windows
+  type: table
+  path: data/climate-si.annual_trend_windows.csv
+  title: Exploratory annual temperature trend at non-default windows (±3/±15/±45) per station × variable × day
+  scheme: file
+  format: csv
+  mediatype: text/csv
+  encoding: utf-8
+  schema:
+    fields:
+    - name: era5_name
+      type: string
+      title: ERA5 station name
+    - name: station_id
+      type: number
+      title: Vremenar/ARSO station id
+    - name: variable
+      type: string
+      title: Variable
+    - name: month
+      type: integer
+      title: Month
+    - name: day
+      type: integer
+      title: Day
+    - name: day_label
+      type: string
+      title: Day label
+    - name: year_min
+      type: integer
+      title: First year
+    - name: year_max
+      type: integer
+      title: Last year
+    - name: trend10
+      type: number
+      title: Trend per decade
+      unit: °C/decade
+    - name: p_val
+      type: number
+      title: Mann-Kendall p-value
+    - name: tau
+      type: number
+      title: Kendall's tau
+    - name: n_years
+      type: integer
+      title: Number of years
+    - name: proj_end_year
+      type: integer
+      title: Projection end year
+    - name: slope
+      type: number
+      title: Theil-Sen slope (per year)
+    - name: intercept
+      type: number
+      title: Central line intercept
+    - name: slope_hi
+      type: number
+      title: Upper-CI slope
+    - name: intercept_hi
+      type: number
+      title: Upper-CI intercept
+    - name: slope_lo
+      type: number
+      title: Lower-CI slope
+    - name: intercept_lo
+      type: number
+      title: Lower-CI intercept
+    - name: scatter_json
+      type: string
+      title: Per-year scatter points (JSON)
+    - name: window
+      type: integer
+      title: Window half-width (days either side of the target day-of-year)
 - name: daily
   type: table
   path: data/climate-si.daily.csv
