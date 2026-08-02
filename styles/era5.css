@@ -219,9 +219,7 @@
 .reg-card--cal  { margin: 20px 40px 0; }
 
 /* ── Responsive: DOY control ─────────────────────────────────────────────── */
-.reg-doy-spacer { flex: 1; min-width: 8px; }
 .reg-doy-ctrl   { display: flex; align-items: center; gap: 8px; padding: 4px 4px 4px 10px; border-radius: 10px; background: var(--color-paper); height: 36px; }
-.reg-doy-slider { height: 28px; background: var(--color-card); border: 1px solid var(--color-rule-2); border-radius: 7px; display: flex; align-items: center; padding: 0 8px; width: 180px; }
 
 /* ── T-5.28: day-of-year calendar picker ─────────────────────────────────────
    Opens from the "1. avg." label; a yearless month + day-number grid (no weekday
@@ -310,9 +308,7 @@
   .sec-hs2{ padding-inline: 14px; }
   .sec-p  { padding-inline: 14px; }
   .reg-toolbar { margin: 10px 14px 0; padding: 8px 10px; }
-  .reg-doy-spacer { display: none; }
   .reg-doy-ctrl   { order: 10; flex: 1 0 100%; height: auto; padding: 6px 10px; }
-  .reg-doy-slider { flex: 1; width: auto; min-width: 80px; }
   .shm-grid       { grid-template-columns: 20px 1fr; row-gap: 4px; }
   .shm-year-axis  { grid-template-columns: 20px 1fr; }
   .shm-season-lbl { font-size: 0; padding-right: 0; }

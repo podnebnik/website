@@ -180,6 +180,16 @@ export function RegToolbar() {
     if (e.key === "Enter" || e.key === " " || e.key === "ArrowDown") {
       e.preventDefault();
       openCal();
+    } else if (!calOpen() && e.key === "ArrowLeft") {
+      // T-5.37: ±1-day stepping for keyboard users, moved here when the slider
+      // (a native range input, itself an arrow-stepper) and the ◀ ▶ buttons were
+      // removed. Same clamping the arrows used. Undiscoverable for mouse users by
+      // design — this compensates keyboard users, it does not replace the arrows.
+      e.preventDefault();
+      s.setDoy(d => Math.max(1, d - 1));
+    } else if (!calOpen() && e.key === "ArrowRight") {
+      e.preventDefault();
+      s.setDoy(d => Math.min(365, d + 1));
     }
   };
   const onGridKey = (e: KeyboardEvent) => {
@@ -235,8 +245,6 @@ export function RegToolbar() {
           readouts (stats.method footer, precip-vs-temp trend colour) are sourced
           elsewhere and are untouched. */}
 
-      <div class="reg-doy-spacer" />
-
       {/* DOY control */}
       <div class="reg-doy-ctrl">
         <span style={{ "font-family": "var(--font-mono)", "font-size": "9px", "letter-spacing": "0.12em", "text-transform": "uppercase", color: "var(--color-ink-soft)", "white-space": "nowrap" }}>{t("reg.day")}</span>
@@ -253,6 +261,7 @@ export function RegToolbar() {
             aria-haspopup="dialog"
             aria-expanded={calOpen()}
             aria-label={t("reg.pick_day")}
+            aria-keyshortcuts="ArrowLeft ArrowRight"
             onClick={() => (calOpen() ? closeCal(false) : openCal())}
             onKeyDown={onTriggerKey}
           >
@@ -296,17 +305,6 @@ export function RegToolbar() {
             </div>
             <div style={{ position: "fixed", inset: "0", "z-index": "9" }} onClick={() => closeCal(false)} />
           </Show>
-        </div>
-        <div class="reg-doy-slider">
-          <input
-            type="range" min="1" max="365" value={s.doy()}
-            style={{ flex: "1", appearance: "none", "-webkit-appearance": "none", background: "linear-gradient(to right,#3a5a8a,#6ca0c0,#e0d8c8,#c25a2c,#962c1a)", height: "3px", "border-radius": "2px", cursor: "pointer" }}
-            onInput={(e) => s.setDoy(Number(e.currentTarget.value))}
-          />
-        </div>
-        <div style={{ display: "flex", gap: "2px" }}>
-          <button style={playBtnStyle} onClick={() => s.setDoy(d => Math.max(1, d - 1))}>◀</button>
-          <button style={{ ...playBtnStyle, width: "36px", background: "var(--color-ink)", color: "#fff", "border-color": "var(--color-ink)" }} onClick={() => s.setDoy(d => Math.min(365, d + 1))}>▶</button>
         </div>
       </div>
 
@@ -704,19 +702,6 @@ const pillStyle: Record<string, string> = {
   color:          "var(--color-ink)",
   cursor:         "pointer",
   "font-family":  "var(--font-sans)",
-};
-
-const playBtnStyle: Record<string, string> = {
-  display:        "inline-grid",
-  "place-items":  "center",
-  width:          "28px",
-  height:         "28px",
-  "border-radius":"7px",
-  border:         "1px solid var(--color-rule)",
-  background:     "var(--color-card)",
-  cursor:         "pointer",
-  "font-size":    "9px",
-  color:          "var(--color-ink)",
 };
 
 export const panelHStyle: Record<string, string> = {
