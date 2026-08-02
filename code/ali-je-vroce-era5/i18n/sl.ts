@@ -254,6 +254,21 @@ export const sl = {
 
     explain_reg: "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija",
     explain_cal: "Trend na desetletje za vsak dan v letu · rdeča = ogrevanje · modra = ohlajanje · prosojnost = statistična značilnost",
+
+    // T-4.26b (D-34) — the trend half-window control below the hero. ±7 is the
+    // published default (annual_trend); ±3/±15/±45 read annual_trend_windows. Only
+    // the panel and the year-round calendar follow it; the hero stays at ±7.
+    window: "Okno",
+    window_opt: "±{n} dni",
+    window_cal_label: "okno ±{n} dni",
+    window_expl_3:
+      "Ozko okno: le okoli 7 dni na leto. Ocena postane nestabilna — interval zaupanja se razširi, posamezne vrednosti pa lahko skočijo v obe smeri, tudi navidez močneje. To ni znak manjšega segrevanja, ampak manjšega vzorca.",
+    window_expl_7:
+      "Objavljeno okno: ±7 dni okoli izbranega dne — uravnoteženo med velikostjo vzorca in sezonsko ostrino. To je vrednost, ki jo prikazuje stran.",
+    window_expl_15:
+      "Širše okno: ocena je bolj gladka, ker je v vzorcu več dni — a okno že sega približno mesec dni naokoli, zato vanj vstopa tudi sezonski potek.",
+    window_expl_45:
+      "Zelo široko okno: sega globoko v druge dele sezone in meša sosednje mesece. Videti je lahko bolj prepričljivo, a del te prepričljivosti prispeva sezonski potek in ne trend samega dne.",
   },
 
   // T-5.27 — floating station chooser (the single location control below the hero).

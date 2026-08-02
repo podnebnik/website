@@ -33688,7 +33688,9 @@
         "rendered": {
           "toolbar": [
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
-            "Dan21. jul."
+            "Okno±3 dni±7 dni±15 dni±45 dni",
+            "Dan21. jul.",
+            "Objavljeno okno: ±7 dni okoli izbranega dne — uravnoteženo med velikostjo vzorca in sezonsko ostrino. To je vrednost, ki jo prikazuje stran."
           ],
           "variable_select": {
             "selected": "temperature_max",
@@ -37212,7 +37214,9 @@
         "rendered": {
           "toolbar": [
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
-            "Dan21. jul."
+            "Okno±3 dni±7 dni±15 dni±45 dni",
+            "Dan21. jul.",
+            "Objavljeno okno: ±7 dni okoli izbranega dne — uravnoteženo med velikostjo vzorca in sezonsko ostrino. To je vrednost, ki jo prikazuje stran."
           ],
           "variable_select": {
             "selected": "temperature_max",
@@ -40736,7 +40740,9 @@
         "rendered": {
           "toolbar": [
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
-            "Dan21. jul."
+            "Okno±3 dni±7 dni±15 dni±45 dni",
+            "Dan21. jul.",
+            "Objavljeno okno: ±7 dni okoli izbranega dne — uravnoteženo med velikostjo vzorca in sezonsko ostrino. To je vrednost, ki jo prikazuje stran."
           ],
           "variable_select": {
             "selected": "temperature_max",
@@ -44069,7 +44075,9 @@
         "rendered": {
           "toolbar": [
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
-            "Dan29. jul."
+            "Okno±3 dni±7 dni±15 dni±45 dni",
+            "Dan29. jul.",
+            "Objavljeno okno: ±7 dni okoli izbranega dne — uravnoteženo med velikostjo vzorca in sezonsko ostrino. To je vrednost, ki jo prikazuje stran."
           ],
           "variable_select": {
             "selected": "temperature_max",
@@ -47593,7 +47601,9 @@
         "rendered": {
           "toolbar": [
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
-            "Dan29. jul."
+            "Okno±3 dni±7 dni±15 dni±45 dni",
+            "Dan29. jul.",
+            "Objavljeno okno: ±7 dni okoli izbranega dne — uravnoteženo med velikostjo vzorca in sezonsko ostrino. To je vrednost, ki jo prikazuje stran."
           ],
           "variable_select": {
             "selected": "temperature_max",
@@ -51117,7 +51127,9 @@
         "rendered": {
           "toolbar": [
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
-            "Dan29. jul."
+            "Okno±3 dni±7 dni±15 dni±45 dni",
+            "Dan29. jul.",
+            "Objavljeno okno: ±7 dni okoli izbranega dne — uravnoteženo med velikostjo vzorca in sezonsko ostrino. To je vrednost, ki jo prikazuje stran."
           ],
           "variable_select": {
             "selected": "temperature_max",
@@ -54450,7 +54462,9 @@
         "rendered": {
           "toolbar": [
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
-            "Dan15. jul."
+            "Okno±3 dni±7 dni±15 dni±45 dni",
+            "Dan15. jul.",
+            "Objavljeno okno: ±7 dni okoli izbranega dne — uravnoteženo med velikostjo vzorca in sezonsko ostrino. To je vrednost, ki jo prikazuje stran."
           ],
           "variable_select": {
             "selected": "temperature_max",
@@ -57974,7 +57988,9 @@
         "rendered": {
           "toolbar": [
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
-            "Dan15. jul."
+            "Okno±3 dni±7 dni±15 dni±45 dni",
+            "Dan15. jul.",
+            "Objavljeno okno: ±7 dni okoli izbranega dne — uravnoteženo med velikostjo vzorca in sezonsko ostrino. To je vrednost, ki jo prikazuje stran."
           ],
           "variable_select": {
             "selected": "temperature_max",
@@ -61498,7 +61514,9 @@
         "rendered": {
           "toolbar": [
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
-            "Dan15. jul."
+            "Okno±3 dni±7 dni±15 dni±45 dni",
+            "Dan15. jul.",
+            "Objavljeno okno: ±7 dni okoli izbranega dne — uravnoteženo med velikostjo vzorca in sezonsko ostrino. To je vrednost, ki jo prikazuje stran."
           ],
           "variable_select": {
             "selected": "temperature_max",
@@ -62341,7 +62359,9 @@
         "rendered": {
           "toolbar": [
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
-            "Dan28. feb."
+            "Okno±3 dni±7 dni±15 dni±45 dni",
+            "Dan28. feb.",
+            "Objavljeno okno: ±7 dni okoli izbranega dne — uravnoteženo med velikostjo vzorca in sezonsko ostrino. To je vrednost, ki jo prikazuje stran."
           ],
           "variable_select": {
             "selected": "temperature_max",
@@ -63184,7 +63204,9 @@
         "rendered": {
           "toolbar": [
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
-            "Dan28. feb."
+            "Okno±3 dni±7 dni±15 dni±45 dni",
+            "Dan28. feb.",
+            "Objavljeno okno: ±7 dni okoli izbranega dne — uravnoteženo med velikostjo vzorca in sezonsko ostrino. To je vrednost, ki jo prikazuje stran."
           ],
           "variable_select": {
             "selected": "temperature_max",
@@ -63978,7 +64000,9 @@
         "rendered": {
           "toolbar": [
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
-            "Dan28. feb."
+            "Okno±3 dni±7 dni±15 dni±45 dni",
+            "Dan28. feb.",
+            "Objavljeno okno: ±7 dni okoli izbranega dne — uravnoteženo med velikostjo vzorca in sezonsko ostrino. To je vrednost, ki jo prikazuje stran."
           ],
           "variable_select": {
             "selected": "temperature_max",
@@ -67484,7 +67508,9 @@
         "rendered": {
           "toolbar": [
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
-            "Dan1. mar."
+            "Okno±3 dni±7 dni±15 dni±45 dni",
+            "Dan1. mar.",
+            "Objavljeno okno: ±7 dni okoli izbranega dne — uravnoteženo med velikostjo vzorca in sezonsko ostrino. To je vrednost, ki jo prikazuje stran."
           ],
           "variable_select": {
             "selected": "temperature_max",
@@ -71008,7 +71034,9 @@
         "rendered": {
           "toolbar": [
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
-            "Dan28. feb."
+            "Okno±3 dni±7 dni±15 dni±45 dni",
+            "Dan28. feb.",
+            "Objavljeno okno: ±7 dni okoli izbranega dne — uravnoteženo med velikostjo vzorca in sezonsko ostrino. To je vrednost, ki jo prikazuje stran."
           ],
           "variable_select": {
             "selected": "temperature_max",
@@ -74532,7 +74560,9 @@
         "rendered": {
           "toolbar": [
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
-            "Dan1. mar."
+            "Okno±3 dni±7 dni±15 dni±45 dni",
+            "Dan1. mar.",
+            "Objavljeno okno: ±7 dni okoli izbranega dne — uravnoteženo med velikostjo vzorca in sezonsko ostrino. To je vrednost, ki jo prikazuje stran."
           ],
           "variable_select": {
             "selected": "temperature_max",
@@ -78056,7 +78086,9 @@
         "rendered": {
           "toolbar": [
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
-            "Dan1. jan."
+            "Okno±3 dni±7 dni±15 dni±45 dni",
+            "Dan1. jan.",
+            "Objavljeno okno: ±7 dni okoli izbranega dne — uravnoteženo med velikostjo vzorca in sezonsko ostrino. To je vrednost, ki jo prikazuje stran."
           ],
           "variable_select": {
             "selected": "temperature_max",
@@ -81572,7 +81604,9 @@
         "rendered": {
           "toolbar": [
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
-            "Dan31. dec."
+            "Okno±3 dni±7 dni±15 dni±45 dni",
+            "Dan31. dec.",
+            "Objavljeno okno: ±7 dni okoli izbranega dne — uravnoteženo med velikostjo vzorca in sezonsko ostrino. To je vrednost, ki jo prikazuje stran."
           ],
           "variable_select": {
             "selected": "temperature_max",
@@ -85088,7 +85122,9 @@
         "rendered": {
           "toolbar": [
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
-            "Dan3. avg."
+            "Okno±3 dni±7 dni±15 dni±45 dni",
+            "Dan3. avg.",
+            "Objavljeno okno: ±7 dni okoli izbranega dne — uravnoteženo med velikostjo vzorca in sezonsko ostrino. To je vrednost, ki jo prikazuje stran."
           ],
           "variable_select": {
             "selected": "temperature_max",
@@ -88604,7 +88640,9 @@
         "rendered": {
           "toolbar": [
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
-            "Dan3. avg."
+            "Okno±3 dni±7 dni±15 dni±45 dni",
+            "Dan3. avg.",
+            "Objavljeno okno: ±7 dni okoli izbranega dne — uravnoteženo med velikostjo vzorca in sezonsko ostrino. To je vrednost, ki jo prikazuje stran."
           ],
           "variable_select": {
             "selected": "temperature_max",
@@ -92128,7 +92166,9 @@
         "rendered": {
           "toolbar": [
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
-            "Dan7. feb."
+            "Okno±3 dni±7 dni±15 dni±45 dni",
+            "Dan7. feb.",
+            "Objavljeno okno: ±7 dni okoli izbranega dne — uravnoteženo med velikostjo vzorca in sezonsko ostrino. To je vrednost, ki jo prikazuje stran."
           ],
           "variable_select": {
             "selected": "temperature_max",
@@ -95665,7 +95705,9 @@
         "rendered": {
           "toolbar": [
             "SpremenljivkaNajvišja temperatura (°C)Najnižja temperatura (°C)Povprečna temperatura (°C)Padavine (mm)ET₀ (mm)",
-            "Dan7. jan."
+            "Okno±3 dni±7 dni±15 dni±45 dni",
+            "Dan7. jan.",
+            "Objavljeno okno: ±7 dni okoli izbranega dne — uravnoteženo med velikostjo vzorca in sezonsko ostrino. To je vrednost, ki jo prikazuje stran."
           ],
           "variable_select": {
             "selected": "temperature_max",

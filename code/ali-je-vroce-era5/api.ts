@@ -16,7 +16,7 @@ import type { SpeiStationData } from "./charts/SpeiTrendChart.tsx";
 // identifier→string-literal quirk; verified against datasette 0.65.2 / SQLite DQS=3).
 import type {
   StationsCol, DailyCol, DailyWindowCol, SeasonHeatmapCol, SpeiCol, SpeiStationCol,
-  AnnualTrendCol, DsTropical, TropicalCol, DsDailyWindow,
+  AnnualTrendCol, AnnualTrendWindowsCol, DsTropical, TropicalCol, DsDailyWindow,
 } from "./generated/datasette-schema.ts";
 // The category palette lives with the percentile helpers salvaged from the
 // deleted ARSO path (T-2.2 / D-2); see percentile.ts for why they were kept.
@@ -127,7 +127,30 @@ const dwCol = (c: DailyWindowCol):  DailyWindowCol  => c;
 const dCol  = (c: DailyCol):        DailyCol        => c;
 const shCol = (c: SeasonHeatmapCol): SeasonHeatmapCol => c;
 const atCol = (c: AnnualTrendCol):  AnnualTrendCol  => c;
+// T-4.26b — the `annual_trend_windows` filter columns. Only `window` is unique to
+// that table; era5_name/variable/month/day are shared with annual_trend (identical
+// names) and stay pinned by atCol above, so a windowed URL reuses atCol for those.
+const atwCol = (c: AnnualTrendWindowsCol): AnnualTrendWindowsCol => c;
 const trCol = (c: TropicalCol):     TropicalCol     => c;
+
+// T-4.26b — the ±7 window has ONE home: the `annual_trend` table. T-4.26a
+// deliberately did NOT duplicate ±7 into `annual_trend_windows`; that table holds
+// only ±3/±15/±45, keyed by the half-width `window` column. This is the SINGLE site
+// in the frontend that names `annual_trend_windows`, and it returns the table name
+// and its MANDATORY `window__exact` filter AS ONE OBJECT — a caller cannot select the
+// windows table without also emitting the filter, because both come from this one
+// call. Omitting the filter would silently over-read: annual_trend_windows returns one
+// row PER window (3× the rows), so an unfiltered calendar query (365×3 = 1095 rows)
+// would hit the datasette `_size` cap and blend three windows into one calendar
+// (see fetchCalendar). Inseparability makes that mistake unwriteable.
+// For window===7 the returned filter is "" and the table is `annual_trend`, so a
+// window-7 URL is BYTE-IDENTICAL to the pre-T-4.26b URL — which is what keeps the hero
+// (fetchRegression with no window, D-34) on its recorded fixtures.
+function annualTrendSource(window: number): { table: string; filter: string } {
+  return window === 7
+    ? { table: "annual_trend",         filter: "" }
+    : { table: "annual_trend_windows", filter: `&${atwCol("window")}__exact=${window}` };
+}
 
 // T-5.1: guard for the datasette `*_json` columns (distribution_json, scatter_json,
 // years_json, counts_json, trend_json, spei_json). An unguarded JSON.parse throws a
@@ -602,13 +625,18 @@ export interface RegressionParams {
   locs:   string[];
   var:    string;
   doy:    number;
+  // T-4.26b (D-34) — the trend half-window in days. OPTIONAL and defaults to ±7:
+  // the hero (HeroCards.tsx) omits it and therefore stays on the published `annual_trend`
+  // table with a byte-identical URL, while the analysis panel passes its selected window.
+  window?: number;
 }
 
 export async function fetchRegression(p: RegressionParams): Promise<RegressionResponse> {
   const { month, day } = doyToMonthDay(p.doy);
+  const window = p.window ?? 7;
 
   const era5Results = await Promise.all(
-    p.locs.map(loc => buildRegressionResult(loc, p.var, month, day))
+    p.locs.map(loc => buildRegressionResult(loc, p.var, month, day, window))
   );
 
   return {
@@ -620,10 +648,13 @@ export async function fetchRegression(p: RegressionParams): Promise<RegressionRe
 }
 
 async function buildRegressionResult(
-  era5Name: string, variable: string, month: number, day: number
+  era5Name: string, variable: string, month: number, day: number, window = 7
 ): Promise<RegressionResult | null> {
+  // T-4.26b — window===7 → annual_trend (unchanged URL, keeps the hero on fixtures);
+  // ±3/±15/±45 → annual_trend_windows with its mandatory window filter (annualTrendSource).
+  const src = annualTrendSource(window);
   const rows = await dsGet<AnnualTrendRow[]>(
-    `annual_trend.json?_shape=array&${atCol("era5_name")}__exact=${encodeURIComponent(era5Name)}&${atCol("variable")}__exact=${encodeURIComponent(variable)}&${atCol("month")}__exact=${month}&${atCol("day")}__exact=${day}&_size=1`
+    `${src.table}.json?_shape=array&${atCol("era5_name")}__exact=${encodeURIComponent(era5Name)}&${atCol("variable")}__exact=${encodeURIComponent(variable)}&${atCol("month")}__exact=${month}&${atCol("day")}__exact=${day}${src.filter}&_size=1`
   );
   const r = rows[0];
   if (!r) return null;
@@ -790,10 +821,19 @@ export interface CalendarData {
 }
 
 export async function fetchCalendar(
-  loc: string, variable: string
+  loc: string, variable: string, window = 7
 ): Promise<CalendarData> {
+  // T-4.26b (D-34) — the year-round calendar follows the window control. The window
+  // filter here is NOT optional: annual_trend_windows holds one row per window, so an
+  // unfiltered read would return 365×3 = 1095 rows, silently capped at `_size=400` and
+  // blending three windows into one calendar. `annualTrendSource` makes that unwriteable
+  // — the windows table name and its `window__exact` filter arrive as one pair, so this
+  // call site cannot name the table without the filter. For window===7 the table is
+  // `annual_trend` and the filter is "", preserving the exact recorded URL. 365 rows for
+  // a single window sit safely under 400.
+  const src = annualTrendSource(window);
   const rows = await dsGet<CalendarRow[]>(
-    `annual_trend.json?_shape=array&${atCol("era5_name")}__exact=${encodeURIComponent(loc)}&${atCol("variable")}__exact=${encodeURIComponent(variable)}&${dsCols(CALENDAR_COLS)}&_size=400`
+    `${src.table}.json?_shape=array&${atCol("era5_name")}__exact=${encodeURIComponent(loc)}&${atCol("variable")}__exact=${encodeURIComponent(variable)}&${dsCols(CALENDAR_COLS)}${src.filter}&_size=400`
   );
   return { loc, var: variable, unit: "°C", method_label: "Theil-Sen + TFPW MK", rows };
 }
