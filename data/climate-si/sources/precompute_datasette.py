@@ -17,6 +17,7 @@ season_heatmap       — seasonal anomaly ranking per station × year × season
 """
 
 import glob, json, os, sys, warnings
+import concurrent.futures as _futures
 from pathlib import Path
 
 import numpy as np
@@ -464,45 +465,87 @@ def _annual_trend_row(era5_name: str, station_id, loc_data: pd.DataFrame,
     }
 
 
-def build_annual_trend(data: pd.DataFrame, stations_df: pd.DataFrame) -> pd.DataFrame:
+# ── T-4.27: the two annual-trend tables dominate the generate-db job ─────────────
+# Profiled (T-4.27 step 1): annual_trend + annual_trend_windows are 91.6% of a 774 s
+# precompute (173 s + 536 s), every row an independent Theil-Sen fit + Yue-Wang MK
+# test. They are embarrassingly parallel across (window half, station), so the two
+# builders below fan those units out to a process pool. Everything that decides a row's
+# VALUE — window_filter, the aggregation, theilslopes, the MK test, the rounding — is
+# byte-for-byte the serial code (_annual_trend_task calls the same _annual_trend_row);
+# parallelism only interleaves INDEPENDENT rows, so no per-row float summation order
+# moves. Rows are reassembled in INPUT (serial-emission) order, so pd.DataFrame(rows) →
+# to_csv is byte-identical to the serial build. Proven at build time by a full-run
+# assert_frame_equal and the T-5.17 hash manifest (T-4.27 gate). Chunk unit is
+# (window, station), NOT per row: 18/54 fat tasks, so scheduling and pickling overhead
+# are negligible and a worker holds one station's ~28k rows, not 131k result rows.
+
+# Worker-side globals, populated once per worker by the pool initializer. `data` is
+# passed THROUGH the initializer (pickled from the parent), never re-read from disk in
+# the worker: under the default 'spawn' start method a worker re-imports this module
+# fresh and would NOT see a monkeypatched DATA_DIR (the reference-manifest test does
+# exactly that), so the parent's in-memory frame is the only correct source.
+_POOL_DATA = None
+_POOL_SID_MAP = None
+_POOL_ADD_WINDOW_COL = False
+
+
+def _pool_init(data, sid_map, add_window_col):
+    global _POOL_DATA, _POOL_SID_MAP, _POOL_ADD_WINDOW_COL
+    _POOL_DATA = data
+    _POOL_SID_MAP = sid_map
+    _POOL_ADD_WINDOW_COL = add_window_col
+
+
+def _annual_trend_task(args):
+    """Compute every fitted row for ONE (window half, station), in the exact
+    variable→month→day order the serial loop emits. Returns (task_index, rows) so the
+    parent reassembles by INPUT index, never completion order — the guarantee that the
+    parallel CSV is byte-identical to the serial one (T-4.27)."""
+    task_index, half, era5_name = args
+    loc = _POOL_DATA[_POOL_DATA["location"] == era5_name]
+    station_id = _POOL_SID_MAP.get(era5_name)
+    rows = []
+    for variable, col in VARIABLES.items():
+        for month in range(1, 13):
+            for day in range(1, 32):
+                try:
+                    pd.Timestamp(2001, month, day)
+                except ValueError:
+                    continue
+                row = _annual_trend_row(era5_name, station_id, loc, month, day,
+                                        variable, col, half=half)
+                if row:
+                    if _POOL_ADD_WINDOW_COL:
+                        row["window"] = half
+                    rows.append(row)
+    return task_index, rows
+
+
+def _resolve_worker_count(n_tasks: int) -> int:
+    """Worker count. `PRECOMPUTE_WORKERS` (env) wins if set — the Dockerfile can pin it;
+    otherwise os.cpu_count(), capped at the task count (no idle workers) and floored at 1.
+    A value of 1 routes to the serial loop — the guaranteed-identical fallback, and the
+    behaviour on a single-core box or an unknown cpu_count()."""
+    env = os.environ.get("PRECOMPUTE_WORKERS")
+    if env is not None:
+        try:
+            n = int(env)
+        except ValueError:
+            n = 1
+    else:
+        n = os.cpu_count() or 1
+    return max(1, min(n, n_tasks))
+
+
+def _annual_trend_serial(data, stations_df, windows, add_window_col, label):
+    """The reference build: a single-threaded loop. Kept as its own function so it is
+    both the fallback (below) and the oracle the parallel path is proven identical to."""
     sid_map = stations_df.set_index("era5_name")["station_id"].to_dict()
     rows    = []
     station_names = sorted(data["location"].unique())
-    total = len(station_names) * len(VARIABLES) * 365
+    total = len(station_names) * len(VARIABLES) * 365 * len(windows)
     done  = 0
-    for era5_name in station_names:
-        loc      = data[data["location"] == era5_name]
-        station_id = sid_map.get(era5_name)
-        for variable, col in VARIABLES.items():
-            for month in range(1, 13):
-                for day in range(1, 32):
-                    try:
-                        pd.Timestamp(2001, month, day)
-                    except ValueError:
-                        continue
-                    row = _annual_trend_row(era5_name, station_id, loc, month, day, variable, col)
-                    if row:
-                        rows.append(row)
-                    done += 1
-                    if done % 500 == 0:
-                        print(f"  annual_trend {done}/{total} ({done/total*100:.0f}%)", end="\r", flush=True)
-    print()
-    return pd.DataFrame(rows)
-
-
-def build_annual_trend_windows(data: pd.DataFrame, stations_df: pd.DataFrame) -> pd.DataFrame:
-    """Exploratory sibling of annual_trend holding ONLY the non-default half-widths
-    (EXPLORATION_WINDOWS = 3/15/45). Identical fit code (_annual_trend_row → window_filter
-    + theilslopes + yue_wang_modification_test), so every exploratory number is comparable
-    to the published ±7 one — the sole difference is the window half-width and the extra
-    `window` column. ±7 is NOT emitted here; it keeps its single home in annual_trend
-    (T-4.26a, Option C). No frontend reader queries this table yet — that is T-4.26b."""
-    sid_map = stations_df.set_index("era5_name")["station_id"].to_dict()
-    rows    = []
-    station_names = sorted(data["location"].unique())
-    total = len(station_names) * len(VARIABLES) * 365 * len(EXPLORATION_WINDOWS)
-    done  = 0
-    for half in EXPLORATION_WINDOWS:
+    for half in windows:
         for era5_name in station_names:
             loc      = data[data["location"] == era5_name]
             station_id = sid_map.get(era5_name)
@@ -516,14 +559,86 @@ def build_annual_trend_windows(data: pd.DataFrame, stations_df: pd.DataFrame) ->
                         row = _annual_trend_row(era5_name, station_id, loc, month, day,
                                                 variable, col, half=half)
                         if row:
-                            row["window"] = half
+                            if add_window_col:
+                                row["window"] = half
                             rows.append(row)
                         done += 1
                         if done % 500 == 0:
-                            print(f"  annual_trend_windows {done}/{total} ({done/total*100:.0f}%)",
+                            print(f"  {label} {done}/{total} ({done/total*100:.0f}%)",
                                   end="\r", flush=True)
     print()
     return pd.DataFrame(rows)
+
+
+def _annual_trend_parallel(data, stations_df, windows, add_window_col, label):
+    sid_map = stations_df.set_index("era5_name")["station_id"].to_dict()
+    station_names = sorted(data["location"].unique())
+    # Tasks in the EXACT serial emission order: outer window, inner sorted station. The
+    # explicit task_index makes the input order independent of pool scheduling.
+    tasks = []
+    for half in windows:
+        for era5_name in station_names:
+            tasks.append((len(tasks), half, era5_name))
+    n_workers = _resolve_worker_count(len(tasks))
+    if n_workers <= 1:
+        return _annual_trend_serial(data, stations_df, windows, add_window_col, label)
+    # Belt-and-suspenders BLAS pinning: 'spawn' workers import numpy fresh and read the
+    # thread-count env at import, so single-thread BLAS must be in the environment BEFORE
+    # the pool is created (children inherit os.environ). The Dockerfile already exports
+    # these; setdefault covers a bare local run without changing them where they are set.
+    # Without it, N workers each spinning a full BLAS pool would oversubscribe the cores —
+    # slower than serial and, on some builds, numerically different. (The fits touch BLAS
+    # barely — tiny ~76-point arrays — but the pin is correct regardless.)
+    for _v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS",
+               "NUMEXPR_NUM_THREADS", "VECLIB_MAXIMUM_THREADS"):
+        os.environ.setdefault(_v, "1")
+    print(f"  {label}: {len(tasks)} (window,station) tasks over {n_workers} workers…",
+          flush=True)
+    results = {}
+    with _futures.ProcessPoolExecutor(
+        max_workers=n_workers,
+        initializer=_pool_init,
+        initargs=(data, sid_map, add_window_col),
+    ) as ex:
+        for task_index, task_rows in ex.map(_annual_trend_task, tasks):
+            results[task_index] = task_rows
+            print(f"  {label} {len(results)}/{len(tasks)} tasks", end="\r", flush=True)
+    print()
+    all_rows = []
+    for i in range(len(tasks)):
+        all_rows.extend(results[i])
+    return pd.DataFrame(all_rows)
+
+
+def _build_annual_trend_tables(data, stations_df, windows, add_window_col, label):
+    """Parallel driver with a LOUD serial fallback. If the pool cannot start or a worker
+    dies (BrokenProcessPool, a raised worker exception), log to stderr and rebuild the
+    WHOLE table serially — the partial `results` dict is discarded, never returned. A
+    silently truncated table would pass validate.py and ship missing fits (T-4.27)."""
+    try:
+        return _annual_trend_parallel(data, stations_df, windows, add_window_col, label)
+    except Exception as e:  # noqa: BLE001 — any pool/worker failure must degrade to serial
+        print(f"\n  !! {label}: process pool failed "
+              f"({type(e).__name__}: {e}); falling back to SERIAL build",
+              file=sys.stderr, flush=True)
+        return _annual_trend_serial(data, stations_df, windows, add_window_col, label)
+
+
+def build_annual_trend(data: pd.DataFrame, stations_df: pd.DataFrame) -> pd.DataFrame:
+    return _build_annual_trend_tables(
+        data, stations_df, [TREND_WINDOW], add_window_col=False, label="annual_trend")
+
+
+def build_annual_trend_windows(data: pd.DataFrame, stations_df: pd.DataFrame) -> pd.DataFrame:
+    """Exploratory sibling of annual_trend holding ONLY the non-default half-widths
+    (EXPLORATION_WINDOWS = 3/15/45). Identical fit code (_annual_trend_row → window_filter
+    + theilslopes + yue_wang_modification_test), so every exploratory number is comparable
+    to the published ±7 one — the sole difference is the window half-width and the extra
+    `window` column. ±7 is NOT emitted here; it keeps its single home in annual_trend
+    (T-4.26a, Option C). No frontend reader queries this table yet — that is T-4.26b."""
+    return _build_annual_trend_tables(
+        data, stations_df, list(EXPLORATION_WINDOWS), add_window_col=True,
+        label="annual_trend_windows")
 
 # ── 6. season_heatmap table (per station × year × season) ─────────────────────
 
