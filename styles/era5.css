@@ -133,7 +133,13 @@
 /* ── Responsive: Main row grid (map left | scatter right) ─────────────────── */
 .main-row {
   display: grid;
-  grid-template-columns: min(460px, 44%) 1fr;
+  /* T-5.46: station map hidden for v1 (D-31). Code retained deliberately — revive by
+     uncommenting; StationMap.tsx is untouched. With the map card commented out of
+     AliJeVroceERA5.tsx, RegScatterCard is the sole child; the two-track original left
+     an empty second column at desktop widths, so collapse to one full-width track.
+     Revive by deleting the single-column line and uncommenting the original. */
+  /* grid-template-columns: min(460px, 44%) 1fr; */
+  grid-template-columns: 1fr;
   gap: 20px;
   padding: 20px 40px 0;
 }

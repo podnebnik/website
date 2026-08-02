@@ -6,14 +6,22 @@ import { EmptyState } from "./components/EmptyState.tsx";
 import { TodayCard } from "./components/TodayCard.tsx";
 import { DistributionChart } from "./charts/DistributionChart.tsx";
 import { TodayTrendChart } from "./components/TodayTrendChart.tsx";
-import { RegressionPanel, RegToolbar, RegScatterCard, RegYearRoundCard, FloatingStationChooser, useReg,
-         panelHStyle, panelTitleStyle, panelSubStyle } from "./components/RegressionPanel.tsx";
+// T-5.46: station map hidden for v1 (D-31). Code retained deliberately — revive by
+// uncommenting; StationMap.tsx is untouched.
+// (panelHStyle/panelTitleStyle/panelSubStyle are read only by the hidden map card's
+// panel header; the reduced import below drops them to hold typecheck at zero. Revive
+// by deleting the reduced line and uncommenting the original.)
+// import { RegressionPanel, RegToolbar, RegScatterCard, RegYearRoundCard, FloatingStationChooser, useReg,
+//          panelHStyle, panelTitleStyle, panelSubStyle } from "./components/RegressionPanel.tsx";
+import { RegressionPanel, RegToolbar, RegScatterCard, RegYearRoundCard, FloatingStationChooser, useReg } from "./components/RegressionPanel.tsx";
 import { MethodologyPanel } from "./components/MethodologyPanel.tsx";
 import type { SiteMeta } from "./types.ts";
 import { t, fmtNum, fmtInt, fmtMonthDay } from "./i18n/format.ts";
 
 const Era5SeasonHeatmapChart = lazy(() => import("./charts/Era5SeasonHeatmap.tsx").then(m => ({ default: m.Era5SeasonHeatmap })));
-const StationMap             = lazy(() => import("./components/StationMap.tsx").then(m => ({ default: m.StationMap })));
+// T-5.46: station map hidden for v1 (D-31). Code retained deliberately — revive by
+// uncommenting; StationMap.tsx is untouched.
+// const StationMap             = lazy(() => import("./components/StationMap.tsx").then(m => ({ default: m.StationMap })));
 const HeroCardsPanel         = lazy(() => import("./components/HeroCards.tsx").then(m => ({ default: m.HeroCards })));
 const Era5TropicalChart      = lazy(() => import("./charts/Era5TropicalChart.tsx").then(m => ({ default: m.Era5TropicalChart })));
 const SpeiHeatmapChart       = lazy(() => import("./charts/SpeiHeatmap.tsx").then(m => ({ default: m.SpeiHeatmap })));
@@ -64,11 +72,13 @@ function Dashboard(props: { meta: SiteMeta }) {
   const defaultDoy = createMemo(() => dateToDoy(date()));
   const era5Meta = (): SiteMeta => ({ ...props.meta, stations: era5Stations, default_location: defaultLoc });
 
+  // T-5.46: station map hidden for v1 (D-31). Code retained deliberately — revive by
+  // uncommenting; StationMap.tsx is untouched.
   // T-5.40 (B1) — the map card header must show the DIACRITIC display name, not the
   // ASCII era5_name. The map's own point labels already resolve via station.label
   // (StationMap.tsx); this makes the header read the same authored field (T-5.27).
-  const stationLabelOf = (name: string | null): string | null =>
-    name == null ? null : (era5Stations.find(s => s.name === name)?.label ?? name);
+  // const stationLabelOf = (name: string | null): string | null =>
+  //   name == null ? null : (era5Stations.find(s => s.name === name)?.label ?? name);
 
   const [pageData, { refetch: refetchPageData }] = createResource(
     () => ({ date: date(), loc: loc() }),
@@ -78,13 +88,15 @@ function Dashboard(props: { meta: SiteMeta }) {
   const todayData = () => pageDataResolved()?.status;
   const last7Data = () => pageDataResolved()?.last7;
 
+  // T-5.46: station map hidden for v1 (D-31). Code retained deliberately — revive by
+  // uncommenting; StationMap.tsx is untouched.
   // T-5.39 — `mapLoc` now MIRRORS the below-hero selection; it no longer writes it.
   // It is set only by the store's `setLoc` (via onLocChange, i.e. the floating
   // chooser) and read by the map card's header + marker highlight, so the map
   // reflects the chosen station. It opens on the body's default station (Ljubljana),
   // matching what the analysis below is actually showing. The retired click-to-select
   // path (map → store via syncLoc) is gone.
-  const [mapLoc, setMapLoc] = createSignal<string | null>(defaultLoc);
+  // const [mapLoc, setMapLoc] = createSignal<string | null>(defaultLoc);
 
   // T-5.35 — the floating chooser is present from page load (it is the only location
   // control now). It anchors on the hero (today-status) section to decide when to
@@ -161,7 +173,12 @@ function Dashboard(props: { meta: SiteMeta }) {
       <RegressionPanel
         meta={era5Meta()}
         defaultDoy={defaultDoy()}
+        /* T-5.46: station map hidden for v1 (D-31). Code retained deliberately — revive
+           by uncommenting; StationMap.tsx is untouched. onLocChange fed the hidden map's
+           mapLoc mirror only; it is optional (RegressionPanel.tsx:26) and called as
+           props.onLocChange?.(name) (:61), so its absence is a no-op for the store.
         onLocChange={setMapLoc}
+        */
       >
         {/* T-5.35 / D-27 — the single location control, over the hero and every
             section below. Placed FIRST inside the panel (right after the hero's date
@@ -185,6 +202,8 @@ function Dashboard(props: { meta: SiteMeta }) {
         <div class="main-row">
 
           {/* Map panel */}
+          {/* T-5.46: station map hidden for v1 (D-31). Code retained deliberately — revive by
+              uncommenting; StationMap.tsx is untouched.
           <div class="reg-card" style={{ background: "var(--color-paper)" }}>
             <div style={{ ...panelHStyle, background: "var(--color-card)" }}>
               <div>
@@ -213,6 +232,7 @@ function Dashboard(props: { meta: SiteMeta }) {
               ))}
             </div>
           </div>
+          */}
 
           <RegScatterCard />
 
