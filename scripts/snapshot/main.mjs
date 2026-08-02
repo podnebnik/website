@@ -204,13 +204,13 @@ const MIRRORED = [
   },
   {
     file: PAGE_SRC,
-    cite: "AliJeVroceERA5.tsx:155",
+    cite: "AliJeVroceERA5.tsx map panel header — title (T-5.40 B1: diacritic display name)",
     mirror: "harness.tsx MapPanelHeader — title",
-    fragment: '{mapLoc() ? mapLoc()!.replace(/_/g, " ") : t("map.panel_title_all", { count: era5Stations.length })}',
+    fragment: 'stationLabelOf(mapLoc()) ?? t("map.panel_title_all", { count: era5Stations.length })',
   },
   {
     file: PAGE_SRC,
-    cite: "AliJeVroceERA5.tsx:158",
+    cite: "AliJeVroceERA5.tsx map panel header — station count",
     mirror: "harness.tsx MapPanelHeader — station count",
     fragment: 't("map.panel_sub_count", { count: era5Stations.length })',
   },

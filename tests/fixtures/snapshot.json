@@ -261,6 +261,10 @@
               "data": [
                 {
                   "color": "#c25a2c",
+                  "dataLabels": {
+                    "verticalAlign": "top",
+                    "y": 12
+                  },
                   "label": "Ljubljana",
                   "lat": 46.0511,
                   "lon": 14.5051,
@@ -274,6 +278,10 @@
                 },
                 {
                   "color": "#c25a2c",
+                  "dataLabels": {
+                    "align": "right",
+                    "x": -5
+                  },
                   "label": "Maribor",
                   "lat": 46.5547,
                   "lon": 15.6459,
@@ -287,6 +295,7 @@
                 },
                 {
                   "color": "#c25a2c",
+                  "dataLabels": null,
                   "label": "Celje",
                   "lat": 46.2313,
                   "lon": 15.2617,
@@ -300,6 +309,11 @@
                 },
                 {
                   "color": "#c25a2c",
+                  "dataLabels": {
+                    "align": "right",
+                    "x": -5,
+                    "y": -9
+                  },
                   "label": "Kranj",
                   "lat": 46.2392,
                   "lon": 14.3556,
@@ -313,6 +327,10 @@
                 },
                 {
                   "color": "#c25a2c",
+                  "dataLabels": {
+                    "align": "right",
+                    "x": -5
+                  },
                   "label": "Koper",
                   "lat": 45.5483,
                   "lon": 13.73,
@@ -326,6 +344,7 @@
                 },
                 {
                   "color": "#c25a2c",
+                  "dataLabels": null,
                   "label": "Novo mesto",
                   "lat": 45.8011,
                   "lon": 15.17,
@@ -339,6 +358,10 @@
                 },
                 {
                   "color": "#c25a2c",
+                  "dataLabels": {
+                    "align": "right",
+                    "x": -5
+                  },
                   "label": "Murska Sobota",
                   "lat": 46.6625,
                   "lon": 16.1667,
@@ -352,6 +375,10 @@
                 },
                 {
                   "color": "#c25a2c",
+                  "dataLabels": {
+                    "align": "left",
+                    "x": 5
+                  },
                   "label": "Nova Gorica",
                   "lat": 45.9564,
                   "lon": 13.6431,
@@ -365,6 +392,10 @@
                 },
                 {
                   "color": "#c8b97a",
+                  "dataLabels": {
+                    "align": "right",
+                    "x": -5
+                  },
                   "label": "Postojna",
                   "lat": 45.7756,
                   "lon": 14.2133,
@@ -378,6 +409,10 @@
                 },
                 {
                   "color": "#c25a2c",
+                  "dataLabels": {
+                    "align": "right",
+                    "x": -5
+                  },
                   "label": "Ptuj",
                   "lat": 46.4197,
                   "lon": 15.8697,
@@ -391,6 +426,7 @@
                 },
                 {
                   "color": "#c8b97a",
+                  "dataLabels": null,
                   "label": "Velenje",
                   "lat": 46.3592,
                   "lon": 15.1119,
@@ -404,6 +440,11 @@
                 },
                 {
                   "color": "#c25a2c",
+                  "dataLabels": {
+                    "align": "left",
+                    "x": 5,
+                    "y": 2
+                  },
                   "label": "Trbovlje",
                   "lat": 46.1511,
                   "lon": 15.0511,
@@ -417,6 +458,10 @@
                 },
                 {
                   "color": "#c25a2c",
+                  "dataLabels": {
+                    "align": "left",
+                    "x": 5
+                  },
                   "label": "Tolmin",
                   "lat": 46.1858,
                   "lon": 13.7317,
@@ -430,6 +475,7 @@
                 },
                 {
                   "color": "#c8b97a",
+                  "dataLabels": null,
                   "label": "Kočevje",
                   "lat": 45.6433,
                   "lon": 14.8619,
@@ -443,6 +489,7 @@
                 },
                 {
                   "color": "#c8b97a",
+                  "dataLabels": null,
                   "label": "Ilirska Bistrica",
                   "lat": 45.5667,
                   "lon": 14.2358,
@@ -456,6 +503,10 @@
                 },
                 {
                   "color": "#c25a2c",
+                  "dataLabels": {
+                    "align": "left",
+                    "x": 5
+                  },
                   "label": "Domžale",
                   "lat": 46.1375,
                   "lon": 14.5942,
@@ -469,6 +520,10 @@
                 },
                 {
                   "color": "#a3c4a0",
+                  "dataLabels": {
+                    "align": "left",
+                    "x": 5
+                  },
                   "label": "Rateče",
                   "lat": 46.4967,
                   "lon": 13.7131,
@@ -482,6 +537,7 @@
                 },
                 {
                   "color": "#7bafd4",
+                  "dataLabels": null,
                   "label": "Kredarica",
                   "lat": 46.3792,
                   "lon": 14.5267,
@@ -500,8 +556,8 @@
         }
       ],
       "panel_header": {
-        "_note": "Raw JSX in AliJeVroceERA5.tsx:137-145, owned by no component and therefore invisible to the section-set assertion. Mirrored by MapPanelHeader in harness.tsx and checked against the source by main.mjs assertMirroredCopy. `station_count` is the same figure the _size=50 cap would truncate (T-5.2).",
-        "title": "Slovenija — vseh 18 postaj",
+        "_note": "Raw JSX in AliJeVroceERA5.tsx, owned by no component and therefore invisible to the section-set assertion. Mirrored by MapPanelHeader in harness.tsx and checked against the source by main.mjs assertMirroredCopy. T-5.40 (B1): `title` now shows the selected station's DIACRITIC display name (the body opens on Ljubljana), not the ASCII era5_name or an all-stations line. `station_count` is the same figure the _size=50 cap would truncate (T-5.2).",
+        "title": "Ljubljana",
         "station_count": "18 postaj · ERA5"
       }
     },
