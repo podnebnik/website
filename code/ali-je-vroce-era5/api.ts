@@ -475,10 +475,8 @@ export async function fetchMeta(): Promise<SiteMeta> {
     map:      { center_lat: 46.1, center_lon: 14.8, zoom: 7 },
     branding: { site_title: t("meta.site_title") },
     stations,
-    strings: {
-      explain_reg: t("reg.explain_reg"),
-      explain_cal: t("reg.explain_cal"),
-    },
+    // T-5.51 (§3) — explain_reg/explain_cal removed: they now vary by selected variable
+    // and are rendered reactively in RegressionPanel (a fixed string here could not).
   };
 }
 

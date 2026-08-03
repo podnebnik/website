@@ -90,10 +90,6 @@
       "branding": {
         "site_title": "Podnebnik · Ali je vroče?"
       },
-      "strings": {
-        "explain_reg": "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija",
-        "explain_cal": "Trend na desetletje za vsak dan v letu · rdeča = ogrevanje · modra = ohlajanje · prosojnost = statistična značilnost"
-      },
       "station_count": 18,
       "stations": [
         {

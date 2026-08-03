@@ -9,6 +9,9 @@ import { sectionErrorFallback } from "./SectionError.tsx";
 import { t, fmtSigned, fmtInt, fmtDoy, fmtMonthLong } from "../i18n/format.ts";
 import { bandColor, bandKey } from "../i18n/station-bands.ts";
 import { readUiPrefs, writeUiPref } from "../prefs.ts";
+// T-5.51 (E1) — legend swatch colours, from the SAME palette module the chart bars use
+// (trend-colors.ts). Plain function, no Highcharts, so a static import is bundle-safe.
+import { swatchColors } from "../charts/trend-colors.ts";
 
 const RegressionChart = lazy(() => import("../charts/RegressionChart.tsx").then(m => ({ default: m.RegressionChart })));
 const YearRoundChart  = lazy(() => import("../charts/YearRoundChart.tsx").then(m => ({ default: m.YearRoundChart })));
@@ -19,6 +22,26 @@ const VAR_KEYS = [
   "precipitation_sum", "et0_evapotranspiration",
 ];
 const VARIABLES: [string, string][] = VAR_KEYS.map(k => [k, varLabelOf(k)]);
+
+// T-5.51 (E1–E3) — the comparison language is per-variable: the trend axis for precip/ET₀
+// is "more/less", not "warmer/cooler". These select among catalogue keys (D-8: no
+// sentences built in code) by the selected variable. Called reactively with s.selVar().
+function calLegend(variable: string): { pos: string; neg: string } {
+  if (variable === "precipitation_sum")     return { pos: t("reg.more_precip"), neg: t("reg.less_precip") };
+  if (variable === "et0_evapotranspiration") return { pos: t("reg.more_et0"),   neg: t("reg.less_et0") };
+  return { pos: t("reg.warming"), neg: t("reg.cooling") };
+}
+function explainCal(variable: string): string {
+  if (variable === "precipitation_sum")     return t("reg.explain_cal_precip");
+  if (variable === "et0_evapotranspiration") return t("reg.explain_cal_et0");
+  return t("reg.explain_cal");
+}
+function explainReg(variable: string): string {
+  // Precip/ET₀ read raw columns — no elevation correction — so drop that clause (E3).
+  return variable === "precipitation_sum" || variable === "et0_evapotranspiration"
+    ? t("reg.explain_reg_nocorr")
+    : t("reg.explain_reg");
+}
 
 // T-4.26b (D-34) — the selectable trend half-windows, ascending. ±7 is the published
 // default and the ONLY one served by the `annual_trend` table (api.annualTrendSource);
@@ -456,9 +479,9 @@ export function RegScatterCard() {
         </Show>
       </div>
 
-      <Show when={s.meta.strings?.explain_reg}>
-        <p style={panelExplainStyle}>{s.meta.strings.explain_reg}</p>
-      </Show>
+      {/* T-5.51 (E3/§3) — rendered reactively via t() keyed on the selected variable
+          (moved out of the non-reactive meta.strings); precip/ET₀ drop the elevation clause. */}
+      <p style={panelExplainStyle}>{explainReg(s.selVar())}</p>
 
       </ErrorBoundary>
     </div>
@@ -500,14 +523,15 @@ export function RegYearRoundCard() {
       </div>
 
       <div style={{ ...chartFooterStyle, "justify-content": "flex-start", gap: "16px" }}>
-        <span style={swatchStyle}><i style={{ background: "rgba(210,55,35,0.9)", "border-radius": "2px", display: "inline-block", width: "10px", height: "10px" }} />{t("reg.warming")}</span>
-        <span style={swatchStyle}><i style={{ background: "rgba(35,90,210,0.9)", "border-radius": "2px", display: "inline-block", width: "10px", height: "10px" }} />{t("reg.cooling")}</span>
+        {/* T-5.51 (E1) — swatch colour AND word both track the selected variable: they
+            read the same palette (swatchColors) the bars use, so legend ⇄ bars can't diverge. */}
+        <span style={swatchStyle}><i style={{ background: swatchColors(s.selVar()).pos, "border-radius": "2px", display: "inline-block", width: "10px", height: "10px" }} />{calLegend(s.selVar()).pos}</span>
+        <span style={swatchStyle}><i style={{ background: swatchColors(s.selVar()).neg, "border-radius": "2px", display: "inline-block", width: "10px", height: "10px" }} />{calLegend(s.selVar()).neg}</span>
         <span style={{ ...panelSubStyle, "margin-left": "auto" }}>{t("reg.year_round_footer")}</span>
       </div>
 
-      <Show when={s.meta.strings?.explain_cal}>
-        <p style={panelExplainStyle}>{s.meta.strings.explain_cal}</p>
-      </Show>
+      {/* T-5.51 (E2/§3) — reactive per-variable colour legend (moved out of meta.strings). */}
+      <p style={panelExplainStyle}>{explainCal(s.selVar())}</p>
 
     </div>
   );

@@ -3,6 +3,7 @@ import type { CalendarData } from "../api.ts";
 import { EmptyState } from "../components/EmptyState.tsx";
 import { enableChartA11y } from "./highcharts-a11y.ts";
 import { t, fmtNum, fmtSigned, fmtDoy, fmtMonthShort } from "../i18n/format.ts";
+import { barColor } from "./trend-colors.ts";
 
 interface Props {
   data: CalendarData;
@@ -16,25 +17,11 @@ const MONTH_MIDS = MONTH_DOYS.map((d, i) =>
 );
 const MONTH_LABELS = Array.from({ length: 12 }, (_, i) => fmtMonthShort(i + 1));
 
-const IS_PRECIP = new Set(["precipitation_sum","et0_evapotranspiration"]);
-const POS_TEMP  = [210, 55,  35] as const;   // red   — warming
-const NEG_TEMP  = [35,  90,  210] as const;   // blue  — cooling
-const POS_PRECIP = [35,  100, 210] as const;  // blue  — wetter
-const NEG_PRECIP = [180, 105, 25] as const;   // amber — drier
-
+// T-5.51 (E1) — the trend palette + `barColor` moved to ./trend-colors.ts so the
+// legend swatches (RegressionPanel) read the SAME constants and cannot drift.
 function mdToDoy(month: number, day: number): number {
   const jan1 = new Date(2001, 0, 1).getTime();
   return Math.round((new Date(2001, month - 1, day).getTime() - jan1) / 86400000) + 1;
-}
-
-function barColor(trend10: number, p_val: number, variable: string): string {
-  const isPos  = trend10 >= 0;
-  const isPrecip = IS_PRECIP.has(variable);
-  const [r, g, b] = isPrecip
-    ? (isPos ? POS_PRECIP : NEG_PRECIP)
-    : (isPos ? POS_TEMP   : NEG_TEMP);
-  const alpha = p_val < 0.001 ? 0.95 : p_val < 0.01 ? 0.70 : p_val < 0.05 ? 0.40 : 0.12;
-  return `rgba(${r},${g},${b},${alpha})`;
 }
 
 export function YearRoundChart(props: Props) {
