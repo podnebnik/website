@@ -35270,33 +35270,17 @@
           "available": true,
           "days": [
             {
-              "date": "2026-07-21",
-              "day_label": "Jul 21",
-              "today_temp": 24.906,
-              "percentile": 50,
-              "category_key": "nope",
-              "color": "#e7d9b8"
+              "date": "2026-07-15",
+              "day_label": "Jul 15",
+              "today_temp": 32.257,
+              "percentile": 97.5,
+              "category_key": "hell",
+              "color": "#962c1a"
             },
             {
-              "date": "2026-07-20",
-              "day_label": "Jul 20",
-              "today_temp": 25.906,
-              "percentile": 50,
-              "category_key": "nope",
-              "color": "#e7d9b8"
-            },
-            {
-              "date": "2026-07-19",
-              "day_label": "Jul 19",
-              "today_temp": 29.056,
-              "percentile": 87.5,
-              "category_key": "hot",
-              "color": "#c25a2c"
-            },
-            {
-              "date": "2026-07-18",
-              "day_label": "Jul 18",
-              "today_temp": 29.056,
+              "date": "2026-07-16",
+              "day_label": "Jul 16",
+              "today_temp": 29.556,
               "percentile": 87.5,
               "category_key": "hot",
               "color": "#c25a2c"
@@ -35310,20 +35294,36 @@
               "color": "#c25a2c"
             },
             {
-              "date": "2026-07-16",
-              "day_label": "Jul 16",
-              "today_temp": 29.556,
+              "date": "2026-07-18",
+              "day_label": "Jul 18",
+              "today_temp": 29.056,
               "percentile": 87.5,
               "category_key": "hot",
               "color": "#c25a2c"
             },
             {
-              "date": "2026-07-15",
-              "day_label": "Jul 15",
-              "today_temp": 32.257,
-              "percentile": 97.5,
-              "category_key": "hell",
-              "color": "#962c1a"
+              "date": "2026-07-19",
+              "day_label": "Jul 19",
+              "today_temp": 29.056,
+              "percentile": 87.5,
+              "category_key": "hot",
+              "color": "#c25a2c"
+            },
+            {
+              "date": "2026-07-20",
+              "day_label": "Jul 20",
+              "today_temp": 25.906,
+              "percentile": 50,
+              "category_key": "nope",
+              "color": "#e7d9b8"
+            },
+            {
+              "date": "2026-07-21",
+              "day_label": "Jul 21",
+              "today_temp": 24.906,
+              "percentile": 50,
+              "category_key": "nope",
+              "color": "#e7d9b8"
             }
           ]
         },
@@ -35397,13 +35397,13 @@
               "min": null,
               "max": null,
               "categories": [
-                "21.07",
-                "20.07",
-                "19.07",
-                "18.07",
-                "17.07",
+                "15.07",
                 "16.07",
-                "15.07"
+                "17.07",
+                "18.07",
+                "19.07",
+                "20.07",
+                "21.07"
               ],
               "plot_lines": [],
               "plot_bands": []
@@ -35455,29 +35455,29 @@
                 "type": "line",
                 "data": [
                   {
-                    "catName": "Normalno",
-                    "color": "#e7d9b8",
-                    "label": "21.07",
-                    "pct": 50,
-                    "temp": 24.906,
+                    "catName": "Ekstremno",
+                    "color": "#962c1a",
+                    "label": "15.07",
+                    "pct": 97.5,
+                    "temp": 32.257,
                     "x": 0,
-                    "y": 2
-                  },
-                  {
-                    "catName": "Normalno",
-                    "color": "#e7d9b8",
-                    "label": "20.07",
-                    "pct": 50,
-                    "temp": 25.906,
-                    "x": 1,
-                    "y": 2
+                    "y": 4
                   },
                   {
                     "catName": "Vroče",
                     "color": "#c25a2c",
-                    "label": "19.07",
+                    "label": "16.07",
                     "pct": 87.5,
-                    "temp": 29.056,
+                    "temp": 29.556,
+                    "x": 1,
+                    "y": 3
+                  },
+                  {
+                    "catName": "Vroče",
+                    "color": "#c25a2c",
+                    "label": "17.07",
+                    "pct": 87.5,
+                    "temp": 30.906,
                     "x": 2,
                     "y": 3
                   },
@@ -35493,29 +35493,29 @@
                   {
                     "catName": "Vroče",
                     "color": "#c25a2c",
-                    "label": "17.07",
+                    "label": "19.07",
                     "pct": 87.5,
-                    "temp": 30.906,
+                    "temp": 29.056,
                     "x": 4,
                     "y": 3
                   },
                   {
-                    "catName": "Vroče",
-                    "color": "#c25a2c",
-                    "label": "16.07",
-                    "pct": 87.5,
-                    "temp": 29.556,
+                    "catName": "Normalno",
+                    "color": "#e7d9b8",
+                    "label": "20.07",
+                    "pct": 50,
+                    "temp": 25.906,
                     "x": 5,
-                    "y": 3
+                    "y": 2
                   },
                   {
-                    "catName": "Ekstremno",
-                    "color": "#962c1a",
-                    "label": "15.07",
-                    "pct": 97.5,
-                    "temp": 32.257,
+                    "catName": "Normalno",
+                    "color": "#e7d9b8",
+                    "label": "21.07",
+                    "pct": 50,
+                    "temp": 24.906,
                     "x": 6,
-                    "y": 4
+                    "y": 2
                   }
                 ]
               }
@@ -38796,41 +38796,9 @@
           "available": true,
           "days": [
             {
-              "date": "2026-07-21",
-              "day_label": "Jul 21",
-              "today_temp": 9.005,
-              "percentile": 50,
-              "category_key": "nope",
-              "color": "#e7d9b8"
-            },
-            {
-              "date": "2026-07-20",
-              "day_label": "Jul 20",
-              "today_temp": 10.755,
-              "percentile": 50,
-              "category_key": "nope",
-              "color": "#e7d9b8"
-            },
-            {
-              "date": "2026-07-19",
-              "day_label": "Jul 19",
-              "today_temp": 12.755,
-              "percentile": 50,
-              "category_key": "nope",
-              "color": "#e7d9b8"
-            },
-            {
-              "date": "2026-07-18",
-              "day_label": "Jul 18",
-              "today_temp": 14.355,
-              "percentile": 87.5,
-              "category_key": "hot",
-              "color": "#c25a2c"
-            },
-            {
-              "date": "2026-07-17",
-              "day_label": "Jul 17",
-              "today_temp": 14.605,
+              "date": "2026-07-15",
+              "day_label": "Jul 15",
+              "today_temp": 15.804,
               "percentile": 87.5,
               "category_key": "hot",
               "color": "#c25a2c"
@@ -38844,12 +38812,44 @@
               "color": "#c25a2c"
             },
             {
-              "date": "2026-07-15",
-              "day_label": "Jul 15",
-              "today_temp": 15.804,
+              "date": "2026-07-17",
+              "day_label": "Jul 17",
+              "today_temp": 14.605,
               "percentile": 87.5,
               "category_key": "hot",
               "color": "#c25a2c"
+            },
+            {
+              "date": "2026-07-18",
+              "day_label": "Jul 18",
+              "today_temp": 14.355,
+              "percentile": 87.5,
+              "category_key": "hot",
+              "color": "#c25a2c"
+            },
+            {
+              "date": "2026-07-19",
+              "day_label": "Jul 19",
+              "today_temp": 12.755,
+              "percentile": 50,
+              "category_key": "nope",
+              "color": "#e7d9b8"
+            },
+            {
+              "date": "2026-07-20",
+              "day_label": "Jul 20",
+              "today_temp": 10.755,
+              "percentile": 50,
+              "category_key": "nope",
+              "color": "#e7d9b8"
+            },
+            {
+              "date": "2026-07-21",
+              "day_label": "Jul 21",
+              "today_temp": 9.005,
+              "percentile": 50,
+              "category_key": "nope",
+              "color": "#e7d9b8"
             }
           ]
         },
@@ -38863,13 +38863,13 @@
               "min": null,
               "max": null,
               "categories": [
-                "21.07",
-                "20.07",
-                "19.07",
-                "18.07",
-                "17.07",
+                "15.07",
                 "16.07",
-                "15.07"
+                "17.07",
+                "18.07",
+                "19.07",
+                "20.07",
+                "21.07"
               ],
               "plot_lines": [],
               "plot_bands": []
@@ -38921,31 +38921,31 @@
                 "type": "line",
                 "data": [
                   {
-                    "catName": "Normalno",
-                    "color": "#e7d9b8",
-                    "label": "21.07",
-                    "pct": 50,
-                    "temp": 9.005,
+                    "catName": "Vroče",
+                    "color": "#c25a2c",
+                    "label": "15.07",
+                    "pct": 87.5,
+                    "temp": 15.804,
                     "x": 0,
-                    "y": 2
+                    "y": 3
                   },
                   {
-                    "catName": "Normalno",
-                    "color": "#e7d9b8",
-                    "label": "20.07",
-                    "pct": 50,
-                    "temp": 10.755,
+                    "catName": "Vroče",
+                    "color": "#c25a2c",
+                    "label": "16.07",
+                    "pct": 87.5,
+                    "temp": 14.304,
                     "x": 1,
-                    "y": 2
+                    "y": 3
                   },
                   {
-                    "catName": "Normalno",
-                    "color": "#e7d9b8",
-                    "label": "19.07",
-                    "pct": 50,
-                    "temp": 12.755,
+                    "catName": "Vroče",
+                    "color": "#c25a2c",
+                    "label": "17.07",
+                    "pct": 87.5,
+                    "temp": 14.605,
                     "x": 2,
-                    "y": 2
+                    "y": 3
                   },
                   {
                     "catName": "Vroče",
@@ -38957,31 +38957,31 @@
                     "y": 3
                   },
                   {
-                    "catName": "Vroče",
-                    "color": "#c25a2c",
-                    "label": "17.07",
-                    "pct": 87.5,
-                    "temp": 14.605,
+                    "catName": "Normalno",
+                    "color": "#e7d9b8",
+                    "label": "19.07",
+                    "pct": 50,
+                    "temp": 12.755,
                     "x": 4,
-                    "y": 3
+                    "y": 2
                   },
                   {
-                    "catName": "Vroče",
-                    "color": "#c25a2c",
-                    "label": "16.07",
-                    "pct": 87.5,
-                    "temp": 14.304,
+                    "catName": "Normalno",
+                    "color": "#e7d9b8",
+                    "label": "20.07",
+                    "pct": 50,
+                    "temp": 10.755,
                     "x": 5,
-                    "y": 3
+                    "y": 2
                   },
                   {
-                    "catName": "Vroče",
-                    "color": "#c25a2c",
-                    "label": "15.07",
-                    "pct": 87.5,
-                    "temp": 15.804,
+                    "catName": "Normalno",
+                    "color": "#e7d9b8",
+                    "label": "21.07",
+                    "pct": 50,
+                    "temp": 9.005,
                     "x": 6,
-                    "y": 3
+                    "y": 2
                   }
                 ]
               }
@@ -45657,41 +45657,9 @@
           "available": true,
           "days": [
             {
-              "date": "2026-07-22",
-              "day_label": "Jul 22",
-              "today_temp": 25.207,
-              "percentile": 50,
-              "category_key": "nope",
-              "color": "#e7d9b8"
-            },
-            {
-              "date": "2026-07-21",
-              "day_label": "Jul 21",
-              "today_temp": 24.906,
-              "percentile": 50,
-              "category_key": "nope",
-              "color": "#e7d9b8"
-            },
-            {
-              "date": "2026-07-20",
-              "day_label": "Jul 20",
-              "today_temp": 25.906,
-              "percentile": 50,
-              "category_key": "nope",
-              "color": "#e7d9b8"
-            },
-            {
-              "date": "2026-07-19",
-              "day_label": "Jul 19",
-              "today_temp": 29.056,
-              "percentile": 87.5,
-              "category_key": "hot",
-              "color": "#c25a2c"
-            },
-            {
-              "date": "2026-07-18",
-              "day_label": "Jul 18",
-              "today_temp": 29.056,
+              "date": "2026-07-16",
+              "day_label": "Jul 16",
+              "today_temp": 29.556,
               "percentile": 87.5,
               "category_key": "hot",
               "color": "#c25a2c"
@@ -45705,12 +45673,44 @@
               "color": "#c25a2c"
             },
             {
-              "date": "2026-07-16",
-              "day_label": "Jul 16",
-              "today_temp": 29.556,
+              "date": "2026-07-18",
+              "day_label": "Jul 18",
+              "today_temp": 29.056,
               "percentile": 87.5,
               "category_key": "hot",
               "color": "#c25a2c"
+            },
+            {
+              "date": "2026-07-19",
+              "day_label": "Jul 19",
+              "today_temp": 29.056,
+              "percentile": 87.5,
+              "category_key": "hot",
+              "color": "#c25a2c"
+            },
+            {
+              "date": "2026-07-20",
+              "day_label": "Jul 20",
+              "today_temp": 25.906,
+              "percentile": 50,
+              "category_key": "nope",
+              "color": "#e7d9b8"
+            },
+            {
+              "date": "2026-07-21",
+              "day_label": "Jul 21",
+              "today_temp": 24.906,
+              "percentile": 50,
+              "category_key": "nope",
+              "color": "#e7d9b8"
+            },
+            {
+              "date": "2026-07-22",
+              "day_label": "Jul 22",
+              "today_temp": 25.207,
+              "percentile": 50,
+              "category_key": "nope",
+              "color": "#e7d9b8"
             }
           ]
         },
@@ -45724,13 +45724,13 @@
               "min": null,
               "max": null,
               "categories": [
-                "22.07",
-                "21.07",
-                "20.07",
-                "19.07",
-                "18.07",
+                "16.07",
                 "17.07",
-                "16.07"
+                "18.07",
+                "19.07",
+                "20.07",
+                "21.07",
+                "22.07"
               ],
               "plot_lines": [],
               "plot_bands": []
@@ -45782,31 +45782,31 @@
                 "type": "line",
                 "data": [
                   {
-                    "catName": "Normalno",
-                    "color": "#e7d9b8",
-                    "label": "22.07",
-                    "pct": 50,
-                    "temp": 25.207,
+                    "catName": "Vroče",
+                    "color": "#c25a2c",
+                    "label": "16.07",
+                    "pct": 87.5,
+                    "temp": 29.556,
                     "x": 0,
-                    "y": 2
+                    "y": 3
                   },
                   {
-                    "catName": "Normalno",
-                    "color": "#e7d9b8",
-                    "label": "21.07",
-                    "pct": 50,
-                    "temp": 24.906,
+                    "catName": "Vroče",
+                    "color": "#c25a2c",
+                    "label": "17.07",
+                    "pct": 87.5,
+                    "temp": 30.906,
                     "x": 1,
-                    "y": 2
+                    "y": 3
                   },
                   {
-                    "catName": "Normalno",
-                    "color": "#e7d9b8",
-                    "label": "20.07",
-                    "pct": 50,
-                    "temp": 25.906,
+                    "catName": "Vroče",
+                    "color": "#c25a2c",
+                    "label": "18.07",
+                    "pct": 87.5,
+                    "temp": 29.056,
                     "x": 2,
-                    "y": 2
+                    "y": 3
                   },
                   {
                     "catName": "Vroče",
@@ -45818,31 +45818,31 @@
                     "y": 3
                   },
                   {
-                    "catName": "Vroče",
-                    "color": "#c25a2c",
-                    "label": "18.07",
-                    "pct": 87.5,
-                    "temp": 29.056,
+                    "catName": "Normalno",
+                    "color": "#e7d9b8",
+                    "label": "20.07",
+                    "pct": 50,
+                    "temp": 25.906,
                     "x": 4,
-                    "y": 3
+                    "y": 2
                   },
                   {
-                    "catName": "Vroče",
-                    "color": "#c25a2c",
-                    "label": "17.07",
-                    "pct": 87.5,
-                    "temp": 30.906,
+                    "catName": "Normalno",
+                    "color": "#e7d9b8",
+                    "label": "21.07",
+                    "pct": 50,
+                    "temp": 24.906,
                     "x": 5,
-                    "y": 3
+                    "y": 2
                   },
                   {
-                    "catName": "Vroče",
-                    "color": "#c25a2c",
-                    "label": "16.07",
-                    "pct": 87.5,
-                    "temp": 29.556,
+                    "catName": "Normalno",
+                    "color": "#e7d9b8",
+                    "label": "22.07",
+                    "pct": 50,
+                    "temp": 25.207,
                     "x": 6,
-                    "y": 3
+                    "y": 2
                   }
                 ]
               }
@@ -49183,41 +49183,9 @@
           "available": true,
           "days": [
             {
-              "date": "2026-07-22",
-              "day_label": "Jul 22",
-              "today_temp": 10.054,
-              "percentile": 50,
-              "category_key": "nope",
-              "color": "#e7d9b8"
-            },
-            {
-              "date": "2026-07-21",
-              "day_label": "Jul 21",
-              "today_temp": 9.005,
-              "percentile": 50,
-              "category_key": "nope",
-              "color": "#e7d9b8"
-            },
-            {
-              "date": "2026-07-20",
-              "day_label": "Jul 20",
-              "today_temp": 10.755,
-              "percentile": 50,
-              "category_key": "nope",
-              "color": "#e7d9b8"
-            },
-            {
-              "date": "2026-07-19",
-              "day_label": "Jul 19",
-              "today_temp": 12.755,
-              "percentile": 50,
-              "category_key": "nope",
-              "color": "#e7d9b8"
-            },
-            {
-              "date": "2026-07-18",
-              "day_label": "Jul 18",
-              "today_temp": 14.355,
+              "date": "2026-07-16",
+              "day_label": "Jul 16",
+              "today_temp": 14.304,
               "percentile": 87.5,
               "category_key": "hot",
               "color": "#c25a2c"
@@ -49231,12 +49199,44 @@
               "color": "#c25a2c"
             },
             {
-              "date": "2026-07-16",
-              "day_label": "Jul 16",
-              "today_temp": 14.304,
+              "date": "2026-07-18",
+              "day_label": "Jul 18",
+              "today_temp": 14.355,
               "percentile": 87.5,
               "category_key": "hot",
               "color": "#c25a2c"
+            },
+            {
+              "date": "2026-07-19",
+              "day_label": "Jul 19",
+              "today_temp": 12.755,
+              "percentile": 50,
+              "category_key": "nope",
+              "color": "#e7d9b8"
+            },
+            {
+              "date": "2026-07-20",
+              "day_label": "Jul 20",
+              "today_temp": 10.755,
+              "percentile": 50,
+              "category_key": "nope",
+              "color": "#e7d9b8"
+            },
+            {
+              "date": "2026-07-21",
+              "day_label": "Jul 21",
+              "today_temp": 9.005,
+              "percentile": 50,
+              "category_key": "nope",
+              "color": "#e7d9b8"
+            },
+            {
+              "date": "2026-07-22",
+              "day_label": "Jul 22",
+              "today_temp": 10.054,
+              "percentile": 50,
+              "category_key": "nope",
+              "color": "#e7d9b8"
             }
           ]
         },
@@ -49250,13 +49250,13 @@
               "min": null,
               "max": null,
               "categories": [
-                "22.07",
-                "21.07",
-                "20.07",
-                "19.07",
-                "18.07",
+                "16.07",
                 "17.07",
-                "16.07"
+                "18.07",
+                "19.07",
+                "20.07",
+                "21.07",
+                "22.07"
               ],
               "plot_lines": [],
               "plot_bands": []
@@ -49308,31 +49308,31 @@
                 "type": "line",
                 "data": [
                   {
-                    "catName": "Normalno",
-                    "color": "#e7d9b8",
-                    "label": "22.07",
-                    "pct": 50,
-                    "temp": 10.054,
+                    "catName": "Vroče",
+                    "color": "#c25a2c",
+                    "label": "16.07",
+                    "pct": 87.5,
+                    "temp": 14.304,
                     "x": 0,
-                    "y": 2
+                    "y": 3
                   },
                   {
-                    "catName": "Normalno",
-                    "color": "#e7d9b8",
-                    "label": "21.07",
-                    "pct": 50,
-                    "temp": 9.005,
+                    "catName": "Vroče",
+                    "color": "#c25a2c",
+                    "label": "17.07",
+                    "pct": 87.5,
+                    "temp": 14.605,
                     "x": 1,
-                    "y": 2
+                    "y": 3
                   },
                   {
-                    "catName": "Normalno",
-                    "color": "#e7d9b8",
-                    "label": "20.07",
-                    "pct": 50,
-                    "temp": 10.755,
+                    "catName": "Vroče",
+                    "color": "#c25a2c",
+                    "label": "18.07",
+                    "pct": 87.5,
+                    "temp": 14.355,
                     "x": 2,
-                    "y": 2
+                    "y": 3
                   },
                   {
                     "catName": "Normalno",
@@ -49344,31 +49344,31 @@
                     "y": 2
                   },
                   {
-                    "catName": "Vroče",
-                    "color": "#c25a2c",
-                    "label": "18.07",
-                    "pct": 87.5,
-                    "temp": 14.355,
+                    "catName": "Normalno",
+                    "color": "#e7d9b8",
+                    "label": "20.07",
+                    "pct": 50,
+                    "temp": 10.755,
                     "x": 4,
-                    "y": 3
+                    "y": 2
                   },
                   {
-                    "catName": "Vroče",
-                    "color": "#c25a2c",
-                    "label": "17.07",
-                    "pct": 87.5,
-                    "temp": 14.605,
+                    "catName": "Normalno",
+                    "color": "#e7d9b8",
+                    "label": "21.07",
+                    "pct": 50,
+                    "temp": 9.005,
                     "x": 5,
-                    "y": 3
+                    "y": 2
                   },
                   {
-                    "catName": "Vroče",
-                    "color": "#c25a2c",
-                    "label": "16.07",
-                    "pct": 87.5,
-                    "temp": 14.304,
+                    "catName": "Normalno",
+                    "color": "#e7d9b8",
+                    "label": "22.07",
+                    "pct": 50,
+                    "temp": 10.054,
                     "x": 6,
-                    "y": 3
+                    "y": 2
                   }
                 ]
               }
@@ -56044,41 +56044,9 @@
           "available": true,
           "days": [
             {
-              "date": "2025-07-15",
-              "day_label": "Jul 15",
-              "today_temp": 29.656,
-              "percentile": 87.5,
-              "category_key": "hot",
-              "color": "#c25a2c"
-            },
-            {
-              "date": "2025-07-14",
-              "day_label": "Jul 14",
-              "today_temp": 30.306,
-              "percentile": 87.5,
-              "category_key": "hot",
-              "color": "#c25a2c"
-            },
-            {
-              "date": "2025-07-13",
-              "day_label": "Jul 13",
-              "today_temp": 26.856,
-              "percentile": 50,
-              "category_key": "nope",
-              "color": "#e7d9b8"
-            },
-            {
-              "date": "2025-07-12",
-              "day_label": "Jul 12",
-              "today_temp": 23.856,
-              "percentile": 50,
-              "category_key": "nope",
-              "color": "#e7d9b8"
-            },
-            {
-              "date": "2025-07-11",
-              "day_label": "Jul 11",
-              "today_temp": 23.056,
+              "date": "2025-07-09",
+              "day_label": "Jul 9",
+              "today_temp": 23.406,
               "percentile": 50,
               "category_key": "nope",
               "color": "#e7d9b8"
@@ -56092,12 +56060,44 @@
               "color": "#e7d9b8"
             },
             {
-              "date": "2025-07-09",
-              "day_label": "Jul 9",
-              "today_temp": 23.406,
+              "date": "2025-07-11",
+              "day_label": "Jul 11",
+              "today_temp": 23.056,
               "percentile": 50,
               "category_key": "nope",
               "color": "#e7d9b8"
+            },
+            {
+              "date": "2025-07-12",
+              "day_label": "Jul 12",
+              "today_temp": 23.856,
+              "percentile": 50,
+              "category_key": "nope",
+              "color": "#e7d9b8"
+            },
+            {
+              "date": "2025-07-13",
+              "day_label": "Jul 13",
+              "today_temp": 26.856,
+              "percentile": 50,
+              "category_key": "nope",
+              "color": "#e7d9b8"
+            },
+            {
+              "date": "2025-07-14",
+              "day_label": "Jul 14",
+              "today_temp": 30.306,
+              "percentile": 87.5,
+              "category_key": "hot",
+              "color": "#c25a2c"
+            },
+            {
+              "date": "2025-07-15",
+              "day_label": "Jul 15",
+              "today_temp": 29.656,
+              "percentile": 87.5,
+              "category_key": "hot",
+              "color": "#c25a2c"
             }
           ]
         },
@@ -56111,13 +56111,13 @@
               "min": null,
               "max": null,
               "categories": [
-                "15.07",
-                "14.07",
-                "13.07",
-                "12.07",
-                "11.07",
+                "09.07",
                 "10.07",
-                "09.07"
+                "11.07",
+                "12.07",
+                "13.07",
+                "14.07",
+                "15.07"
               ],
               "plot_lines": [],
               "plot_bands": []
@@ -56169,29 +56169,29 @@
                 "type": "line",
                 "data": [
                   {
-                    "catName": "Vroče",
-                    "color": "#c25a2c",
-                    "label": "15.07",
-                    "pct": 87.5,
-                    "temp": 29.656,
+                    "catName": "Normalno",
+                    "color": "#e7d9b8",
+                    "label": "09.07",
+                    "pct": 50,
+                    "temp": 23.406,
                     "x": 0,
-                    "y": 3
-                  },
-                  {
-                    "catName": "Vroče",
-                    "color": "#c25a2c",
-                    "label": "14.07",
-                    "pct": 87.5,
-                    "temp": 30.306,
-                    "x": 1,
-                    "y": 3
+                    "y": 2
                   },
                   {
                     "catName": "Normalno",
                     "color": "#e7d9b8",
-                    "label": "13.07",
+                    "label": "10.07",
                     "pct": 50,
-                    "temp": 26.856,
+                    "temp": 23.606,
+                    "x": 1,
+                    "y": 2
+                  },
+                  {
+                    "catName": "Normalno",
+                    "color": "#e7d9b8",
+                    "label": "11.07",
+                    "pct": 50,
+                    "temp": 23.056,
                     "x": 2,
                     "y": 2
                   },
@@ -56207,29 +56207,29 @@
                   {
                     "catName": "Normalno",
                     "color": "#e7d9b8",
-                    "label": "11.07",
+                    "label": "13.07",
                     "pct": 50,
-                    "temp": 23.056,
+                    "temp": 26.856,
                     "x": 4,
                     "y": 2
                   },
                   {
-                    "catName": "Normalno",
-                    "color": "#e7d9b8",
-                    "label": "10.07",
-                    "pct": 50,
-                    "temp": 23.606,
+                    "catName": "Vroče",
+                    "color": "#c25a2c",
+                    "label": "14.07",
+                    "pct": 87.5,
+                    "temp": 30.306,
                     "x": 5,
-                    "y": 2
+                    "y": 3
                   },
                   {
-                    "catName": "Normalno",
-                    "color": "#e7d9b8",
-                    "label": "09.07",
-                    "pct": 50,
-                    "temp": 23.406,
+                    "catName": "Vroče",
+                    "color": "#c25a2c",
+                    "label": "15.07",
+                    "pct": 87.5,
+                    "temp": 29.656,
                     "x": 6,
-                    "y": 2
+                    "y": 3
                   }
                 ]
               }
@@ -59570,25 +59570,25 @@
           "available": true,
           "days": [
             {
-              "date": "2025-07-15",
-              "day_label": "Jul 15",
-              "today_temp": 13.904,
-              "percentile": 87.5,
-              "category_key": "hot",
-              "color": "#c25a2c"
+              "date": "2025-07-09",
+              "day_label": "Jul 9",
+              "today_temp": 7.604,
+              "percentile": 15,
+              "category_key": "cold",
+              "color": "#6c8fb6"
             },
             {
-              "date": "2025-07-14",
-              "day_label": "Jul 14",
-              "today_temp": 13.654,
+              "date": "2025-07-10",
+              "day_label": "Jul 10",
+              "today_temp": 8.104,
               "percentile": 50,
               "category_key": "nope",
               "color": "#e7d9b8"
             },
             {
-              "date": "2025-07-13",
-              "day_label": "Jul 13",
-              "today_temp": 10.654,
+              "date": "2025-07-11",
+              "day_label": "Jul 11",
+              "today_temp": 7.905,
               "percentile": 50,
               "category_key": "nope",
               "color": "#e7d9b8"
@@ -59602,28 +59602,28 @@
               "color": "#6c8fb6"
             },
             {
-              "date": "2025-07-11",
-              "day_label": "Jul 11",
-              "today_temp": 7.905,
+              "date": "2025-07-13",
+              "day_label": "Jul 13",
+              "today_temp": 10.654,
               "percentile": 50,
               "category_key": "nope",
               "color": "#e7d9b8"
             },
             {
-              "date": "2025-07-10",
-              "day_label": "Jul 10",
-              "today_temp": 8.104,
+              "date": "2025-07-14",
+              "day_label": "Jul 14",
+              "today_temp": 13.654,
               "percentile": 50,
               "category_key": "nope",
               "color": "#e7d9b8"
             },
             {
-              "date": "2025-07-09",
-              "day_label": "Jul 9",
-              "today_temp": 7.604,
-              "percentile": 15,
-              "category_key": "cold",
-              "color": "#6c8fb6"
+              "date": "2025-07-15",
+              "day_label": "Jul 15",
+              "today_temp": 13.904,
+              "percentile": 87.5,
+              "category_key": "hot",
+              "color": "#c25a2c"
             }
           ]
         },
@@ -59637,13 +59637,13 @@
               "min": null,
               "max": null,
               "categories": [
-                "15.07",
-                "14.07",
-                "13.07",
-                "12.07",
-                "11.07",
+                "09.07",
                 "10.07",
-                "09.07"
+                "11.07",
+                "12.07",
+                "13.07",
+                "14.07",
+                "15.07"
               ],
               "plot_lines": [],
               "plot_bands": []
@@ -59695,29 +59695,29 @@
                 "type": "line",
                 "data": [
                   {
-                    "catName": "Vroče",
-                    "color": "#c25a2c",
-                    "label": "15.07",
-                    "pct": 87.5,
-                    "temp": 13.904,
+                    "catName": "Sveže",
+                    "color": "#6c8fb6",
+                    "label": "09.07",
+                    "pct": 15,
+                    "temp": 7.604,
                     "x": 0,
-                    "y": 3
+                    "y": 1
                   },
                   {
                     "catName": "Normalno",
                     "color": "#e7d9b8",
-                    "label": "14.07",
+                    "label": "10.07",
                     "pct": 50,
-                    "temp": 13.654,
+                    "temp": 8.104,
                     "x": 1,
                     "y": 2
                   },
                   {
                     "catName": "Normalno",
                     "color": "#e7d9b8",
-                    "label": "13.07",
+                    "label": "11.07",
                     "pct": 50,
-                    "temp": 10.654,
+                    "temp": 7.905,
                     "x": 2,
                     "y": 2
                   },
@@ -59733,29 +59733,29 @@
                   {
                     "catName": "Normalno",
                     "color": "#e7d9b8",
-                    "label": "11.07",
+                    "label": "13.07",
                     "pct": 50,
-                    "temp": 7.905,
+                    "temp": 10.654,
                     "x": 4,
                     "y": 2
                   },
                   {
                     "catName": "Normalno",
                     "color": "#e7d9b8",
-                    "label": "10.07",
+                    "label": "14.07",
                     "pct": 50,
-                    "temp": 8.104,
+                    "temp": 13.654,
                     "x": 5,
                     "y": 2
                   },
                   {
-                    "catName": "Sveže",
-                    "color": "#6c8fb6",
-                    "label": "09.07",
-                    "pct": 15,
-                    "temp": 7.604,
+                    "catName": "Vroče",
+                    "color": "#c25a2c",
+                    "label": "15.07",
+                    "pct": 87.5,
+                    "temp": 13.904,
                     "x": 6,
-                    "y": 1
+                    "y": 3
                   }
                 ]
               }
@@ -62288,25 +62288,17 @@
           "available": true,
           "days": [
             {
-              "date": "2024-02-28",
-              "day_label": "Feb 28",
-              "today_temp": 13.956,
-              "percentile": 87.5,
-              "category_key": "hot",
-              "color": "#c25a2c"
-            },
-            {
-              "date": "2024-02-27",
-              "day_label": "Feb 27",
-              "today_temp": 8.456,
+              "date": "2024-02-23",
+              "day_label": "Feb 23",
+              "today_temp": 9.606,
               "percentile": 50,
               "category_key": "nope",
               "color": "#e7d9b8"
             },
             {
-              "date": "2024-02-26",
-              "day_label": "Feb 26",
-              "today_temp": 11.557,
+              "date": "2024-02-24",
+              "day_label": "Feb 24",
+              "today_temp": 11.356,
               "percentile": 87.5,
               "category_key": "hot",
               "color": "#c25a2c"
@@ -62320,20 +62312,28 @@
               "color": "#c25a2c"
             },
             {
-              "date": "2024-02-24",
-              "day_label": "Feb 24",
-              "today_temp": 11.356,
+              "date": "2024-02-26",
+              "day_label": "Feb 26",
+              "today_temp": 11.557,
               "percentile": 87.5,
               "category_key": "hot",
               "color": "#c25a2c"
             },
             {
-              "date": "2024-02-23",
-              "day_label": "Feb 23",
-              "today_temp": 9.606,
+              "date": "2024-02-27",
+              "day_label": "Feb 27",
+              "today_temp": 8.456,
               "percentile": 50,
               "category_key": "nope",
               "color": "#e7d9b8"
+            },
+            {
+              "date": "2024-02-28",
+              "day_label": "Feb 28",
+              "today_temp": 13.956,
+              "percentile": 87.5,
+              "category_key": "hot",
+              "color": "#c25a2c"
             }
           ]
         },
@@ -63133,33 +63133,9 @@
           "available": true,
           "days": [
             {
-              "date": "2024-02-28",
-              "day_label": "Feb 28",
-              "today_temp": 0.305,
-              "percentile": 87.5,
-              "category_key": "hot",
-              "color": "#c25a2c"
-            },
-            {
-              "date": "2024-02-27",
-              "day_label": "Feb 27",
-              "today_temp": -1.945,
-              "percentile": 87.5,
-              "category_key": "hot",
-              "color": "#c25a2c"
-            },
-            {
-              "date": "2024-02-26",
-              "day_label": "Feb 26",
-              "today_temp": -4.895,
-              "percentile": 50,
-              "category_key": "nope",
-              "color": "#e7d9b8"
-            },
-            {
-              "date": "2024-02-25",
-              "day_label": "Feb 25",
-              "today_temp": -4.345,
+              "date": "2024-02-23",
+              "day_label": "Feb 23",
+              "today_temp": -4.746,
               "percentile": 50,
               "category_key": "nope",
               "color": "#e7d9b8"
@@ -63173,12 +63149,36 @@
               "color": "#e7d9b8"
             },
             {
-              "date": "2024-02-23",
-              "day_label": "Feb 23",
-              "today_temp": -4.746,
+              "date": "2024-02-25",
+              "day_label": "Feb 25",
+              "today_temp": -4.345,
               "percentile": 50,
               "category_key": "nope",
               "color": "#e7d9b8"
+            },
+            {
+              "date": "2024-02-26",
+              "day_label": "Feb 26",
+              "today_temp": -4.895,
+              "percentile": 50,
+              "category_key": "nope",
+              "color": "#e7d9b8"
+            },
+            {
+              "date": "2024-02-27",
+              "day_label": "Feb 27",
+              "today_temp": -1.945,
+              "percentile": 87.5,
+              "category_key": "hot",
+              "color": "#c25a2c"
+            },
+            {
+              "date": "2024-02-28",
+              "day_label": "Feb 28",
+              "today_temp": 0.305,
+              "percentile": 87.5,
+              "category_key": "hot",
+              "color": "#c25a2c"
             }
           ]
         },
@@ -65582,33 +65582,9 @@
           "available": true,
           "days": [
             {
-              "date": "2024-03-01",
-              "day_label": "Mar 1",
-              "today_temp": 10.907,
-              "percentile": 50,
-              "category_key": "nope",
-              "color": "#e7d9b8"
-            },
-            {
-              "date": "2024-02-28",
-              "day_label": "Feb 28",
-              "today_temp": 13.956,
-              "percentile": 87.5,
-              "category_key": "hot",
-              "color": "#c25a2c"
-            },
-            {
-              "date": "2024-02-27",
-              "day_label": "Feb 27",
-              "today_temp": 8.456,
-              "percentile": 50,
-              "category_key": "nope",
-              "color": "#e7d9b8"
-            },
-            {
-              "date": "2024-02-26",
-              "day_label": "Feb 26",
-              "today_temp": 11.557,
+              "date": "2024-02-24",
+              "day_label": "Feb 24",
+              "today_temp": 11.356,
               "percentile": 87.5,
               "category_key": "hot",
               "color": "#c25a2c"
@@ -65622,12 +65598,36 @@
               "color": "#c25a2c"
             },
             {
-              "date": "2024-02-24",
-              "day_label": "Feb 24",
-              "today_temp": 11.356,
+              "date": "2024-02-26",
+              "day_label": "Feb 26",
+              "today_temp": 11.557,
               "percentile": 87.5,
               "category_key": "hot",
               "color": "#c25a2c"
+            },
+            {
+              "date": "2024-02-27",
+              "day_label": "Feb 27",
+              "today_temp": 8.456,
+              "percentile": 50,
+              "category_key": "nope",
+              "color": "#e7d9b8"
+            },
+            {
+              "date": "2024-02-28",
+              "day_label": "Feb 28",
+              "today_temp": 13.956,
+              "percentile": 87.5,
+              "category_key": "hot",
+              "color": "#c25a2c"
+            },
+            {
+              "date": "2024-03-01",
+              "day_label": "Mar 1",
+              "today_temp": 10.907,
+              "percentile": 50,
+              "category_key": "nope",
+              "color": "#e7d9b8"
             }
           ]
         },
@@ -65641,12 +65641,12 @@
               "min": null,
               "max": null,
               "categories": [
-                "01.03",
-                "28.02",
-                "27.02",
-                "26.02",
+                "24.02",
                 "25.02",
-                "24.02"
+                "26.02",
+                "27.02",
+                "28.02",
+                "01.03"
               ],
               "plot_lines": [],
               "plot_bands": []
@@ -65698,39 +65698,12 @@
                 "type": "line",
                 "data": [
                   {
-                    "catName": "Normalno",
-                    "color": "#e7d9b8",
-                    "label": "01.03",
-                    "pct": 50,
-                    "temp": 10.907,
+                    "catName": "Vroče",
+                    "color": "#c25a2c",
+                    "label": "24.02",
+                    "pct": 87.5,
+                    "temp": 11.356,
                     "x": 0,
-                    "y": 2
-                  },
-                  {
-                    "catName": "Vroče",
-                    "color": "#c25a2c",
-                    "label": "28.02",
-                    "pct": 87.5,
-                    "temp": 13.956,
-                    "x": 1,
-                    "y": 3
-                  },
-                  {
-                    "catName": "Normalno",
-                    "color": "#e7d9b8",
-                    "label": "27.02",
-                    "pct": 50,
-                    "temp": 8.456,
-                    "x": 2,
-                    "y": 2
-                  },
-                  {
-                    "catName": "Vroče",
-                    "color": "#c25a2c",
-                    "label": "26.02",
-                    "pct": 87.5,
-                    "temp": 11.557,
-                    "x": 3,
                     "y": 3
                   },
                   {
@@ -65739,17 +65712,44 @@
                     "label": "25.02",
                     "pct": 87.5,
                     "temp": 11.807,
-                    "x": 4,
+                    "x": 1,
                     "y": 3
                   },
                   {
                     "catName": "Vroče",
                     "color": "#c25a2c",
-                    "label": "24.02",
+                    "label": "26.02",
                     "pct": 87.5,
-                    "temp": 11.356,
-                    "x": 5,
+                    "temp": 11.557,
+                    "x": 2,
                     "y": 3
+                  },
+                  {
+                    "catName": "Normalno",
+                    "color": "#e7d9b8",
+                    "label": "27.02",
+                    "pct": 50,
+                    "temp": 8.456,
+                    "x": 3,
+                    "y": 2
+                  },
+                  {
+                    "catName": "Vroče",
+                    "color": "#c25a2c",
+                    "label": "28.02",
+                    "pct": 87.5,
+                    "temp": 13.956,
+                    "x": 4,
+                    "y": 3
+                  },
+                  {
+                    "catName": "Normalno",
+                    "color": "#e7d9b8",
+                    "label": "01.03",
+                    "pct": 50,
+                    "temp": 10.907,
+                    "x": 5,
+                    "y": 2
                   }
                 ]
               }
@@ -69090,33 +69090,17 @@
           "available": true,
           "days": [
             {
-              "date": "2025-02-28",
-              "day_label": "Feb 28",
-              "today_temp": 9.356,
+              "date": "2025-02-22",
+              "day_label": "Feb 22",
+              "today_temp": 9.856,
               "percentile": 50,
               "category_key": "nope",
               "color": "#e7d9b8"
             },
             {
-              "date": "2025-02-27",
-              "day_label": "Feb 27",
-              "today_temp": 7.756,
-              "percentile": 50,
-              "category_key": "nope",
-              "color": "#e7d9b8"
-            },
-            {
-              "date": "2025-02-26",
-              "day_label": "Feb 26",
-              "today_temp": 9.606,
-              "percentile": 50,
-              "category_key": "nope",
-              "color": "#e7d9b8"
-            },
-            {
-              "date": "2025-02-25",
-              "day_label": "Feb 25",
-              "today_temp": 12.657,
+              "date": "2025-02-23",
+              "day_label": "Feb 23",
+              "today_temp": 12.307,
               "percentile": 87.5,
               "category_key": "hot",
               "color": "#c25a2c"
@@ -69130,17 +69114,33 @@
               "color": "#c25a2c"
             },
             {
-              "date": "2025-02-23",
-              "day_label": "Feb 23",
-              "today_temp": 12.307,
+              "date": "2025-02-25",
+              "day_label": "Feb 25",
+              "today_temp": 12.657,
               "percentile": 87.5,
               "category_key": "hot",
               "color": "#c25a2c"
             },
             {
-              "date": "2025-02-22",
-              "day_label": "Feb 22",
-              "today_temp": 9.856,
+              "date": "2025-02-26",
+              "day_label": "Feb 26",
+              "today_temp": 9.606,
+              "percentile": 50,
+              "category_key": "nope",
+              "color": "#e7d9b8"
+            },
+            {
+              "date": "2025-02-27",
+              "day_label": "Feb 27",
+              "today_temp": 7.756,
+              "percentile": 50,
+              "category_key": "nope",
+              "color": "#e7d9b8"
+            },
+            {
+              "date": "2025-02-28",
+              "day_label": "Feb 28",
+              "today_temp": 9.356,
               "percentile": 50,
               "category_key": "nope",
               "color": "#e7d9b8"
@@ -69157,13 +69157,13 @@
               "min": null,
               "max": null,
               "categories": [
-                "28.02",
-                "27.02",
-                "26.02",
-                "25.02",
-                "24.02",
+                "22.02",
                 "23.02",
-                "22.02"
+                "24.02",
+                "25.02",
+                "26.02",
+                "27.02",
+                "28.02"
               ],
               "plot_lines": [],
               "plot_bands": []
@@ -69217,29 +69217,29 @@
                   {
                     "catName": "Normalno",
                     "color": "#e7d9b8",
-                    "label": "28.02",
+                    "label": "22.02",
                     "pct": 50,
-                    "temp": 9.356,
+                    "temp": 9.856,
                     "x": 0,
                     "y": 2
                   },
                   {
-                    "catName": "Normalno",
-                    "color": "#e7d9b8",
-                    "label": "27.02",
-                    "pct": 50,
-                    "temp": 7.756,
+                    "catName": "Vroče",
+                    "color": "#c25a2c",
+                    "label": "23.02",
+                    "pct": 87.5,
+                    "temp": 12.307,
                     "x": 1,
-                    "y": 2
+                    "y": 3
                   },
                   {
-                    "catName": "Normalno",
-                    "color": "#e7d9b8",
-                    "label": "26.02",
-                    "pct": 50,
-                    "temp": 9.606,
+                    "catName": "Vroče",
+                    "color": "#c25a2c",
+                    "label": "24.02",
+                    "pct": 87.5,
+                    "temp": 11.057,
                     "x": 2,
-                    "y": 2
+                    "y": 3
                   },
                   {
                     "catName": "Vroče",
@@ -69251,29 +69251,29 @@
                     "y": 3
                   },
                   {
-                    "catName": "Vroče",
-                    "color": "#c25a2c",
-                    "label": "24.02",
-                    "pct": 87.5,
-                    "temp": 11.057,
+                    "catName": "Normalno",
+                    "color": "#e7d9b8",
+                    "label": "26.02",
+                    "pct": 50,
+                    "temp": 9.606,
                     "x": 4,
-                    "y": 3
-                  },
-                  {
-                    "catName": "Vroče",
-                    "color": "#c25a2c",
-                    "label": "23.02",
-                    "pct": 87.5,
-                    "temp": 12.307,
-                    "x": 5,
-                    "y": 3
+                    "y": 2
                   },
                   {
                     "catName": "Normalno",
                     "color": "#e7d9b8",
-                    "label": "22.02",
+                    "label": "27.02",
                     "pct": 50,
-                    "temp": 9.856,
+                    "temp": 7.756,
+                    "x": 5,
+                    "y": 2
+                  },
+                  {
+                    "catName": "Normalno",
+                    "color": "#e7d9b8",
+                    "label": "28.02",
+                    "pct": 50,
+                    "temp": 9.356,
                     "x": 6,
                     "y": 2
                   }
@@ -72616,41 +72616,9 @@
           "available": true,
           "days": [
             {
-              "date": "2025-03-01",
-              "day_label": "Mar 1",
-              "today_temp": 9.356,
-              "percentile": 50,
-              "category_key": "nope",
-              "color": "#e7d9b8"
-            },
-            {
-              "date": "2025-02-28",
-              "day_label": "Feb 28",
-              "today_temp": 9.356,
-              "percentile": 50,
-              "category_key": "nope",
-              "color": "#e7d9b8"
-            },
-            {
-              "date": "2025-02-27",
-              "day_label": "Feb 27",
-              "today_temp": 7.756,
-              "percentile": 50,
-              "category_key": "nope",
-              "color": "#e7d9b8"
-            },
-            {
-              "date": "2025-02-26",
-              "day_label": "Feb 26",
-              "today_temp": 9.606,
-              "percentile": 50,
-              "category_key": "nope",
-              "color": "#e7d9b8"
-            },
-            {
-              "date": "2025-02-25",
-              "day_label": "Feb 25",
-              "today_temp": 12.657,
+              "date": "2025-02-23",
+              "day_label": "Feb 23",
+              "today_temp": 12.307,
               "percentile": 87.5,
               "category_key": "hot",
               "color": "#c25a2c"
@@ -72664,12 +72632,44 @@
               "color": "#c25a2c"
             },
             {
-              "date": "2025-02-23",
-              "day_label": "Feb 23",
-              "today_temp": 12.307,
+              "date": "2025-02-25",
+              "day_label": "Feb 25",
+              "today_temp": 12.657,
               "percentile": 87.5,
               "category_key": "hot",
               "color": "#c25a2c"
+            },
+            {
+              "date": "2025-02-26",
+              "day_label": "Feb 26",
+              "today_temp": 9.606,
+              "percentile": 50,
+              "category_key": "nope",
+              "color": "#e7d9b8"
+            },
+            {
+              "date": "2025-02-27",
+              "day_label": "Feb 27",
+              "today_temp": 7.756,
+              "percentile": 50,
+              "category_key": "nope",
+              "color": "#e7d9b8"
+            },
+            {
+              "date": "2025-02-28",
+              "day_label": "Feb 28",
+              "today_temp": 9.356,
+              "percentile": 50,
+              "category_key": "nope",
+              "color": "#e7d9b8"
+            },
+            {
+              "date": "2025-03-01",
+              "day_label": "Mar 1",
+              "today_temp": 9.356,
+              "percentile": 50,
+              "category_key": "nope",
+              "color": "#e7d9b8"
             }
           ]
         },
@@ -72683,13 +72683,13 @@
               "min": null,
               "max": null,
               "categories": [
-                "01.03",
-                "28.02",
-                "27.02",
-                "26.02",
-                "25.02",
+                "23.02",
                 "24.02",
-                "23.02"
+                "25.02",
+                "26.02",
+                "27.02",
+                "28.02",
+                "01.03"
               ],
               "plot_lines": [],
               "plot_bands": []
@@ -72741,31 +72741,31 @@
                 "type": "line",
                 "data": [
                   {
-                    "catName": "Normalno",
-                    "color": "#e7d9b8",
-                    "label": "01.03",
-                    "pct": 50,
-                    "temp": 9.356,
+                    "catName": "Vroče",
+                    "color": "#c25a2c",
+                    "label": "23.02",
+                    "pct": 87.5,
+                    "temp": 12.307,
                     "x": 0,
-                    "y": 2
+                    "y": 3
                   },
                   {
-                    "catName": "Normalno",
-                    "color": "#e7d9b8",
-                    "label": "28.02",
-                    "pct": 50,
-                    "temp": 9.356,
+                    "catName": "Vroče",
+                    "color": "#c25a2c",
+                    "label": "24.02",
+                    "pct": 87.5,
+                    "temp": 11.057,
                     "x": 1,
-                    "y": 2
+                    "y": 3
                   },
                   {
-                    "catName": "Normalno",
-                    "color": "#e7d9b8",
-                    "label": "27.02",
-                    "pct": 50,
-                    "temp": 7.756,
+                    "catName": "Vroče",
+                    "color": "#c25a2c",
+                    "label": "25.02",
+                    "pct": 87.5,
+                    "temp": 12.657,
                     "x": 2,
-                    "y": 2
+                    "y": 3
                   },
                   {
                     "catName": "Normalno",
@@ -72777,31 +72777,31 @@
                     "y": 2
                   },
                   {
-                    "catName": "Vroče",
-                    "color": "#c25a2c",
-                    "label": "25.02",
-                    "pct": 87.5,
-                    "temp": 12.657,
+                    "catName": "Normalno",
+                    "color": "#e7d9b8",
+                    "label": "27.02",
+                    "pct": 50,
+                    "temp": 7.756,
                     "x": 4,
-                    "y": 3
+                    "y": 2
                   },
                   {
-                    "catName": "Vroče",
-                    "color": "#c25a2c",
-                    "label": "24.02",
-                    "pct": 87.5,
-                    "temp": 11.057,
+                    "catName": "Normalno",
+                    "color": "#e7d9b8",
+                    "label": "28.02",
+                    "pct": 50,
+                    "temp": 9.356,
                     "x": 5,
-                    "y": 3
+                    "y": 2
                   },
                   {
-                    "catName": "Vroče",
-                    "color": "#c25a2c",
-                    "label": "23.02",
-                    "pct": 87.5,
-                    "temp": 12.307,
+                    "catName": "Normalno",
+                    "color": "#e7d9b8",
+                    "label": "01.03",
+                    "pct": 50,
+                    "temp": 9.356,
                     "x": 6,
-                    "y": 3
+                    "y": 2
                   }
                 ]
               }
@@ -76142,25 +76142,25 @@
           "available": true,
           "days": [
             {
-              "date": "2025-01-01",
-              "day_label": "Jan 1",
-              "today_temp": 8.407,
-              "percentile": 87.5,
-              "category_key": "hot",
-              "color": "#c25a2c"
+              "date": "2024-12-26",
+              "day_label": "Dec 26",
+              "today_temp": 4.006,
+              "percentile": 50,
+              "category_key": "nope",
+              "color": "#e7d9b8"
             },
             {
-              "date": "2024-12-31",
-              "day_label": "Dec 31",
-              "today_temp": 8.107,
-              "percentile": 87.5,
-              "category_key": "hot",
-              "color": "#c25a2c"
+              "date": "2024-12-27",
+              "day_label": "Dec 27",
+              "today_temp": 4.106,
+              "percentile": 50,
+              "category_key": "nope",
+              "color": "#e7d9b8"
             },
             {
-              "date": "2024-12-30",
-              "day_label": "Dec 30",
-              "today_temp": 7.456,
+              "date": "2024-12-28",
+              "day_label": "Dec 28",
+              "today_temp": 6.756,
               "percentile": 87.5,
               "category_key": "hot",
               "color": "#c25a2c"
@@ -76174,28 +76174,28 @@
               "color": "#c25a2c"
             },
             {
-              "date": "2024-12-28",
-              "day_label": "Dec 28",
-              "today_temp": 6.756,
+              "date": "2024-12-30",
+              "day_label": "Dec 30",
+              "today_temp": 7.456,
               "percentile": 87.5,
               "category_key": "hot",
               "color": "#c25a2c"
             },
             {
-              "date": "2024-12-27",
-              "day_label": "Dec 27",
-              "today_temp": 4.106,
-              "percentile": 50,
-              "category_key": "nope",
-              "color": "#e7d9b8"
+              "date": "2024-12-31",
+              "day_label": "Dec 31",
+              "today_temp": 8.107,
+              "percentile": 87.5,
+              "category_key": "hot",
+              "color": "#c25a2c"
             },
             {
-              "date": "2024-12-26",
-              "day_label": "Dec 26",
-              "today_temp": 4.006,
-              "percentile": 50,
-              "category_key": "nope",
-              "color": "#e7d9b8"
+              "date": "2025-01-01",
+              "day_label": "Jan 1",
+              "today_temp": 8.407,
+              "percentile": 87.5,
+              "category_key": "hot",
+              "color": "#c25a2c"
             }
           ]
         },
@@ -76209,13 +76209,13 @@
               "min": null,
               "max": null,
               "categories": [
-                "01.01",
-                "31.12",
-                "30.12",
-                "29.12",
-                "28.12",
+                "26.12",
                 "27.12",
-                "26.12"
+                "28.12",
+                "29.12",
+                "30.12",
+                "31.12",
+                "01.01"
               ],
               "plot_lines": [],
               "plot_bands": []
@@ -76267,29 +76267,29 @@
                 "type": "line",
                 "data": [
                   {
-                    "catName": "Vroče",
-                    "color": "#c25a2c",
-                    "label": "01.01",
-                    "pct": 87.5,
-                    "temp": 8.407,
+                    "catName": "Normalno",
+                    "color": "#e7d9b8",
+                    "label": "26.12",
+                    "pct": 50,
+                    "temp": 4.006,
                     "x": 0,
-                    "y": 3
+                    "y": 2
                   },
                   {
-                    "catName": "Vroče",
-                    "color": "#c25a2c",
-                    "label": "31.12",
-                    "pct": 87.5,
-                    "temp": 8.107,
+                    "catName": "Normalno",
+                    "color": "#e7d9b8",
+                    "label": "27.12",
+                    "pct": 50,
+                    "temp": 4.106,
                     "x": 1,
-                    "y": 3
+                    "y": 2
                   },
                   {
                     "catName": "Vroče",
                     "color": "#c25a2c",
-                    "label": "30.12",
+                    "label": "28.12",
                     "pct": 87.5,
-                    "temp": 7.456,
+                    "temp": 6.756,
                     "x": 2,
                     "y": 3
                   },
@@ -76305,29 +76305,29 @@
                   {
                     "catName": "Vroče",
                     "color": "#c25a2c",
-                    "label": "28.12",
+                    "label": "30.12",
                     "pct": 87.5,
-                    "temp": 6.756,
+                    "temp": 7.456,
                     "x": 4,
                     "y": 3
                   },
                   {
-                    "catName": "Normalno",
-                    "color": "#e7d9b8",
-                    "label": "27.12",
-                    "pct": 50,
-                    "temp": 4.106,
+                    "catName": "Vroče",
+                    "color": "#c25a2c",
+                    "label": "31.12",
+                    "pct": 87.5,
+                    "temp": 8.107,
                     "x": 5,
-                    "y": 2
+                    "y": 3
                   },
                   {
-                    "catName": "Normalno",
-                    "color": "#e7d9b8",
-                    "label": "26.12",
-                    "pct": 50,
-                    "temp": 4.006,
+                    "catName": "Vroče",
+                    "color": "#c25a2c",
+                    "label": "01.01",
+                    "pct": 87.5,
+                    "temp": 8.407,
                     "x": 6,
-                    "y": 2
+                    "y": 3
                   }
                 ]
               }
@@ -79668,41 +79668,9 @@
           "available": true,
           "days": [
             {
-              "date": "2025-12-31",
-              "day_label": "Dec 31",
-              "today_temp": 1.456,
-              "percentile": 50,
-              "category_key": "nope",
-              "color": "#e7d9b8"
-            },
-            {
-              "date": "2025-12-30",
-              "day_label": "Dec 30",
-              "today_temp": 3.106,
-              "percentile": 50,
-              "category_key": "nope",
-              "color": "#e7d9b8"
-            },
-            {
-              "date": "2025-12-29",
-              "day_label": "Dec 29",
-              "today_temp": 5.206,
-              "percentile": 50,
-              "category_key": "nope",
-              "color": "#e7d9b8"
-            },
-            {
-              "date": "2025-12-28",
-              "day_label": "Dec 28",
+              "date": "2025-12-25",
+              "day_label": "Dec 25",
               "today_temp": 2.506,
-              "percentile": 50,
-              "category_key": "nope",
-              "color": "#e7d9b8"
-            },
-            {
-              "date": "2025-12-27",
-              "day_label": "Dec 27",
-              "today_temp": 3.156,
               "percentile": 50,
               "category_key": "nope",
               "color": "#e7d9b8"
@@ -79716,9 +79684,41 @@
               "color": "#e7d9b8"
             },
             {
-              "date": "2025-12-25",
-              "day_label": "Dec 25",
+              "date": "2025-12-27",
+              "day_label": "Dec 27",
+              "today_temp": 3.156,
+              "percentile": 50,
+              "category_key": "nope",
+              "color": "#e7d9b8"
+            },
+            {
+              "date": "2025-12-28",
+              "day_label": "Dec 28",
               "today_temp": 2.506,
+              "percentile": 50,
+              "category_key": "nope",
+              "color": "#e7d9b8"
+            },
+            {
+              "date": "2025-12-29",
+              "day_label": "Dec 29",
+              "today_temp": 5.206,
+              "percentile": 50,
+              "category_key": "nope",
+              "color": "#e7d9b8"
+            },
+            {
+              "date": "2025-12-30",
+              "day_label": "Dec 30",
+              "today_temp": 3.106,
+              "percentile": 50,
+              "category_key": "nope",
+              "color": "#e7d9b8"
+            },
+            {
+              "date": "2025-12-31",
+              "day_label": "Dec 31",
+              "today_temp": 1.456,
               "percentile": 50,
               "category_key": "nope",
               "color": "#e7d9b8"
@@ -79735,13 +79735,13 @@
               "min": null,
               "max": null,
               "categories": [
-                "31.12",
-                "30.12",
-                "29.12",
-                "28.12",
-                "27.12",
+                "25.12",
                 "26.12",
-                "25.12"
+                "27.12",
+                "28.12",
+                "29.12",
+                "30.12",
+                "31.12"
               ],
               "plot_lines": [],
               "plot_bands": []
@@ -79795,27 +79795,27 @@
                   {
                     "catName": "Normalno",
                     "color": "#e7d9b8",
-                    "label": "31.12",
+                    "label": "25.12",
                     "pct": 50,
-                    "temp": 1.456,
+                    "temp": 2.506,
                     "x": 0,
                     "y": 2
                   },
                   {
                     "catName": "Normalno",
                     "color": "#e7d9b8",
-                    "label": "30.12",
+                    "label": "26.12",
                     "pct": 50,
-                    "temp": 3.106,
+                    "temp": 3.906,
                     "x": 1,
                     "y": 2
                   },
                   {
                     "catName": "Normalno",
                     "color": "#e7d9b8",
-                    "label": "29.12",
+                    "label": "27.12",
                     "pct": 50,
-                    "temp": 5.206,
+                    "temp": 3.156,
                     "x": 2,
                     "y": 2
                   },
@@ -79831,27 +79831,27 @@
                   {
                     "catName": "Normalno",
                     "color": "#e7d9b8",
-                    "label": "27.12",
+                    "label": "29.12",
                     "pct": 50,
-                    "temp": 3.156,
+                    "temp": 5.206,
                     "x": 4,
                     "y": 2
                   },
                   {
                     "catName": "Normalno",
                     "color": "#e7d9b8",
-                    "label": "26.12",
+                    "label": "30.12",
                     "pct": 50,
-                    "temp": 3.906,
+                    "temp": 3.106,
                     "x": 5,
                     "y": 2
                   },
                   {
                     "catName": "Normalno",
                     "color": "#e7d9b8",
-                    "label": "25.12",
+                    "label": "31.12",
                     "pct": 50,
-                    "temp": 2.506,
+                    "temp": 1.456,
                     "x": 6,
                     "y": 2
                   }
@@ -83186,44 +83186,12 @@
           "available": true,
           "days": [
             {
-              "date": "2013-08-03",
-              "day_label": "Aug 3",
-              "today_temp": 35.591,
+              "date": "2013-07-28",
+              "day_label": "Jul 28",
+              "today_temp": 32.741,
               "percentile": 97.5,
               "category_key": "hell",
               "color": "#962c1a"
-            },
-            {
-              "date": "2013-08-02",
-              "day_label": "Aug 2",
-              "today_temp": 34.391,
-              "percentile": 97.5,
-              "category_key": "hell",
-              "color": "#962c1a"
-            },
-            {
-              "date": "2013-08-01",
-              "day_label": "Aug 1",
-              "today_temp": 30.541,
-              "percentile": 87.5,
-              "category_key": "hot",
-              "color": "#c25a2c"
-            },
-            {
-              "date": "2013-07-31",
-              "day_label": "Jul 31",
-              "today_temp": 28.641,
-              "percentile": 87.5,
-              "category_key": "hot",
-              "color": "#c25a2c"
-            },
-            {
-              "date": "2013-07-30",
-              "day_label": "Jul 30",
-              "today_temp": 27.441,
-              "percentile": 50,
-              "category_key": "nope",
-              "color": "#e7d9b8"
             },
             {
               "date": "2013-07-29",
@@ -83234,9 +83202,41 @@
               "color": "#962c1a"
             },
             {
-              "date": "2013-07-28",
-              "day_label": "Jul 28",
-              "today_temp": 32.741,
+              "date": "2013-07-30",
+              "day_label": "Jul 30",
+              "today_temp": 27.441,
+              "percentile": 50,
+              "category_key": "nope",
+              "color": "#e7d9b8"
+            },
+            {
+              "date": "2013-07-31",
+              "day_label": "Jul 31",
+              "today_temp": 28.641,
+              "percentile": 87.5,
+              "category_key": "hot",
+              "color": "#c25a2c"
+            },
+            {
+              "date": "2013-08-01",
+              "day_label": "Aug 1",
+              "today_temp": 30.541,
+              "percentile": 87.5,
+              "category_key": "hot",
+              "color": "#c25a2c"
+            },
+            {
+              "date": "2013-08-02",
+              "day_label": "Aug 2",
+              "today_temp": 34.391,
+              "percentile": 97.5,
+              "category_key": "hell",
+              "color": "#962c1a"
+            },
+            {
+              "date": "2013-08-03",
+              "day_label": "Aug 3",
+              "today_temp": 35.591,
               "percentile": 97.5,
               "category_key": "hell",
               "color": "#962c1a"
@@ -83253,13 +83253,13 @@
               "min": null,
               "max": null,
               "categories": [
-                "03.08",
-                "02.08",
-                "01.08",
-                "31.07",
-                "30.07",
+                "28.07",
                 "29.07",
-                "28.07"
+                "30.07",
+                "31.07",
+                "01.08",
+                "02.08",
+                "03.08"
               ],
               "plot_lines": [],
               "plot_bands": []
@@ -83313,29 +83313,29 @@
                   {
                     "catName": "Ekstremno",
                     "color": "#962c1a",
-                    "label": "03.08",
+                    "label": "28.07",
                     "pct": 97.5,
-                    "temp": 35.591,
+                    "temp": 32.741,
                     "x": 0,
                     "y": 4
                   },
                   {
                     "catName": "Ekstremno",
                     "color": "#962c1a",
-                    "label": "02.08",
+                    "label": "29.07",
                     "pct": 97.5,
-                    "temp": 34.391,
+                    "temp": 33.041,
                     "x": 1,
                     "y": 4
                   },
                   {
-                    "catName": "Vroče",
-                    "color": "#c25a2c",
-                    "label": "01.08",
-                    "pct": 87.5,
-                    "temp": 30.541,
+                    "catName": "Normalno",
+                    "color": "#e7d9b8",
+                    "label": "30.07",
+                    "pct": 50,
+                    "temp": 27.441,
                     "x": 2,
-                    "y": 3
+                    "y": 2
                   },
                   {
                     "catName": "Vroče",
@@ -83347,29 +83347,29 @@
                     "y": 3
                   },
                   {
-                    "catName": "Normalno",
-                    "color": "#e7d9b8",
-                    "label": "30.07",
-                    "pct": 50,
-                    "temp": 27.441,
+                    "catName": "Vroče",
+                    "color": "#c25a2c",
+                    "label": "01.08",
+                    "pct": 87.5,
+                    "temp": 30.541,
                     "x": 4,
-                    "y": 2
+                    "y": 3
                   },
                   {
                     "catName": "Ekstremno",
                     "color": "#962c1a",
-                    "label": "29.07",
+                    "label": "02.08",
                     "pct": 97.5,
-                    "temp": 33.041,
+                    "temp": 34.391,
                     "x": 5,
                     "y": 4
                   },
                   {
                     "catName": "Ekstremno",
                     "color": "#962c1a",
-                    "label": "28.07",
+                    "label": "03.08",
                     "pct": 97.5,
-                    "temp": 32.741,
+                    "temp": 35.591,
                     "x": 6,
                     "y": 4
                   }
@@ -86704,44 +86704,12 @@
           "available": true,
           "days": [
             {
-              "date": "2013-08-03",
-              "day_label": "Aug 3",
-              "today_temp": 21.743,
-              "percentile": 97.5,
-              "category_key": "hell",
-              "color": "#962c1a"
-            },
-            {
-              "date": "2013-08-02",
-              "day_label": "Aug 2",
+              "date": "2013-07-28",
+              "day_label": "Jul 28",
               "today_temp": 20.243,
               "percentile": 97.5,
               "category_key": "hell",
               "color": "#962c1a"
-            },
-            {
-              "date": "2013-08-01",
-              "day_label": "Aug 1",
-              "today_temp": 15.643,
-              "percentile": 87.5,
-              "category_key": "hot",
-              "color": "#c25a2c"
-            },
-            {
-              "date": "2013-07-31",
-              "day_label": "Jul 31",
-              "today_temp": 13.293,
-              "percentile": 50,
-              "category_key": "nope",
-              "color": "#e7d9b8"
-            },
-            {
-              "date": "2013-07-30",
-              "day_label": "Jul 30",
-              "today_temp": 13.093,
-              "percentile": 50,
-              "category_key": "nope",
-              "color": "#e7d9b8"
             },
             {
               "date": "2013-07-29",
@@ -86752,9 +86720,41 @@
               "color": "#962c1a"
             },
             {
-              "date": "2013-07-28",
-              "day_label": "Jul 28",
+              "date": "2013-07-30",
+              "day_label": "Jul 30",
+              "today_temp": 13.093,
+              "percentile": 50,
+              "category_key": "nope",
+              "color": "#e7d9b8"
+            },
+            {
+              "date": "2013-07-31",
+              "day_label": "Jul 31",
+              "today_temp": 13.293,
+              "percentile": 50,
+              "category_key": "nope",
+              "color": "#e7d9b8"
+            },
+            {
+              "date": "2013-08-01",
+              "day_label": "Aug 1",
+              "today_temp": 15.643,
+              "percentile": 87.5,
+              "category_key": "hot",
+              "color": "#c25a2c"
+            },
+            {
+              "date": "2013-08-02",
+              "day_label": "Aug 2",
               "today_temp": 20.243,
+              "percentile": 97.5,
+              "category_key": "hell",
+              "color": "#962c1a"
+            },
+            {
+              "date": "2013-08-03",
+              "day_label": "Aug 3",
+              "today_temp": 21.743,
               "percentile": 97.5,
               "category_key": "hell",
               "color": "#962c1a"
@@ -86771,13 +86771,13 @@
               "min": null,
               "max": null,
               "categories": [
-                "03.08",
-                "02.08",
-                "01.08",
-                "31.07",
-                "30.07",
+                "28.07",
                 "29.07",
-                "28.07"
+                "30.07",
+                "31.07",
+                "01.08",
+                "02.08",
+                "03.08"
               ],
               "plot_lines": [],
               "plot_bands": []
@@ -86831,29 +86831,29 @@
                   {
                     "catName": "Ekstremno",
                     "color": "#962c1a",
-                    "label": "03.08",
+                    "label": "28.07",
                     "pct": 97.5,
-                    "temp": 21.743,
+                    "temp": 20.243,
                     "x": 0,
                     "y": 4
                   },
                   {
                     "catName": "Ekstremno",
                     "color": "#962c1a",
-                    "label": "02.08",
+                    "label": "29.07",
                     "pct": 97.5,
-                    "temp": 20.243,
+                    "temp": 18.993,
                     "x": 1,
                     "y": 4
                   },
                   {
-                    "catName": "Vroče",
-                    "color": "#c25a2c",
-                    "label": "01.08",
-                    "pct": 87.5,
-                    "temp": 15.643,
+                    "catName": "Normalno",
+                    "color": "#e7d9b8",
+                    "label": "30.07",
+                    "pct": 50,
+                    "temp": 13.093,
                     "x": 2,
-                    "y": 3
+                    "y": 2
                   },
                   {
                     "catName": "Normalno",
@@ -86865,29 +86865,29 @@
                     "y": 2
                   },
                   {
-                    "catName": "Normalno",
-                    "color": "#e7d9b8",
-                    "label": "30.07",
-                    "pct": 50,
-                    "temp": 13.093,
+                    "catName": "Vroče",
+                    "color": "#c25a2c",
+                    "label": "01.08",
+                    "pct": 87.5,
+                    "temp": 15.643,
                     "x": 4,
-                    "y": 2
+                    "y": 3
                   },
                   {
                     "catName": "Ekstremno",
                     "color": "#962c1a",
-                    "label": "29.07",
+                    "label": "02.08",
                     "pct": 97.5,
-                    "temp": 18.993,
+                    "temp": 20.243,
                     "x": 5,
                     "y": 4
                   },
                   {
                     "catName": "Ekstremno",
                     "color": "#962c1a",
-                    "label": "28.07",
+                    "label": "03.08",
                     "pct": 97.5,
-                    "temp": 20.243,
+                    "temp": 21.743,
                     "x": 6,
                     "y": 4
                   }
@@ -90222,41 +90222,9 @@
           "available": true,
           "days": [
             {
-              "date": "2012-02-07",
-              "day_label": "Feb 7",
-              "today_temp": -5.759,
-              "percentile": 5,
-              "category_key": "freezing",
-              "color": "#3a5a8a"
-            },
-            {
-              "date": "2012-02-06",
-              "day_label": "Feb 6",
-              "today_temp": -7.609,
-              "percentile": 5,
-              "category_key": "freezing",
-              "color": "#3a5a8a"
-            },
-            {
-              "date": "2012-02-05",
-              "day_label": "Feb 5",
-              "today_temp": -7.009,
-              "percentile": 5,
-              "category_key": "freezing",
-              "color": "#3a5a8a"
-            },
-            {
-              "date": "2012-02-04",
-              "day_label": "Feb 4",
-              "today_temp": -7.959,
-              "percentile": 5,
-              "category_key": "freezing",
-              "color": "#3a5a8a"
-            },
-            {
-              "date": "2012-02-03",
-              "day_label": "Feb 3",
-              "today_temp": -6.309,
+              "date": "2012-02-01",
+              "day_label": "Feb 1",
+              "today_temp": -2.159,
               "percentile": 5,
               "category_key": "freezing",
               "color": "#3a5a8a"
@@ -90270,9 +90238,41 @@
               "color": "#3a5a8a"
             },
             {
-              "date": "2012-02-01",
-              "day_label": "Feb 1",
-              "today_temp": -2.159,
+              "date": "2012-02-03",
+              "day_label": "Feb 3",
+              "today_temp": -6.309,
+              "percentile": 5,
+              "category_key": "freezing",
+              "color": "#3a5a8a"
+            },
+            {
+              "date": "2012-02-04",
+              "day_label": "Feb 4",
+              "today_temp": -7.959,
+              "percentile": 5,
+              "category_key": "freezing",
+              "color": "#3a5a8a"
+            },
+            {
+              "date": "2012-02-05",
+              "day_label": "Feb 5",
+              "today_temp": -7.009,
+              "percentile": 5,
+              "category_key": "freezing",
+              "color": "#3a5a8a"
+            },
+            {
+              "date": "2012-02-06",
+              "day_label": "Feb 6",
+              "today_temp": -7.609,
+              "percentile": 5,
+              "category_key": "freezing",
+              "color": "#3a5a8a"
+            },
+            {
+              "date": "2012-02-07",
+              "day_label": "Feb 7",
+              "today_temp": -5.759,
               "percentile": 5,
               "category_key": "freezing",
               "color": "#3a5a8a"
@@ -90289,13 +90289,13 @@
               "min": null,
               "max": null,
               "categories": [
-                "07.02",
-                "06.02",
-                "05.02",
-                "04.02",
-                "03.02",
+                "01.02",
                 "02.02",
-                "01.02"
+                "03.02",
+                "04.02",
+                "05.02",
+                "06.02",
+                "07.02"
               ],
               "plot_lines": [],
               "plot_bands": []
@@ -90349,27 +90349,27 @@
                   {
                     "catName": "Hladno",
                     "color": "#3a5a8a",
-                    "label": "07.02",
+                    "label": "01.02",
                     "pct": 5,
-                    "temp": -5.759,
+                    "temp": -2.159,
                     "x": 0,
                     "y": 0
                   },
                   {
                     "catName": "Hladno",
                     "color": "#3a5a8a",
-                    "label": "06.02",
+                    "label": "02.02",
                     "pct": 5,
-                    "temp": -7.609,
+                    "temp": -4.859,
                     "x": 1,
                     "y": 0
                   },
                   {
                     "catName": "Hladno",
                     "color": "#3a5a8a",
-                    "label": "05.02",
+                    "label": "03.02",
                     "pct": 5,
-                    "temp": -7.009,
+                    "temp": -6.309,
                     "x": 2,
                     "y": 0
                   },
@@ -90385,27 +90385,27 @@
                   {
                     "catName": "Hladno",
                     "color": "#3a5a8a",
-                    "label": "03.02",
+                    "label": "05.02",
                     "pct": 5,
-                    "temp": -6.309,
+                    "temp": -7.009,
                     "x": 4,
                     "y": 0
                   },
                   {
                     "catName": "Hladno",
                     "color": "#3a5a8a",
-                    "label": "02.02",
+                    "label": "06.02",
                     "pct": 5,
-                    "temp": -4.859,
+                    "temp": -7.609,
                     "x": 5,
                     "y": 0
                   },
                   {
                     "catName": "Hladno",
                     "color": "#3a5a8a",
-                    "label": "01.02",
+                    "label": "07.02",
                     "pct": 5,
-                    "temp": -2.159,
+                    "temp": -5.759,
                     "x": 6,
                     "y": 0
                   }
@@ -93761,41 +93761,9 @@
           "available": true,
           "days": [
             {
-              "date": "1985-01-07",
-              "day_label": "Jan 7",
-              "today_temp": -23.707,
-              "percentile": 5,
-              "category_key": "freezing",
-              "color": "#3a5a8a"
-            },
-            {
-              "date": "1985-01-06",
-              "day_label": "Jan 6",
-              "today_temp": -23.457,
-              "percentile": 5,
-              "category_key": "freezing",
-              "color": "#3a5a8a"
-            },
-            {
-              "date": "1985-01-05",
-              "day_label": "Jan 5",
-              "today_temp": -21.557,
-              "percentile": 5,
-              "category_key": "freezing",
-              "color": "#3a5a8a"
-            },
-            {
-              "date": "1985-01-04",
-              "day_label": "Jan 4",
-              "today_temp": -17.507,
-              "percentile": 5,
-              "category_key": "freezing",
-              "color": "#3a5a8a"
-            },
-            {
-              "date": "1985-01-03",
-              "day_label": "Jan 3",
-              "today_temp": -17.257,
+              "date": "1985-01-01",
+              "day_label": "Jan 1",
+              "today_temp": -14.857,
               "percentile": 5,
               "category_key": "freezing",
               "color": "#3a5a8a"
@@ -93809,9 +93777,41 @@
               "color": "#6c8fb6"
             },
             {
-              "date": "1985-01-01",
-              "day_label": "Jan 1",
-              "today_temp": -14.857,
+              "date": "1985-01-03",
+              "day_label": "Jan 3",
+              "today_temp": -17.257,
+              "percentile": 5,
+              "category_key": "freezing",
+              "color": "#3a5a8a"
+            },
+            {
+              "date": "1985-01-04",
+              "day_label": "Jan 4",
+              "today_temp": -17.507,
+              "percentile": 5,
+              "category_key": "freezing",
+              "color": "#3a5a8a"
+            },
+            {
+              "date": "1985-01-05",
+              "day_label": "Jan 5",
+              "today_temp": -21.557,
+              "percentile": 5,
+              "category_key": "freezing",
+              "color": "#3a5a8a"
+            },
+            {
+              "date": "1985-01-06",
+              "day_label": "Jan 6",
+              "today_temp": -23.457,
+              "percentile": 5,
+              "category_key": "freezing",
+              "color": "#3a5a8a"
+            },
+            {
+              "date": "1985-01-07",
+              "day_label": "Jan 7",
+              "today_temp": -23.707,
               "percentile": 5,
               "category_key": "freezing",
               "color": "#3a5a8a"
@@ -93828,13 +93828,13 @@
               "min": null,
               "max": null,
               "categories": [
-                "07.01",
-                "06.01",
-                "05.01",
-                "04.01",
-                "03.01",
+                "01.01",
                 "02.01",
-                "01.01"
+                "03.01",
+                "04.01",
+                "05.01",
+                "06.01",
+                "07.01"
               ],
               "plot_lines": [],
               "plot_bands": []
@@ -93888,27 +93888,27 @@
                   {
                     "catName": "Hladno",
                     "color": "#3a5a8a",
-                    "label": "07.01",
+                    "label": "01.01",
                     "pct": 5,
-                    "temp": -23.707,
+                    "temp": -14.857,
                     "x": 0,
                     "y": 0
                   },
                   {
-                    "catName": "Hladno",
-                    "color": "#3a5a8a",
-                    "label": "06.01",
-                    "pct": 5,
-                    "temp": -23.457,
+                    "catName": "Sveže",
+                    "color": "#6c8fb6",
+                    "label": "02.01",
+                    "pct": 15,
+                    "temp": -13.257,
                     "x": 1,
-                    "y": 0
+                    "y": 1
                   },
                   {
                     "catName": "Hladno",
                     "color": "#3a5a8a",
-                    "label": "05.01",
+                    "label": "03.01",
                     "pct": 5,
-                    "temp": -21.557,
+                    "temp": -17.257,
                     "x": 2,
                     "y": 0
                   },
@@ -93924,27 +93924,27 @@
                   {
                     "catName": "Hladno",
                     "color": "#3a5a8a",
-                    "label": "03.01",
+                    "label": "05.01",
                     "pct": 5,
-                    "temp": -17.257,
+                    "temp": -21.557,
                     "x": 4,
                     "y": 0
                   },
                   {
-                    "catName": "Sveže",
-                    "color": "#6c8fb6",
-                    "label": "02.01",
-                    "pct": 15,
-                    "temp": -13.257,
+                    "catName": "Hladno",
+                    "color": "#3a5a8a",
+                    "label": "06.01",
+                    "pct": 5,
+                    "temp": -23.457,
                     "x": 5,
-                    "y": 1
+                    "y": 0
                   },
                   {
                     "catName": "Hladno",
                     "color": "#3a5a8a",
-                    "label": "01.01",
+                    "label": "07.01",
                     "pct": 5,
-                    "temp": -14.857,
+                    "temp": -23.707,
                     "x": 6,
                     "y": 0
                   }
