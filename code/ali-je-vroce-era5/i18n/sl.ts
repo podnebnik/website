@@ -137,6 +137,14 @@ export const sl = {
     explain_station: "Temperatura na postaji {station}, razvrstena glede na zapise ERA5-Land od leta {year_min} za isto ±7-dnevno okno.",
     explain_national: "Današnji vrh je najvišja napovedana temperatura, razvrstena glede na zapise ERA5-Land od leta {year_min} za isto ±7-dnevno okno.",
 
+    // T-5.47 — the always-visible elevation-range line, rendered in the floating
+    // chooser (the one position:fixed element on the page). Carries BOTH endpoints by
+    // name — Koper (10 m) and Kredarica (2514 m) — because those two stations are what
+    // make D-5's Kredarica lapse correction and D-7's rejection of elevation-weighting
+    // comprehensible. Numbers are baked in as literals (not a locale-formatted param):
+    // "18 postaj" and the 10/2514 span are the D-7 facts this line exists to state.
+    elev_range: "18 postaj, od Kopra (10 m) do Kredarice (2514 m).",
+
     // T-5.20 — this 83-word climate background is collapsed behind a <details>
     // disclosure (the same native mechanism as the methodology panel). The
     // summary is the always-visible collapsed-state label.
@@ -486,6 +494,17 @@ export const sl = {
     legend_lowland: "Nižinska (<400m)",
   },
 
+  // T-5.47 — SHORT band names, used ONLY in the dot tooltip/aria (e.g. "Kredarica,
+  // 2514 m — alpska") and nowhere inline. Deliberately NOT the parenthesised `map.
+  // legend_*` strings above: those repeat the metre range, which the tooltip already
+  // prints, so a bare lowercase name is used mid-phrase instead.
+  bands: {
+    name_alpine:   "alpska",
+    name_mountain: "gorska",
+    name_foothill: "predgorska",
+    name_lowland:  "nižinska",
+  },
+
   // Sea level widget
   sea: {
     a11y: "Interaktivni prikaz dviga morske gladine v Kopru po scenarijih IPCC AR6; gumbi izberejo scenarij in verjetnost, drsnik leto, ločnica pa primerja sedanjost s projekcijo.",
@@ -524,6 +543,12 @@ export const sl = {
     summary: "Metodologija",
     stations: "{count, plural, one{# postaja} two{# postaji} few{# postaje} other{# postaj}} ERA5-Land",
     contact_label: "Popravki in vprašanja:",
+    // T-5.47 — the four-band legend table inside the methodology disclosure. This is
+    // the first place D-7's "only one station above 1000 m" fact becomes visible (the
+    // per-band counts are computed from meta.stations, never hardcoded). Band + range
+    // cell reuses map.legend_* verbatim; the count cell is plural-selected.
+    bands_title: "Višinski pasovi postaj",
+    bands_count: "{count, plural, one{# postaja} two{# postaji} few{# postaje} other{# postaj}}",
   },
 
   // Site meta (fallbacks)

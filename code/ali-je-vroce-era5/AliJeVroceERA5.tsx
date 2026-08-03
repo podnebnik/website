@@ -247,7 +247,7 @@ function Dashboard(props: { meta: SiteMeta }) {
       </RegressionPanel>
 
       {/* ── Methodology + trust furniture (T-6.1 / T-6.2) — foot of content ── */}
-      <MethodologyPanel stationCount={era5Stations.length} />
+      <MethodologyPanel stations={era5Stations} />
 
     </div>
   );

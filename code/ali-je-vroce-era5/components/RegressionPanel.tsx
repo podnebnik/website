@@ -6,7 +6,8 @@ import type { RegressionParams } from "../api.ts";
 import { fetchRegression, fetchCalendar, varLabel as varLabelOf,
          monthDayToDoy, doyToMonthDay, MONTH_LEN } from "../api.ts";
 import { sectionErrorFallback } from "./SectionError.tsx";
-import { t, fmtSigned, fmtDoy, fmtMonthLong } from "../i18n/format.ts";
+import { t, fmtSigned, fmtInt, fmtDoy, fmtMonthLong } from "../i18n/format.ts";
+import { bandColor, bandKey } from "../i18n/station-bands.ts";
 import { readUiPrefs, writeUiPref } from "../prefs.ts";
 
 const RegressionChart = lazy(() => import("../charts/RegressionChart.tsx").then(m => ({ default: m.RegressionChart })));
@@ -117,10 +118,11 @@ function createStore(props: ProviderProps) {
   };
   const locLabel   = () => stationLabel(selLoc());
   const varLabel   = () => VARIABLES.find(([k]) => k === selVar())?.[1] ?? selVar();
-  // T-5.27 part (3): the scatter card now names its station in the TITLE (it was only
-  // in the subtitle), so a reader whose station is set by the off-screen floating
-  // chooser can read the chart on its own. The day moves to the subtitle.
-  const chartTitle = () => `${stationLabel(selLoc())} · ${varLabel().split("(")[0]!.trim()}`;
+  // T-5.27 part (3): the scatter card names its station in the TITLE (it was only in
+  // the subtitle), so a reader whose station is set by the off-screen floating chooser
+  // can read the chart on its own. The day is in the subtitle. T-5.47: the title is now
+  // rendered as JSX (StationTag dot + metres + " · variable") directly in RegScatterCard,
+  // so the former `chartTitle` string memo is gone — a string cannot carry the dot node.
   const chartSub   = () => doyToLabel(doy());
 
   return {
@@ -130,7 +132,7 @@ function createStore(props: ProviderProps) {
     selWindow, setSelWindow,
     regData, calData, refetchReg, refetchCal,
     isPrecip, stats0, trend10, trendColor, totalChange,
-    stationLabel, locLabel, varLabel, chartTitle, chartSub,
+    stationLabel, locLabel, varLabel, chartSub,
     doyToLabel, VARIABLES, WINDOWS,
   };
 }
@@ -138,6 +140,48 @@ function createStore(props: ProviderProps) {
 type Store = ReturnType<typeof createStore>;
 const RegressionCtx = createContext<Store>();
 export const useReg = () => useContext(RegressionCtx)!;
+
+// ── T-5.47 station tag: coloured elevation dot + name (+ optional metres) ────────
+// Layer 2 of the elevation disclosure: wherever a single station is named as the
+// subject of an analysis header (scatter title, year-round title), show the band dot
+// PLUS the elevation in metres. The tooltip ("<station>, <n> m — <band>") lives on the
+// dot as BOTH `title` (hover) and `aria-label` (mirrored, so it is not hover-only).
+// The band NAME appears only in that tooltip — never inline next to the dot.
+//
+// The dot and the metres are <i>, deliberately NOT <span>: the year-round card's
+// snapshot capture reads `.all("span")`, so a <span> here would add a phantom entry
+// and change that array's length (T-5.47 step-7 / Change 3). Attribute text (title,
+// aria-label) is invisible to `.txt()`, so only the visible metres move a captured leaf.
+function StationTag(props: { name: string; withMetres?: boolean }) {
+  const s = useReg();
+  const st    = () => s.meta.stations.find(x => x.name === props.name);
+  const elev  = () => st()?.elevation;
+  const label = () => s.stationLabel(props.name);
+  const tip   = () => {
+    const e = elev();
+    return e == null ? label() : `${label()}, ${fmtInt(e)} m — ${t(`bands.name_${bandKey(e)}`)}`;
+  };
+  return (
+    <>
+      <Show when={elev() != null}>
+        <i class="station-dot" role="img" aria-label={tip()} title={tip()}
+           style={{ background: bandColor(elev()!) }} />
+      </Show>
+      {label()}
+      <Show when={props.withMetres && elev() != null}>
+        <i class="station-tag-m">{" "}{fmtInt(elev()!)} m</i>
+      </Show>
+    </>
+  );
+}
+
+// The year-round title "Celoletni trend · {station}" (reg.year_round_title) is split on
+// its {station} slot — via a NUL sentinel, so no reliance on the literal separator — so
+// RegYearRoundCard can drop a StationTag node where {station} sits while keeping sl.ts
+// the single source for the surrounding words.
+const SENTINEL = String.fromCharCode(0);
+const [TITLE_BEFORE_STATION, TITLE_AFTER_STATION] =
+  t("reg.year_round_title", { station: SENTINEL }).split(SENTINEL) as [string, string];
 
 // ── Provider ──────────────────────────────────────────────────────────────────
 
@@ -360,7 +404,9 @@ export function RegScatterCard() {
 
       <div style={panelHStyle}>
         <div style={{ "min-width": "0" }}>
-          <div style={panelTitleStyle}>{s.chartTitle()}</div>
+          {/* T-5.47 site 2 — station dot + metres, then " · variable". Captured leaf
+              `analysis.rendered.title` gains " <n> m" (text-only, no numeric value). */}
+          <div style={panelTitleStyle}><StationTag name={s.selLoc()} withMetres /> · {s.varLabel().split("(")[0]!.trim()}</div>
           <div style={{ ...panelSubStyle, "margin-top": "3px" }}>{s.chartSub()}</div>
         </div>
         <Show when={s.stats0()}>
@@ -428,7 +474,11 @@ export function RegYearRoundCard() {
 
       <div style={panelHStyle}>
         <div style={{ "min-width": "0" }}>
-          <div style={panelTitleStyle}>{t("reg.year_round_title", { station: s.stationLabel(s.selLoc()) })}</div>
+          {/* T-5.47 site 3 — station dot + metres. The title template "Celoletni trend ·
+              {station}" is split on its {station} slot so the tag renders as a node, not
+              a string. Captured leaf `year_round_calendar.rendered.title` gains " <n> m"
+              (text-only). The dot is an <i>, so `.all("span")` legend length is unchanged. */}
+          <div style={panelTitleStyle}>{TITLE_BEFORE_STATION}<StationTag name={s.selLoc()} withMetres />{TITLE_AFTER_STATION}</div>
           <div style={{ ...panelSubStyle, "margin-top": "3px" }}>
             {(s.VARIABLES.find(([k]) => k === s.selVar())?.[1] ?? s.selVar()).split("(")[0]!.trim()}
             {" · Theil-Sen + MK"}
@@ -497,7 +547,7 @@ export function RegYearRoundCard() {
 // (no unconditional blinking; T-5.15 guard). It is dismissed permanently on the first
 // OPEN (a selection is not required), persisted in localStorage (prefs.ts); if
 // storage is unavailable the cue simply shows again.
-interface ChooserOpt { name: string; label: string; national: boolean; }
+interface ChooserOpt { name: string; label: string; national: boolean; elevation?: number; }
 export function FloatingStationChooser(props: {
   heroAnchor:      () => HTMLElement | undefined;  // the today-status section
   heroLoc:         () => string | null;            // the hero's current location
@@ -527,7 +577,7 @@ export function FloatingStationChooser(props: {
   const stationOpts = createMemo<ChooserOpt[]>(() =>
     [...s.meta.stations]
       .sort((a, b) => (a.label ?? a.name).localeCompare(b.label ?? b.name, "sl"))
-      .map(st => ({ name: st.name, label: st.label ?? st.name, national: false })),
+      .map(st => ({ name: st.name, label: st.label ?? st.name, national: false, elevation: st.elevation })),
   );
   const options = createMemo<ChooserOpt[]>(() =>
     heroInView()
@@ -542,6 +592,13 @@ export function FloatingStationChooser(props: {
   const currentLabel = () => {
     const l = currentLoc();
     return l === props.nationalLoc ? nationalLabel() : s.stationLabel(l ?? "");
+  };
+  // Elevation of the currently-represented station (undefined for national / unknown),
+  // for the trigger's Layer-1 dot.
+  const currentElev = () => {
+    const l = currentLoc();
+    if (l == null || l === props.nationalLoc) return undefined;
+    return s.meta.stations.find(x => x.name === l)?.elevation;
   };
 
   let triggerRef: HTMLButtonElement | undefined;
@@ -656,7 +713,17 @@ export function FloatingStationChooser(props: {
     >
       <Show when={open()}>
         <div class="fsc-overlay" onClick={() => closeMenu(false)} />
-        <ul ref={listRef} class="fsc-list" role="listbox" aria-label={t("floc.listbox")} onKeyDown={onListKey}>
+        <ul ref={listRef} class="fsc-list" role="listbox" aria-label={t("floc.listbox")}
+            aria-describedby="fsc-range-hdr" onKeyDown={onListKey}>
+          {/* T-5.47 Layer 4 (T-5.47 revision) — the elevation-range line, now a HEADER
+              ROW at the top of the EXPANDED list, directly above the dots it explains.
+              role="presentation" keeps it OUT of the listbox's option semantics: it is
+              not an option, not focusable, not in `options()` (so not counted and not in
+              the roving-tabindex over optRefs/focusIdx), and carries no setsize/posinset.
+              It is announced as the list's group-level context via the listbox's
+              aria-describedby, not as a 19th station. Nothing shows when the chooser is
+              collapsed. Snapshot-invisible: the harness never mounts this component. */}
+          <li id="fsc-range-hdr" class="fsc-range" role="presentation">{t("today.elev_range")}</li>
           <For each={options()}>
             {(o, i) => {
               const selected = () => o.name === currentLoc();
@@ -670,6 +737,13 @@ export function FloatingStationChooser(props: {
                   tabindex={focusIdx() === i() ? 0 : -1}
                   onClick={() => choose(o.name)}
                 >
+                  {/* T-5.47 Layer 1 — dot ONLY (no metres, no tooltip): 18 rows, no room,
+                      and the band-collapse fix (Change 1) makes the four dots the sole
+                      encoding here. Decorative → aria-hidden; the option's text label is
+                      already its accessible name. National has no elevation → no dot. */}
+                  <Show when={!o.national && o.elevation != null}>
+                    <i class="fsc-dot" aria-hidden="true" style={{ background: bandColor(o.elevation!) }} />
+                  </Show>
                   {o.label}
                 </li>
               );
@@ -698,7 +772,13 @@ export function FloatingStationChooser(props: {
           <circle cx="12" cy="10" r="2.5" />
         </svg>
         <Show when={showLabel()}>
-          <span class="fsc-label">{currentLabel()}</span>
+          <span class="fsc-label">
+            {/* T-5.47 Layer 1 — dot only (matches the list); no metres in the trigger. */}
+            <Show when={currentElev() != null}>
+              <i class="fsc-dot" aria-hidden="true" style={{ background: bandColor(currentElev()!) }} />
+            </Show>
+            {currentLabel()}
+          </span>
         </Show>
       </button>
     </div>

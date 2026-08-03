@@ -20,8 +20,10 @@
 
 import { For } from "solid-js";
 import type { JSX } from "solid-js";
+import type { SiteMeta } from "../types.ts";
 import { methodologyMarkdown } from "../i18n/hero-content.ts";
 import { t } from "../i18n/format.ts";
+import { ELEV_BANDS, bandKey } from "../i18n/station-bands.ts";
 
 // T-6.2 correction contact. A literal address, not translatable prose.
 const CONTACT_EMAIL = "info@podnebnik.org";
@@ -114,7 +116,40 @@ function renderInline(text: string): (string | JSX.Element)[] {
 // Parsed once — the document is static.
 const BLOCKS: Block[] = parseBlocks(methodologyMarkdown);
 
-export function MethodologyPanel(props: { stationCount: number }) {
+// T-5.47 — the four-band elevation legend, rendered as a real table (the markdown
+// parser above has no table block kind, so this lives here rather than in
+// methodologyMarkdown — which keeps the published method prose, and thus
+// hero-content.ts / METHODOLOGY.md, unchanged). Band + range cell reuses the map's old
+// legend strings verbatim (map.legend_*, revived after T-5.46 left them dead); the
+// per-band count is COMPUTED from meta.stations — never hardcoded — so it is the first
+// place D-7's "only one station above 1000 m" fact becomes visible on the page. The
+// swatch is a coloured element (not an emoji), matching the chooser/tag dots exactly.
+function BandLegendTable(props: { stations: SiteMeta["stations"] }) {
+  const countOf = (key: string) =>
+    props.stations.filter((s) => bandKey(s.elevation) === key).length;
+  return (
+    <table class="methodology-bands">
+      <caption class="methodology-bands-cap">{t("methodology.bands_title")}</caption>
+      <tbody>
+        <For each={ELEV_BANDS}>
+          {(band) => (
+            <tr>
+              <td class="methodology-bands-swatch">
+                <i class="station-dot" aria-hidden="true" style={{ background: band.color }} />
+              </td>
+              <td class="methodology-bands-name">{t(`map.legend_${band.key}`)}</td>
+              <td class="methodology-bands-count">
+                {t("methodology.bands_count", { count: countOf(band.key) })}
+              </td>
+            </tr>
+          )}
+        </For>
+      </tbody>
+    </table>
+  );
+}
+
+export function MethodologyPanel(props: { stations: SiteMeta["stations"] }) {
   return (
     <section class="methodology sec-p">
       <details class="methodology-details">
@@ -135,13 +170,14 @@ export function MethodologyPanel(props: { stationCount: number }) {
               )
             }
           </For>
+          <BandLegendTable stations={props.stations} />
         </div>
       </details>
 
       {/* Always-visible trust furniture: station count (derived) + correction contact. */}
       <p class="methodology-furniture">
         <span class="methodology-furniture-stations">
-          {t("methodology.stations", { count: props.stationCount })}
+          {t("methodology.stations", { count: props.stations.length })}
         </span>
         <span class="methodology-furniture-sep" aria-hidden="true">·</span>
         <span class="methodology-furniture-contact">
