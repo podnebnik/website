@@ -70,7 +70,17 @@ resources:
     - name: trend10
       type: number
       title: Trend per decade
-      unit: °C/decade
+      # T-5.51 M4 — this column holds the per-decade trend for EVERY value of the
+      # `variable` column, so a single `unit` cannot describe it: temperatures are
+      # °C/decade, but precipitation_sum and et0_evapotranspiration are mm/decade
+      # (both stored as depths in mm). The former `unit: °C/decade` was wrong for two
+      # of the five variables; `unit` is documentation only (neither validate.py nor
+      # generate_frontend_schema.py reads it — both use field name/type), so the honest
+      # per-variable unit lives in the description instead.
+      description: >-
+        Theil-Sen trend per decade. Unit depends on the `variable` column:
+        °C/decade for temperature_max/temperature_min/temperature_mean;
+        mm/decade for precipitation_sum and et0_evapotranspiration.
     - name: p_val
       type: number
       title: Mann-Kendall p-value
@@ -141,7 +151,17 @@ resources:
     - name: trend10
       type: number
       title: Trend per decade
-      unit: °C/decade
+      # T-5.51 M4 — this column holds the per-decade trend for EVERY value of the
+      # `variable` column, so a single `unit` cannot describe it: temperatures are
+      # °C/decade, but precipitation_sum and et0_evapotranspiration are mm/decade
+      # (both stored as depths in mm). The former `unit: °C/decade` was wrong for two
+      # of the five variables; `unit` is documentation only (neither validate.py nor
+      # generate_frontend_schema.py reads it — both use field name/type), so the honest
+      # per-variable unit lives in the description instead.
+      description: >-
+        Theil-Sen trend per decade. Unit depends on the `variable` column:
+        °C/decade for temperature_max/temperature_min/temperature_mean;
+        mm/decade for precipitation_sum and et0_evapotranspiration.
     - name: p_val
       type: number
       title: Mann-Kendall p-value
