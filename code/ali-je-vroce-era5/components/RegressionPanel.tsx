@@ -713,7 +713,17 @@ export function FloatingStationChooser(props: {
     >
       <Show when={open()}>
         <div class="fsc-overlay" onClick={() => closeMenu(false)} />
-        <ul ref={listRef} class="fsc-list" role="listbox" aria-label={t("floc.listbox")} onKeyDown={onListKey}>
+        <ul ref={listRef} class="fsc-list" role="listbox" aria-label={t("floc.listbox")}
+            aria-describedby="fsc-range-hdr" onKeyDown={onListKey}>
+          {/* T-5.47 Layer 4 (T-5.47 revision) — the elevation-range line, now a HEADER
+              ROW at the top of the EXPANDED list, directly above the dots it explains.
+              role="presentation" keeps it OUT of the listbox's option semantics: it is
+              not an option, not focusable, not in `options()` (so not counted and not in
+              the roving-tabindex over optRefs/focusIdx), and carries no setsize/posinset.
+              It is announced as the list's group-level context via the listbox's
+              aria-describedby, not as a 19th station. Nothing shows when the chooser is
+              collapsed. Snapshot-invisible: the harness never mounts this component. */}
+          <li id="fsc-range-hdr" class="fsc-range" role="presentation">{t("today.elev_range")}</li>
           <For each={options()}>
             {(o, i) => {
               const selected = () => o.name === currentLoc();
@@ -740,17 +750,6 @@ export function FloatingStationChooser(props: {
             }}
           </For>
         </ul>
-      </Show>
-      {/* T-5.47 Layer 4 — the ALWAYS-VISIBLE elevation-range line. It lives in the
-          floating chooser because that is the ONLY position:fixed element on the page;
-          a hero line would be "visible on load", not always visible (D-7 needs the
-          latter). Shown whenever the chooser is shown (it fades only mid-scroll and
-          reappears on scroll-stop, at every scroll position) and the menu is closed —
-          the open list occupies the same space above the trigger. NOTE: the snapshot
-          harness never mounts FloatingStationChooser, so this line is unverifiable
-          offline by design (documented in PROGRESS). */}
-      <Show when={!open()}>
-        <div class="fsc-range" role="note">{t("today.elev_range")}</div>
       </Show>
       {/* Resting state: a compact location-pin icon; over the hero it widens to show
           the current location label (self-describing sole control). Its accessible
