@@ -17323,7 +17323,7 @@
           ]
         },
         "rendered": {
-          "title": "Celoletni trend · Ljubljana",
+          "title": "Celoletni trend · Ljubljana 299 m",
           "legend": [
             "Segrevanje",
             "Ohlajanje",
@@ -27906,7 +27906,7 @@
           ]
         },
         "rendered": {
-          "title": "Celoletni trend · Kredarica",
+          "title": "Celoletni trend · Kredarica 2514 m",
           "legend": [
             "Segrevanje",
             "Ohlajanje",
@@ -33703,7 +33703,7 @@
             ]
           },
           "day_label": "21. jul.",
-          "title": "Ljubljana · Najvišja temperatura",
+          "title": "Ljubljana 299 m · Najvišja temperatura",
           "subtitle": "21. jul.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,34",
           "total_change": "+4,35°C",
@@ -37229,7 +37229,7 @@
             ]
           },
           "day_label": "21. jul.",
-          "title": "Ljubljana · Najvišja temperatura",
+          "title": "Ljubljana 299 m · Najvišja temperatura",
           "subtitle": "21. jul.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,34",
           "total_change": "+4,35°C",
@@ -40755,7 +40755,7 @@
             ]
           },
           "day_label": "21. jul.",
-          "title": "Kredarica · Najvišja temperatura",
+          "title": "Kredarica 2514 m · Najvišja temperatura",
           "subtitle": "21. jul.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,25",
           "total_change": "+2,74°C",
@@ -44090,7 +44090,7 @@
             ]
           },
           "day_label": "29. jul.",
-          "title": "Ljubljana · Najvišja temperatura",
+          "title": "Ljubljana 299 m · Najvišja temperatura",
           "subtitle": "29. jul.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,33",
           "total_change": "+3,76°C",
@@ -47616,7 +47616,7 @@
             ]
           },
           "day_label": "29. jul.",
-          "title": "Ljubljana · Najvišja temperatura",
+          "title": "Ljubljana 299 m · Najvišja temperatura",
           "subtitle": "29. jul.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,33",
           "total_change": "+3,76°C",
@@ -51142,7 +51142,7 @@
             ]
           },
           "day_label": "29. jul.",
-          "title": "Kredarica · Najvišja temperatura",
+          "title": "Kredarica 2514 m · Najvišja temperatura",
           "subtitle": "29. jul.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,26",
           "total_change": "+2,40°C",
@@ -54477,7 +54477,7 @@
             ]
           },
           "day_label": "15. jul.",
-          "title": "Ljubljana · Najvišja temperatura",
+          "title": "Ljubljana 299 m · Najvišja temperatura",
           "subtitle": "15. jul.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,30",
           "total_change": "+3,54°C",
@@ -58003,7 +58003,7 @@
             ]
           },
           "day_label": "15. jul.",
-          "title": "Ljubljana · Najvišja temperatura",
+          "title": "Ljubljana 299 m · Najvišja temperatura",
           "subtitle": "15. jul.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,30",
           "total_change": "+3,54°C",
@@ -61529,7 +61529,7 @@
             ]
           },
           "day_label": "15. jul.",
-          "title": "Kredarica · Najvišja temperatura",
+          "title": "Kredarica 2514 m · Najvišja temperatura",
           "subtitle": "15. jul.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,19",
           "total_change": "+1,72°C",
@@ -62374,7 +62374,7 @@
             ]
           },
           "day_label": "28. feb.",
-          "title": "Ljubljana · Najvišja temperatura",
+          "title": "Ljubljana 299 m · Najvišja temperatura",
           "subtitle": "28. feb.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,21",
           "total_change": "+4,40°C",
@@ -63219,7 +63219,7 @@
             ]
           },
           "day_label": "28. feb.",
-          "title": "Kredarica · Najvišja temperatura",
+          "title": "Kredarica 2514 m · Najvišja temperatura",
           "subtitle": "28. feb.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,16",
           "total_change": "+2,90°C",
@@ -64015,7 +64015,7 @@
             ]
           },
           "day_label": "28. feb.",
-          "title": "Ljubljana · Najvišja temperatura",
+          "title": "Ljubljana 299 m · Najvišja temperatura",
           "subtitle": "28. feb.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,21",
           "total_change": "+4,40°C",
@@ -67523,7 +67523,7 @@
             ]
           },
           "day_label": "1. mar.",
-          "title": "Ljubljana · Najvišja temperatura",
+          "title": "Ljubljana 299 m · Najvišja temperatura",
           "subtitle": "1. mar.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,21",
           "total_change": "+4,29°C",
@@ -71049,7 +71049,7 @@
             ]
           },
           "day_label": "28. feb.",
-          "title": "Ljubljana · Najvišja temperatura",
+          "title": "Ljubljana 299 m · Najvišja temperatura",
           "subtitle": "28. feb.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,21",
           "total_change": "+4,40°C",
@@ -74575,7 +74575,7 @@
             ]
           },
           "day_label": "1. mar.",
-          "title": "Ljubljana · Najvišja temperatura",
+          "title": "Ljubljana 299 m · Najvišja temperatura",
           "subtitle": "1. mar.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,21",
           "total_change": "+4,29°C",
@@ -78101,7 +78101,7 @@
             ]
           },
           "day_label": "1. jan.",
-          "title": "Ljubljana · Najvišja temperatura",
+          "title": "Ljubljana 299 m · Najvišja temperatura",
           "subtitle": "1. jan.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,24",
           "total_change": "+3,73°C",
@@ -81619,7 +81619,7 @@
             ]
           },
           "day_label": "31. dec.",
-          "title": "Ljubljana · Najvišja temperatura",
+          "title": "Ljubljana 299 m · Najvišja temperatura",
           "subtitle": "31. dec.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,27",
           "total_change": "+3,90°C",
@@ -85137,7 +85137,7 @@
             ]
           },
           "day_label": "3. avg.",
-          "title": "Ljubljana · Najvišja temperatura",
+          "title": "Ljubljana 299 m · Najvišja temperatura",
           "subtitle": "3. avg.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,28",
           "total_change": "+3,13°C",
@@ -88655,7 +88655,7 @@
             ]
           },
           "day_label": "3. avg.",
-          "title": "Kredarica · Najvišja temperatura",
+          "title": "Kredarica 2514 m · Najvišja temperatura",
           "subtitle": "3. avg.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,22",
           "total_change": "+2,04°C",
@@ -92181,7 +92181,7 @@
             ]
           },
           "day_label": "7. feb.",
-          "title": "Ljubljana · Najvišja temperatura",
+          "title": "Ljubljana 299 m · Najvišja temperatura",
           "subtitle": "7. feb.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,25",
           "total_change": "+4,38°C",
@@ -95720,7 +95720,7 @@
             ]
           },
           "day_label": "7. jan.",
-          "title": "Kredarica · Najvišja temperatura",
+          "title": "Kredarica 2514 m · Najvišja temperatura",
           "subtitle": "7. jan.",
           "stats_badge": "Theil-Sen + TFPW MK · τ = 0,28",
           "total_change": "+4,16°C",

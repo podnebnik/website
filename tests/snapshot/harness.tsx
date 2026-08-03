@@ -725,7 +725,7 @@ export async function run(): Promise<RunResult> {
   // label are read; the static methodology prose is deliberately not captured.
   const methodologyUnit = await mount(
     "global.methodology",
-    () => <MethodologyPanel stationCount={era5Stations.length} />,
+    () => <MethodologyPanel stations={era5Stations} />,
     0,
   );
 
