@@ -281,7 +281,7 @@ function TropControls(props: {
 }) {
   const ctlLabel = { "font-family": "var(--font-mono)", "font-size": "10px", "letter-spacing": "0.06em", "text-transform": "uppercase", color: "var(--color-ink-soft)" } as const;
   return (
-    <div style={{ display: "flex", gap: "24px", "align-items": "center", "flex-wrap": "wrap", margin: "0 40px 12px" }}>
+    <div style={{ display: "flex", gap: "24px", "align-items": "center", "flex-wrap": "wrap", margin: "0 0 12px" }}>
       <label style={{ display: "flex", "align-items": "center", gap: "8px" }}>
         <span style={ctlLabel}>{t("tropical.ctrl_threshold")}</span>
         <input type="range" min={props.min} max={props.max} step={1} value={props.threshold}
