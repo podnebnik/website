@@ -238,7 +238,7 @@ export function SpeiTrendChart(props: SpeiTrendChartProps) {
     <div>
 
       {/* Season + month row (the station is set by the page-wide floating chooser) */}
-      <div style={{ display: "flex", "flex-wrap": "wrap", gap: "5px", "align-items": "center", margin: "0 40px 14px" }}>
+      <div style={{ display: "flex", "flex-wrap": "wrap", gap: "5px", "align-items": "center", margin: "0 0 14px" }}>
         <For each={SEASONS}>
           {(s) => <button style={periodBtnStyle(s)} onClick={() => setPeriod(s)}>{periodLabel(s)}</button>}
         </For>
@@ -249,7 +249,7 @@ export function SpeiTrendChart(props: SpeiTrendChartProps) {
       </div>
 
       {/* Chart card */}
-      <div style={{ margin: "0 40px" }}>
+      <div>
         <div style={{ background: "var(--color-card)", border: "1px solid var(--color-rule)", "border-radius": "var(--radius,10px)", overflow: "hidden" }}>
 
           {/* Panel header */}
