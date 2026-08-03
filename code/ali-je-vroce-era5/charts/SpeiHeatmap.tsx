@@ -1,5 +1,6 @@
 import { createSignal, createMemo, For, Show, onCleanup } from "solid-js";
 import { t, fmtNum, fmtSigned } from "../i18n/format.ts";
+import { SR_ONLY } from "./sr-only.ts";
 
 const SEASON_ORDER = ["Autumn", "Summer", "Spring", "Winter"] as const;
 type Season = typeof SEASON_ORDER[number];
@@ -33,14 +34,6 @@ const MODES = [
   { key: "Spring",   label: t("spei.label_Spring") },
   { key: "Winter",   label: t("spei.label_Winter") },
 ];
-
-// T-5.4a — visually-hidden (screen-reader-only) style. Kebab-case keys because
-// Solid's style() calls setProperty() and silently drops camelCase.
-const SR_ONLY = {
-  position: "absolute", width: "1px", height: "1px", padding: "0",
-  margin: "-1px", overflow: "hidden", clip: "rect(0,0,0,0)",
-  "white-space": "nowrap", border: "0",
-} as const;
 
 interface SpeiRow {
   season:  string;
@@ -290,8 +283,11 @@ export function SpeiHeatmap(props: SpeiHeatmapProps) {
       </Show>
 
       {/* T-5.4a — screen-reader data-table fallback (visually hidden). Slovenian
-          caption/headers awaiting operator review. */}
-      <table style={SR_ONLY}>
+          caption/headers awaiting operator review. SR_ONLY sits on the wrapping
+          <div>, not the <table>: a table ignores the 1px clamp and would extend
+          the page's scroll height past the footer (T-5.41). */}
+      <div style={SR_ONLY}>
+      <table>
         <caption>{t("spei.table_caption")}</caption>
         <thead>
           <tr>
@@ -318,6 +314,7 @@ export function SpeiHeatmap(props: SpeiHeatmapProps) {
           </For>
         </tbody>
       </table>
+      </div>
     </div>
   );
 }
