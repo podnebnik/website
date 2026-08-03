@@ -74,6 +74,21 @@ export function varLabel(v: string): string {
   return lbl === key ? `${v} (°C)` : lbl;
 }
 
+// T-5.51 (M1–M3) — the base measurement unit for a selectable trend variable, keyed
+// on the same variable string the picker uses. Precipitation and ET₀ are depths in
+// mm (both accumulated over the window; validate_raw.py bounds them in mm); the three
+// temperatures are °C. This is the ONE source for the three api.ts sites that used to
+// hardcode "°C" (fetchRegression + fetchCalendar tooltip units, buildRegressionResult
+// chg_str), so a degree symbol can never again leak onto a precipitation/ET₀ series.
+// It deliberately does NOT subsume the already-variable-aware surfaces (RegressionPanel
+// `isPrecip` big number, YearRoundChart `IS_PRECIP` bar colours, the `varLabel` y-axis
+// title) — folding those into one per-variable metadata object is a refactor out of
+// this ticket's scope (see PROGRESS.md T-5.51).
+const PRECIP_VARS = new Set(["precipitation_sum", "et0_evapotranspiration"]);
+export function varUnit(v: string): string {
+  return PRECIP_VARS.has(v) ? "mm" : "°C";
+}
+
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
 async function dsGet<T>(path: string): Promise<T> {
@@ -643,7 +658,7 @@ export async function fetchRegression(p: RegressionParams): Promise<RegressionRe
     results:    era5Results.filter(Boolean) as RegressionResult[],
     date_label: fmtMonthDay(month, day),
     ylabel:     varLabel(p.var),
-    unit:       "°C",
+    unit:       varUnit(p.var),  // T-5.51 M1 — mm for precip/ET₀, °C otherwise
   };
 }
 
@@ -686,7 +701,11 @@ async function buildRegressionResult(
       method: "Theil-Sen + TFPW MK", trend10: r.trend10, metric: r.trend10,
       metric_lbl: "trend / 10 let", p_val: r.p_val,
       direction: r.trend10 >= 0 ? "up" : "down",
-      chg_str: `${r.trend10 >= 0 ? "+" : ""}${r.trend10.toFixed(2)} °C/10y`,
+      // T-5.51 M3 — unit derived per variable. NOTE: chg_str is still DEAD (nothing
+      // renders it; grep confirms only this assignment + the types.ts declaration).
+      // Fixed anyway so the value is not wrong if a future consumer renders it; its
+      // correctness here is not evidence of anything on the page.
+      chg_str: `${r.trend10 >= 0 ? "+" : ""}${r.trend10.toFixed(2)} ${varUnit(variable)}/10y`,
       fit_desc: `τ = ${fmtNum(r.tau, 2)}`,
       sig_label: r.p_val < 0.05 ? "p < 0,05" : `p = ${fmtNum(r.p_val, 3)}`,
       n_years: r.n_years, ar1: null,
@@ -835,7 +854,9 @@ export async function fetchCalendar(
   const rows = await dsGet<CalendarRow[]>(
     `${src.table}.json?_shape=array&${atCol("era5_name")}__exact=${encodeURIComponent(loc)}&${atCol("variable")}__exact=${encodeURIComponent(variable)}&${dsCols(CALENDAR_COLS)}${src.filter}&_size=400`
   );
-  return { loc, var: variable, unit: "°C", method_label: "Theil-Sen + TFPW MK", rows };
+  // T-5.51 M2 — unit derived per variable (mm for precip/ET₀), feeds the year-round
+  // tooltip "{trend} {unit}/desetletje".
+  return { loc, var: variable, unit: varUnit(variable), method_label: "Theil-Sen + TFPW MK", rows };
 }
 
 // ── fetchAnnualTrend ───────────────────────────────────────────────────────────
