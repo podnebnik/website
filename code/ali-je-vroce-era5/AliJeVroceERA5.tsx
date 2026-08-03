@@ -1,5 +1,5 @@
 import { createSignal, createResource, createMemo, Show, Suspense, ErrorBoundary, lazy } from "solid-js";
-import { fetchMeta, fetchPageData, fetchSpeiHeatmap, fetchSpeiStationSeasonal, dateToDoy, ERA5_NATIONAL, BASELINE_LABEL } from "./api.ts";
+import { fetchMeta, fetchPageData, fetchLastDataDay, fetchSpeiHeatmap, fetchSpeiStationSeasonal, dateToDoy, ERA5_NATIONAL, BASELINE_LABEL } from "./api.ts";
 import { today as todayIso } from "./clock.ts";
 import { sectionErrorFallback } from "./components/SectionError.tsx";
 import { EmptyState } from "./components/EmptyState.tsx";
@@ -16,7 +16,7 @@ import { TodayTrendChart } from "./components/TodayTrendChart.tsx";
 import { RegressionPanel, RegToolbar, RegScatterCard, RegYearRoundCard, FloatingStationChooser, useReg } from "./components/RegressionPanel.tsx";
 import { MethodologyPanel } from "./components/MethodologyPanel.tsx";
 import type { SiteMeta } from "./types.ts";
-import { t, fmtNum, fmtInt, fmtMonthDay } from "./i18n/format.ts";
+import { t, fmtNum, fmtInt, fmtMonthDay, fmtIsoDate } from "./i18n/format.ts";
 
 const Era5SeasonHeatmapChart = lazy(() => import("./charts/Era5SeasonHeatmap.tsx").then(m => ({ default: m.Era5SeasonHeatmap })));
 // T-5.46: station map hidden for v1 (D-31). Code retained deliberately — revive by
@@ -88,6 +88,12 @@ function Dashboard(props: { meta: SiteMeta }) {
   const todayData = () => pageDataResolved()?.status;
   const last7Data = () => pageDataResolved()?.last7;
 
+  // T-6.12 — last measured day in the served data, for the "podatki do …" hero line.
+  // A standalone resource (not folded into pageData/fetchMeta) so it never enters the
+  // snapshot harness's fetch surface; it fetches once, is location-independent, and the
+  // line is simply hidden while it resolves or if it fails.
+  const [lastDataDay] = createResource(fetchLastDataDay);
+
   // T-5.46: station map hidden for v1 (D-31). Code retained deliberately — revive by
   // uncommenting; StationMap.tsx is untouched.
   // T-5.39 — `mapLoc` now MIRRORS the below-hero selection; it no longer writes it.
@@ -113,6 +119,9 @@ function Dashboard(props: { meta: SiteMeta }) {
           <div class="today-heading-text">
             <span class="today-heading-title">{t("sections.today_title")}</span>
             <span class="today-heading-subtitle">{t("sections.today_subtitle")}</span>
+            <Show when={lastDataDay()}>
+              {(d) => <span class="today-heading-date">{t("sections.today_data_age", { date: fmtIsoDate(d()) })}</span>}
+            </Show>
           </div>
         </div>
 

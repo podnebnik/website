@@ -59,6 +59,9 @@
 .today-heading-text { display: flex; flex-direction: column; gap: 2px; align-items: center; }
 .today-heading-title { font-family: 'Playfair Display', serif; font-weight: 400; font-size: 40px; letter-spacing: 0.01em; color: var(--color-ink); }
 .today-heading-subtitle { font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 400; color: var(--color-ink-soft); }
+/* T-6.12 — the "podatki do …" data-age line, smaller than the 13px subtitle. A
+   dedicated class (one restyle point for the open T-5.53 typography adoption). */
+.today-heading-date { font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 400; color: var(--color-ink-soft); opacity: 0.85; }
 
 .today-date-control { display: flex; align-items: center; gap: 3px; flex-shrink: 0; justify-content: center; }
 /* T-5.32: the date badge doubles as the hero calendar trigger; the popover (styled by
