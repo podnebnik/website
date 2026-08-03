@@ -5,8 +5,12 @@
  */
 
 /* ── Font imports ─────────────────────────────────────────────────────────── */
-/* Space Grotesk, Playfair Display, JetBrains Mono */
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap');
+/* T-5.53: page text now adopts the site families (Bitter + IBM Plex Sans), which
+   the Eleventy shell already loads (base.html). Playfair Display dropped — nothing
+   renders it after the token swap. Space Grotesk kept: 8 Highcharts configs still
+   name it (out of scope to restyle), so it must keep loading or those charts fall
+   back silently. JetBrains Mono kept: the whole mono "data/lab" register stays. */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
 
 /* ── Design tokens ────────────────────────────────────────────────────────── */
 
@@ -23,8 +27,11 @@
   --color-rule:       rgba(14,14,12,0.10);
   --color-rule-2:     rgba(14,14,12,0.18);
 
-  --font-sans:  'Space Grotesk', system-ui, sans-serif;
-  --font-serif: 'Playfair Display', Georgia, serif;
+  /* T-5.53: adopt the site families so this page reads as one site with
+     /ali-je-vroce/. Values mirror styles/main.css:12-13. --font-mono is
+     deliberately unchanged — its register has no counterpart to adopt. */
+  --font-sans:  'IBM Plex Sans', 'sans-serif';
+  --font-serif: 'Bitter', 'Arial', 'Helvetica', 'serif';
   --font-mono:  'JetBrains Mono', 'Fira Mono', monospace;
   --radius:     10px;
 
@@ -57,11 +64,11 @@
 
 .today-status .sec-heading { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; padding: 0 0 16px; }
 .today-heading-text { display: flex; flex-direction: column; gap: 2px; align-items: center; }
-.today-heading-title { font-family: 'Playfair Display', serif; font-weight: 400; font-size: 40px; letter-spacing: 0.01em; color: var(--color-ink); }
-.today-heading-subtitle { font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 400; color: var(--color-ink-soft); }
+.today-heading-title { font-family: var(--font-serif); font-weight: 400; font-size: 40px; letter-spacing: 0.01em; color: var(--color-ink); }
+.today-heading-subtitle { font-family: var(--font-sans); font-size: 13px; font-weight: 400; color: var(--color-ink-soft); }
 /* T-6.12 — the "podatki do …" data-age line, smaller than the 13px subtitle. A
    dedicated class (one restyle point for the open T-5.53 typography adoption). */
-.today-heading-date { font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 400; color: var(--color-ink-soft); opacity: 0.85; }
+.today-heading-date { font-family: var(--font-sans); font-size: 11px; font-weight: 400; color: var(--color-ink-soft); opacity: 0.85; }
 
 .today-date-control { display: flex; align-items: center; gap: 3px; flex-shrink: 0; justify-content: center; }
 /* T-5.32: the date badge doubles as the hero calendar trigger; the popover (styled by
