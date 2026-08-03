@@ -591,7 +591,13 @@ export async function fetchLast7(date: string, loc: string | null): Promise<Last
       return { date: r.date, day_label: dayLabel(r.month, r.day), today_temp: r.temperature_max_2m, percentile: cat.percentile, category_key: cat.category_key, color: cat.color };
     })
   );
-  const days = dayResults.filter(Boolean) as Last7["days"];
+  // `_sort_desc=date` (line 582) selects the seven MOST RECENT rows (date <= today);
+  // the strip's x-axis is index-based (TodayLast7Chart.tsx: x = i), so newest-first
+  // rows would render right-to-left. Reverse to restore chronological order —
+  // oldest-left, today-right. Both are load-bearing: the sort picks the right seven,
+  // the reverse orients them; do not "simplify" one away. `.slice()` reverses a copy,
+  // never the filtered array in place, so no other holder is flipped underneath. (T-5.52)
+  const days = (dayResults.filter(Boolean) as Last7["days"]).slice().reverse();
   return { available: days.length > 0, days };
 }
 
