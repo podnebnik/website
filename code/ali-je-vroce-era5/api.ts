@@ -114,6 +114,7 @@ async function dsGet<T>(path: string): Promise<T> {
 const STATIONS_COLS       = ["era5_name", "name", "lat", "lon", "elevation", "station_id"] as const satisfies readonly StationsCol[];
 const DAILY_TODAY_COLS    = ["temperature_max_2m"] as const satisfies readonly DailyCol[];
 const DAILY_LAST7_COLS    = ["date", "temperature_max_2m", "month", "day"] as const satisfies readonly DailyCol[];
+const DAILY_LAST_DAY_COLS = ["date"] as const satisfies readonly DailyCol[];
 const SEASON_HEATMAP_COLS = ["x", "y", "season", "avg", "percentile", "cat", "rank", "total", "color", "n_days"] as const satisfies readonly SeasonHeatmapCol[];
 const SPEI_COLS           = ["y", "spei", "balance", "cat", "rank", "total", "color", "season", "n_days"] as const satisfies readonly SpeiCol[];
 const SPEI_STATION_COLS   = ["era5_name", "series", "years_json", "spei_json", "trend_json"] as const satisfies readonly SpeiStationCol[];
@@ -621,6 +622,28 @@ export async function fetchPageData(
     fetchLast7(date, loc),
   ]);
   return { status, last7 };
+}
+
+// ── fetchLastDataDay ─────────────────────────────────────────────────────────────
+
+// T-6.12 — the "podatki do …" line under the hero. Returns the LAST measured day in
+// the served `daily` table (the global max `date`, `_sort_desc=date&_size=1`), so the
+// displayed date derives from the DATA and stops advancing the moment the pipeline
+// stops — unlike a build/deploy timestamp, which would read "just now" during an
+// outage. It is always a reanalysis row (final `era5` or preliminary `era5t`): the
+// client-side Open-Meteo forecast fallback is never persisted here, so the max date
+// can never be a forecast. The `daily` table carries no `source` column, so the
+// frontend cannot tell final from preliminary — "last measured day" is the honest
+// grain either way. `null` on an empty/failed read; the caller hides the line.
+//
+// A dedicated query (not folded into fetchMeta) BY DESIGN: the snapshot harness calls
+// fetchMeta and asserts no fixture misses (harness.tsx:695), but never mounts the hero,
+// so keeping this out of fetchMeta leaves the snapshot surface untouched.
+export async function fetchLastDataDay(): Promise<string | null> {
+  const rows = await dsGet<Array<{ date: string }>>(
+    `daily.json?_shape=array&_sort_desc=date&_size=1&${dsCols(DAILY_LAST_DAY_COLS)}`
+  );
+  return rows[0]?.date ?? null;
 }
 
 // ── fetchSeasonHeatmap ─────────────────────────────────────────────────────────

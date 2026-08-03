@@ -80,6 +80,8 @@ export const sl = {
   sections: {
     today_title: "ERA5 — Ali je vroče?",
     today_subtitle: "reanaliza ERA5-Land v primerjavi z zgodovinskimi percentili",
+    // T-6.12 — last measured day in the served data (interpolated via Intl sl-SI).
+    today_data_age: "podatki do {date}",
     trends_analysis: "Analiza trendov · ERA5-Land reanaliza",
     location_details: "Podrobnosti lokacije",
     season_overview: "Sezonski pregled",

@@ -110,6 +110,14 @@ export function fmtMonthDayYear(month: number, day: number, year: number): strin
   return dtShortYear.format(new Date(year, month - 1, day));
 }
 
+/** Slovenian short date for an ISO "YYYY-MM-DD" string, e.g. "2026-07-22" →
+ * "22. jul. 2026". Parses the parts by hand (not `new Date(iso)`, which would apply a
+ * UTC/local offset) and defers all formatting to fmtMonthDayYear (T-6.12). */
+export function fmtIsoDate(iso: string): string {
+  const [y, m, d] = iso.split("-").map(Number);
+  return fmtMonthDayYear(m!, d!, y!);
+}
+
 /** Slovenian short date for a day-of-year (1..365 on the 2001 non-leap calendar). */
 export function fmtDoy(doy: number): string {
   const d = new Date(Date.UTC(2001, 0, 1));
