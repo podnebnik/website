@@ -82,6 +82,11 @@ export const sl = {
     today_subtitle: "reanaliza ERA5-Land v primerjavi z zgodovinskimi percentili",
     // T-6.12 — last measured day in the served data (interpolated via Intl sl-SI).
     today_data_age: "podatki do {date}",
+    // T-6.13 — appended to today_data_age ONLY when the hero is currently showing an
+    // Open-Meteo forecast value (todayData().is_preliminary). The leading " · " lives
+    // inside the string and is rendered inside the same <Show>, so the separator can
+    // never appear without the words. The date itself is never advanced (see PROGRESS).
+    today_forecast_suffix: " · danes napoved",
     trends_analysis: "Analiza trendov · ERA5-Land reanaliza",
     location_details: "Podrobnosti lokacije",
     season_overview: "Sezonski pregled",
