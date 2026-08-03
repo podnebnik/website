@@ -128,6 +128,20 @@ def create_databases(c, no_validate=False, no_validate_arch=None):
             'tables': {},
         }
 
+        # T-5.49: disable arbitrary SQL (the `?sql=` / `?_where=` surface) per-database.
+        # A crawler enumerated stage-data on 2026-08-03 with `?sql=` queries, saturating
+        # the datasette pod (~2200m CPU) until it was OOMKilled. `?sql=` and `?_where=`
+        # are gated by the single `execute-sql` permission in datasette 0.65.2
+        # (default_permissions.py `execute-sql`; filters.py rejects `?_where=` when it is
+        # denied), so this `allow_sql: false` block refuses both with 403 for the database
+        # it is set on. It is scoped OFF `temperature` on purpose: the legacy
+        # /ali-je-vroce/ page (code/ali-je-vroce/helpers.ts) still issues a `?_where=`
+        # against temperature, and 0.65.2 has no way to allow `_where` while blocking
+        # `?sql=` on the same database. Whether that page is migrated or retired — which
+        # would let temperature be closed too — is an operator decision, out of scope here.
+        if package.name in ('climate-si', 'emissions'):
+            metadata['databases'][package.name]['allow_sql'] = False
+
         # Import resources
         for resource in package.resources:
             if resource.format == 'csv':
@@ -173,5 +187,15 @@ def create_databases(c, no_validate=False, no_validate_arch=None):
 def datasette(c):
     '''Start datasette server.'''
     log('\nStarting Datasette server...\n')
+    # T-5.49: query-surface hardening (see the allow_sql block in create_databases).
+    #   allow_facet false      — refuse ?_facet= (each a COUNT(*) GROUP BY over a table);
+    #                            nothing in the repo requests facets.
+    #   suggest_facets false   — stop datasette computing suggested facets on every table
+    #                            load; nothing reads `suggested_facets` from the response.
+    #   allow_csv_stream false — refuse .csv?_stream=1, which otherwise bypasses
+    #                            max_returned_rows entirely; nothing in the repo uses it.
+    # max_returned_rows stays 150000: the largest legitimate single request is ~70,080 rows
+    # (temperature climate_models map via _size=max); lowering it silently truncates those
+    # map pages, which have no truncation guard.
     # TODO: remove custom setting when no longer needed
-    c.run(f'datasette serve {SQLITE_DIR} --inspect-file {SQLITE_DIR}/inspect-data.json --metadata {SQLITE_DIR}/metadata.json --port 8010 --cors --setting max_returned_rows 150000')
+    c.run(f'datasette serve {SQLITE_DIR} --inspect-file {SQLITE_DIR}/inspect-data.json --metadata {SQLITE_DIR}/metadata.json --port 8010 --cors --setting max_returned_rows 150000 --setting allow_facet false --setting suggest_facets false --setting allow_csv_stream false')
