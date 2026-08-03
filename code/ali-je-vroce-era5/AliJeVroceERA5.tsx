@@ -120,7 +120,20 @@ function Dashboard(props: { meta: SiteMeta }) {
             <span class="today-heading-title">{t("sections.today_title")}</span>
             <span class="today-heading-subtitle">{t("sections.today_subtitle")}</span>
             <Show when={lastDataDay()}>
-              {(d) => <span class="today-heading-date">{t("sections.today_data_age", { date: fmtIsoDate(d()) })}</span>}
+              {(d) => (
+                <span class="today-heading-date">
+                  {t("sections.today_data_age", { date: fmtIsoDate(d()) })}
+                  {/* T-6.13 — suffix only while the hero shows a forecast value
+                      (the same is_preliminary flag as TodayCard's "napoved" badge,
+                      api.ts:503-507/534-546). The separator is bundled into the
+                      catalogue string and gated here, so it never renders alone. The
+                      DATE is national/location-independent; only this suffix follows
+                      the reader's current selection (accepted — see PROGRESS). */}
+                  <Show when={todayData()?.is_preliminary}>
+                    {t("sections.today_forecast_suffix")}
+                  </Show>
+                </span>
+              )}
             </Show>
           </div>
         </div>
