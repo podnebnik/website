@@ -798,7 +798,8 @@ export async function run(): Promise<RunResult> {
       default_language: meta.default_language,
       map: meta.map,
       branding: meta.branding,
-      strings: meta.strings,
+      // T-5.51 (§3) — meta.strings removed; explain_reg/explain_cal are now rendered
+      // reactively per variable in RegressionPanel, captured via the panel mounts below.
       station_count: era5Stations.length,
       stations: era5Stations.map((s) => ({
         name: s.name,

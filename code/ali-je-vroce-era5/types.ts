@@ -90,7 +90,8 @@ export interface SiteMeta {
   map:              { center_lat: number; center_lon: number; zoom: number };
   branding:         { site_title: string };
   stations: Array<{ name: string; label: string; source: "era5" | "arso"; lat: number; lon: number; elevation: number }>;
-  strings:          { explain_reg: string; explain_cal: string };
+  // T-5.51 (§3) — explain_reg/explain_cal moved out of meta: they now vary by selected
+  // variable and are rendered reactively via t() in RegressionPanel, not baked once here.
 }
 
 /** Datasette si_season_heatmap row */

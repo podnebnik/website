@@ -256,12 +256,26 @@ export const sl = {
 
     year_round_title: "Celoletni trend · {station}",
     year_round_sub: "trend na desetletje za vsak dan v letu · rdeča črta = izbrani dan",
-    warming: "Segrevanje",
-    cooling: "Ohlajanje",
+    // T-5.51 (E1) — the year-round legend pair, three-way by selected variable.
+    // The WORDS match the bar colours (trend-colors.ts): temperature red/blue, but
+    // precip/ET₀ are blue = more, amber = less — red never appears for those two.
+    warming: "Segrevanje",           // temperature, positive trend (red)
+    cooling: "Ohlajanje",            // temperature, negative trend (blue)
+    more_precip: "Več padavin",      // precipitation, positive trend (blue)
+    less_precip: "Manj padavin",     // precipitation, negative trend (amber)
+    more_et0: "Večja sušilna moč",   // ET₀, positive trend (blue)
+    less_et0: "Manjša sušilna moč",  // ET₀, negative trend (amber)
     year_round_footer: "prosojnost = značilnost · p < 0,001 povsem neprosojno",
 
+    // T-5.51 (E3) — precip/ET₀ read raw columns with NO elevation correction, so the
+    // "· nadmorska korekcija" clause is dropped for them (it is simply false there).
     explain_reg: "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija",
-    explain_cal: "Trend na desetletje za vsak dan v letu · rdeča = ogrevanje · modra = ohlajanje · prosojnost = statistična značilnost",
+    explain_reg_nocorr: "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land",
+    // T-5.51 (E2) — the calendar colour legend, three-way; only the colour clause
+    // varies. "segrevanje" (was "ogrevanje") unifies with the reg.warming legend word.
+    explain_cal: "Trend na desetletje za vsak dan v letu · rdeča = segrevanje · modra = ohlajanje · prosojnost = statistična značilnost",
+    explain_cal_precip: "Trend na desetletje za vsak dan v letu · modra = več padavin · oranžna = manj padavin · prosojnost = statistična značilnost",
+    explain_cal_et0: "Trend na desetletje za vsak dan v letu · modra = večja sušilna moč · oranžna = manjša sušilna moč · prosojnost = statistična značilnost",
 
     // T-4.26b (D-34) — the trend half-window control below the hero. ±7 is the
     // published default (annual_trend); ±3/±15/±45 read annual_trend_windows. Only
