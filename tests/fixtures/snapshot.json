@@ -15856,7 +15856,7 @@
         "loc": "Ljubljana",
         "variable": "temperature_max",
         "unit": "°C",
-        "method_label": "Theil-Sen + TFPW MK",
+        "method_label": "Theil-Sen + MK",
         "n_rows": 365,
         "rows": {
           "01-01": [
@@ -26439,7 +26439,7 @@
         "loc": "Kredarica",
         "variable": "temperature_max",
         "unit": "°C",
-        "method_label": "Theil-Sen + TFPW MK",
+        "method_label": "Theil-Sen + MK",
         "n_rows": 365,
         "rows": {
           "01-01": [
@@ -33247,7 +33247,7 @@
         "rendered": {
           "title": "Najvišje temperature v Sloveniji okoli 21. jul. · 1950–2026 · trend s projekcijo do 2050",
           "explain": "Vsaka pika je povprečna vrednost (nacionalne povprečne dnevne najvišje temperature vseh 18 postaj) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,45 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 27,2 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-          "footer": "Theil-Sen + TFPW MK: +0,45 °C/desetletje · p < 0,001 · τ = 0,295 · 95% CI · 77 let",
+          "footer": "Theil-Sen + MK: +0,45 °C/desetletje · p < 0,001 · τ = 0,295 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
             "label": "2026",
@@ -33703,11 +33703,11 @@
           "day_label": "21. jul.",
           "title": "Ljubljana 299 m · Najvišja temperatura",
           "subtitle": "21. jul.",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,34",
+          "stats_badge": "Theil-Sen + MK · τ = 0,34",
           "total_change": "+4,35°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
           ]
         },
         "charts": [
@@ -34407,7 +34407,7 @@
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
             "Sto let segrevanja za +5,65 °C – pri trenutnem tempu vsaka 17,7 let doda eno stopinjo.",
-            "Theil-Sen + TFPW Mann-Kendall"
+            "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
             "Mestni toplotni otok — poletni vročinski stres in tveganje hudourniških poplav v Ljubljanski kotlini",
@@ -36773,7 +36773,7 @@
         "rendered": {
           "title": "Najvišje temperature na postaji Ljubljana okoli 21. jul. · 1950–2026 · trend s projekcijo do 2050",
           "explain": "Vsaka pika je povprečna vrednost (lapsno popravljene dnevne najvišje temperature na postaji Ljubljana) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,56 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 28,4 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-          "footer": "Theil-Sen + TFPW MK: +0,56 °C/desetletje · p < 0,001 · τ = 0,335 · 95% CI · 77 let",
+          "footer": "Theil-Sen + MK: +0,56 °C/desetletje · p < 0,001 · τ = 0,335 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
             "label": "2026",
@@ -37229,11 +37229,11 @@
           "day_label": "21. jul.",
           "title": "Ljubljana 299 m · Najvišja temperatura",
           "subtitle": "21. jul.",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,34",
+          "stats_badge": "Theil-Sen + MK · τ = 0,34",
           "total_change": "+4,35°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
           ]
         },
         "charts": [
@@ -37933,7 +37933,7 @@
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
             "Sto let segrevanja za +5,65 °C – pri trenutnem tempu vsaka 17,7 let doda eno stopinjo.",
-            "Theil-Sen + TFPW Mann-Kendall"
+            "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
             "Mestni toplotni otok — poletni vročinski stres in tveganje hudourniških poplav v Ljubljanski kotlini",
@@ -40299,7 +40299,7 @@
         "rendered": {
           "title": "Najvišje temperature na postaji Kredarica okoli 21. jul. · 1950–2026 · trend s projekcijo do 2050",
           "explain": "Vsaka pika je povprečna vrednost (lapsno popravljene dnevne najvišje temperature na postaji Kredarica) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,36 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 13,4 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-          "footer": "Theil-Sen + TFPW MK: +0,36 °C/desetletje · p < 0,001 · τ = 0,254 · 95% CI · 77 let",
+          "footer": "Theil-Sen + MK: +0,36 °C/desetletje · p < 0,001 · τ = 0,254 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
             "label": "2026",
@@ -40755,11 +40755,11 @@
           "day_label": "21. jul.",
           "title": "Kredarica 2514 m · Najvišja temperatura",
           "subtitle": "21. jul.",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,25",
+          "stats_badge": "Theil-Sen + MK · τ = 0,25",
           "total_change": "+2,74°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
           ]
         },
         "charts": [
@@ -41459,7 +41459,7 @@
           "paragraphs": [
             "Popolna izguba Triglavskega ledenika — narodni simbol in vir savinjskih rek. Propad alpskega ekosistema sproži kaskadne učinke.",
             "Sto let segrevanja za +3,56 °C – pri trenutnem tempu vsaka 28,1 let doda eno stopinjo.",
-            "Theil-Sen + TFPW Mann-Kendall"
+            "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
             "Izguba Triglavskega ledenika — izsušitev izvirnih vod za Slovenijo reke",
@@ -43634,7 +43634,7 @@
         "rendered": {
           "title": "Najvišje temperature v Sloveniji okoli 29. jul. · 1950–2026 · trend s projekcijo do 2050",
           "explain": "Vsaka pika je povprečna vrednost (nacionalne povprečne dnevne najvišje temperature vseh 18 postaj) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,40 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 27,2 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-          "footer": "Theil-Sen + TFPW MK: +0,40 °C/desetletje · p < 0,001 · τ = 0,279 · 95% CI · 77 let",
+          "footer": "Theil-Sen + MK: +0,40 °C/desetletje · p < 0,001 · τ = 0,279 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
             "label": "2026",
@@ -44090,11 +44090,11 @@
           "day_label": "29. jul.",
           "title": "Ljubljana 299 m · Najvišja temperatura",
           "subtitle": "29. jul.",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,33",
+          "stats_badge": "Theil-Sen + MK · τ = 0,33",
           "total_change": "+3,76°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
           ]
         },
         "charts": [
@@ -44794,7 +44794,7 @@
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
             "Sto let segrevanja za +4,88 °C – pri trenutnem tempu vsaka 20,5 let doda eno stopinjo.",
-            "Theil-Sen + TFPW Mann-Kendall"
+            "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
             "Mestni toplotni otok — poletni vročinski stres in tveganje hudourniških poplav v Ljubljanski kotlini",
@@ -47160,7 +47160,7 @@
         "rendered": {
           "title": "Najvišje temperature na postaji Ljubljana okoli 29. jul. · 1950–2026 · trend s projekcijo do 2050",
           "explain": "Vsaka pika je povprečna vrednost (lapsno popravljene dnevne najvišje temperature na postaji Ljubljana) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,49 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 28,0 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-          "footer": "Theil-Sen + TFPW MK: +0,49 °C/desetletje · p < 0,001 · τ = 0,327 · 95% CI · 77 let",
+          "footer": "Theil-Sen + MK: +0,49 °C/desetletje · p < 0,001 · τ = 0,327 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
             "label": "2026",
@@ -47616,11 +47616,11 @@
           "day_label": "29. jul.",
           "title": "Ljubljana 299 m · Najvišja temperatura",
           "subtitle": "29. jul.",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,33",
+          "stats_badge": "Theil-Sen + MK · τ = 0,33",
           "total_change": "+3,76°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
           ]
         },
         "charts": [
@@ -48320,7 +48320,7 @@
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
             "Sto let segrevanja za +4,88 °C – pri trenutnem tempu vsaka 20,5 let doda eno stopinjo.",
-            "Theil-Sen + TFPW Mann-Kendall"
+            "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
             "Mestni toplotni otok — poletni vročinski stres in tveganje hudourniških poplav v Ljubljanski kotlini",
@@ -50686,7 +50686,7 @@
         "rendered": {
           "title": "Najvišje temperature na postaji Kredarica okoli 29. jul. · 1950–2026 · trend s projekcijo do 2050",
           "explain": "Vsaka pika je povprečna vrednost (lapsno popravljene dnevne najvišje temperature na postaji Kredarica) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,31 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 13,3 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-          "footer": "Theil-Sen + TFPW MK: +0,31 °C/desetletje · p < 0,001 · τ = 0,258 · 95% CI · 77 let",
+          "footer": "Theil-Sen + MK: +0,31 °C/desetletje · p < 0,001 · τ = 0,258 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
             "label": "2026",
@@ -51142,11 +51142,11 @@
           "day_label": "29. jul.",
           "title": "Kredarica 2514 m · Najvišja temperatura",
           "subtitle": "29. jul.",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,26",
+          "stats_badge": "Theil-Sen + MK · τ = 0,26",
           "total_change": "+2,40°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
           ]
         },
         "charts": [
@@ -51846,7 +51846,7 @@
           "paragraphs": [
             "Popolna izguba Triglavskega ledenika — narodni simbol in vir savinjskih rek. Propad alpskega ekosistema sproži kaskadne učinke.",
             "Sto let segrevanja za +3,12 °C – pri trenutnem tempu vsaka 32,1 let doda eno stopinjo.",
-            "Theil-Sen + TFPW Mann-Kendall"
+            "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
             "Izguba Triglavskega ledenika — izsušitev izvirnih vod za Slovenijo reke",
@@ -54021,7 +54021,7 @@
         "rendered": {
           "title": "Najvišje temperature v Sloveniji okoli 15. jul. · 1950–2026 · trend s projekcijo do 2050",
           "explain": "Vsaka pika je povprečna vrednost (nacionalne povprečne dnevne najvišje temperature vseh 18 postaj) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,34 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 26,1 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-          "footer": "Theil-Sen + TFPW MK: +0,34 °C/desetletje · p < 0,001 · τ = 0,257 · 95% CI · 77 let",
+          "footer": "Theil-Sen + MK: +0,34 °C/desetletje · p < 0,001 · τ = 0,257 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
             "label": "2026",
@@ -54477,11 +54477,11 @@
           "day_label": "15. jul.",
           "title": "Ljubljana 299 m · Najvišja temperatura",
           "subtitle": "15. jul.",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,30",
+          "stats_badge": "Theil-Sen + MK · τ = 0,30",
           "total_change": "+3,54°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
           ]
         },
         "charts": [
@@ -55181,7 +55181,7 @@
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
             "Sto let segrevanja za +4,60 °C – pri trenutnem tempu vsaka 21,7 let doda eno stopinjo.",
-            "Theil-Sen + TFPW Mann-Kendall"
+            "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
             "Mestni toplotni otok — poletni vročinski stres in tveganje hudourniških poplav v Ljubljanski kotlini",
@@ -57547,7 +57547,7 @@
         "rendered": {
           "title": "Najvišje temperature na postaji Ljubljana okoli 15. jul. · 1950–2026 · trend s projekcijo do 2050",
           "explain": "Vsaka pika je povprečna vrednost (lapsno popravljene dnevne najvišje temperature na postaji Ljubljana) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,46 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 27,2 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-          "footer": "Theil-Sen + TFPW MK: +0,46 °C/desetletje · p < 0,001 · τ = 0,305 · 95% CI · 77 let",
+          "footer": "Theil-Sen + MK: +0,46 °C/desetletje · p < 0,001 · τ = 0,305 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
             "label": "2026",
@@ -58003,11 +58003,11 @@
           "day_label": "15. jul.",
           "title": "Ljubljana 299 m · Najvišja temperatura",
           "subtitle": "15. jul.",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,30",
+          "stats_badge": "Theil-Sen + MK · τ = 0,30",
           "total_change": "+3,54°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
           ]
         },
         "charts": [
@@ -58707,7 +58707,7 @@
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
             "Sto let segrevanja za +4,60 °C – pri trenutnem tempu vsaka 21,7 let doda eno stopinjo.",
-            "Theil-Sen + TFPW Mann-Kendall"
+            "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
             "Mestni toplotni otok — poletni vročinski stres in tveganje hudourniških poplav v Ljubljanski kotlini",
@@ -61073,7 +61073,7 @@
         "rendered": {
           "title": "Najvišje temperature na postaji Kredarica okoli 15. jul. · 1950–2026 · trend s projekcijo do 2050",
           "explain": "Vsaka pika je povprečna vrednost (lapsno popravljene dnevne najvišje temperature na postaji Kredarica) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,22 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 12,1 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-          "footer": "Theil-Sen + TFPW MK: +0,22 °C/desetletje · p < 0,001 · τ = 0,189 · 95% CI · 77 let",
+          "footer": "Theil-Sen + MK: +0,22 °C/desetletje · p < 0,001 · τ = 0,189 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
             "label": "2026",
@@ -61529,11 +61529,11 @@
           "day_label": "15. jul.",
           "title": "Kredarica 2514 m · Najvišja temperatura",
           "subtitle": "15. jul.",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,19",
+          "stats_badge": "Theil-Sen + MK · τ = 0,19",
           "total_change": "+1,72°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
           ]
         },
         "charts": [
@@ -62233,7 +62233,7 @@
           "paragraphs": [
             "Triglavski ledenik popolnoma izgine. Visokogorski ekosistem nad gozdno mejo propade.",
             "Sto let segrevanja za +2,23 °C – pri trenutnem tempu vsaka 44,8 let doda eno stopinjo.",
-            "Theil-Sen + TFPW Mann-Kendall"
+            "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
             "Izguba Triglavskega ledenika — izsušitev izvirnih vod za Slovenijo reke",
@@ -62374,11 +62374,11 @@
           "day_label": "28. feb.",
           "title": "Ljubljana 299 m · Najvišja temperatura",
           "subtitle": "28. feb.",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,21",
+          "stats_badge": "Theil-Sen + MK · τ = 0,21",
           "total_change": "+4,40°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
           ]
         },
         "charts": [
@@ -63078,7 +63078,7 @@
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
             "Sto let segrevanja za +5,71 °C – pri trenutnem tempu vsaka 17,5 let doda eno stopinjo.",
-            "Theil-Sen + TFPW Mann-Kendall"
+            "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
             "Mestni toplotni otok — poletni vročinski stres in tveganje hudourniških poplav v Ljubljanski kotlini",
@@ -63219,11 +63219,11 @@
           "day_label": "28. feb.",
           "title": "Kredarica 2514 m · Najvišja temperatura",
           "subtitle": "28. feb.",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,16",
+          "stats_badge": "Theil-Sen + MK · τ = 0,16",
           "total_change": "+2,90°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
           ]
         },
         "charts": [
@@ -63923,7 +63923,7 @@
           "paragraphs": [
             "Popolna izguba Triglavskega ledenika — narodni simbol in vir savinjskih rek. Propad alpskega ekosistema sproži kaskadne učinke.",
             "Sto let segrevanja za +3,76 °C – pri trenutnem tempu vsaka 26,6 let doda eno stopinjo.",
-            "Theil-Sen + TFPW Mann-Kendall"
+            "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
             "Izguba Triglavskega ledenika — izsušitev izvirnih vod za Slovenijo reke",
@@ -64015,11 +64015,11 @@
           "day_label": "28. feb.",
           "title": "Ljubljana 299 m · Najvišja temperatura",
           "subtitle": "28. feb.",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,21",
+          "stats_badge": "Theil-Sen + MK · τ = 0,21",
           "total_change": "+4,40°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
           ]
         },
         "charts": [
@@ -64719,7 +64719,7 @@
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
             "Sto let segrevanja za +5,71 °C – pri trenutnem tempu vsaka 17,5 let doda eno stopinjo.",
-            "Theil-Sen + TFPW Mann-Kendall"
+            "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
             "Mestni toplotni otok — poletni vročinski stres in tveganje hudourniških poplav v Ljubljanski kotlini",
@@ -67067,7 +67067,7 @@
         "rendered": {
           "title": "Najvišje temperature na postaji Ljubljana okoli 1. mar. · 1950–2026 · trend s projekcijo do 2050",
           "explain": "Vsaka pika je povprečna vrednost (lapsno popravljene dnevne najvišje temperature na postaji Ljubljana) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,56 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 10,5 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-          "footer": "Theil-Sen + TFPW MK: +0,56 °C/desetletje · p < 0,001 · τ = 0,214 · 95% CI · 77 let",
+          "footer": "Theil-Sen + MK: +0,56 °C/desetletje · p < 0,001 · τ = 0,214 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
             "label": "2026",
@@ -67523,11 +67523,11 @@
           "day_label": "1. mar.",
           "title": "Ljubljana 299 m · Najvišja temperatura",
           "subtitle": "1. mar.",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,21",
+          "stats_badge": "Theil-Sen + MK · τ = 0,21",
           "total_change": "+4,29°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
           ]
         },
         "charts": [
@@ -68227,7 +68227,7 @@
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
             "Sto let segrevanja za +5,57 °C – pri trenutnem tempu vsaka 18,0 let doda eno stopinjo.",
-            "Theil-Sen + TFPW Mann-Kendall"
+            "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
             "Mestni toplotni otok — poletni vročinski stres in tveganje hudourniških poplav v Ljubljanski kotlini",
@@ -70593,7 +70593,7 @@
         "rendered": {
           "title": "Najvišje temperature na postaji Ljubljana okoli 28. feb. · 1950–2026 · trend s projekcijo do 2050",
           "explain": "Vsaka pika je povprečna vrednost (lapsno popravljene dnevne najvišje temperature na postaji Ljubljana) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,57 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 10,2 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-          "footer": "Theil-Sen + TFPW MK: +0,57 °C/desetletje · p < 0,001 · τ = 0,214 · 95% CI · 77 let",
+          "footer": "Theil-Sen + MK: +0,57 °C/desetletje · p < 0,001 · τ = 0,214 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
             "label": "2026",
@@ -71049,11 +71049,11 @@
           "day_label": "28. feb.",
           "title": "Ljubljana 299 m · Najvišja temperatura",
           "subtitle": "28. feb.",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,21",
+          "stats_badge": "Theil-Sen + MK · τ = 0,21",
           "total_change": "+4,40°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
           ]
         },
         "charts": [
@@ -71753,7 +71753,7 @@
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
             "Sto let segrevanja za +5,71 °C – pri trenutnem tempu vsaka 17,5 let doda eno stopinjo.",
-            "Theil-Sen + TFPW Mann-Kendall"
+            "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
             "Mestni toplotni otok — poletni vročinski stres in tveganje hudourniških poplav v Ljubljanski kotlini",
@@ -74119,7 +74119,7 @@
         "rendered": {
           "title": "Najvišje temperature na postaji Ljubljana okoli 1. mar. · 1950–2026 · trend s projekcijo do 2050",
           "explain": "Vsaka pika je povprečna vrednost (lapsno popravljene dnevne najvišje temperature na postaji Ljubljana) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,56 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 10,5 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-          "footer": "Theil-Sen + TFPW MK: +0,56 °C/desetletje · p < 0,001 · τ = 0,214 · 95% CI · 77 let",
+          "footer": "Theil-Sen + MK: +0,56 °C/desetletje · p < 0,001 · τ = 0,214 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
             "label": "2026",
@@ -74575,11 +74575,11 @@
           "day_label": "1. mar.",
           "title": "Ljubljana 299 m · Najvišja temperatura",
           "subtitle": "1. mar.",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,21",
+          "stats_badge": "Theil-Sen + MK · τ = 0,21",
           "total_change": "+4,29°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
           ]
         },
         "charts": [
@@ -75279,7 +75279,7 @@
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
             "Sto let segrevanja za +5,57 °C – pri trenutnem tempu vsaka 18,0 let doda eno stopinjo.",
-            "Theil-Sen + TFPW Mann-Kendall"
+            "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
             "Mestni toplotni otok — poletni vročinski stres in tveganje hudourniških poplav v Ljubljanski kotlini",
@@ -77645,7 +77645,7 @@
         "rendered": {
           "title": "Najvišje temperature na postaji Ljubljana okoli 1. jan. · 1950–2026 · trend s projekcijo do 2050",
           "explain": "Vsaka pika je povprečna vrednost (lapsno popravljene dnevne najvišje temperature na postaji Ljubljana) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,48 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 6,3 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-          "footer": "Theil-Sen + TFPW MK: +0,48 °C/desetletje · p < 0,001 · τ = 0,239 · 95% CI · 77 let",
+          "footer": "Theil-Sen + MK: +0,48 °C/desetletje · p < 0,001 · τ = 0,239 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
             "label": "2026",
@@ -78101,11 +78101,11 @@
           "day_label": "1. jan.",
           "title": "Ljubljana 299 m · Najvišja temperatura",
           "subtitle": "1. jan.",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,24",
+          "stats_badge": "Theil-Sen + MK · τ = 0,24",
           "total_change": "+3,73°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
           ]
         },
         "charts": [
@@ -78805,7 +78805,7 @@
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
             "Sto let segrevanja za +4,84 °C – pri trenutnem tempu vsaka 20,7 let doda eno stopinjo.",
-            "Theil-Sen + TFPW Mann-Kendall"
+            "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
             "Mestni toplotni otok — poletni vročinski stres in tveganje hudourniških poplav v Ljubljanski kotlini",
@@ -81167,7 +81167,7 @@
         "rendered": {
           "title": "Najvišje temperature na postaji Ljubljana okoli 31. dec. · 1950–2025 · trend s projekcijo do 2050",
           "explain": "Vsaka pika je povprečna vrednost (lapsno popravljene dnevne najvišje temperature na postaji Ljubljana) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,51 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 6,4 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-          "footer": "Theil-Sen + TFPW MK: +0,51 °C/desetletje · p < 0,001 · τ = 0,270 · 95% CI · 76 let",
+          "footer": "Theil-Sen + MK: +0,51 °C/desetletje · p < 0,001 · τ = 0,270 · 95% CI · 76 let",
           "current_year_plotline": {
             "value": 2026,
             "label": "2026",
@@ -81619,11 +81619,11 @@
           "day_label": "31. dec.",
           "title": "Ljubljana 299 m · Najvišja temperatura",
           "subtitle": "31. dec.",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,27",
+          "stats_badge": "Theil-Sen + MK · τ = 0,27",
           "total_change": "+3,90°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
           ]
         },
         "charts": [
@@ -82315,7 +82315,7 @@
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
             "Sto let segrevanja za +5,13 °C – pri trenutnem tempu vsaka 19,5 let doda eno stopinjo.",
-            "Theil-Sen + TFPW Mann-Kendall"
+            "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
             "Mestni toplotni otok — poletni vročinski stres in tveganje hudourniških poplav v Ljubljanski kotlini",
@@ -84685,7 +84685,7 @@
         "rendered": {
           "title": "Najvišje temperature na postaji Ljubljana okoli 3. avg. · 1950–2025 · trend s projekcijo do 2050",
           "explain": "Vsaka pika je povprečna vrednost (lapsno popravljene dnevne najvišje temperature na postaji Ljubljana) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,41 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 27,4 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-          "footer": "Theil-Sen + TFPW MK: +0,41 °C/desetletje · p < 0,001 · τ = 0,284 · 95% CI · 76 let",
+          "footer": "Theil-Sen + MK: +0,41 °C/desetletje · p < 0,001 · τ = 0,284 · 95% CI · 76 let",
           "current_year_plotline": {
             "value": 2026,
             "label": "2026",
@@ -85137,11 +85137,11 @@
           "day_label": "3. avg.",
           "title": "Ljubljana 299 m · Najvišja temperatura",
           "subtitle": "3. avg.",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,28",
+          "stats_badge": "Theil-Sen + MK · τ = 0,28",
           "total_change": "+3,13°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
           ]
         },
         "charts": [
@@ -85833,7 +85833,7 @@
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
             "Sto let segrevanja za +4,12 °C – pri trenutnem tempu vsaka 24,3 let doda eno stopinjo.",
-            "Theil-Sen + TFPW Mann-Kendall"
+            "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
             "Mestni toplotni otok — poletni vročinski stres in tveganje hudourniških poplav v Ljubljanski kotlini",
@@ -88203,7 +88203,7 @@
         "rendered": {
           "title": "Najvišje temperature na postaji Kredarica okoli 3. avg. · 1950–2025 · trend s projekcijo do 2050",
           "explain": "Vsaka pika je povprečna vrednost (lapsno popravljene dnevne najvišje temperature na postaji Kredarica) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,27 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 13,0 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-          "footer": "Theil-Sen + TFPW MK: +0,27 °C/desetletje · p < 0,001 · τ = 0,223 · 95% CI · 76 let",
+          "footer": "Theil-Sen + MK: +0,27 °C/desetletje · p < 0,001 · τ = 0,223 · 95% CI · 76 let",
           "current_year_plotline": {
             "value": 2026,
             "label": "2026",
@@ -88655,11 +88655,11 @@
           "day_label": "3. avg.",
           "title": "Kredarica 2514 m · Najvišja temperatura",
           "subtitle": "3. avg.",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,22",
+          "stats_badge": "Theil-Sen + MK · τ = 0,22",
           "total_change": "+2,04°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
           ]
         },
         "charts": [
@@ -89351,7 +89351,7 @@
           "paragraphs": [
             "Triglavski ledenik popolnoma izgine. Visokogorski ekosistem nad gozdno mejo propade.",
             "Sto let segrevanja za +2,69 °C – pri trenutnem tempu vsaka 37,2 let doda eno stopinjo.",
-            "Theil-Sen + TFPW Mann-Kendall"
+            "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
             "Izguba Triglavskega ledenika — izsušitev izvirnih vod za Slovenijo reke",
@@ -91725,7 +91725,7 @@
         "rendered": {
           "title": "Najvišje temperature na postaji Ljubljana okoli 7. feb. · 1950–2026 · trend s projekcijo do 2050",
           "explain": "Vsaka pika je povprečna vrednost (lapsno popravljene dnevne najvišje temperature na postaji Ljubljana) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,57 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 8,3 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-          "footer": "Theil-Sen + TFPW MK: +0,57 °C/desetletje · p < 0,001 · τ = 0,247 · 95% CI · 77 let",
+          "footer": "Theil-Sen + MK: +0,57 °C/desetletje · p < 0,001 · τ = 0,247 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
             "label": "2026",
@@ -92181,11 +92181,11 @@
           "day_label": "7. feb.",
           "title": "Ljubljana 299 m · Najvišja temperatura",
           "subtitle": "7. feb.",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,25",
+          "stats_badge": "Theil-Sen + MK · τ = 0,25",
           "total_change": "+4,38°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
           ]
         },
         "charts": [
@@ -92885,7 +92885,7 @@
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
             "Sto let segrevanja za +5,69 °C – pri trenutnem tempu vsaka 17,6 let doda eno stopinjo.",
-            "Theil-Sen + TFPW Mann-Kendall"
+            "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
             "Mestni toplotni otok — poletni vročinski stres in tveganje hudourniških poplav v Ljubljanski kotlini",
@@ -95264,7 +95264,7 @@
         "rendered": {
           "title": "Najvišje temperature na postaji Kredarica okoli 7. jan. · 1950–2026 · trend s projekcijo do 2050",
           "explain": "Vsaka pika je povprečna vrednost (lapsno popravljene dnevne najvišje temperature na postaji Kredarica) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,54 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže −5,9 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-          "footer": "Theil-Sen + TFPW MK: +0,54 °C/desetletje · p < 0,001 · τ = 0,282 · 95% CI · 77 let",
+          "footer": "Theil-Sen + MK: +0,54 °C/desetletje · p < 0,001 · τ = 0,282 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
             "label": "2026",
@@ -95720,11 +95720,11 @@
           "day_label": "7. jan.",
           "title": "Kredarica 2514 m · Najvišja temperatura",
           "subtitle": "7. jan.",
-          "stats_badge": "Theil-Sen + TFPW MK · τ = 0,28",
+          "stats_badge": "Theil-Sen + MK · τ = 0,28",
           "total_change": "+4,16°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
           ]
         },
         "charts": [
@@ -96424,7 +96424,7 @@
           "paragraphs": [
             "Popolna izguba Triglavskega ledenika — narodni simbol in vir savinjskih rek. Propad alpskega ekosistema sproži kaskadne učinke.",
             "Sto let segrevanja za +5,40 °C – pri trenutnem tempu vsaka 18,5 let doda eno stopinjo.",
-            "Theil-Sen + TFPW Mann-Kendall"
+            "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
             "Izguba Triglavskega ledenika — izsušitev izvirnih vod za Slovenijo reke",

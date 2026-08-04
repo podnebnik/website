@@ -213,7 +213,7 @@ reachable the page renders empty**, which looks like a build failure but is not.
 ### Charts
 
 - **Today status** — national temperature percentile vs ERA5 history (1950–present), with last-7-days strip
-- **Regression chart** — per-station Theil-Sen trend + TFPW Mann-Kendall significance, with projection to 2050
+- **Regression chart** — per-station Theil-Sen trend + Mann-Kendall significance, with projection to 2050
 - **Season heatmap** — seasonal anomaly calendar across all stations
 - **SPEI heatmap + drought trend** — standardised precipitation-evapotranspiration index, per station and season
 - **Tropical days / nights** — annual event counts above a user-chosen threshold, fitted with Negative Binomial GLM

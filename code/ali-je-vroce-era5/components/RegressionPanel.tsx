@@ -338,7 +338,7 @@ export function RegToolbar() {
           RegressionParams.corr/method, but fetchRegression reads the precomputed
           annual_trend table and ignores both; the values never reached a request or
           computation. The controls also carried false labels: the data is always
-          Theil-Sen + TFPW MK with elevation correction baked in (D-5), so "OLS" and
+          Theil-Sen + MK with elevation correction baked in (D-5), so "OLS" and
           the toggle promised a switch that never happened. The genuine method/colour
           readouts (stats.method footer, precip-vs-temp trend colour) are sourced
           elsewhere and are untouched. */}
