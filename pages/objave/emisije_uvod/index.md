@@ -7,6 +7,7 @@ authors:
  - Marko Kovač
  - Vladimir Nešković
 summary: Izpusti toplogrednih plinov in njihov vpliv na podnebne spremembe.
+draft: true
 ---
 
 Toplogredni plini so tisti plini, ki imajo v zemeljski atmosferi zanimivo ter tudi občasno koristno lastnost, da ovirajo prehod toplote s planeta v vesolje. Ime so dobili po učinku, ki ga imajo vrtne tople grede na zgodnje-spomladansko zelenjavo, in čeprav gre za nekoliko različen princip delovanja, se je ime zaradi učinka segrevanja prijelo. Učinek tople grede ohranja Zemljo dovolj toplo in omogoča večino življenja na njem. Brez tega bi bile temperature na Zemlji za nekaj deset stopinj nižje. Toda preveč dobrega je lahko tudi škodljivo. Če se količina toplogrednih plinov v atmosferi močno poveča, ta zadrži še več toplote in Zemlja se zaradi tega (lahko) dodatno segreje. Toda če so bila v prazgodovini za nihanja odgovorni naravni procesi, pa smo toplogrednim plinom dodali svoje, kot se je izkazalo, škodljive količine.

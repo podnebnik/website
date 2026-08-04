@@ -8,6 +8,7 @@ authors:
  - Matjaž Ličer
  - Marko Brumen
  - Zarja Muršič
+draft: true
 ---
 
 Podnebne spremembe in njihove posledice se odražajo na veliko različnih načinov, ki so medsebojno povezani, zato jih je včasih težko nazorno prikazati. A pravilno prikazani podatki so zgovorni - v tej objavi bomo pokazali, kako se bo zaradi podnebnih sprememb v prihodnosti dvigalo in poplavljalo morje v Sloveniji, zakaj do tega pojava pride in kako na višino poplavljanja vplivajo različni scenariji izpustov toplogrednih plinov. 
