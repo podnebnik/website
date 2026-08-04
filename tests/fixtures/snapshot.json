@@ -20134,11 +20134,11 @@
           ]
         },
         "rendered": {
-          "header": "Tropski dnevi · Ljubljana",
+          "header": "Vroči dnevi · Ljubljana",
           "coverage": "77 let · 48 z vrednostjo > 0",
           "paragraphs": [
             "NB GLM: +3,32%/leto · +1,6 dni/desetletje · 95% CI · statistično značilen (p < 0,001) · AIC 387 · α=2.059.",
-            "Tropski dan — ko dnevna temperatura preseže 30 °C — povečuje toplotni stres in zdravstvena tveganja. Postaja Ljubljana kaže statistično značilen trend: grobe 1,6 več dni na desetletje. Če trend nadaljuje, bi bilo do 2050 tipičnih okoli 34 dni na leto."
+            "Vroč dan — ko dnevna temperatura preseže 30 °C — povečuje toplotni stres in zdravstvena tveganja. Postaja Ljubljana kaže statistično značilen trend: grobe 1,6 več dni na desetletje. Če trend nadaljuje, bi bilo do 2050 tipičnih okoli 34 dni na leto."
           ]
         },
         "current_year_bar": {
@@ -20181,7 +20181,7 @@
             "zones": null,
             "series": [
               {
-                "name": "Tropski dnevi",
+                "name": "Vroči dnevi",
                 "type": "column",
                 "data": [
                   {
@@ -30247,10 +30247,10 @@
           "alpha": 0
         },
         "rendered": {
-          "header": "Tropski dnevi · Kredarica",
+          "header": "Vroči dnevi · Kredarica",
           "coverage": "77 let · 0 z vrednostjo > 0",
           "paragraphs": [
-            "Premalo let z tropskimi dnevi za izračun trenda (0 let z vrednostjo > 0). Potrebnih je vsaj 10."
+            "Premalo let z vročimi dnevi za izračun trenda (0 let z vrednostjo > 0). Potrebnih je vsaj 10."
           ]
         },
         "current_year_bar": {
@@ -30293,7 +30293,7 @@
             "zones": null,
             "series": [
               {
-                "name": "Tropski dnevi",
+                "name": "Vroči dnevi",
                 "type": "column",
                 "data": [
                   {

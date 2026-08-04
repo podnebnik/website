@@ -254,9 +254,9 @@ Primerjalni vzorec za vsak koledarski dan je **združeno okno ±7 dni** čez vsa
 
 Štetje vročih dni in tropskih noči uporablja **stroge pragove (\`>\`, ne \`≥\`).** To je usklajeno s standardom ETCCDI/ECA&D (medtem ko npr. nemški DWD uporablja \`≥\`). Standard je dejansko sporen; izbrali smo \`>\`. Sprememba na \`≥\` bi premaknila štetje vsakega mejnega dne, zato je izbira zapisana zavestno.
 
-## Trend tropskih dni in noči
+## Trend vročih dni in tropskih noči
 
-Letni trend na grafih tropskih dni in noči je **model negativne binomske regresije (NB GLM)** čez letno število — primeren za štetne podatke z večjo razpršenostjo od Poissonove. Gre za **približek**, ne za dokončno napoved: prikazana stopnja rasti in projekcija do leta 2050 sta odvisni od izbranega praga in dolžine zaporedja.
+Letni trend na grafih vročih dni in tropskih noči je **model negativne binomske regresije (NB GLM)** čez letno število — primeren za štetne podatke z večjo razpršenostjo od Poissonove. Gre za **približek**, ne za dokončno napoved: prikazana stopnja rasti in projekcija do leta 2050 sta odvisni od izbranega praga in dolžine zaporedja.
 
 **Trenda ne prikažemo, kadar mu ne moremo zaupati.** Za nekatere kombinacije (redki dogodki, skoraj ravna letna vrsta) statistični model ne da zanesljivega rezultata — ne skonvergira ali pa ocena njegove negotovosti ni veljavna. V takih primerih trenda **ne objavimo** (letno štetje ostane prikazano), namesto da bi navedli navidezno natančno, a nezanesljivo številko. Enako velja, kadar je premalo let s podatki (potrebnih je vsaj 10). To je isto načelo kot pri indeksu suše SPEI: raje odklonimo objavo kot da objavimo negotovo vrednost.
 
@@ -267,7 +267,7 @@ Letni trend na grafih tropskih dni in noči je **model negativne binomske regres
 - **ERA5-Land Tmin** je v mestih nezanesljiv (toplotni otok); zato stran privzeto ne vodi s Tmean/Tmin.
 - **Mrežna ločljivost** (~9 km) ne ujame lokalnih posebnosti pod to velikostjo.
 - **Najnovejše vrednosti** so lahko napoved (označene z »napoved«), dokler reanaliza ni na voljo.
-- **Trend tropskih dni/noči je približek** in ni na voljo za vse kombinacije praga in zaporedja: kjer se model ne ustali, trenda ne prikažemo (glej zgoraj).
+- **Trend vročih dni/tropskih noči je približek** in ni na voljo za vse kombinacije praga in zaporedja: kjer se model ne ustali, trenda ne prikažemo (glej zgoraj).
 
 ---
 
