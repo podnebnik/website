@@ -121,7 +121,7 @@ function Dashboard(props: { meta: SiteMeta }) {
         <Show when={lastDataDay()}>
           {(d) => (
             <span class="article-metadata not-italic not-prose" title="Objavljeno">
-              <img src="/assets/icons/published.svg" alt="Objavljeno" />
+              {/* <img src="/assets/icons/published.svg" alt="Objavljeno" /> */}
               {t("sections.today_data_age", { date: fmtIsoDate(d()) })}
               {/* T-6.13 — suffix only while the hero shows a forecast value
                   (the same is_preliminary flag as TodayCard's "napoved" badge,

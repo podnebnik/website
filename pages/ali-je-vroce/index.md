@@ -1,10 +1,10 @@
 ---
-title: "Ali je vroče?"
-layout: headerless.html
+title: Ali je vroče?
+layout: plain.html
 ---
 
-<div id="vroce">
+<div id="ali-je-vroce-era5">
     <script type="module">
-        import '/code/ali-je-vroce/entry.tsx';
+        import '/code/ali-je-vroce-era5/entry.tsx';
     </script>
 </div>

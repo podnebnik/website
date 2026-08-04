@@ -8,6 +8,7 @@ topics:
 authors:
   - Marko Kovač
 summary: Hiter vpogled v prihodnost slovenskega elektroenergetskega sistema
+draft: true
 ---
 
 V zadnjih letih so se razprave o oskrbi z energijo v Sloveniji, podobno kot drugje po svetu, uvrstile v dnevni nabor perečih tem, ki jih tako radi javno (pre)debatiramo. Naraščajoče zavedanje o okoljskih problemih, povezanih z našim hlastanjem po energiji, je privedlo do širokega spektra mnenj o tem, kako ustrezno nasloviti bodočo oskrbo z energijo. Vseprisotni želji po zanesljivi in cenovno dostopni oskrbi z energijo je pereča okoljska kriza, ki je posledica antropogenih podnebnih sprememb, dodala še novo zahtevno sestavino. Razmah uporabe energije in razvoj energetike je tesno povezan z industrijskimi revolucijami, saj je obilje energije ključno vplivalo tudi na tehnološki, gospodarski in nenazadnje družbeni razvoj. 
