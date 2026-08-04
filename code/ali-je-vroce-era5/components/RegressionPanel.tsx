@@ -896,9 +896,14 @@ export const panelSubStyle: Record<string, string> = {
   "letter-spacing": "0.08em",
   "text-transform": "uppercase",
   color:            "var(--color-ink-soft)",
-  "white-space":    "nowrap",
-  overflow:         "hidden",
-  "text-overflow":  "ellipsis",
+  // T-5.60 — WRAP, don't ellipsize. These subtitles carry meaning (variable ·
+  // method · window; "rdeča črta = izbrani dan"; n_years · significance), and the
+  // hidden tail was exactly the non-duplicated part. `nowrap`+`overflow:hidden`+
+  // `text-overflow:ellipsis` clipped the year-round header at every width and the
+  // scatter stats badge / footer at 390px. Wrapping costs a line of height and
+  // makes these two cards behave like every other card on the page, which already
+  // wraps. Do NOT re-add nowrap: it silently conceals text (see PROGRESS T-5.60).
+  "white-space":    "normal",
 };
 
 const statsBoxStyle: Record<string, string> = {
