@@ -582,6 +582,14 @@ export const sl = {
     summary: "Slovarček pojmov",
   },
 
+  // T-6.8 (D-8) — the references disclosure. Third sibling below the glossary,
+  // rendered by ReferencesPanel with the same `.methodology-summary` treatment; the
+  // reference catalogue (description + citation + URL) lives in i18n/references.ts.
+  // ⚠ DRAFT label — awaiting operator approval like all Slovenian (D-8).
+  references: {
+    summary: "Viri",
+  },
+
   // Site meta (fallbacks)
   meta: {
     name: "Slovenija",

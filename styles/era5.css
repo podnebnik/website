@@ -251,6 +251,22 @@
 .methodology-glossary-term:target { background: var(--color-paper-2); border-radius: 4px; box-shadow: 0 0 0 4px var(--color-paper-2); }
 .methodology-glossary-def  { font-family: var(--font-sans); font-size: 14px; line-height: 1.6; color: var(--color-ink-2); margin: 0 0 0 16px; }
 
+/* T-6.8 — numbered reference markers [n] in the methodology prose, and the
+   reference list in its own <details>. The marker is a small superscript accent
+   link so a sentence with a citation stays readable, not littered; it deliberately
+   escapes the `a[href^="#gloss-"]` dotted treatment above (its href is `#ref-…`).
+   The list reuses the disclosure chrome; each <li> is an anchor target, so the
+   auto-open + :target tint mirror the glossary exactly (T-6.15). */
+.methodology-ref { font-size: 0.72em; }
+.methodology-ref a { color: var(--color-accent); text-decoration: none; }
+.methodology-ref a:hover,
+.methodology-ref a:focus-visible { text-decoration: underline; }
+
+.methodology-references { margin: 4px 0 0; padding-left: 24px; }
+.methodology-references-item { font-family: var(--font-sans); font-size: 14px; line-height: 1.6; color: var(--color-ink-2); margin: 10px 0; scroll-margin-top: 16px; }
+.methodology-references-item:target { background: var(--color-paper-2); border-radius: 4px; box-shadow: 0 0 0 4px var(--color-paper-2); }
+.methodology-references-item a { color: var(--color-accent); }
+
 /* T-5.47 — the shared elevation-band dot (chooser, station tag, methodology swatch) and
    the inline metres run. `.station-dot` is an <i> element (see StationTag / Change 3). */
 .station-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; border: 1px solid rgba(14, 14, 12, 0.22); flex-shrink: 0; vertical-align: middle; }

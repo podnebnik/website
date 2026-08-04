@@ -22,6 +22,7 @@ import { For } from "solid-js";
 import type { JSX } from "solid-js";
 import type { SiteMeta } from "../types.ts";
 import { methodologyMarkdown } from "../i18n/hero-content.ts";
+import { refNumber } from "../i18n/references.ts";
 import { t } from "../i18n/format.ts";
 import { ELEV_BANDS, bandKey } from "../i18n/station-bands.ts";
 
@@ -73,6 +74,32 @@ function renderInline(text: string): (string | JSX.Element)[] {
   const flush = () => { if (buf) { out.push(buf); buf = ""; } };
 
   while (i < text.length) {
+    // [[ref:key]] — a numbered reference marker (T-6.8). Handled BEFORE the
+    // [text](href) branch below, since that branch would otherwise swallow the
+    // opening bracket. The display number is resolved at render time from the
+    // marker's first-appearance order (i18n/references.ts refNumber); an unknown
+    // or uncited key resolves to null and falls through to literal text rather
+    // than rendering a hole.
+    if (text.charAt(i) === "[" && text.charAt(i + 1) === "[") {
+      const end = text.indexOf("]]", i + 2);
+      if (end !== -1) {
+        const inner = text.slice(i + 2, end);
+        if (inner.startsWith("ref:")) {
+          const key = inner.slice(4);
+          const n = refNumber(key);
+          if (n !== null) {
+            flush();
+            out.push(
+              <sup class="methodology-ref">
+                <a href={`#ref-${key}`}>[{n}]</a>
+              </sup>,
+            );
+            i = end + 2;
+            continue;
+          }
+        }
+      }
+    }
     // [text](href)
     if (text.charAt(i) === "[") {
       const close = text.indexOf("]", i);

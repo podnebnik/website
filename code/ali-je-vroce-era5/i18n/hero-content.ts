@@ -192,7 +192,7 @@ Podroben tehnični opis sledi spodaj.
 
 ## Vir podatkov
 
-Stran uporablja **reanalizo ERA5-Land**, dostopano prek **arhivskega API-ja Open-Meteo** (ne neposredno prek [ECMWF](#gloss-ecmwf)/[CDS](#gloss-cds)). ERA5-Land je globalni reanalizni niz Evropskega centra za srednjeročne vremenske napovedi (ECMWF) z [mrežno ločljivostjo](#gloss-grid_cell) približno 9 km.
+Stran uporablja **reanalizo ERA5-Land**[[ref:era5_land_dataset]][[ref:era5_land_paper]], dostopano prek **arhivskega API-ja Open-Meteo**[[ref:open_meteo]] (ne neposredno prek [ECMWF](#gloss-ecmwf)/[CDS](#gloss-cds)). ERA5-Land je globalni reanalizni niz Evropskega centra za srednjeročne vremenske napovedi (ECMWF) z [mrežno ločljivostjo](#gloss-grid_cell) približno 9 km.
 
 Reanaliza ni isto kot meritev postaje. Je rekonstrukcija preteklega vremena, ki jo model ustvari z asimilacijo številnih virov opazovanj. Prednost je enotna, prostorsko in časovno polna pokritost brez vrzeli; slabost je, da posamezna mrežna celica ne ujame lokalnih posebnosti (npr. mestnega toplotnega otoka ali natančne mikrolokacije postaje).
 
@@ -206,7 +206,7 @@ Stran zajema **18 lokacij** po Sloveniji. Za vsako je vrednost vzeta iz mrežne 
 
 ## [Višinski popravek](#gloss-lapse_rate) (lapse-rate)
 
-Mrežna celica ERA5-Land redko leži točno na nadmorski višini postaje. Da bi vrednosti ustrezale višini postaje in ne višini mrežne celice, vsako popravimo s **fiksno stopnjo 6,5 °C na kilometer** razlike med višino postaje in višino mrežne celice. To je standardna vrednost povprečne stopnje ohlajanja ozračja z višino.
+Mrežna celica ERA5-Land redko leži točno na nadmorski višini postaje. Da bi vrednosti ustrezale višini postaje in ne višini mrežne celice, vsako popravimo s **fiksno stopnjo 6,5 °C na kilometer** razlike med višino postaje in višino mrežne celice. To je standardna vrednost povprečne stopnje ohlajanja ozračja z višino.[[ref:lapse_rate]]
 
 Za 17 od 18 postaj je ta popravek majhen. **Za Kredarico je velik: −7,85 °C.** Postaja leži na 2514 m, pripadajoča mrežna celica ERA5-Land pa na 1307 m — razlika 1207 m, kar pri 6,5 °C/km da popravek −7,85 °C. To je **daleč največji posamezni popravek na strani.**
 
@@ -234,11 +234,11 @@ Dnevne vrednosti in meja »danes« sta določeni po času **Europe/Ljubljana**. 
 
 ## Referenčno obdobje in odkloni
 
-Odkloni (koliko je dan topel »glede na normalo«) se merijo proti **referenčnemu obdobju 1991–2020** — veljavni klimatološki normali WMO — enotno po vsej strani.
+Odkloni (koliko je dan topel »glede na normalo«) se merijo proti **referenčnemu obdobju 1991–2020** — veljavni klimatološki normali WMO[[ref:wmo_normals]] — enotno po vsej strani.
 
 Ena posledica je pomembna za branje: ker je 1991–2020 razmeroma toplo obdobje, se **velik del zapisov 1950–2026 prikaže kot negativni odklon.** To ni napaka, temveč posledica primerjave s toplo sodobno normalo.
 
-**Izjema — [SPEI](#gloss-spei) (suša):** indeks suše SPEI je ločen in umerjen na obdobje **1950–1980**, ne 1991–2020. [Absolutni pragovi](#gloss-absolute_threshold) (npr. za vroče dneve in tropske noči) na referenčno obdobje niso vezani.
+**Izjema — [SPEI](#gloss-spei) (suša):** indeks suše SPEI[[ref:spei]] je ločen in umerjen na obdobje **1950–1980**, ne 1991–2020. [Absolutni pragovi](#gloss-absolute_threshold) (npr. za vroče dneve in tropske noči) na referenčno obdobje niso vezani.
 
 ## Porazdelitev in percentil
 
@@ -248,11 +248,15 @@ Za vsak dan v letu stran prikaže **[porazdelitev](#gloss-distribution)** pretek
 - Nacionalna krivulja je **povprečje 18 krivulj posameznih postaj**, ne skupni bazen vzorcev — s čimer ohrani pomen »povprečja 18 postaj«.
 - Percentil je **pravi empirični percentil**, izračunan iz te krivulje (integral gostote do današnje vrednosti), ne približek iz barvnega pasu.
 
-Primerjalni vzorec za vsak koledarski dan je **združeno okno ±7 dni** čez vsa leta — tako ima vsak dan dovolj gost in stabilen vzorec. **Isto okno ±7 dni** uporablja tudi letni trend: vsaka letna točka na grafu trenda je **povprečje** vrednosti v tem oknu za posamezno leto — pri [padavinah](#gloss-precipitation) in [ET₀](#gloss-et0) pa **vsota**, saj sta to globini v mm in ima smisel le seštevek. **29. februar** se pri tem pridruži oknu 28. februarja (redki prestopni dnevi se ne obravnavajo kot ločen, statistično šumeč dan). Objavljena vrednost povsod uporablja okno ±7 dni; v panelu z analizo trendov lahko bralec izbere tudi ožje ali širše okno, kar velja le za tisti prikaz.
+Primerjalni vzorec za vsak koledarski dan je **združeno okno ±7 dni** čez vsa leta — tako ima vsak dan dovolj gost in stabilen vzorec. **Isto okno ±7 dni** uporablja tudi letni trend: vsaka letna točka na grafu trenda je **povprečje** vrednosti v tem oknu za posamezno leto — pri [padavinah](#gloss-precipitation) in [ET₀](#gloss-et0)[[ref:fao56]] pa **vsota**, saj sta to globini v mm in ima smisel le seštevek. **29. februar** se pri tem pridruži oknu 28. februarja (redki prestopni dnevi se ne obravnavajo kot ločen, statistično šumeč dan). Objavljena vrednost povsod uporablja okno ±7 dni; v panelu z analizo trendov lahko bralec izbere tudi ožje ali širše okno, kar velja le za tisti prikaz.
+
+## Trend in statistična značilnost
+
+Trendno črto skozi leta ocenimo z metodo **[Theil-Sen](#gloss-theil_sen)**[[ref:theil_sen]]: naklon izračuna kot mediano naklonov med vsemi pari let, zato ga posamezno izjemno leto ne potegne za sabo. Ali je trend statistično značilen, presodimo z **[Mann-Kendallovim](#gloss-mann_kendall) testom** s popravkom za [avtokorelacijo](#gloss-autocorrelation) po Yueju in Wangu[[ref:yue_wang]] — sosednja leta si namreč niso povsem neodvisna in bi brez popravka trend deloval močnejši, kot je.
 
 ## Pragovi za »vroče«
 
-Štetje [vročih dni in tropskih noči](#gloss-hot_day_tropical_night) uporablja **stroge pragove (\`>\`, ne \`≥\`).** To je usklajeno s standardom [ETCCDI/ECA&D](#gloss-etccdi) (medtem ko npr. nemški [DWD](#gloss-dwd) uporablja \`≥\`). Standard je dejansko sporen; izbrali smo \`>\`. Sprememba na \`≥\` bi premaknila štetje vsakega mejnega dne, zato je izbira zapisana zavestno.
+Štetje [vročih dni in tropskih noči](#gloss-hot_day_tropical_night) uporablja **stroge pragove (\`>\`, ne \`≥\`).** To je usklajeno s standardom [ETCCDI/ECA&D](#gloss-etccdi)[[ref:etccdi]][[ref:ecad]] (medtem ko npr. nemški [DWD](#gloss-dwd) uporablja \`≥\`). Standard je dejansko sporen; izbrali smo \`>\`. Sprememba na \`≥\` bi premaknila štetje vsakega mejnega dne, zato je izbira zapisana zavestno.
 
 ## Trend vročih dni in tropskih noči
 
