@@ -261,8 +261,9 @@ def test_tropical_trend_withholds_when_not_converged(monkeypatch, capsys):
         pc.sm, "NegativeBinomial",
         lambda endog, exog: _StubModel(converged=False, cov=np.eye(3)),
     )
-    result = pc._tropical_trend(years[:-1], counts[:-1], years)
+    result, fit_ok = pc._tropical_trend(years[:-1], counts[:-1], years)
     assert result == {}, "a non-converged fit must be withheld, not published"
+    assert fit_ok is False, "the verdict carried out must report the fit as untrusted"
     err = capsys.readouterr().err
     assert "tropical NB fit withheld" in err and "did not converge" in err
 
@@ -274,8 +275,9 @@ def test_tropical_trend_withholds_on_nonfinite_covariance(monkeypatch, capsys):
         pc.sm, "NegativeBinomial",
         lambda endog, exog: _StubModel(converged=True, cov=bad),
     )
-    result = pc._tropical_trend(years[:-1], counts[:-1], years)
+    result, fit_ok = pc._tropical_trend(years[:-1], counts[:-1], years)
     assert result == {}, "a non-finite covariance must be withheld"
+    assert fit_ok is False
     assert "non-PD covariance" in capsys.readouterr().err
 
 
@@ -286,8 +288,9 @@ def test_tropical_trend_withholds_on_non_pd_covariance(monkeypatch, capsys):
         pc.sm, "NegativeBinomial",
         lambda endog, exog: _StubModel(converged=True, cov=non_pd),
     )
-    result = pc._tropical_trend(years[:-1], counts[:-1], years)
+    result, fit_ok = pc._tropical_trend(years[:-1], counts[:-1], years)
     assert result == {}, "a non-positive-definite covariance must be withheld"
+    assert fit_ok is False
     assert "non-PD covariance" in capsys.readouterr().err
 
 
@@ -296,7 +299,12 @@ def test_tropical_trend_withholds_insufficient_data():
     # unchanged by T-4.24). No stub: it must never reach the optimiser.
     years = list(range(2000, 2021))
     counts = [0] * 16 + [1, 2, 3, 4, 5]      # only 5 non-zero
-    assert pc._tropical_trend(years[:-1], counts[:-1], years) == {}
+    result, fit_ok = pc._tropical_trend(years[:-1], counts[:-1], years)
+    assert result == {}
+    # No fit ran, so the withhold is honest/deterministic — the verdict is vacuously
+    # True (nothing was published to distrust). This keeps the tripwire's rule crisp:
+    # it forbids only a NON-EMPTY trend with fit_ok False.
+    assert fit_ok is True
 
 
 def test_tropical_trend_success_returns_nb_model():
@@ -307,6 +315,56 @@ def test_tropical_trend_success_returns_nb_model():
     years = list(range(1980, 2021))
     counts = [4, 4, 5, 0, 5, 2, 7, 3, 8, 2, 7, 8, 3, 3, 7, 5, 5, 4, 13, 6, 6,
               17, 8, 8, 4, 2, 15, 16, 18, 6, 13, 9, 12, 9, 10, 7, 9, 15, 13, 17, 31]
-    result = pc._tropical_trend(years[:-1], counts[:-1], years)
+    result, fit_ok = pc._tropical_trend(years[:-1], counts[:-1], years)
     assert result.get("model_used") == "nb"
     assert "p_value" in result and "rate_per_year" in result
+    assert fit_ok is True, "a converged, published fit must report as trusted"
+
+
+# ── T-5.25: the build-time TRIPWIRE in build_tropical ─────────────────────────
+#
+# The gate inside _tropical_trend withholds an untrustworthy fit; the tests above
+# prove it returns {}. This tripwire is the second line of defence: if that gate
+# ever stops firing (a refactor removes it, or a future estimator publishes without
+# a withhold), a non-empty trend reaches trend_json while the fit's own verdict is
+# False — the exact shape of T-4.24's eleven false projections. build_tropical must
+# ABORT the build, not publish it. We simulate the broken-gate state by stubbing
+# _tropical_trend to hand back a populated trend WITH fit_ok=False.
+
+
+def _tiny_tropical_input():
+    dates = pd.to_datetime(["2000-07-01", "2000-07-02", "2001-07-01", "2001-07-02"])
+    data = pd.DataFrame({
+        "location": ["Ljubljana"] * 4,
+        "date": dates,
+        "year": [2000, 2000, 2001, 2001],
+        "temperature_max_corr": [30.0, 31.0, 32.0, 33.0],
+        "temperature_min_corr": [16.0, 17.0, 18.0, 19.0],
+    })
+    stations_df = pd.DataFrame({"era5_name": ["Ljubljana"], "station_id": [1495]})
+    return data, stations_df
+
+
+def test_build_tropical_raises_when_untrustworthy_trend_published(monkeypatch):
+    data, stations_df = _tiny_tropical_input()
+    monkeypatch.setattr(
+        pc, "_tropical_trend",
+        lambda fy, fc, y: ({"model_used": "nb", "p_value": 0.0001}, False),
+    )
+    with pytest.raises(pc.pipeline_validate.PipelineValidationError,
+                       match="UNTRUSTWORTHY fit"):
+        pc.build_tropical(data, stations_df)
+
+
+def test_build_tropical_allows_trusted_and_honest_withholds(monkeypatch):
+    # A published trend with fit_ok True, and an empty withhold with fit_ok False
+    # (the exception path), must BOTH pass — the tripwire forbids only the one
+    # forbidden combination, so it never false-positives on legitimate output.
+    data, stations_df = _tiny_tropical_input()
+    monkeypatch.setattr(
+        pc, "_tropical_trend",
+        lambda fy, fc, y: ({"model_used": "nb", "p_value": 0.01}, True),
+    )
+    assert not pc.build_tropical(data, stations_df).empty
+    monkeypatch.setattr(pc, "_tropical_trend", lambda fy, fc, y: ({}, False))
+    assert not pc.build_tropical(data, stations_df).empty
