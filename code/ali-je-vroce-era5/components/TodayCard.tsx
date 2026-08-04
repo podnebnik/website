@@ -176,7 +176,7 @@ export function TodayCard(props: Props) {
                   their ERA5-Land provenance is stated in the explain line below. */}
               <Show when={r().is_preliminary}>
                 <span style={{
-                  "font-family": "var(--font-mono)", "font-size": "9px",
+                  "font-family": "var(--font-mono)", "font-size": "10px",
                   "letter-spacing": "0.06em", "text-transform": "uppercase",
                   color: "var(--color-ink-soft)",
                   background: "var(--color-paper-2)",

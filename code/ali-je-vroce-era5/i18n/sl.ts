@@ -78,15 +78,15 @@ export const sl = {
   },
 
   sections: {
-    today_title: "ERA5 — Ali je vroče?",
-    today_subtitle: "reanaliza ERA5-Land v primerjavi z zgodovinskimi percentili",
+    today_title: "Ali je vroče?",
+    today_subtitle: "Vremenski podatki reanalize ERA5-Land v primerjavi z zgodovinskimi trendi",
     // T-6.12 — last measured day in the served data (interpolated via Intl sl-SI).
     today_data_age: "podatki do {date}",
     // T-6.13 — appended to today_data_age ONLY when the hero is currently showing an
     // Open-Meteo forecast value (todayData().is_preliminary). The leading " · " lives
     // inside the string and is rendered inside the same <Show>, so the separator can
     // never appear without the words. The date itself is never advanced (see PROGRESS).
-    today_forecast_suffix: " · danes napoved",
+    today_forecast_suffix: " · napoved za današnji dan",
     trends_analysis: "Analiza trendov · ERA5-Land reanaliza",
     location_details: "Podrobnosti lokacije",
     season_overview: "Sezonski pregled",
@@ -367,7 +367,7 @@ export const sl = {
     cat_normal: `${CAT.p20_p80} (20–80. pct)`,
     cat_hot: `${CAT.p80_p95} (80–95. pct)`,
     cat_extreme: `${CAT.above_p95} (>95. pct)`,
-    mode_all: "Vse letne čase",
+    mode_all: "Vsi letni časi",
     mode_extremes: "Samo ekstremi",
     anim_stop: "⏹ Ustavi",
     anim_play: "▶ Animacija",
@@ -398,7 +398,7 @@ export const sl = {
     cat_normal: "Normalno (SPEI −1,0 do 1,0)",
     cat_wet: "Mokro (SPEI 1,0 do 1,5)",
     cat_extreme_wet: "Zelo mokro (SPEI > 1,5)",
-    mode_all: "Vse letne čase",
+    mode_all: "Vsi letni časi",
     mode_extremes: "Samo ekstremi",
     anim_stop: "⏹ Ustavi",
     anim_play: "▶ Animacija",

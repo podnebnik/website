@@ -191,7 +191,7 @@ export function TodayTrendChart(props: Props) {
                   : t("trend.title_nat", { day: fmtMonthDay(d().monthNum, d().dayNum), yearMin: d().yearMin, yearMax: d().yearMax })}
               </div>
               <TrendHighchart trend={d()} />
-              <p class="today-explain" style={{ padding: "4px 0 2px" }}>
+              <p class="today-explain" style={{ padding: "4px 0 12px" }}>
                 {t("trend.explain", {
                   source: stationLabel()
                     ? t("trend.explain_source_station", { station: stationLabel()! })

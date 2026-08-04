@@ -1,6 +1,6 @@
 ---
-title: "Ali je vroče? — ERA5"
-layout: headerless.html
+title: Ali je vroče?
+layout: plain.html
 ---
 
 <div id="ali-je-vroce-era5">
