@@ -94,7 +94,7 @@ export const sl = {
     spei: "Sezonski sušni indeks (SPEI)",
     spei_trend: "Sušni trend po postaji — SPEI",
     spei_trend_sub: "Sezonski (SPEI-3) in mesečni (SPEI-30) indeks vodne bilance · Theil-Sen · ERA5-Land",
-    tropical_days: "Tropski dnevi",
+    tropical_days: "Vroči dnevi",
     tropical_days_sub: "Število dni z najvišjo temperaturo nad pragom · ERA5-Land · lapsna korekcija nadmorske višine",
     tropical_nights: "Tropske noči",
     tropical_nights_sub: "Število noči z najnižjo temperaturo nad pragom · ERA5-Land · lapsna korekcija nadmorske višine",
@@ -457,18 +457,18 @@ export const sl = {
   tropical: {
     unit_days: "dni",
     unit_nights: "noči",
-    noun_days: "Tropski dnevi",
+    noun_days: "Vroči dnevi",
     noun_nights: "Tropske noči",
     // T-5.19 — `plain_noun_days`/`plain_noun_nights` are the nominative-singular
     // forms; they are now UNUSED (their only consumer, no_trend, moved to the
     // pre-declined instrumental forms below). Left in place, not deleted, per the
     // ticket — removal is its own change.
-    plain_noun_days: "tropski dan",
+    plain_noun_days: "vroč dan",
     plain_noun_nights: "tropska noč",
     // Instrumental-plural forms for no_trend's "z {instr}" — Slovene morphology the
     // old "z {plainNoun}i" concatenation could not produce (it rendered the
     // ungrammatical "z tropski dani" / "z tropska noči").
-    instr_days: "tropskimi dnevi",
+    instr_days: "vročimi dnevi",
     instr_nights: "tropskimi nočmi",
     ctrl_threshold: "Prag:",
     ctrl_streak_days: "Min. zap. dni:",
@@ -480,7 +480,7 @@ export const sl = {
     tooltip_trend: "<b>{x}</b><br>Trend: <b>{y}</b> {unit}",
     tooltip_bar: "<b>{x}</b>{partial}<br>{noun}: <b>{y}</b>",
     nb_fit: "NB fit ({dpd} {unit}/des · {p})",
-    plain_desc_days: "Tropski dan — ko dnevna temperatura preseže {th} °C — povečuje toplotni stres in zdravstvena tveganja.",
+    plain_desc_days: "Vroč dan — ko dnevna temperatura preseže {th} °C — povečuje toplotni stres in zdravstvena tveganja.",
     plain_desc_nights: "Tropska noč — ko temperatura čez noč ostane nad {th} °C — preprečuje telesu okrevanje po dnevni vročini.",
     tech: "NB GLM: {rate}%/leto · {dpd} {unit}/desetletje · 95% CI · {sigphrase} · AIC {aic} · α={alpha}.",
     sig_yes: "statistično značilen ({p})",
