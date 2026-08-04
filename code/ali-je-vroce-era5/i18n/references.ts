@@ -99,9 +99,10 @@ export const references: Record<string, ReferenceEntry> = {
   //
   // ⚠ yue_wang cites Yue & Wang (2004) — the effective-sample-size variance
   // correction the code actually runs (pymannkendall.yue_wang_modification_test).
-  // The prose label "Yue-Wang TFPW" in reg.explain_reg is a DIFFERENT method
-  // (trend-free pre-whitening, Yue/Pilon/Phinney/Cavadias 2002); that mislabel is
-  // its own fix (T-5.62) and is deliberately NOT papered over here.
+  // T-5.62 removed the earlier "Yue-Wang TFPW" mislabel from reg.explain_reg; the
+  // footer now reads "Yue-Wang Mann-Kendall". Do NOT reintroduce "TFPW" — that is a
+  // DIFFERENT method (trend-free pre-whitening, Yue/Pilon/Phinney/Cavadias 2002)
+  // that this pipeline never ran.
   theil_sen: {
     desc: "Izvirni članek o Theil-Senovi oceni naklona trenda.",
     cite: "Sen, P. K. (1968), Journal of the American Statistical Association 63, 1379–1389",

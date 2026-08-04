@@ -230,7 +230,7 @@ export const sl = {
     explain: "Vsaka pika je povprečna vrednost ({source}) v ±7-dnevnem oknu okoli tega datuma za vsako leto od {yearMin}. Trend Theil-Sen je {trend} °C/desetletje ({sig}). Po tem tempu projekcija kaže {proj2050} °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
     explain_source_station: "lapsno popravljene dnevne najvišje temperature na postaji {station}",
     explain_source_nat: "nacionalne povprečne dnevne najvišje temperature vseh {count, plural, one{# postaje} two{# postaj} few{# postaj} other{# postaj}}",
-    foot: "Theil-Sen + TFPW MK: {trend} °C/desetletje · {sig} · τ = {tau} · 95% CI · {count, plural, one{# leto} two{# leti} few{# leta} other{# let}}",
+    foot: "Theil-Sen + MK: {trend} °C/desetletje · {sig} · τ = {tau} · 95% CI · {count, plural, one{# leto} two{# leti} few{# leta} other{# let}}",
     tooltip_annual: "<b>{x}</b>: {y} °C",
     tooltip_milestone: "<b>{x}</b>: {y} °C <em>(projekcija)</em>",
     a11y: "Letni trend najvišjih temperatur okoli izbranega datuma z linijo Theil-Sen, 95-odstotnim intervalom zaupanja in projekcijo do leta 2050. Vsaka pika je vrednost enega leta.",
@@ -276,8 +276,8 @@ export const sl = {
 
     // T-5.51 (E3) — precip/ET₀ read raw columns with NO elevation correction, so the
     // "· nadmorska korekcija" clause is dropped for them (it is simply false there).
-    explain_reg: "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land · nadmorska korekcija",
-    explain_reg_nocorr: "Theil-Sen regresija + Yue-Wang TFPW Mann-Kendall test · ERA5-Land",
+    explain_reg: "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija",
+    explain_reg_nocorr: "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land",
     // T-5.51 (E2) — the calendar colour legend, three-way; only the colour clause
     // varies. "segrevanje" (was "ogrevanje") unifies with the reg.warming legend word.
     explain_cal: "Trend na desetletje za vsak dan v letu · rdeča = segrevanje · modra = ohlajanje · prosojnost = statistična značilnost",
@@ -325,7 +325,7 @@ export const sl = {
     verdict_warming: "Sto let segrevanja za <em>{t100} {unit}</em> – pri trenutnem tempu vsaka <em>{yrs} let</em> doda eno stopinjo.",
     verdict_cooling: "Sto let ohlajanja za <em>{t100} {unit}</em> – pri trenutnem tempu vsaka <em>{yrs} let</em> odšteje eno stopinjo.",
     verdict_none: "Na ta dan v letu ni zaznati trenda.",
-    method_theilsen: "Theil-Sen + TFPW Mann-Kendall",
+    method_theilsen: "Theil-Sen + Mann-Kendall",
 
     cat_catastrophic: "Katastrofalno",
     cat_extreme: "Ekstremno",

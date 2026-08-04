@@ -592,7 +592,7 @@ function captureAnalysis(unit: Unit): any {
       title: scatter.txt("[style*='font-size: 15px']"),
       subtitle: scatter.txt("[style*='margin-top: 3px']"),
       // The last panelSubStyle line in the scatter card — the footer method+fit_desc
-      // span (RegressionPanel.tsx:478), "Theil-Sen + TFPW MK · τ = …". (The field name
+      // span (RegressionPanel.tsx:478), "Theil-Sen + MK · τ = …". (The field name
       // and the old "<n> YR" comment are stale: slice(-1) lands on the footer, not the
       // years_sig badge.) T-5.60 dropped `white-space:nowrap` from panelSubStyle so the
       // subtitles wrap instead of ellipsizing; this selector keyed on that nowrap and

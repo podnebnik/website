@@ -742,7 +742,7 @@ async function buildRegressionResult(
     },
     baseline,
     stats: {
-      method: "Theil-Sen + TFPW MK", trend10: r.trend10, metric: r.trend10,
+      method: "Theil-Sen + MK", trend10: r.trend10, metric: r.trend10,
       metric_lbl: "trend / 10 let", p_val: r.p_val,
       direction: r.trend10 >= 0 ? "up" : "down",
       // T-5.51 M3 — unit derived per variable. NOTE: chg_str is still DEAD (nothing
@@ -900,7 +900,7 @@ export async function fetchCalendar(
   );
   // T-5.51 M2 — unit derived per variable (mm for precip/ET₀), feeds the year-round
   // tooltip "{trend} {unit}/desetletje".
-  return { loc, var: variable, unit: varUnit(variable), method_label: "Theil-Sen + TFPW MK", rows };
+  return { loc, var: variable, unit: varUnit(variable), method_label: "Theil-Sen + MK", rows };
 }
 
 // ── fetchAnnualTrend ───────────────────────────────────────────────────────────
