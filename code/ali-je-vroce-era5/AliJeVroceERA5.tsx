@@ -119,22 +119,34 @@ function Dashboard(props: { meta: SiteMeta }) {
           <div class="today-heading-text">
             <span class="today-heading-title">{t("sections.today_title")}</span>
             <span class="today-heading-subtitle">{t("sections.today_subtitle")}</span>
-            <Show when={lastDataDay()}>
-              {(d) => (
-                <span class="today-heading-date">
-                  {t("sections.today_data_age", { date: fmtIsoDate(d()) })}
-                  {/* T-6.13 — suffix only while the hero shows a forecast value
-                      (the same is_preliminary flag as TodayCard's "napoved" badge,
-                      api.ts:503-507/534-546). The separator is bundled into the
-                      catalogue string and gated here, so it never renders alone. The
-                      DATE is national/location-independent; only this suffix follows
-                      the reader's current selection (accepted — see PROGRESS). */}
-                  <Show when={todayData()?.is_preliminary}>
-                    {t("sections.today_forecast_suffix")}
-                  </Show>
-                </span>
-              )}
-            </Show>
+            {/* T-5.56 (c1) — the data-age line has its OWN boundary with an EMPTY
+                fallback, because it lives in the section heading, OUTSIDE the
+                today-grid ErrorBoundary below. A throw from any resource read here
+                (lastDataDay today, or the next inline fetch someone adds to
+                sec-heading) would otherwise escape to the page-level boundary at
+                :54 and blank the WHOLE island. A decorative line that fails should
+                VANISH, not render an error card in the heading — so the fallback is
+                null, matching the <Show>'s own hide-on-null behaviour. c2 makes
+                fetchLastDataDay itself return null on failure, so this boundary is
+                defence for the shape of the failure, not this call site. */}
+            <ErrorBoundary fallback={null}>
+              <Show when={lastDataDay()}>
+                {(d) => (
+                  <span class="today-heading-date">
+                    {t("sections.today_data_age", { date: fmtIsoDate(d()) })}
+                    {/* T-6.13 — suffix only while the hero shows a forecast value
+                        (the same is_preliminary flag as TodayCard's "napoved" badge,
+                        api.ts:503-507/534-546). The separator is bundled into the
+                        catalogue string and gated here, so it never renders alone. The
+                        DATE is national/location-independent; only this suffix follows
+                        the reader's current selection (accepted — see PROGRESS). */}
+                    <Show when={todayData()?.is_preliminary}>
+                      {t("sections.today_forecast_suffix")}
+                    </Show>
+                  </span>
+                )}
+              </Show>
+            </ErrorBoundary>
           </div>
         </div>
 

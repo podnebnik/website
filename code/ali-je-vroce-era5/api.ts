@@ -646,10 +646,27 @@ export async function fetchPageData(
 // fetchMeta and asserts no fixture misses (harness.tsx:695), but never mounts the hero,
 // so keeping this out of fetchMeta leaves the snapshot surface untouched.
 export async function fetchLastDataDay(): Promise<string | null> {
-  const rows = await dsGet<Array<{ date: string }>>(
-    `daily.json?_shape=array&_sort_desc=date&_size=1&${dsCols(DAILY_LAST_DAY_COLS)}`
-  );
-  return rows[0]?.date ?? null;
+  // T-5.56 — this line is DECORATIVE, and the contract above already promises
+  // "null on an empty/failed read". Honour it: catch the fetch error and return
+  // null so a failed read HIDES the line (the caller's <Show when={lastDataDay()}>
+  // does exactly that) instead of leaving the resource in an errored state whose
+  // read re-throws during render. Because this read sits in the section HEADING —
+  // outside the today-grid ErrorBoundary — that throw escaped to the page-level
+  // boundary and blanked the WHOLE island (the offline fixtures build could not
+  // render at all: fetchLastDataDay's URL was never added to record.mjs's plan).
+  // The offline fixture shim still records the miss in window.__FIXTURE_MISSES__
+  // BEFORE it throws (fixtures/install.ts miss()), so the fixture-miss guard stays
+  // honest — this only stops a decorative failure from being fatal. c1 (its own
+  // empty-fallback boundary in AliJeVroceERA5.tsx) hardens the heading against the
+  // next inline fetch someone adds there.
+  try {
+    const rows = await dsGet<Array<{ date: string }>>(
+      `daily.json?_shape=array&_sort_desc=date&_size=1&${dsCols(DAILY_LAST_DAY_COLS)}`
+    );
+    return rows[0]?.date ?? null;
+  } catch {
+    return null;
+  }
 }
 
 // ── fetchSeasonHeatmap ─────────────────────────────────────────────────────────
