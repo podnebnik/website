@@ -219,6 +219,14 @@
 .methodology-bands-name  { color: var(--color-ink); }
 .methodology-bands-count { color: var(--color-ink-soft); text-align: right; padding-right: 0; }
 
+/* T-6.14 — glossary definition list inside its own <details>, reusing the
+   .methodology-* disclosure chrome. Term in the sans ink colour (like the band
+   name), definition in the softer body colour at the .methodology-p size, indented
+   under its term. */
+.methodology-glossary { margin: 4px 0 0; }
+.methodology-glossary-term { font-family: var(--font-sans); font-size: 14px; font-weight: 600; color: var(--color-ink); margin: 16px 0 2px; }
+.methodology-glossary-def  { font-family: var(--font-sans); font-size: 14px; line-height: 1.6; color: var(--color-ink-2); margin: 0 0 0 16px; }
+
 /* T-5.47 — the shared elevation-band dot (chooser, station tag, methodology swatch) and
    the inline metres run. `.station-dot` is an <i> element (see StationTag / Change 3). */
 .station-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; border: 1px solid rgba(14, 14, 12, 0.22); flex-shrink: 0; vertical-align: middle; }

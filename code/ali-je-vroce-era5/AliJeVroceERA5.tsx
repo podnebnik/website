@@ -15,6 +15,7 @@ import { TodayTrendChart } from "./components/TodayTrendChart.tsx";
 //          panelHStyle, panelTitleStyle, panelSubStyle } from "./components/RegressionPanel.tsx";
 import { RegressionPanel, RegToolbar, RegScatterCard, RegYearRoundCard, FloatingStationChooser, useReg } from "./components/RegressionPanel.tsx";
 import { MethodologyPanel } from "./components/MethodologyPanel.tsx";
+import { GlossaryPanel } from "./components/GlossaryPanel.tsx";
 import type { SiteMeta } from "./types.ts";
 import { t, fmtNum, fmtInt, fmtMonthDay, fmtIsoDate } from "./i18n/format.ts";
 
@@ -282,6 +283,9 @@ function Dashboard(props: { meta: SiteMeta }) {
 
       {/* ── Methodology + trust furniture (T-6.1 / T-6.2) — foot of content ── */}
       <MethodologyPanel stations={era5Stations} />
+
+      {/* ── Glossary of terms (T-6.14) — sibling disclosure below the methodology ── */}
+      <GlossaryPanel />
 
     </div>
   );

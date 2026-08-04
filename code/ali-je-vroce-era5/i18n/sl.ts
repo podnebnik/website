@@ -572,6 +572,16 @@ export const sl = {
     bands_count: "{count, plural, one{# postaja} two{# postaji} few{# postaje} other{# postaj}}",
   },
 
+  // T-6.14 (D-8) — the glossary disclosure. Mirrors the methodology block exactly:
+  // MethodologyPanel renders a SINGLE heading — its <details> <summary> — with no
+  // separate section <h2>; `summary` here is the glossary's equivalent, rendered by
+  // GlossaryPanel with the same `.methodology-summary` treatment. The term/definition
+  // catalogue itself lives in i18n/glossary.ts (structurally parallel to this file),
+  // exactly as the methodology PROSE lives in hero-content.ts.
+  glossary: {
+    summary: "Slovarček pojmov",
+  },
+
   // Site meta (fallbacks)
   meta: {
     name: "Slovenija",
