@@ -591,8 +591,15 @@ function captureAnalysis(unit: Unit): any {
       day_label: r.txt(".reg-doy-ctrl > div"),
       title: scatter.txt("[style*='font-size: 15px']"),
       subtitle: scatter.txt("[style*='margin-top: 3px']"),
-      // "<n> YR · <significance>" — RegressionPanel.tsx:262
-      stats_badge: scatter.all("[style*='white-space: nowrap']").slice(-1)[0] ?? null,
+      // The last panelSubStyle line in the scatter card — the footer method+fit_desc
+      // span (RegressionPanel.tsx:478), "Theil-Sen + TFPW MK · τ = …". (The field name
+      // and the old "<n> YR" comment are stale: slice(-1) lands on the footer, not the
+      // years_sig badge.) T-5.60 dropped `white-space:nowrap` from panelSubStyle so the
+      // subtitles wrap instead of ellipsizing; this selector keyed on that nowrap and
+      // matched nothing after. Re-anchored to `letter-spacing: 0.08em`, which panelSubStyle
+      // carries and the (9px) stats sub-label shares — slice(-1) still returns the SAME
+      // footer span, so the recorded value is byte-identical.
+      stats_badge: scatter.all("[style*='letter-spacing: 0.08em']").slice(-1)[0] ?? null,
       total_change: scatter.txt("[style*='font-size: 20px']"),
       total_change_color: scatter.style("[style*='font-size: 20px']", "color"),
       footer: scatter.all("p"),
