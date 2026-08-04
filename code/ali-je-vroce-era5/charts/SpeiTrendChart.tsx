@@ -224,7 +224,7 @@ export function SpeiTrendChart(props: SpeiTrendChartProps) {
   function periodBtnStyle(p: Period) {
     const active = period() === p;
     return {
-      "font-family": "var(--font-mono)", "font-size": "10px", "letter-spacing": "0.04em",
+      "font-family": "var(--font-mono)", "font-size": "11px", "letter-spacing": "0.04em",
       padding: "3px 9px", "border-radius": "20px",
       border: "1px solid var(--color-rule-2)", cursor: "pointer",
       background: active ? "var(--color-ink)" : "var(--color-card)",
@@ -249,7 +249,7 @@ export function SpeiTrendChart(props: SpeiTrendChartProps) {
       </div>
 
       {/* Chart card */}
-      <div>
+      <div class="wide-item">
         <div style={{ background: "var(--color-card)", border: "1px solid var(--color-rule)", "border-radius": "var(--radius,10px)", overflow: "hidden" }}>
 
           {/* Panel header */}

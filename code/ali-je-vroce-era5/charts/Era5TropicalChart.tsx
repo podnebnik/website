@@ -109,7 +109,7 @@ export function Era5TropicalChart(props: Props) {
   };
 
   return (
-    <div>
+    <div class="wide-item">
       <ErrorBoundary fallback={sectionErrorFallback(refetch, "300px")}>
       <div style={{ background: "var(--color-card)", border: "1px solid var(--color-rule)", "border-radius": "var(--radius,10px)", overflow: "hidden" }}>
 

@@ -304,7 +304,7 @@ export function RegToolbar() {
         <div style={{ ...pillStyle, "padding-right": "4px" }}>
           <select
             value={s.selVar()}
-            style={{ background: "transparent", border: "none", "font-size": "12px", color: "var(--color-ink)", "font-family": "var(--font-sans)", cursor: "pointer", "padding-right": "16px", appearance: "none", "background-image": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='%236B655B'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E\")", "background-repeat": "no-repeat", "background-position": "right 2px center" }}
+            style={{ background: "transparent", border: "none", "font-size": "14px", color: "var(--color-ink)", "font-family": "var(--font-sans)", cursor: "pointer", "padding-right": "16px", appearance: "none", "background-image": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='%236B655B'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E\")", "background-repeat": "no-repeat", "background-position": "right 2px center" }}
             onChange={(e) => s.setSelVar(e.currentTarget.value)}
           >
             <For each={s.VARIABLES}>
@@ -345,7 +345,7 @@ export function RegToolbar() {
 
       {/* DOY control */}
       <div class="reg-doy-ctrl">
-        <span style={{ "font-family": "var(--font-mono)", "font-size": "9px", "letter-spacing": "0.12em", "text-transform": "uppercase", color: "var(--color-ink-soft)", "white-space": "nowrap" }}>{t("reg.day")}</span>
+        <span style={{ "font-family": "var(--font-mono)", "font-size": "11px", "letter-spacing": "0.12em", "text-transform": "uppercase", color: "var(--color-ink-soft)", "white-space": "nowrap" }}>{t("reg.day")}</span>
         {/* T-5.28: the "1. avg." display doubles as the calendar trigger. Kept a
             <div role="button"> (not a native <button>) so it stays the first
             `.reg-doy-ctrl > div` the snapshot reads as `day_label`; the popover is a
@@ -422,7 +422,7 @@ export function RegToolbar() {
 export function RegScatterCard() {
   const s = useReg();
   return (
-    <div class="reg-card">
+    <div class="reg-card wide-item">
       <ErrorBoundary fallback={sectionErrorFallback(s.refetchReg, "280px")}>
 
       <div style={panelHStyle}>
@@ -493,7 +493,7 @@ export function RegScatterCard() {
 export function RegYearRoundCard() {
   const s = useReg();
   return (
-    <div class="reg-card reg-card--cal">
+    <div class="reg-card reg-card--cal wide-item">
 
       <div style={panelHStyle}>
         <div style={{ "min-width": "0" }}>
@@ -817,14 +817,14 @@ const pillGroupStyle: Record<string, string> = {
   gap:            "6px",
   padding:        "4px 8px 4px 10px",
   "border-radius":"10px",
-  background:     "var(--color-paper)",
+  // background:     "var(--color-paper)",
   "flex-shrink":  "0",
   height:         "36px",
 };
 
 const pgkStyle: Record<string, string> = {
   "font-family":   "var(--font-mono)",
-  "font-size":     "9px",
+  "font-size":     "11px",
   "letter-spacing":"0.12em",
   "text-transform":"uppercase",
   color:           "var(--color-ink-soft)",
@@ -838,7 +838,7 @@ const pgkStyle: Record<string, string> = {
 // selector at RegToolbar; kept a separate const rather than reflowing the variable
 // select's inline style, so that call site stays byte-identical).
 const selectStyle: Record<string, string> = {
-  background: "transparent", border: "none", "font-size": "12px", color: "var(--color-ink)",
+  background: "transparent", border: "none", "font-size": "14px", color: "var(--color-ink)",
   "font-family": "var(--font-sans)", cursor: "pointer", "padding-right": "16px", appearance: "none",
   "background-image": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='%236B655B'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E\")",
   "background-repeat": "no-repeat", "background-position": "right 2px center",
@@ -852,10 +852,10 @@ const windowExplStyle: Record<string, string> = {
   "max-width":   "660px",
   margin:        "0",
   "padding-top": "2px",
-  "font-family": "var(--font-sans)",
-  "font-size":   "12px",
-  color:         "var(--color-ink-soft)",
-  "line-height": "1.5",
+  // "font-family": "var(--font-sans)",
+  // "font-size":   "12px",
+  // color:         "var(--color-ink-soft)",
+  // "line-height": "1.5",
 };
 
 const pillStyle: Record<string, string> = {
@@ -866,7 +866,7 @@ const pillStyle: Record<string, string> = {
   "border-radius":"7px",
   background:     "var(--color-card)",
   border:         "1px solid var(--color-rule)",
-  "font-size":    "12px",
+  "font-size":    "14px",
   color:          "var(--color-ink)",
   cursor:         "pointer",
   "font-family":  "var(--font-sans)",

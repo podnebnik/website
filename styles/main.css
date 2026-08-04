@@ -3,6 +3,8 @@
 @import "./a11y.css";
 @import "./era5.css";
 
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
 @plugin "@tailwindcss/typography";
 
 @custom-variant aria-current-page (&[aria-current="page"]);
@@ -144,7 +146,8 @@
     @apply lg:-ml-[100px] lg:-mr-[100px] bg-white p-(--gap) sm:p-(--2gap) rounded-md;
   }
 
-  .image {
+  .image,
+  .wide-item {
     @apply lg:-ml-[100px] lg:-mr-[100px];
   }
 

@@ -108,6 +108,7 @@ function HeroCard(props: { res: RegressionResult; unit: string; dateLabel: strin
   return (
     <div
       role="group"
+      class="wide-item"
       aria-label={t("hero.group_a11y", { station: displayName() })}
       style={{
       background:    "var(--color-card)",
@@ -126,7 +127,7 @@ function HeroCard(props: { res: RegressionResult; unit: string; dateLabel: strin
             <span style={{ ...SANS, "font-size": "15px", "font-weight": "600", color: "var(--color-ink)" }}>
               {displayName()}
             </span>
-            <span style={{ width: "4px", height: "4px", "border-radius": "50%", background: "var(--color-ink-soft)", display: "inline-block", "flex-shrink": "0" }} />
+            {/* <span style={{ width: "4px", height: "4px", "border-radius": "50%", background: "var(--color-ink-soft)", display: "inline-block", "flex-shrink": "0" }} /> */}
             <span style={{ ...MONO, "font-size": "10px", color: "var(--color-ink-soft)", "letter-spacing": "0.06em", "text-transform": "uppercase" }}>
               {props.dateLabel} · {t("hero.eyebrow_var")}
             </span>
@@ -204,7 +205,7 @@ function HeroCard(props: { res: RegressionResult; unit: string; dateLabel: strin
             flex:            "1 1 160px",
             padding:         "10px 16px 10px",
             "border-right":  i < 3 ? "1px solid var(--color-rule)" : "none",
-            "border-top":    "1px solid var(--color-rule)",
+            // "border-top":    "1px solid var(--color-rule)",
           }}>
             <div style={{ ...MONO, "font-size": "9px", "letter-spacing": "0.08em", "text-transform": "uppercase", color: "var(--color-ink-soft)", "margin-bottom": "3px" }}>
               {k}

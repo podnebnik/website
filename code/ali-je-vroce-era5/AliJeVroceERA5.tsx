@@ -114,44 +114,38 @@ function Dashboard(props: { meta: SiteMeta }) {
 
   return (
     <div>
+    <h1 class="mb-(--gap)!">{t("sections.today_title")}</h1>
+
+    <div class="text-sm flex flex-wrap justify-end gap-3">
+      <ErrorBoundary fallback={null}>
+        <Show when={lastDataDay()}>
+          {(d) => (
+            <span class="article-metadata not-italic not-prose" title="Objavljeno">
+              <img src="/assets/icons/published.svg" alt="Objavljeno" />
+              {t("sections.today_data_age", { date: fmtIsoDate(d()) })}
+              {/* T-6.13 — suffix only while the hero shows a forecast value
+                  (the same is_preliminary flag as TodayCard's "napoved" badge,
+                  api.ts:503-507/534-546). The separator is bundled into the
+                  catalogue string and gated here, so it never renders alone. The
+                  DATE is national/location-independent; only this suffix follows
+                  the reader's current selection (accepted — see PROGRESS). */}
+              <Show when={todayData()?.is_preliminary}>
+                {t("sections.today_forecast_suffix")}
+              </Show>
+            </span>
+          )}
+        </Show>
+      </ErrorBoundary>
+      <span class="grow"></span>
+    </div>
+
+    <div class="lead">
+      {t("sections.today_subtitle")}
+    </div>
+    <div class="article-content">
 
       {/* ── Today status section ──────────────────────────────────── */}
       <section class="today-status" ref={heroAnchor}>
-        <div class="sec-heading">
-          <div class="today-heading-text">
-            <span class="today-heading-title">{t("sections.today_title")}</span>
-            <span class="today-heading-subtitle">{t("sections.today_subtitle")}</span>
-            {/* T-5.56 (c1) — the data-age line has its OWN boundary with an EMPTY
-                fallback, because it lives in the section heading, OUTSIDE the
-                today-grid ErrorBoundary below. A throw from any resource read here
-                (lastDataDay today, or the next inline fetch someone adds to
-                sec-heading) would otherwise escape to the page-level boundary at
-                :54 and blank the WHOLE island. A decorative line that fails should
-                VANISH, not render an error card in the heading — so the fallback is
-                null, matching the <Show>'s own hide-on-null behaviour. c2 makes
-                fetchLastDataDay itself return null on failure, so this boundary is
-                defence for the shape of the failure, not this call site. */}
-            <ErrorBoundary fallback={null}>
-              <Show when={lastDataDay()}>
-                {(d) => (
-                  <span class="today-heading-date">
-                    {t("sections.today_data_age", { date: fmtIsoDate(d()) })}
-                    {/* T-6.13 — suffix only while the hero shows a forecast value
-                        (the same is_preliminary flag as TodayCard's "napoved" badge,
-                        api.ts:503-507/534-546). The separator is bundled into the
-                        catalogue string and gated here, so it never renders alone. The
-                        DATE is national/location-independent; only this suffix follows
-                        the reader's current selection (accepted — see PROGRESS). */}
-                    <Show when={todayData()?.is_preliminary}>
-                      {t("sections.today_forecast_suffix")}
-                    </Show>
-                  </span>
-                )}
-              </Show>
-            </ErrorBoundary>
-          </div>
-        </div>
-
         <div class="today-grid">
           <ErrorBoundary fallback={sectionErrorFallback(refetchPageData, "480px")}>
           <Show
@@ -171,7 +165,11 @@ function Dashboard(props: { meta: SiteMeta }) {
               />
             )}
           </Show>
+          </ErrorBoundary>
+        </div>
 
+        <div class="today-grid wide-item">
+          <ErrorBoundary fallback={sectionErrorFallback(refetchPageData, "480px")}>
           <Show when={todayData()?.available}>
             <div class="today-chart">
               <div class="today-chart-title">
@@ -180,7 +178,7 @@ function Dashboard(props: { meta: SiteMeta }) {
                   : t("today.chart_title_station", { station: todayData()!.loc!.replace(/_/g, " "), day: fmtDayLabel(todayData()!.day_label ?? ""), year_min: todayData()!.year_min ?? 0 })}
               </div>
               <DistributionChart data={todayData()!} chartId="dist-chart" />
-              <p class="today-explain" style={{ "font-size": "12px", "padding-top": "6px" }}>
+              <p class="today-explain" style={{ "padding-top": "6px", "padding-bottom": "12px" }}>
                 {t("today.chart_explain")}
               </p>
               <div class="today-foot">
@@ -231,7 +229,7 @@ function Dashboard(props: { meta: SiteMeta }) {
           nationalCount={era5Stations.length}
         />
 
-        <div class="sec-hs">{t("sections.trends_analysis")}</div>
+        <h2 class="prose-h2" style={{ "padding-top": "24px" }}>{t("sections.trends_analysis")}</h2>
 
         <RegToolbar />
 
@@ -292,6 +290,7 @@ function Dashboard(props: { meta: SiteMeta }) {
       <ReferencesPanel />
 
     </div>
+    </div>
   );
 }
 
@@ -299,19 +298,20 @@ function TropControls(props: {
   threshold: number; setThreshold: (n: number) => void; min: number; max: number;
   streak: number; setStreak: (n: number) => void; unit: string;
 }) {
-  const ctlLabel = { "font-family": "var(--font-mono)", "font-size": "10px", "letter-spacing": "0.06em", "text-transform": "uppercase", color: "var(--color-ink-soft)" } as const;
+  const ctlLabel = { "font-family": "var(--font-mono)", "font-size": "11px", "letter-spacing": "0.06em", "text-transform": "uppercase", color: "var(--color-ink-soft)" } as const;
+  const ctlTemp = { "font-family": "var(--font-mono)", "font-size": "14px", "letter-spacing": "0.06em", "text-transform": "uppercase", color: "var(--color-ink)" } as const;
   return (
     <div style={{ display: "flex", gap: "24px", "align-items": "center", "flex-wrap": "wrap", margin: "0 0 12px" }}>
       <label style={{ display: "flex", "align-items": "center", gap: "8px" }}>
         <span style={ctlLabel}>{t("tropical.ctrl_threshold")}</span>
-        <input type="range" min={props.min} max={props.max} step={1} value={props.threshold}
+        <input class="e5-range" type="range" min={props.min} max={props.max} step={1} value={props.threshold}
                onInput={(e) => props.setThreshold(Number(e.currentTarget.value))} />
-        <span style={{ ...ctlLabel, color: "var(--color-ink)" }}>{t("common.temp_c", { temp: fmtInt(props.threshold) })}</span>
+        <span style={ctlTemp}>{t("common.temp_c", { temp: fmtInt(props.threshold) })}</span>
       </label>
       <label style={{ display: "flex", "align-items": "center", gap: "8px" }}>
         <span style={ctlLabel}>{props.unit === "noči" ? t("tropical.ctrl_streak_nights") : t("tropical.ctrl_streak_days")}</span>
         <select value={props.streak} onInput={(e) => props.setStreak(Number(e.currentTarget.value))}
-                style={{ "font-family": "var(--font-mono)", "font-size": "11px", padding: "2px 6px" }}>
+                style={{ "font-family": "var(--font-mono)", "font-size": "14px", padding: "2px 6px" }}>
           <option value={1}>1</option>
           <option value={2}>2</option>
           <option value={3}>3</option>
@@ -338,21 +338,21 @@ function Era5Charts() {
     <Show when={loc()}>
       {/* Location impact details */}
       <section class="sec-p" style={{ "padding-top": "16px", "padding-bottom": "24px" }}>
-        <div class="sec-hs" style={{ "padding-inline": "0", "padding-top": "0", "padding-bottom": "10px" }}>
+        <h2 class="prose-h2" style={{ "padding-inline": "0", "padding-top": "0", "padding-bottom": "10px" }}>
           {t("sections.location_details")}
-        </div>
+        </h2>
         <Suspense fallback={<div style={{ height: "180px" }} class="animate-pulse rounded-xl bg-[var(--color-paper-2)]" />}>
           <HeroCardsPanel loc={loc()} label={st()?.label} doy={s.doy()} />
         </Suspense>
       </section>
 
       <section class="sec-p" style={{ "padding-bottom": "40px" }}>
-        <div class="sec-h" style={{ "padding-inline": "0", "padding-top": "24px" }}>
+        <h2 class="prose-h2" style={{ "padding-inline": "0", "padding-top": "24px" }}>
           {t("sections.season_overview")}
-        </div>
-        <div class="sec-hs2">
+        </h2>
+        <h3 class="prose-h3">
           {t("sections.season_overview_sub", { baseline: BASELINE_LABEL })}
-        </div>
+        </h3>
         <Suspense fallback={<div class="h-40 animate-pulse bg-[var(--color-paper-2)] rounded-xl" />}>
           <Era5SeasonHeatmapChart loc={loc()} label={st()?.label} />
         </Suspense>
@@ -360,9 +360,9 @@ function Era5Charts() {
 
       {/* SPEI drought heatmap (national) */}
       <section class="sec-p" style={{ "padding-bottom": "40px" }}>
-        <div class="sec-h" style={{ "padding-inline": "0", "padding-top": "8px" }}>
+        <h2 class="prose-h2" style={{ "padding-inline": "0", "padding-top": "8px" }}>
           {t("sections.spei")}
-        </div>
+        </h2>
         <ErrorBoundary fallback={sectionErrorFallback(refetchSpei, "160px")}>
           <Suspense fallback={<div class="h-40 animate-pulse bg-[var(--color-paper-2)] rounded-xl" />}>
             <Show when={speiData()?.available} fallback={<EmptyState minHeight="160px" />}>
@@ -380,12 +380,12 @@ function Era5Charts() {
 
       {/* SPEI drought trend per station */}
       <section class="sec-p" style={{ "padding-bottom": "40px" }}>
-        <div class="sec-h" style={{ "padding-inline": "0", "padding-top": "8px" }}>
+        <h2 class="prose-h2" style={{ "padding-inline": "0", "padding-top": "8px" }}>
           {t("sections.spei_trend")}
-        </div>
-        <div class="sec-hs2">
+        </h2>
+        <h3 class="prose-h3">
           {t("sections.spei_trend_sub")}
-        </div>
+        </h3>
         <ErrorBoundary fallback={sectionErrorFallback(refetchSpeiStation, "400px")}>
           <Suspense fallback={<div class="animate-pulse rounded-xl bg-[var(--color-paper-2)]" style={{ height: "400px" }} />}>
             <Show when={speiStationData()?.available} fallback={<EmptyState minHeight="400px" />}>
@@ -397,10 +397,10 @@ function Era5Charts() {
 
       {/* Tropical days */}
       <section class="sec-p" style={{ "padding-bottom": "40px" }}>
-        <div class="sec-h" style={{ "padding-inline": "0", "padding-top": "8px" }}>{t("sections.tropical_days")}</div>
-        <div class="sec-hs2">
+        <h2 class="prose-h2" style={{ "padding-inline": "0", "padding-top": "8px" }}>{t("sections.tropical_days")}</h2>
+        <h3 class="prose-h3">
           {t("sections.tropical_days_sub")}
-        </div>
+        </h3>
         <TropControls threshold={daysThr()} setThreshold={setDaysThr} min={25} max={35} streak={streak()} setStreak={setStreak} unit="dni" />
         <Suspense fallback={<div class="h-56 animate-pulse bg-[var(--color-paper-2)] rounded-xl" />}>
           <Era5TropicalChart loc={loc()} label={st()?.label} kind="days" threshold={daysThr()} streak={streak()} />
@@ -409,10 +409,10 @@ function Era5Charts() {
 
       {/* Tropical nights */}
       <section class="sec-p" style={{ "padding-bottom": "60px" }}>
-        <div class="sec-h" style={{ "padding-inline": "0", "padding-top": "8px" }}>{t("sections.tropical_nights")}</div>
-        <div class="sec-hs2">
+        <h2 class="prose-h2" style={{ "padding-inline": "0", "padding-top": "8px" }}>{t("sections.tropical_nights")}</h2>
+        <h3 class="prose-h3">
           {t("sections.tropical_nights_sub")}
-        </div>
+        </h3>
         <TropControls threshold={nightsThr()} setThreshold={setNightsThr} min={15} max={25} streak={streak()} setStreak={setStreak} unit="noči" />
         <Suspense fallback={<div class="h-56 animate-pulse bg-[var(--color-paper-2)] rounded-xl" />}>
           <Era5TropicalChart loc={loc()} label={st()?.label} kind="nights" threshold={nightsThr()} streak={streak()} />

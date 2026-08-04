@@ -187,6 +187,7 @@ export function SpeiHeatmap(props: SpeiHeatmapProps) {
       {/* Grid — decorative colour encoding; announced as one labelled image so a
           screen reader gets the summary and skips the unlabeled cells. The numbers
           live in the visually-hidden table below (T-5.4a). */}
+      <div class="reg-card wide-item" style={{ "padding": "14px 20px 12px" }}>
       <div class="shm-grid" role="img" aria-label={gridLabel()}>
         <For each={SEASON_ORDER}>
           {(season) => (
@@ -244,6 +245,7 @@ export function SpeiHeatmap(props: SpeiHeatmapProps) {
             </span>
           )}
         </For>
+      </div>
       </div>
 
       {/* Stats */}

@@ -4,14 +4,6 @@
  * podnebnik's own design system.
  */
 
-/* ── Font imports ─────────────────────────────────────────────────────────── */
-/* T-5.53: page text now adopts the site families (Bitter + IBM Plex Sans), which
-   the Eleventy shell already loads (base.html). Playfair Display dropped — nothing
-   renders it after the token swap. Space Grotesk kept: 8 Highcharts configs still
-   name it (out of scope to restyle), so it must keep loading or those charts fall
-   back silently. JetBrains Mono kept: the whole mono "data/lab" register stays. */
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
-
 /* ── Design tokens ────────────────────────────────────────────────────────── */
 
 #ali-je-vroce-era5 {
@@ -35,7 +27,6 @@
   --font-mono:  'JetBrains Mono', 'Fira Mono', monospace;
   --radius:     10px;
 
-  background: var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-sans);
 }
@@ -58,9 +49,15 @@
   --3gap:  48px;
 }
 
+/* ── Helper classes ────────────────────────────────────────────────── */
+.e5-range {
+  font-size: 14px;
+  accent-color: var(--color-accent);
+}
+
 /* ── Today status section ────────────────────────────────────────────────── */
 
-.today-status { padding: 20px 40px 24px; border-bottom: 1px solid var(--color-rule); background: var(--color-paper-2); }
+.today-status { padding-bottom: 24px; border-bottom: 1px solid var(--color-rule); }
 
 .today-status .sec-heading { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; padding: 0 0 16px; }
 .today-heading-text { display: flex; flex-direction: column; gap: 2px; align-items: center; }
@@ -80,10 +77,10 @@
 .today-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
 .today-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 4px; }
-.today-card { background: transparent; border: none; border-radius: var(--radius,10px); padding: 16px 28px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; min-width: 0; grid-column: 1 / -1; }
+.today-card { background: transparent; border: none; border-radius: var(--radius,10px); padding: 16px 0; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; min-width: 0; grid-column: 1 / -1; }
 
 .today-chart { background: var(--color-card); border: 1px solid var(--color-rule); border-radius: var(--radius,10px); padding: 16px 18px 22px; display: flex; flex-direction: column; min-width: 0; }
-.today-chart-title { font-family: var(--font-sans,'Space Grotesk',sans-serif); font-weight: 600; font-size: 13px; color: var(--color-ink); margin-bottom: 4px; line-height: 1.35; }
+.today-chart-title { font-family: var(--font-sans,'Space Grotesk',sans-serif); font-weight: 600; font-size: 15px; color: var(--color-ink); margin-bottom: 4px; line-height: 1.35; }
 
 .today-main-row { display: flex; flex-direction: column; align-items: center; gap: 18px; width: 100%; max-width: 900px; }
 @media (min-width: 701px) {
@@ -116,8 +113,8 @@
 .today-pct-label { font-family: var(--font-mono,'JetBrains Mono',monospace); font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-ink-soft); }
 .today-pct-samples { font-family: var(--font-mono,'JetBrains Mono',monospace); font-size: 10px; color: var(--color-ink-soft); opacity: 0.75; }
 
-.today-explain { font-family: var(--font-sans,'Space Grotesk',sans-serif); font-size: 13px; color: var(--color-ink-soft); line-height: 1.55; margin: 0; max-width: 900px; width: 100%; }
-.today-context { font-family: var(--font-sans,'Space Grotesk',sans-serif); font-size: 13px; color: var(--color-ink-soft); line-height: 1.6; margin: 0; max-width: 900px; width: 100%; border-left: 3px solid var(--color-accent); padding-left: 14px; }
+.today-explain { font-family: var(--font-sans,'Space Grotesk',sans-serif); font-size: 14px; color: var(--color-ink-soft); line-height: 1.55; margin: 0; max-width: 900px; width: 100%; }
+.today-context { font-family: var(--font-sans,'Space Grotesk',sans-serif); font-size: 14px; color: var(--color-ink-soft); line-height: 1.6; margin: 0; max-width: 900px; width: 100%; border-left: 3px solid var(--color-accent); padding-left: 14px; }
 .today-chart-legend { display: flex; gap: 14px; justify-content: center; padding: 6px 0 4px; flex-wrap: wrap; }
 .tcl-item  { display: flex; align-items: center; gap: 5px; font-family: var(--font-mono,'JetBrains Mono',monospace); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-ink-soft); }
 .tcl-sw    { width: 14px; height: 10px; border-radius: 2px; flex-shrink: 0; }
@@ -151,29 +148,30 @@
   /* grid-template-columns: min(460px, 44%) 1fr; */
   grid-template-columns: 1fr;
   gap: 20px;
-  padding: 20px 40px 0;
+  padding: 20px 0;
 }
 
 /* ── Responsive: Year-round cal section ──────────────────────────────────── */
 .cal-section { padding-bottom: 20px; }
 
 /* ── Responsive: Section headings ────────────────────────────────────────── */
-.sec-h  { font-family: var(--font-serif,'Playfair Display',serif); font-size: 32px; font-weight: 400; letter-spacing: 0.01em; color: var(--color-ink); padding: 16px 40px 8px; }
-.sec-hs { font-family: var(--font-sans,'Space Grotesk',sans-serif); font-size: 18px; font-weight: 500; letter-spacing: 0.01em; color: var(--color-ink-soft); padding: 20px 40px 6px; }
-.sec-hs2{ font-family: var(--font-sans,'Space Grotesk',sans-serif); font-size: 13px; font-weight: 400; color: var(--color-ink-soft); padding: 2px 40px 10px; }
+.sec-h  { font-family: var(--font-serif,'Playfair Display',serif); font-size: 32px; font-weight: 400; letter-spacing: 0.01em; color: var(--color-ink); padding: 16px 0 8px; }
+.sec-hs { font-family: var(--font-sans,'Space Grotesk',sans-serif); font-size: 18px; font-weight: 500; letter-spacing: 0.01em; color: var(--color-ink-soft); padding: 20px 0 6px; }
+.sec-hs2{ font-family: var(--font-sans,'Space Grotesk',sans-serif); font-size: 13px; font-weight: 400; color: var(--color-ink-soft); padding: 2px 0 10px; }
 
-/* ── Responsive: Section horizontal padding ──────────────────────────────── */
-.sec-p  { padding-inline: 40px; }
+/* prose headers */
+.prose-h2 { margin: 0 !important; padding: 16px 0 8px; }
+.prose-h3 { margin: 0 !important; padding: 2px 0 8px; font-weight: 400; }
 
 /* ── Methodology block + trust furniture (T-6.1 / T-6.2) ──────────────────── */
-.methodology { padding-top: 8px; padding-bottom: 56px; margin-top: 24px; border-top: 1px solid var(--color-rule); }
+.methodology { padding-top: 8px; padding-bottom: 8px; margin-top: 24px; border-top: 1px solid var(--color-rule); }
 .methodology-details { max-width: 760px; }
 /* T-5.20 — the today-card climate-context disclosure reuses this exact summary
    treatment, so the two <details> on the page read as one mechanism. One
    definition, two callers. */
 .methodology-summary,
 .today-context-summary {
-  font-family: var(--font-mono); font-size: 12px; font-weight: 600; letter-spacing: 0.08em;
+  font-family: var(--font-mono); font-size: 14px; font-weight: 600; letter-spacing: 0.08em;
   text-transform: uppercase; color: var(--color-ink-soft); cursor: pointer;
   padding: 14px 0; list-style: none; display: flex; align-items: center; gap: 8px;
 }
@@ -202,7 +200,7 @@
 .methodology-ul li{ font-family: var(--font-sans); font-size: 14px; line-height: 1.6; color: var(--color-ink-2); margin: 5px 0; }
 .methodology-body strong { font-weight: 600; color: var(--color-ink); }
 .methodology-body a      { color: var(--color-accent); }
-.methodology-body code   { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-paper-2); padding: 1px 4px; border-radius: 4px; }
+.methodology-body code   { font-family: var(--font-mono); font-size: 0.9em; padding: 1px 4px; border-radius: 4px; }
 
 /* T-6.15 — glossary term links inside the methodology prose. Targeted by href
    prefix so ONLY the in-page `#gloss-…` anchors get the restrained treatment (the
@@ -275,11 +273,7 @@
 
 /* ── Responsive: Regression toolbar ──────────────────────────────────────── */
 .reg-toolbar {
-  margin: 20px 40px 0;
-  background: var(--color-card);
-  border: 1px solid var(--color-rule);
-  border-radius: var(--radius, 10px);
-  padding: 10px 14px;
+  padding: 10px 0;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -288,10 +282,10 @@
 
 /* ── Responsive: Regression panel cards ──────────────────────────────────── */
 .reg-card       { background: var(--color-card); border: 1px solid var(--color-rule); border-radius: var(--radius, 10px); overflow: hidden; display: flex; flex-direction: column; }
-.reg-card--cal  { margin: 20px 40px 0; }
+.reg-card--cal  { margin-top: 20px; margin-bottom: 20px; }
 
 /* ── Responsive: DOY control ─────────────────────────────────────────────── */
-.reg-doy-ctrl   { display: flex; align-items: center; gap: 8px; padding: 4px 4px 4px 10px; border-radius: 10px; background: var(--color-paper); height: 36px; }
+.reg-doy-ctrl   { display: flex; align-items: center; gap: 8px; padding: 4px 4px 4px 10px; border-radius: 10px; height: 36px; }
 
 /* ── T-5.28: day-of-year calendar picker ─────────────────────────────────────
    Opens from the "1. avg." label; a yearless month + day-number grid (no weekday
@@ -349,7 +343,7 @@
    the sole control is self-describing where there is room; below the hero it
    collapses to the bare icon (a labelled pill there overlapped content, T-5.27). */
 .fsc-trigger--wide { width: auto; grid-auto-flow: column; gap: 9px; padding: 0 16px 0 13px; border-radius: 24px; }
-.fsc-label { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.03em; color: var(--color-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 46vw; }
+.fsc-label { font-family: var(--font-mono); font-size: 13px; font-weight: 600; letter-spacing: 0.03em; color: var(--color-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 46vw; }
 
 /* T-5.35 — FIRST-USE CUE, shown until the reader first OPENS the chooser. Base layer
    (BOTH motion modes): an accent ring so the sole control announces itself without
@@ -369,7 +363,7 @@
   0%   { transform: scale(1);   opacity: 0.5; }
   100% { transform: scale(1.6); opacity: 0;   }
 }
-.fsc-list { position: absolute; right: 0; bottom: calc(100% + 8px); z-index: 2; margin: 0; padding: 4px; list-style: none; background: var(--color-card); border: 1px solid var(--color-rule-2); border-radius: var(--radius, 10px); box-shadow: 0 8px 24px rgba(14, 14, 12, 0.18); min-width: 200px; max-width: calc(100vw - 40px); max-height: 60vh; overflow-y: auto; }
+.fsc-list { position: absolute; right: 0; bottom: calc(100% + 8px); z-index: 2; margin: 0; padding: 4px; list-style: none; background: var(--color-card); border: 1px solid var(--color-rule-2); border-radius: var(--radius, 10px); box-shadow: 0 8px 24px rgba(14, 14, 12, 0.18); min-width: 200px; max-width: calc(100vw); max-height: 60vh; overflow-y: auto; }
 .fsc-opt { padding: 7px 12px; border-radius: 7px; font-family: var(--font-sans); font-size: 13px; color: var(--color-ink); cursor: pointer; white-space: nowrap; }
 .fsc-opt:hover { background: var(--color-paper-2); }
 .fsc-opt:focus-visible { outline: 2px solid var(--color-accent); outline-offset: -2px; }
@@ -377,9 +371,9 @@
 .fsc-opt--sel:hover { background: var(--color-ink); }
 
 /* T-5.27 part (3): the season heatmap names the station the off-screen chooser set. */
-.era5-chart-loc { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-ink-soft); margin-bottom: 8px; }
+.era5-chart-loc { font-family: var(--font-mono); font-size: 16px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-ink-soft); margin-bottom: 8px; }
 
-@media (max-width: 700px) {
+@media (max-width: 48rem) {
   .main-row { grid-template-columns: 1fr; padding: 10px 14px 0; }
   .reg-card--cal { margin: 10px 14px 0; }
   .sec-h  { padding-inline: 14px; font-size: 26px; }
@@ -406,7 +400,7 @@
 /* ── Season & SPEI heatmap ───────────────────────────────────────────────── */
 
 .shm-controls { display: flex; gap: 7px; flex-wrap: wrap; align-items: center; margin: 14px 0 18px; }
-.shm-btn { background: transparent; border: 1px solid var(--color-rule-2); border-radius: 20px; padding: 4px 14px; font-size: 11px; font-family: var(--font-mono); letter-spacing: 0.05em; text-transform: uppercase; color: var(--color-ink-soft); cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s; }
+.shm-btn { background: var(--color-card); border: 1px solid var(--color-rule-2); border-radius: 20px; padding: 4px 14px; font-size: 11px; font-family: var(--font-mono); letter-spacing: 0.05em; text-transform: uppercase; color: var(--color-ink-soft); cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s; }
 .shm-btn:hover { border-color: var(--color-ink-soft); color: var(--color-ink); }
 .shm-btn--active { background: var(--color-ink); color: var(--color-paper); border-color: var(--color-ink); }
 .shm-btn--anim { margin-left: auto; }
@@ -433,7 +427,7 @@
 .shm-stats { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
 .shm-stat { flex: 1; min-width: 120px; background: var(--color-paper); border: 1px solid var(--color-rule); border-radius: var(--radius); padding: 14px 16px; text-align: center; }
 .shm-stat-num { font-family: var(--font-sans); font-size: 30px; font-weight: 600; color: var(--color-ink); line-height: 1; }
-.shm-stat-lbl { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-ink-soft); margin-top: 6px; }
+.shm-stat-lbl { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-ink-soft); margin-top: 6px; }
 
 .shm-tip { position: fixed; pointer-events: none; background: var(--color-paper); border: 1px solid var(--color-rule-2); border-radius: 8px; padding: 9px 13px; font-family: var(--font-sans); font-size: 12px; line-height: 1.6; color: var(--color-ink); z-index: 9999; box-shadow: 0 4px 18px rgba(0,0,0,0.1); max-width: 210px; }
 .shm-tip strong { display: block; font-weight: 600; font-size: 13px; margin-bottom: 3px; }
@@ -506,3 +500,4 @@
 .sl-src p { font-family: var(--font-sans); font-size: 10px; color: var(--sl-txt-soft); margin: 4px 0; line-height: 1.5; }
 .sl-src a { color: var(--sl-fill); }
 .sl-src-warn { color: #f2a060 !important; font-style: italic; }
+
