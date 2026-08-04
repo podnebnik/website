@@ -403,13 +403,15 @@ VARIABLES = {
 # Precip/ET0 accumulate over the window (sum); temperatures average (mean).
 SUM_VARIABLES = {"precipitation_sum", "et0_evapotranspiration"}
 
-def _annual_trend_row(era5_name: str, station_id, loc_data: pd.DataFrame,
-                      month: int, day: int, variable: str, col: str,
-                      half: int = TREND_WINDOW) -> dict | None:
-    # `half` defaults to TREND_WINDOW so the published annual_trend build (build_annual_trend
-    # below) is byte-identical; build_annual_trend_windows passes the exploratory half-widths.
-    # The module-global TREND_WINDOW is never mutated — the window is a plain argument.
-    w       = window_filter(loc_data, month, day, half)
+def _annual_trend_row(era5_name: str, station_id, w: pd.DataFrame,
+                      month: int, day: int, variable: str, col: str) -> dict | None:
+    # T-4.28: `w` is the pre-sliced ±half day-of-year window for (station, month, day),
+    # computed ONCE by the caller and shared across all five variables. window_filter's
+    # slice depends only on (station, month, day, half) — never on the variable or column
+    # (the col selection and the >= TREND_START_YEAR filter both happen below, after the
+    # slice) — so the shared frame is byte-identical to the old per-variable window_filter
+    # call. `w` is read only, once, via .groupby here; it is never mutated, so sharing one
+    # frame across the five fits cannot let one variable's fit see another's changes.
     agg_fn  = "sum" if variable in SUM_VARIABLES else "mean"
     annual  = (
         w.groupby("_window_year")[col].agg(agg_fn).dropna()
@@ -504,20 +506,31 @@ def _annual_trend_task(args):
     task_index, half, era5_name = args
     loc = _POOL_DATA[_POOL_DATA["location"] == era5_name]
     station_id = _POOL_SID_MAP.get(era5_name)
-    rows = []
-    for variable, col in VARIABLES.items():
-        for month in range(1, 13):
-            for day in range(1, 32):
-                try:
-                    pd.Timestamp(2001, month, day)
-                except ValueError:
-                    continue
-                row = _annual_trend_row(era5_name, station_id, loc, month, day,
-                                        variable, col, half=half)
+    # T-4.28: (month, day) OUTER, variable INNER. window_filter's slice depends only on
+    # (station, month, day, half) — never on the variable — so it is computed ONCE per day
+    # and reused across all five variables (it was recomputed 5× per day, the loop's single
+    # largest cost, measured 5.00× redundant). Rows are collected per variable and emitted
+    # in VARIABLES order below, reproducing the pre-T-4.28 variable→month→day CSV layout
+    # byte-for-byte. Only one slice is held at a time (the next day's overwrites it), so the
+    # memory cost is one window, not 365.
+    buckets = {variable: [] for variable in VARIABLES}
+    for month in range(1, 13):
+        for day in range(1, 32):
+            try:
+                pd.Timestamp(2001, month, day)
+            except ValueError:
+                continue
+            w = window_filter(loc, month, day, half)
+            for variable, col in VARIABLES.items():
+                row = _annual_trend_row(era5_name, station_id, w, month, day,
+                                        variable, col)
                 if row:
                     if _POOL_ADD_WINDOW_COL:
                         row["window"] = half
-                    rows.append(row)
+                    buckets[variable].append(row)
+    rows = []
+    for variable in VARIABLES:
+        rows.extend(buckets[variable])
     return task_index, rows
 
 
@@ -549,23 +562,31 @@ def _annual_trend_serial(data, stations_df, windows, add_window_col, label):
         for era5_name in station_names:
             loc      = data[data["location"] == era5_name]
             station_id = sid_map.get(era5_name)
-            for variable, col in VARIABLES.items():
-                for month in range(1, 13):
-                    for day in range(1, 32):
-                        try:
-                            pd.Timestamp(2001, month, day)
-                        except ValueError:
-                            continue
-                        row = _annual_trend_row(era5_name, station_id, loc, month, day,
-                                                variable, col, half=half)
+            # T-4.28: (month, day) outer, variable inner — slice once per day, reuse across
+            # the five variables, emit per variable in VARIABLES order. Byte-identical row
+            # order to the old variable→month→day loop (see _annual_trend_task). This is the
+            # oracle the parallel path is proven equal to, so it must restructure identically.
+            buckets = {variable: [] for variable in VARIABLES}
+            for month in range(1, 13):
+                for day in range(1, 32):
+                    try:
+                        pd.Timestamp(2001, month, day)
+                    except ValueError:
+                        continue
+                    w = window_filter(loc, month, day, half)
+                    for variable, col in VARIABLES.items():
+                        row = _annual_trend_row(era5_name, station_id, w, month, day,
+                                                variable, col)
                         if row:
                             if add_window_col:
                                 row["window"] = half
-                            rows.append(row)
+                            buckets[variable].append(row)
                         done += 1
                         if done % 500 == 0:
                             print(f"  {label} {done}/{total} ({done/total*100:.0f}%)",
                                   end="\r", flush=True)
+            for variable in VARIABLES:
+                rows.extend(buckets[variable])
     print()
     return pd.DataFrame(rows)
 
