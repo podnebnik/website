@@ -204,6 +204,25 @@
 .methodology-body a      { color: var(--color-accent); }
 .methodology-body code   { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-paper-2); padding: 1px 4px; border-radius: 4px; }
 
+/* T-6.15 — glossary term links inside the methodology prose. Targeted by href
+   prefix so ONLY the in-page `#gloss-…` anchors get the restrained treatment (the
+   contact mailto keeps the accent above). Body ink + a dotted underline reads as a
+   "defined term" cue rather than a blue link, so a paragraph with several linked
+   terms stays annotated, not littered. Hover AND focus-visible reveal the accent —
+   focus-visible is deliberately kept so a keyboard user can see which term is
+   focused; that is the one case where restraint must not win. */
+.methodology-body a[href^="#gloss-"] {
+  color: inherit;
+  text-decoration: underline dotted;
+  text-decoration-color: var(--color-ink-soft);
+  text-underline-offset: 3px;
+}
+.methodology-body a[href^="#gloss-"]:hover,
+.methodology-body a[href^="#gloss-"]:focus-visible {
+  color: var(--color-accent);
+  text-decoration-color: var(--color-accent);
+}
+
 .methodology-furniture {
   font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; color: var(--color-ink-soft);
   margin: 14px 0 0; display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
@@ -224,7 +243,12 @@
    name), definition in the softer body colour at the .methodology-p size, indented
    under its term. */
 .methodology-glossary { margin: 4px 0 0; }
-.methodology-glossary-term { font-family: var(--font-sans); font-size: 14px; font-weight: 600; color: var(--color-ink); margin: 16px 0 2px; }
+/* T-6.15 — each term is an anchor target for the methodology links. A closed
+   <details> auto-opens on fragment navigation (Baseline 2024); scroll-margin keeps
+   the landed term clear of the viewport top, and :target briefly tints the entry the
+   reader jumped to so the jump is legible. */
+.methodology-glossary-term { font-family: var(--font-sans); font-size: 14px; font-weight: 600; color: var(--color-ink); margin: 16px 0 2px; scroll-margin-top: 16px; }
+.methodology-glossary-term:target { background: var(--color-paper-2); border-radius: 4px; box-shadow: 0 0 0 4px var(--color-paper-2); }
 .methodology-glossary-def  { font-family: var(--font-sans); font-size: 14px; line-height: 1.6; color: var(--color-ink-2); margin: 0 0 0 16px; }
 
 /* T-5.47 — the shared elevation-band dot (chooser, station tag, methodology swatch) and

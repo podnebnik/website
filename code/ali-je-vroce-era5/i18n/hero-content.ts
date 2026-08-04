@@ -180,11 +180,11 @@ export const methodologyMarkdown = `*Kako nastanejo številke na strani »Ali je
 
 Ta stran prikazuje, kako topel je današnji dan v Sloveniji v primerjavi z zgodovino od leta 1950. Nekaj stvari, ki jih je dobro vedeti pri branju:
 
-- **Podatki niso meritve slovenskih vremenskih postaj (ARSO).** Prihajajo iz **reanalize ERA5-Land** (evropski podatkovni model, dostopen prek arhiva Open-Meteo). Reanaliza združi meritve, satelite in fizikalni model v enotno mrežo vrednosti. Zato **številke niso neposredno primerljive** z uradnimi objavami ARSO, ki temeljijo na meritvah postaj.
-- **Stran privzeto prikazuje najvišjo dnevno temperaturo (Tmax)** — »kako vroč je bil dan«. Povprečno in najnižjo temperaturo lahko izberete ročno, a nista privzeti (razlog je spodaj).
+- **Podatki niso meritve slovenskih vremenskih postaj ([ARSO](#gloss-arso)).** Prihajajo iz **[reanalize](#gloss-reanalysis) [ERA5-Land](#gloss-era5_land)** (evropski podatkovni model, dostopen prek arhiva [Open-Meteo](#gloss-open_meteo)). Reanaliza združi meritve, satelite in fizikalni model v enotno mrežo vrednosti. Zato **številke niso neposredno primerljive** z uradnimi objavami ARSO, ki temeljijo na meritvah postaj.
+- **Stran privzeto prikazuje najvišjo dnevno temperaturo ([Tmax](#gloss-temp_stats))** — »kako vroč je bil dan«. Povprečno in najnižjo temperaturo lahko izberete ročno, a nista privzeti (razlog je spodaj).
 - **Vsaka postaja je višinsko popravljena.** Ker mreža modela ne leži točno na višini postaje, vrednosti prilagodimo za razliko v nadmorski višini. **Za Kredarico je ta popravek −7,85 °C** — daleč največji na strani. Podrobnosti so spodaj; navajamo jih odkrito, ker gre za velik poseg v prikazano vrednost.
 - **»Slovenija« pomeni povprečje 18 postaj**, ne ene same nacionalne meritve. Postaje segajo od morske gladine (10 m) do Kredarice (2514 m).
-- **Referenčno obdobje za odklone je 1991–2020** (veljavna klimatološka norma WMO). Ker je to razmeroma toplo obdobje, se velik del zapisov 1950–2026 prikaže kot negativni odklon.
+- **Referenčno obdobje za [odklone](#gloss-anomaly) je 1991–2020** (veljavna [klimatološka norma](#gloss-climatological_normal) [WMO](#gloss-wmo)). Ker je to razmeroma toplo obdobje, se velik del zapisov 1950–2026 prikaže kot negativni odklon.
 
 Podroben tehnični opis sledi spodaj.
 
@@ -192,11 +192,11 @@ Podroben tehnični opis sledi spodaj.
 
 ## Vir podatkov
 
-Stran uporablja **reanalizo ERA5-Land**, dostopano prek **arhivskega API-ja Open-Meteo** (ne neposredno prek ECMWF/CDS). ERA5-Land je globalni reanalizni niz Evropskega centra za srednjeročne vremenske napovedi (ECMWF) z mrežno ločljivostjo približno 9 km.
+Stran uporablja **reanalizo ERA5-Land**, dostopano prek **arhivskega API-ja Open-Meteo** (ne neposredno prek [ECMWF](#gloss-ecmwf)/[CDS](#gloss-cds)). ERA5-Land je globalni reanalizni niz Evropskega centra za srednjeročne vremenske napovedi (ECMWF) z [mrežno ločljivostjo](#gloss-grid_cell) približno 9 km.
 
 Reanaliza ni isto kot meritev postaje. Je rekonstrukcija preteklega vremena, ki jo model ustvari z asimilacijo številnih virov opazovanj. Prednost je enotna, prostorsko in časovno polna pokritost brez vrzeli; slabost je, da posamezna mrežna celica ne ujame lokalnih posebnosti (npr. mestnega toplotnega otoka ali natančne mikrolokacije postaje).
 
-Zadnjih ~6 dni prihaja iz predhodne različice reanalize (ERA5T), zato se te vrednosti lahko še spremenijo.
+Zadnjih ~6 dni prihaja iz predhodne različice reanalize ([ERA5T](#gloss-era5t)), zato se te vrednosti lahko še spremenijo.
 
 Za današnje in najnovejše vrednosti, kjer reanaliza še ni na voljo, stran uporabi napoved Open-Meteo. Takšna vrednost je na strani označena z **»napoved«**; reanalizne vrednosti oznake nimajo.
 
@@ -204,7 +204,7 @@ Za današnje in najnovejše vrednosti, kjer reanaliza še ni na voljo, stran upo
 
 Stran zajema **18 lokacij** po Sloveniji. Za vsako je vrednost vzeta iz mrežne celice ERA5-Land nad njo. Nabor postaj sega od nižin do visokogorja — med drugim Koper (blizu morske gladine, ~10 m), Postojna (549 m), Rateče (864 m) in Kredarica (2514 m). Celoten razpon nadmorskih višin je **10–2514 m**.
 
-## Višinski popravek (lapse-rate)
+## [Višinski popravek](#gloss-lapse_rate) (lapse-rate)
 
 Mrežna celica ERA5-Land redko leži točno na nadmorski višini postaje. Da bi vrednosti ustrezale višini postaje in ne višini mrežne celice, vsako popravimo s **fiksno stopnjo 6,5 °C na kilometer** razlike med višino postaje in višino mrežne celice. To je standardna vrednost povprečne stopnje ohlajanja ozračja z višino.
 
@@ -213,7 +213,7 @@ Za 17 od 18 postaj je ta popravek majhen. **Za Kredarico je velik: −7,85 °C.*
 Odkrito navajamo njegove omejitve:
 
 - Popravljene vrednosti ERA5-Land za Kredarico smo **primerjali z meritvami ARSO in so bile blizu.** A šlo je za primerjavo, **ne za sistematično validacijo** — ni bila opravljena analiza pristranskosti po mesecih.
-- Fiksna stopnja 6,5 °C/km je **povprečje za prosto ozračje.** Dejanska prizemna stopnja nad gorskim pobočjem se spreminja s sezono in se lahko **splošči ali celo obrne pri zimskih temperaturnih inverzijah.** Popravek je torej lahko dober v letnem povprečju, a sistematično odstopa v posameznih mesecih (predvsem pozimi).
+- Fiksna stopnja 6,5 °C/km je **povprečje za prosto ozračje.** Dejanska prizemna stopnja nad gorskim pobočjem se spreminja s sezono in se lahko **splošči ali celo obrne pri zimskih [temperaturnih inverzijah](#gloss-temperature_inversion).** Popravek je torej lahko dober v letnem povprečju, a sistematično odstopa v posameznih mesecih (predvsem pozimi).
 - Empirični popravek po postaji in mesecu bi bil boljša dolgoročna rešitev; zaenkrat ni izveden.
 
 ## Katera temperatura je privzeta
@@ -238,25 +238,25 @@ Odkloni (koliko je dan topel »glede na normalo«) se merijo proti **referenčne
 
 Ena posledica je pomembna za branje: ker je 1991–2020 razmeroma toplo obdobje, se **velik del zapisov 1950–2026 prikaže kot negativni odklon.** To ni napaka, temveč posledica primerjave s toplo sodobno normalo.
 
-**Izjema — SPEI (suša):** indeks suše SPEI je ločen in umerjen na obdobje **1950–1980**, ne 1991–2020. Absolutni pragovi (npr. za vroče dneve in tropske noči) na referenčno obdobje niso vezani.
+**Izjema — [SPEI](#gloss-spei) (suša):** indeks suše SPEI je ločen in umerjen na obdobje **1950–1980**, ne 1991–2020. [Absolutni pragovi](#gloss-absolute_threshold) (npr. za vroče dneve in tropske noči) na referenčno obdobje niso vezani.
 
 ## Porazdelitev in percentil
 
-Za vsak dan v letu stran prikaže **porazdelitev** preteklih vrednosti (kako pogosti so bili posamezni odkloni) in **percentil** današnje vrednosti (topleje od kolikšnega deleža primerjalnih dni).
+Za vsak dan v letu stran prikaže **[porazdelitev](#gloss-distribution)** preteklih vrednosti (kako pogosti so bili posamezni odkloni) in **[percentil](#gloss-percentile)** današnje vrednosti (topleje od kolikšnega deleža primerjalnih dni).
 
-- Porazdelitev je **empirična ocena gostote (KDE)** — sledi dejanski obliki podatkov — ne simetrična zvonasta (Gaussova) krivulja. Temperaturne porazdelitve so pogosto nesimetrične, zato bi Gaussova krivulja napačno prikazala repe, ravno tam, kjer se presoja »kako izjemen je današnji dan«.
+- Porazdelitev je **empirična ocena gostote ([KDE](#gloss-kde))** — sledi dejanski obliki podatkov — ne simetrična zvonasta (Gaussova) krivulja. Temperaturne porazdelitve so pogosto nesimetrične, zato bi Gaussova krivulja napačno prikazala repe, ravno tam, kjer se presoja »kako izjemen je današnji dan«.
 - Nacionalna krivulja je **povprečje 18 krivulj posameznih postaj**, ne skupni bazen vzorcev — s čimer ohrani pomen »povprečja 18 postaj«.
 - Percentil je **pravi empirični percentil**, izračunan iz te krivulje (integral gostote do današnje vrednosti), ne približek iz barvnega pasu.
 
-Primerjalni vzorec za vsak koledarski dan je **združeno okno ±7 dni** čez vsa leta — tako ima vsak dan dovolj gost in stabilen vzorec. **Isto okno ±7 dni** uporablja tudi letni trend: vsaka letna točka na grafu trenda je **povprečje** vrednosti v tem oknu za posamezno leto — pri padavinah in ET₀ pa **vsota**, saj sta to globini v mm in ima smisel le seštevek. **29. februar** se pri tem pridruži oknu 28. februarja (redki prestopni dnevi se ne obravnavajo kot ločen, statistično šumeč dan). Objavljena vrednost povsod uporablja okno ±7 dni; v panelu z analizo trendov lahko bralec izbere tudi ožje ali širše okno, kar velja le za tisti prikaz.
+Primerjalni vzorec za vsak koledarski dan je **združeno okno ±7 dni** čez vsa leta — tako ima vsak dan dovolj gost in stabilen vzorec. **Isto okno ±7 dni** uporablja tudi letni trend: vsaka letna točka na grafu trenda je **povprečje** vrednosti v tem oknu za posamezno leto — pri [padavinah](#gloss-precipitation) in [ET₀](#gloss-et0) pa **vsota**, saj sta to globini v mm in ima smisel le seštevek. **29. februar** se pri tem pridruži oknu 28. februarja (redki prestopni dnevi se ne obravnavajo kot ločen, statistično šumeč dan). Objavljena vrednost povsod uporablja okno ±7 dni; v panelu z analizo trendov lahko bralec izbere tudi ožje ali širše okno, kar velja le za tisti prikaz.
 
 ## Pragovi za »vroče«
 
-Štetje vročih dni in tropskih noči uporablja **stroge pragove (\`>\`, ne \`≥\`).** To je usklajeno s standardom ETCCDI/ECA&D (medtem ko npr. nemški DWD uporablja \`≥\`). Standard je dejansko sporen; izbrali smo \`>\`. Sprememba na \`≥\` bi premaknila štetje vsakega mejnega dne, zato je izbira zapisana zavestno.
+Štetje [vročih dni in tropskih noči](#gloss-hot_day_tropical_night) uporablja **stroge pragove (\`>\`, ne \`≥\`).** To je usklajeno s standardom [ETCCDI/ECA&D](#gloss-etccdi) (medtem ko npr. nemški [DWD](#gloss-dwd) uporablja \`≥\`). Standard je dejansko sporen; izbrali smo \`>\`. Sprememba na \`≥\` bi premaknila štetje vsakega mejnega dne, zato je izbira zapisana zavestno.
 
 ## Trend vročih dni in tropskih noči
 
-Letni trend na grafih vročih dni in tropskih noči je **model negativne binomske regresije (NB GLM)** čez letno število — primeren za štetne podatke z večjo razpršenostjo od Poissonove. Gre za **približek**, ne za dokončno napoved: prikazana stopnja rasti in projekcija do leta 2050 sta odvisni od izbranega praga in dolžine zaporedja.
+Letni trend na grafih vročih dni in tropskih noči je **model negativne binomske regresije ([NB GLM](#gloss-nb_glm))** čez letno število — primeren za štetne podatke z večjo razpršenostjo od Poissonove. Gre za **približek**, ne za dokončno napoved: prikazana stopnja rasti in [projekcija do leta 2050](#gloss-projection_2050) sta odvisni od izbranega praga in dolžine zaporedja.
 
 **Trenda ne prikažemo, kadar mu ne moremo zaupati.** Za nekatere kombinacije (redki dogodki, skoraj ravna letna vrsta) statistični model ne da zanesljivega rezultata — ne skonvergira ali pa ocena njegove negotovosti ni veljavna. V takih primerih trenda **ne objavimo** (letno štetje ostane prikazano), namesto da bi navedli navidezno natančno, a nezanesljivo številko. Enako velja, kadar je premalo let s podatki (potrebnih je vsaj 10). To je isto načelo kot pri indeksu suše SPEI: raje odklonimo objavo kot da objavimo negotovo vrednost.
 

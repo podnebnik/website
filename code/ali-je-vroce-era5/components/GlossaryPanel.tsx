@@ -31,10 +31,14 @@ import { LOCALE } from "../i18n/format.ts";
 // concept interleave alphabetically rather than splitting into two blocks.
 const collator = new Intl.Collator(LOCALE, { numeric: true, sensitivity: "base" });
 
-// Sorted once — the catalogue is static.
-const ENTRIES = Object.values(glossary)
+// Sorted once — the catalogue is static. Kept as [key, entry] pairs (not bare
+// values) so each <dt> can emit a stable, language-neutral id `gloss-${key}` from
+// the ASCII catalogue key — the anchor target the methodology prose links to
+// (T-6.15). The id keys off the key, NEVER the Slovenian `term`, so a translated
+// label cannot break an in-page link.
+const ENTRIES = Object.entries(glossary)
   .slice()
-  .sort((a, b) => collator.compare(a.term, b.term));
+  .sort((a, b) => collator.compare(a[1].term, b[1].term));
 
 export function GlossaryPanel() {
   return (
@@ -44,10 +48,10 @@ export function GlossaryPanel() {
         <div class="methodology-body">
           <dl class="methodology-glossary">
             <For each={ENTRIES}>
-              {(e) => (
+              {([key, entry]) => (
                 <>
-                  <dt class="methodology-glossary-term">{e.term}</dt>
-                  <dd class="methodology-glossary-def">{e.def}</dd>
+                  <dt id={`gloss-${key}`} class="methodology-glossary-term">{entry.term}</dt>
+                  <dd class="methodology-glossary-def">{entry.def}</dd>
                 </>
               )}
             </For>
