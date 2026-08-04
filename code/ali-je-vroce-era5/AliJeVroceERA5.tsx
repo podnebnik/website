@@ -16,6 +16,7 @@ import { TodayTrendChart } from "./components/TodayTrendChart.tsx";
 import { RegressionPanel, RegToolbar, RegScatterCard, RegYearRoundCard, FloatingStationChooser, useReg } from "./components/RegressionPanel.tsx";
 import { MethodologyPanel } from "./components/MethodologyPanel.tsx";
 import { GlossaryPanel } from "./components/GlossaryPanel.tsx";
+import { ReferencesPanel } from "./components/ReferencesPanel.tsx";
 import type { SiteMeta } from "./types.ts";
 import { t, fmtNum, fmtInt, fmtMonthDay, fmtIsoDate } from "./i18n/format.ts";
 
@@ -286,6 +287,9 @@ function Dashboard(props: { meta: SiteMeta }) {
 
       {/* ── Glossary of terms (T-6.14) — sibling disclosure below the methodology ── */}
       <GlossaryPanel />
+
+      {/* ── References (T-6.8) — third sibling disclosure; the [n] markers link here ── */}
+      <ReferencesPanel />
 
     </div>
   );

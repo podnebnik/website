@@ -66,6 +66,7 @@
       "ErrorBoundary",
       "FloatingStationChooser",
       "GlossaryPanel",
+      "ReferencesPanel",
       "RegressionPanel",
       "Show",
       "SiteMeta",
