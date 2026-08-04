@@ -788,10 +788,39 @@ def _streak_filter(arr: np.ndarray, streak: int) -> np.ndarray:
             i += 1
     return out
 
-def _tropical_trend(fit_years, fit_counts, years) -> dict:
+def _fit_is_trustworthy(fitted) -> bool:
+    """The tropical NB fit's OWN verdict on itself: it converged AND its parameter
+    covariance is finite and positive-definite (T-4.24's withhold criterion).
+
+    Factored into a shared helper on purpose (T-5.25). It has TWO independent call
+    sites: the gate inside `_tropical_trend` (which returns {} when the verdict is
+    False) and the value carried out in `_tropical_trend`'s return, which
+    `build_tropical` re-reads to enforce "no untrustworthy fit is ever published".
+    Because the returned verdict is an independent read of the fit — not a flag the
+    gate sets — deleting the gate's early-return does NOT silence the tripwire: a
+    non-converged fit then flows through, the return still carries verdict=False, and
+    build_tropical raises. That is what makes the tripwire an invariant rather than a
+    restatement of the gate. (A refactor could still defeat it by editing BOTH call
+    sites; that is the irreducible limit, shared with the D-16 SPEI tripwire.)"""
+    if not bool(fitted.mle_retvals.get("converged", False)):
+        return False
+    cov = np.asarray(fitted.cov_params(), dtype=float)
+    if not bool(np.all(np.isfinite(cov))):
+        return False
+    cov_sym = 0.5 * (cov + cov.T)
+    return bool(np.all(np.linalg.eigvalsh(cov_sym) > 0.0))
+
+
+def _tropical_trend(fit_years, fit_counts, years) -> tuple[dict, bool]:
+    """Return (trend, fit_ok). `trend` is {} on any withhold; `fit_ok` is the fit's
+    trustworthiness verdict (see _fit_is_trustworthy), carried out so build_tropical
+    can assert the withhold actually fired. `fit_ok` is True on the no-fit paths
+    (insufficient data — an honest, deterministic withhold) and False only when a fit
+    the optimiser could not stand behind was produced. The only combination
+    build_tropical forbids is a NON-EMPTY trend with fit_ok False (T-5.25)."""
     nonzero = sum(1 for c in fit_counts if c > 0)
     if len(fit_years) < 10 or nonzero < 10:
-        return {}
+        return {}, True
     try:
         years_arr = np.array(fit_years, dtype=float)
         year_mean = float(years_arr[0])
@@ -821,15 +850,10 @@ def _tropical_trend(fit_years, fit_counts, years) -> dict:
         # get_prediction() below (a LinAlgError caught by the except); this explicit
         # check catches the arches/paths where the inverse comes back non-finite or
         # non-PD without raising. Both routes end in the same {} withhold.
-        cov = np.asarray(fitted.cov_params(), dtype=float)
-        cov_ok = bool(np.all(np.isfinite(cov)))
-        if cov_ok:
-            cov_sym = 0.5 * (cov + cov.T)
-            cov_ok = bool(np.all(np.linalg.eigvalsh(cov_sym) > 0.0))
-        if not (bool(fitted.mle_retvals.get("converged", False)) and cov_ok):
+        if not _fit_is_trustworthy(fitted):
             reason = "did not converge" if not fitted.mle_retvals.get("converged", False) else "non-PD covariance"
             print(f"  tropical NB fit withheld ({reason})", file=sys.stderr)
-            return {}
+            return {}, False
 
         x_dense = np.linspace(years[0], years[-1], len(years))
         X_dense = sm.add_constant(x_dense - year_mean)
@@ -864,11 +888,16 @@ def _tropical_trend(fit_years, fit_counts, years) -> dict:
         if not (all(np.isfinite(v) and v >= 0 for v in yl)
                 and all(np.isfinite(v) for v in cl) and all(np.isfinite(v) for v in ch)
                 and all(cl[i] <= ch[i] for i in range(len(cl)))):
-            return {}
-        return trend
+            return {}, True
+        # Re-read the fit's verdict here (a SECOND, independent call to the shared
+        # helper) rather than returning a literal True: this is the tripwire hook
+        # (T-5.25). In normal flow the gate above already guaranteed the verdict is
+        # True; but if that gate is ever deleted, this return still carries the real
+        # verdict (False for a non-converged fit) and build_tropical raises.
+        return trend, _fit_is_trustworthy(fitted)
     except Exception as e:
         print(f"  tropical NB fit failed ({e})", file=sys.stderr)
-        return {}
+        return {}, False
 
 def build_tropical(data: pd.DataFrame, stations_df: pd.DataFrame) -> pd.DataFrame:
     sid_map = dict(zip(stations_df["era5_name"], stations_df["station_id"]))
@@ -900,7 +929,30 @@ def build_tropical(data: pd.DataFrame, stations_df: pd.DataFrame) -> pd.DataFram
                     years  = [int(y) for y in ann.index]
                     counts = [int(v) for v in ann.values]
                     fit    = [(y, c) for y, c in zip(years, counts) if y != max_year]
-                    trend  = _tropical_trend([y for y, _ in fit], [c for _, c in fit], years)
+                    trend, fit_ok = _tropical_trend(
+                        [y for y, _ in fit], [c for _, c in fit], years)
+                    # T-5.25 tripwire: assert the T-4.24 withhold actually fired.
+                    # A non-empty trend that the fit itself does NOT vouch for means
+                    # the withhold-at-source has silently stopped working — the exact
+                    # failure that once published eleven false 2050 projections.
+                    # Abort the build (validate runs before to_sql, so nothing ships)
+                    # rather than republish a false significance claim.
+                    if trend and not fit_ok:
+                        raise pipeline_validate.PipelineValidationError(
+                            f"tropical trend published from an UNTRUSTWORTHY fit: "
+                            f"station={era5_name} kind={kind} threshold={threshold} "
+                            f"streak={streak}. The NB GLM did not converge (or its "
+                            f"parameter covariance was non-finite / non-positive-"
+                            f"definite), yet a trend_json — including a 2050 "
+                            f"projection and a significance verdict — was emitted. "
+                            f"A non-converged tropical fit once published ELEVEN "
+                            f"false 2050 projections, ten with p clamped to 0.0001 "
+                            f"(T-4.24); this invariant exists so that never ships "
+                            f"again. The correct fix is to WITHHOLD this trend "
+                            f"(return an empty dict from _tropical_trend, as its "
+                            f"convergence gate does) — NOT to relax or delete this "
+                            f"check (T-5.25)."
+                        )
                     rows.append({
                         "era5_name":     era5_name,
                         "station_id":    sid_map.get(era5_name),
