@@ -1,4 +1,4 @@
-FROM podnebnik/base:1.0 AS builder
+FROM --platform=$BUILDPLATFORM podnebnik/base:1.0 AS builder
 
 COPY . /build
 
