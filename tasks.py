@@ -31,7 +31,8 @@ def log(msg):
 
 
 def get_datapackage_paths():
-    return [Path(p) for p in glob.glob(f'{DATASETS_DIR}/*/datapackage.yaml')]
+    excluded = {'emissions', 'temperature-extra'}
+    return [Path(p) for p in glob.glob(f'{DATASETS_DIR}/*/datapackage.yaml') if Path(p).parent.name not in excluded]
 
 
 def get_datapackages():
