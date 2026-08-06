@@ -31,9 +31,13 @@ export type GlossaryEntry = { readonly term: string; readonly def: string };
 
 export const glossary: Record<string, GlossaryEntry> = {
   // ── Acronyms / named identifiers ──────────────────────────────────────────
+  era5: {
+    term: "ERA5",
+    def: "Matična reanaliza ECMWF na mreži približno 31 km, ki združuje meritve, satelitske posnetke in fizikalni model. ERA5-Land iz nje izpelje podrobnejšo sliko razmer pri tleh.",
+  },
   era5_land: {
     term: "ERA5-Land",
-    def: "Podatkovni niz, ki za vsak košček ozemlja in vsak dan oceni vreme z računalniškim modelom; izdeluje ga ECMWF, prostorska gostota je približno 9 km.",
+    def: "Podatkovni niz ECMWF na mreži ~9 km, ki podrobneje izračuna razmere pri tleh. Vremenske podatke dobi iz reanalize ERA5 in sam ne vključuje nobenih meritev.",
   },
   era5t: {
     term: "ERA5T",
