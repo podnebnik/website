@@ -182,7 +182,7 @@ Ta stran prikazuje, kako topel je današnji dan v Sloveniji v primerjavi z zgodo
 
 - **Podatki niso meritve slovenskih vremenskih postaj ([ARSO](#gloss-arso)).** Prihajajo iz **[reanalize](#gloss-reanalysis) [ERA5-Land](#gloss-era5_land)** (evropski podatkovni model, dostopen prek arhiva [Open-Meteo](#gloss-open_meteo)). Reanaliza združi meritve, satelite in fizikalni model v enotno mrežo vrednosti. Zato **številke niso neposredno primerljive** z uradnimi objavami ARSO, ki temeljijo na meritvah postaj.
 - **Stran privzeto prikazuje najvišjo dnevno temperaturo ([Tmax](#gloss-temp_stats))** — »kako vroč je bil dan«. Povprečno in najnižjo temperaturo lahko izberete ročno, a nista privzeti (razlog je spodaj).
-- **Vsaka postaja je višinsko popravljena.** Ker mreža modela ne leži točno na višini postaje, vrednosti prilagodimo za razliko v nadmorski višini. **Za Kredarico je ta popravek −7,85 °C** — daleč največji na strani. Podrobnosti so spodaj; navajamo jih odkrito, ker gre za velik poseg v prikazano vrednost.
+- **Vsaka postaja je popravljena na nadmorsko višino.** Ker mreža modela ne leži točno na višini postaje, vrednosti prilagodimo za razliko v nadmorski višini. **Za Kredarico je ta popravek −7,85 °C** — daleč največji na strani. Podrobnosti so spodaj; navajamo jih odkrito, ker gre za velik poseg v prikazano vrednost.
 - **»Slovenija« pomeni povprečje 18 postaj**, ne ene same nacionalne meritve. Postaje segajo od morske gladine (10 m) do Kredarice (2514 m).
 - **Referenčno obdobje za [odklone](#gloss-anomaly) je 1991–2020** (veljavna [klimatološka norma](#gloss-climatological_normal) [WMO](#gloss-wmo)). Ker je to razmeroma toplo obdobje, se velik del zapisov 1950–2026 prikaže kot negativni odklon.
 
@@ -208,7 +208,7 @@ Za današnje in najnovejše vrednosti, kjer reanaliza še ni na voljo, stran upo
 
 Stran zajema **18 lokacij** po Sloveniji. Za vsako je vrednost vzeta iz mrežne celice ERA5-Land nad njo. Nabor postaj sega od nižin do visokogorja — med drugim Koper (blizu morske gladine, ~10 m), Postojna (549 m), Rateče (864 m) in Kredarica (2514 m). Celoten razpon nadmorskih višin je **10–2514 m**.
 
-## [Višinski popravek](#gloss-lapse_rate) (lapse-rate)
+## [Korekcija na nadmorsko višino postaje](#gloss-lapse_rate)
 
 Mrežna celica ERA5-Land redko leži točno na nadmorski višini postaje. Da bi vrednosti ustrezale višini postaje in ne višini mrežne celice, vsako popravimo s **fiksno stopnjo 6,5 °C na kilometer** razlike med višino postaje in višino mrežne celice. To je standardna vrednost povprečne stopnje ohlajanja ozračja z višino.[[ref:lapse_rate]]
 
@@ -228,7 +228,7 @@ Razlog je kakovost podatkov. Reanaliza ERA5-Land sistematično slabše oceni **n
 
 ## Kaj pomeni »Slovenija«
 
-Nacionalna vrednost je **neuteženo povprečje vseh 18 postaj**, vključno z višinsko popravljeno Kredarico — na strani poimenovano »povprečje 18 postaj«, s prikazanim naborom postaj in razponom višin.
+Nacionalna vrednost je **neuteženo povprečje vseh 18 postaj**, vključno s Kredarico, popravljeno na nadmorsko višino — na strani poimenovano »povprečje 18 postaj«, s prikazanim naborom postaj in razponom višin.
 
 Uteževanje po površini ali višinskih pasovih smo pretehtali in **zavrnili**: ker je nad 1000 m le ena postaja (Kredarica), bi ta sama nosila cel višinski pas. To bi bilo videti natančno, a bi slonelo na eni sami točki. Neuteženo povprečje nad vidnim, poimenovanim naborom postaj je poštenejša konstrukcija.
 
@@ -271,7 +271,7 @@ Letni trend na grafih vročih dni in tropskih noči je **model negativne binomsk
 ## Znane omejitve
 
 - **Ni ARSO.** Vrednosti so reanaliza ERA5-Land, ne meritve postaj, in **niso neposredno primerljive** z objavami ARSO.
-- **Višinski popravek Kredarice** (−7,85 °C) je velik, preverjen a ne validiran po mesecih, in lahko odstopa pozimi (glej zgoraj).
+- **Korekcija na nadmorsko višino Kredarice** (−7,85 °C) je velik, preverjen a ne validiran po mesecih, in lahko odstopa pozimi (glej zgoraj).
 - **ERA5-Land Tmin** je v mestih nezanesljiv (toplotni otok); zato stran privzeto ne vodi s Tmean/Tmin.
 - **Ločljivost.** Mreža ERA5-Land je ~9 km, a vremenska informacija prihaja iz ERA5, katere učinkovita ločljivost je okoli 100 km. Lokalnih posebnosti pod to velikostjo vrednosti ne ujamejo.
 - **Najnovejše vrednosti** so lahko napoved (označene z »napoved«), dokler reanaliza ni na voljo.

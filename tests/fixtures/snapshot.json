@@ -33707,7 +33707,7 @@
           "total_change": "+4,35°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · korekcija na nadmorsko višino"
           ]
         },
         "charts": [
@@ -36772,7 +36772,7 @@
         },
         "rendered": {
           "title": "Najvišje temperature na postaji Ljubljana okoli 21. jul. · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je povprečna vrednost (lapsno popravljene dnevne najvišje temperature na postaji Ljubljana) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,56 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 28,4 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "explain": "Vsaka pika je povprečna vrednost (dnevne najvišje temperature na postaji Ljubljana, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,56 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 28,4 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + MK: +0,56 °C/desetletje · p < 0,001 · τ = 0,335 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
@@ -37233,7 +37233,7 @@
           "total_change": "+4,35°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · korekcija na nadmorsko višino"
           ]
         },
         "charts": [
@@ -40298,7 +40298,7 @@
         },
         "rendered": {
           "title": "Najvišje temperature na postaji Kredarica okoli 21. jul. · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je povprečna vrednost (lapsno popravljene dnevne najvišje temperature na postaji Kredarica) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,36 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 13,4 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "explain": "Vsaka pika je povprečna vrednost (dnevne najvišje temperature na postaji Kredarica, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,36 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 13,4 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + MK: +0,36 °C/desetletje · p < 0,001 · τ = 0,254 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
@@ -40759,7 +40759,7 @@
           "total_change": "+2,74°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · korekcija na nadmorsko višino"
           ]
         },
         "charts": [
@@ -44094,7 +44094,7 @@
           "total_change": "+3,76°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · korekcija na nadmorsko višino"
           ]
         },
         "charts": [
@@ -47159,7 +47159,7 @@
         },
         "rendered": {
           "title": "Najvišje temperature na postaji Ljubljana okoli 29. jul. · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je povprečna vrednost (lapsno popravljene dnevne najvišje temperature na postaji Ljubljana) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,49 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 28,0 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "explain": "Vsaka pika je povprečna vrednost (dnevne najvišje temperature na postaji Ljubljana, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,49 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 28,0 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + MK: +0,49 °C/desetletje · p < 0,001 · τ = 0,327 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
@@ -47620,7 +47620,7 @@
           "total_change": "+3,76°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · korekcija na nadmorsko višino"
           ]
         },
         "charts": [
@@ -50685,7 +50685,7 @@
         },
         "rendered": {
           "title": "Najvišje temperature na postaji Kredarica okoli 29. jul. · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je povprečna vrednost (lapsno popravljene dnevne najvišje temperature na postaji Kredarica) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,31 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 13,3 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "explain": "Vsaka pika je povprečna vrednost (dnevne najvišje temperature na postaji Kredarica, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,31 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 13,3 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + MK: +0,31 °C/desetletje · p < 0,001 · τ = 0,258 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
@@ -51146,7 +51146,7 @@
           "total_change": "+2,40°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · korekcija na nadmorsko višino"
           ]
         },
         "charts": [
@@ -54481,7 +54481,7 @@
           "total_change": "+3,54°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · korekcija na nadmorsko višino"
           ]
         },
         "charts": [
@@ -57546,7 +57546,7 @@
         },
         "rendered": {
           "title": "Najvišje temperature na postaji Ljubljana okoli 15. jul. · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je povprečna vrednost (lapsno popravljene dnevne najvišje temperature na postaji Ljubljana) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,46 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 27,2 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "explain": "Vsaka pika je povprečna vrednost (dnevne najvišje temperature na postaji Ljubljana, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,46 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 27,2 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + MK: +0,46 °C/desetletje · p < 0,001 · τ = 0,305 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
@@ -58007,7 +58007,7 @@
           "total_change": "+3,54°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · korekcija na nadmorsko višino"
           ]
         },
         "charts": [
@@ -61072,7 +61072,7 @@
         },
         "rendered": {
           "title": "Najvišje temperature na postaji Kredarica okoli 15. jul. · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je povprečna vrednost (lapsno popravljene dnevne najvišje temperature na postaji Kredarica) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,22 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 12,1 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "explain": "Vsaka pika je povprečna vrednost (dnevne najvišje temperature na postaji Kredarica, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,22 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 12,1 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + MK: +0,22 °C/desetletje · p < 0,001 · τ = 0,189 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
@@ -61533,7 +61533,7 @@
           "total_change": "+1,72°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · korekcija na nadmorsko višino"
           ]
         },
         "charts": [
@@ -62378,7 +62378,7 @@
           "total_change": "+4,40°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · korekcija na nadmorsko višino"
           ]
         },
         "charts": [
@@ -63223,7 +63223,7 @@
           "total_change": "+2,90°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · korekcija na nadmorsko višino"
           ]
         },
         "charts": [
@@ -64019,7 +64019,7 @@
           "total_change": "+4,40°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · korekcija na nadmorsko višino"
           ]
         },
         "charts": [
@@ -67066,7 +67066,7 @@
         },
         "rendered": {
           "title": "Najvišje temperature na postaji Ljubljana okoli 1. mar. · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je povprečna vrednost (lapsno popravljene dnevne najvišje temperature na postaji Ljubljana) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,56 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 10,5 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "explain": "Vsaka pika je povprečna vrednost (dnevne najvišje temperature na postaji Ljubljana, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,56 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 10,5 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + MK: +0,56 °C/desetletje · p < 0,001 · τ = 0,214 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
@@ -67527,7 +67527,7 @@
           "total_change": "+4,29°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · korekcija na nadmorsko višino"
           ]
         },
         "charts": [
@@ -70592,7 +70592,7 @@
         },
         "rendered": {
           "title": "Najvišje temperature na postaji Ljubljana okoli 28. feb. · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je povprečna vrednost (lapsno popravljene dnevne najvišje temperature na postaji Ljubljana) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,57 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 10,2 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "explain": "Vsaka pika je povprečna vrednost (dnevne najvišje temperature na postaji Ljubljana, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,57 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 10,2 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + MK: +0,57 °C/desetletje · p < 0,001 · τ = 0,214 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
@@ -71053,7 +71053,7 @@
           "total_change": "+4,40°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · korekcija na nadmorsko višino"
           ]
         },
         "charts": [
@@ -74118,7 +74118,7 @@
         },
         "rendered": {
           "title": "Najvišje temperature na postaji Ljubljana okoli 1. mar. · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je povprečna vrednost (lapsno popravljene dnevne najvišje temperature na postaji Ljubljana) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,56 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 10,5 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "explain": "Vsaka pika je povprečna vrednost (dnevne najvišje temperature na postaji Ljubljana, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,56 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 10,5 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + MK: +0,56 °C/desetletje · p < 0,001 · τ = 0,214 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
@@ -74579,7 +74579,7 @@
           "total_change": "+4,29°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · korekcija na nadmorsko višino"
           ]
         },
         "charts": [
@@ -77644,7 +77644,7 @@
         },
         "rendered": {
           "title": "Najvišje temperature na postaji Ljubljana okoli 1. jan. · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je povprečna vrednost (lapsno popravljene dnevne najvišje temperature na postaji Ljubljana) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,48 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 6,3 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "explain": "Vsaka pika je povprečna vrednost (dnevne najvišje temperature na postaji Ljubljana, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,48 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 6,3 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + MK: +0,48 °C/desetletje · p < 0,001 · τ = 0,239 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
@@ -78105,7 +78105,7 @@
           "total_change": "+3,73°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · korekcija na nadmorsko višino"
           ]
         },
         "charts": [
@@ -81166,7 +81166,7 @@
         },
         "rendered": {
           "title": "Najvišje temperature na postaji Ljubljana okoli 31. dec. · 1950–2025 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je povprečna vrednost (lapsno popravljene dnevne najvišje temperature na postaji Ljubljana) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,51 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 6,4 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "explain": "Vsaka pika je povprečna vrednost (dnevne najvišje temperature na postaji Ljubljana, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,51 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 6,4 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + MK: +0,51 °C/desetletje · p < 0,001 · τ = 0,270 · 95% CI · 76 let",
           "current_year_plotline": {
             "value": 2026,
@@ -81623,7 +81623,7 @@
           "total_change": "+3,90°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · korekcija na nadmorsko višino"
           ]
         },
         "charts": [
@@ -84684,7 +84684,7 @@
         },
         "rendered": {
           "title": "Najvišje temperature na postaji Ljubljana okoli 3. avg. · 1950–2025 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je povprečna vrednost (lapsno popravljene dnevne najvišje temperature na postaji Ljubljana) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,41 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 27,4 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "explain": "Vsaka pika je povprečna vrednost (dnevne najvišje temperature na postaji Ljubljana, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,41 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 27,4 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + MK: +0,41 °C/desetletje · p < 0,001 · τ = 0,284 · 95% CI · 76 let",
           "current_year_plotline": {
             "value": 2026,
@@ -85141,7 +85141,7 @@
           "total_change": "+3,13°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · korekcija na nadmorsko višino"
           ]
         },
         "charts": [
@@ -88202,7 +88202,7 @@
         },
         "rendered": {
           "title": "Najvišje temperature na postaji Kredarica okoli 3. avg. · 1950–2025 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je povprečna vrednost (lapsno popravljene dnevne najvišje temperature na postaji Kredarica) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,27 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 13,0 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "explain": "Vsaka pika je povprečna vrednost (dnevne najvišje temperature na postaji Kredarica, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,27 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 13,0 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + MK: +0,27 °C/desetletje · p < 0,001 · τ = 0,223 · 95% CI · 76 let",
           "current_year_plotline": {
             "value": 2026,
@@ -88659,7 +88659,7 @@
           "total_change": "+2,04°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · korekcija na nadmorsko višino"
           ]
         },
         "charts": [
@@ -91724,7 +91724,7 @@
         },
         "rendered": {
           "title": "Najvišje temperature na postaji Ljubljana okoli 7. feb. · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je povprečna vrednost (lapsno popravljene dnevne najvišje temperature na postaji Ljubljana) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,57 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 8,3 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "explain": "Vsaka pika je povprečna vrednost (dnevne najvišje temperature na postaji Ljubljana, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,57 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 8,3 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + MK: +0,57 °C/desetletje · p < 0,001 · τ = 0,247 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
@@ -92185,7 +92185,7 @@
           "total_change": "+4,38°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · korekcija na nadmorsko višino"
           ]
         },
         "charts": [
@@ -95263,7 +95263,7 @@
         },
         "rendered": {
           "title": "Najvišje temperature na postaji Kredarica okoli 7. jan. · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je povprečna vrednost (lapsno popravljene dnevne najvišje temperature na postaji Kredarica) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,54 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže −5,9 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "explain": "Vsaka pika je povprečna vrednost (dnevne najvišje temperature na postaji Kredarica, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,54 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže −5,9 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + MK: +0,54 °C/desetletje · p < 0,001 · τ = 0,282 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
@@ -95724,7 +95724,7 @@
           "total_change": "+4,16°C",
           "total_change_color": "rgb(204, 34, 34)",
           "footer": [
-            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija"
+            "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · korekcija na nadmorsko višino"
           ]
         },
         "charts": [

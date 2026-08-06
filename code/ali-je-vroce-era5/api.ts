@@ -742,7 +742,7 @@ async function buildRegressionResult(
     },
     baseline,
     stats: {
-      method: "Theil-Sen + MK", trend10: r.trend10, metric: r.trend10,
+      method: t("reg.method_short"), trend10: r.trend10, metric: r.trend10,
       metric_lbl: "trend / 10 let", p_val: r.p_val,
       direction: r.trend10 >= 0 ? "up" : "down",
       // T-5.51 M3 — unit derived per variable. NOTE: chg_str is still DEAD (nothing
@@ -900,7 +900,12 @@ export async function fetchCalendar(
   );
   // T-5.51 M2 — unit derived per variable (mm for precip/ET₀), feeds the year-round
   // tooltip "{trend} {unit}/desetletje".
-  return { loc, var: variable, unit: varUnit(variable), method_label: "Theil-Sen + MK", rows };
+  // method_label is CAPTURED by the snapshot harness (tests/snapshot/harness.tsx via
+  // CalendarData.method_label), NOT rendered by any component — that is deliberate: it
+  // is a tripwire so a change to the method label shows up in the baseline even though
+  // nothing on the page reads it (T-5.62 corrected its value for exactly this reason).
+  // Do NOT delete it as "dead code". Value moved to the catalogue (D-8, T-6.18).
+  return { loc, var: variable, unit: varUnit(variable), method_label: t("reg.method_short"), rows };
 }
 
 // ── fetchAnnualTrend ───────────────────────────────────────────────────────────

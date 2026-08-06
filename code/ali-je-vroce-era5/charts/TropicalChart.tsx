@@ -40,7 +40,6 @@ export interface Config {
   defaultThreshold: number;
   minT:             number;
   maxT:             number;
-  subLabel:         (th: number, st: number) => string;
   tooltipNoun:      string;
   plainDesc:        (th: number) => string;
   plainNounInstr:   string;  // instrumental-plural noun for no_trend ("z {instr}")
