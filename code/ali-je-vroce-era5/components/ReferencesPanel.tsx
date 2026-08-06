@@ -46,6 +46,9 @@ export function ReferencesPanel() {
                     <a href={entry.url} target="_blank" rel="noopener noreferrer">
                       {entry.cite}
                     </a>
+                    {entry.note ? (
+                      <span class="methodology-references-note">{" "}{entry.note}</span>
+                    ) : null}
                   </li>
                 );
               }}
