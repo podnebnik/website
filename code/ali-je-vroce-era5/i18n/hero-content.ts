@@ -194,7 +194,11 @@ Podroben tehnični opis sledi spodaj.
 
 Stran uporablja **reanalizo ERA5-Land**[[ref:era5_land_dataset]][[ref:era5_land_paper]], dostopano prek **arhivskega API-ja Open-Meteo**[[ref:open_meteo]] (ne neposredno prek [ECMWF](#gloss-ecmwf)/[CDS](#gloss-cds)). ERA5-Land je globalni reanalizni niz Evropskega centra za srednjeročne vremenske napovedi (ECMWF) z [mrežno ločljivostjo](#gloss-grid_cell) približno 9 km.
 
-Reanaliza ni isto kot meritev postaje. Je rekonstrukcija preteklega vremena, ki jo model ustvari z asimilacijo številnih virov opazovanj. Prednost je enotna, prostorsko in časovno polna pokritost brez vrzeli; slabost je, da posamezna mrežna celica ne ujame lokalnih posebnosti (npr. mestnega toplotnega otoka ali natančne mikrolokacije postaje).
+Reanaliza ni isto kot meritev postaje. Je rekonstrukcija preteklega vremena, ki nastane tako, da model združi številne vire opazovanj — meritve postaj, satelitske posnetke, podatke z ladij in letal — v enotno, prostorsko in časovno polno mrežo vrednosti.
+
+**ERA5-Land sam ne vključuje nobenih meritev.** Opazovanja združi matična reanaliza **[ERA5](#gloss-era5)** na mreži približno 31 km. ERA5-Land te vrednosti uporabi kot vhod in z njimi na gostejši mreži (~9 km) podrobneje izračuna razmere pri tleh. Gostejša mreža torej ne pomeni več opazovanj, le podrobnejši izračun iz istega vira.
+
+**Dejanska ločljivost je slabša od mrežne.** Učinkovita ločljivost ERA5 je približno tri- do štirikrat slabša od nominalne — okoli **100 km**, ne 31 km. Gostejša mreža ERA5-Land tega ne popravi.
 
 Zadnjih ~6 dni prihaja iz predhodne različice reanalize ([ERA5T](#gloss-era5t)), zato se te vrednosti lahko še spremenijo.
 
@@ -269,7 +273,7 @@ Letni trend na grafih vročih dni in tropskih noči je **model negativne binomsk
 - **Ni ARSO.** Vrednosti so reanaliza ERA5-Land, ne meritve postaj, in **niso neposredno primerljive** z objavami ARSO.
 - **Višinski popravek Kredarice** (−7,85 °C) je velik, preverjen a ne validiran po mesecih, in lahko odstopa pozimi (glej zgoraj).
 - **ERA5-Land Tmin** je v mestih nezanesljiv (toplotni otok); zato stran privzeto ne vodi s Tmean/Tmin.
-- **Mrežna ločljivost** (~9 km) ne ujame lokalnih posebnosti pod to velikostjo.
+- **Ločljivost.** Mreža ERA5-Land je ~9 km, a vremenska informacija prihaja iz ERA5, katere učinkovita ločljivost je okoli 100 km. Lokalnih posebnosti pod to velikostjo vrednosti ne ujamejo.
 - **Najnovejše vrednosti** so lahko napoved (označene z »napoved«), dokler reanaliza ni na voljo.
 - **Trend vročih dni/tropskih noči je približek** in ni na voljo za vse kombinacije praga in zaporedja: kjer se model ne ustali, trenda ne prikažemo (glej zgoraj).
 
