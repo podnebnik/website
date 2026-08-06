@@ -331,7 +331,7 @@ export const sl = {
     verdict_none: "Na ta dan v letu ni zaznati trenda.",
     method_theilsen: "Theil-Sen + Mann-Kendall",
 
-    cat_catastrophic: "Katastrofalno",
+    cat_catastrophic: "Zelo zaskrbljujoče",
     cat_extreme: "Ekstremno",
     cat_bad: "Slabo",
     cat_moderate: "Zmerno",
