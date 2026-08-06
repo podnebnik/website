@@ -16,11 +16,6 @@ const ERA5_CONFIGS: Record<string, Config> = {
     unitLabel:        t("tropical.unit_days"),
     defaultThreshold: 30,
     minT: 25, maxT: 35,
-    // NB: subLabel is currently unreferenced (the section subtitle is rendered from
-    // sections.tropical_days_sub in AliJeVroceERA5). Left as-is — see PROGRESS T-5.5.
-    subLabel:         (th, st) => `Število dni z najvišjo temperaturo nad ${th} °C` +
-      (st > 1 ? `, v nizih ${st}+ zaporednih dni` : "") +
-      ` na leto · lapsna korekcija nadmorske višine · ERA5-Land`,
     tooltipNoun:      t("tropical.noun_days"),
     plainDesc:        (th) => t("tropical.plain_desc_days", { th: fmtInt(th) }),
     plainNounInstr:   t("tropical.instr_days"),
@@ -30,9 +25,6 @@ const ERA5_CONFIGS: Record<string, Config> = {
     unitLabel:        t("tropical.unit_nights"),
     defaultThreshold: 20,
     minT: 15, maxT: 25,
-    subLabel:         (th, st) => `Število noči z najnižjo temperaturo nad ${th} °C` +
-      (st > 1 ? `, v nizih ${st}+ zaporednih noči` : "") +
-      ` na leto · lapsna korekcija nadmorske višine · ERA5-Land`,
     tooltipNoun:      t("tropical.noun_nights"),
     plainDesc:        (th) => t("tropical.plain_desc_nights", { th: fmtInt(th) }),
     plainNounInstr:   t("tropical.instr_nights"),

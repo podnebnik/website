@@ -114,7 +114,7 @@ export const glossary: Record<string, GlossaryEntry> = {
     def: "Model ozemlje razdeli na kvadrate ~9 km; vrednost velja za cel kvadrat, zato ne ujame posebnosti, manjših od tega.",
   },
   lapse_rate: {
-    term: "višinski popravek (lapse-rate)",
+    term: "korekcija na nadmorsko višino postaje (lapse-rate)",
     def: "Ker mreža ne leži točno na višini postaje, vrednost prilagodimo za razliko v nadmorski višini po pravilu 6,5 °C na kilometer.",
   },
   distribution: {
@@ -167,7 +167,7 @@ export const glossary: Record<string, GlossaryEntry> = {
   },
   temperature_inversion: {
     term: "temperaturna inverzija",
-    def: "Ko je zrak v višini toplejši od zraka pri tleh — pogosto pozimi v kotlinah. Takrat višinski popravek slabše deluje.",
+    def: "Ko je zrak v višini toplejši od zraka pri tleh — pogosto pozimi v kotlinah. Takrat korekcija na nadmorsko višino slabše deluje.",
   },
   water_balance: {
     term: "vodna bilanca",

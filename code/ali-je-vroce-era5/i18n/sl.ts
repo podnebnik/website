@@ -95,9 +95,9 @@ export const sl = {
     spei_trend: "Sušni trend po postaji — SPEI",
     spei_trend_sub: "Sezonski (SPEI-3) in mesečni (SPEI-30) indeks vodne bilance · Theil-Sen · ERA5-Land",
     tropical_days: "Vroči dnevi",
-    tropical_days_sub: "Število dni z najvišjo temperaturo nad pragom · ERA5-Land · lapsna korekcija nadmorske višine",
+    tropical_days_sub: "Število dni z najvišjo temperaturo nad pragom · ERA5-Land · korekcija na nadmorsko višino",
     tropical_nights: "Tropske noči",
-    tropical_nights_sub: "Število noči z najnižjo temperaturo nad pragom · ERA5-Land · lapsna korekcija nadmorske višine",
+    tropical_nights_sub: "Število noči z najnižjo temperaturo nad pragom · ERA5-Land · korekcija na nadmorsko višino",
     sea_level: "Dvig morske gladine — Koper",
     sea_level_sub: "Projekcije dviga morske gladine po scenarijih IPCC AR6 z viharnimi nalivi · severni Jadran",
   },
@@ -228,7 +228,7 @@ export const sl = {
     title_station: "Najvišje temperature na postaji {station} okoli {day} · {yearMin}–{yearMax} · trend s projekcijo do 2050",
     title_nat: "Najvišje temperature v Sloveniji okoli {day} · {yearMin}–{yearMax} · trend s projekcijo do 2050",
     explain: "Vsaka pika je povprečna vrednost ({source}) v ±7-dnevnem oknu okoli tega datuma za vsako leto od {yearMin}. Trend Theil-Sen je {trend} °C/desetletje ({sig}). Po tem tempu projekcija kaže {proj2050} °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
-    explain_source_station: "lapsno popravljene dnevne najvišje temperature na postaji {station}",
+    explain_source_station: "dnevne najvišje temperature na postaji {station}, popravljene na nadmorsko višino",
     explain_source_nat: "nacionalne povprečne dnevne najvišje temperature vseh {count, plural, one{# postaje} two{# postaj} few{# postaj} other{# postaj}}",
     foot: "Theil-Sen + MK: {trend} °C/desetletje · {sig} · τ = {tau} · 95% CI · {count, plural, one{# leto} two{# leti} few{# leta} other{# let}}",
     tooltip_annual: "<b>{x}</b>: {y} °C",
@@ -275,9 +275,13 @@ export const sl = {
     year_round_footer: "prosojnost = značilnost · p < 0,001 povsem neprosojno",
 
     // T-5.51 (E3) — precip/ET₀ read raw columns with NO elevation correction, so the
-    // "· nadmorska korekcija" clause is dropped for them (it is simply false there).
-    explain_reg: "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · nadmorska korekcija",
+    // "· korekcija na nadmorsko višino" clause is dropped for them (it is simply false there).
+    explain_reg: "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land · korekcija na nadmorsko višino",
     explain_reg_nocorr: "Theil-Sen regresija + Yue-Wang Mann-Kendall test · ERA5-Land",
+    // T-6.18 — the stats-badge method label, moved out of api.ts (D-8). Rendered at
+    // RegressionPanel.tsx:478 as `{method} · {fit_desc}`, and captured by the snapshot
+    // harness via CalendarData.method_label. Value byte-identical to the old literal.
+    method_short: "Theil-Sen + MK",
     // T-5.51 (E2) — the calendar colour legend, three-way; only the colour clause
     // varies. "segrevanje" (was "ogrevanje") unifies with the reg.warming legend word.
     explain_cal: "Trend na desetletje za vsak dan v letu · rdeča = segrevanje · modra = ohlajanje · prosojnost = statistična značilnost",
