@@ -385,8 +385,18 @@ def fetch_location(loc):
         else:
             print(f"  Failed for {name}: {e}", flush=True)
 
-    print(f"  Waiting 65 seconds before next request...", flush=True)
-    time.sleep(65)
+    # Politeness gap between stations. NOT zero, and here is why it stays:
+    # a refresh makes ~18 sequential Open-Meteo archive requests (one per station).
+    # At 10s spacing that is ~6 req/min — ~1% of the free tier's published limits
+    # of 600 req/min and 5,000 req/hour (https://open-meteo.com/en/pricing, checked
+    # 2026-08-07). Was 65s (undocumented, untouched since the MVP import 2bfc8a4) —
+    # ~17 min of pure waiting per run for no measured reason (T-5.45). Kept small
+    # rather than removed: dropping to zero would need retry-on-429 handling, because
+    # today a 429 that survives the 3 HTTP retries and is not tagged "daily/hourly
+    # limit exceeded" is swallowed by the except above and the station is SKIPPED,
+    # not retried — so tighter spacing must not become no spacing.
+    print(f"  Waiting 10 seconds before next request...", flush=True)
+    time.sleep(10)
 
 
 # ── Fetch and save ────────────────────────────────────────────────────────────
