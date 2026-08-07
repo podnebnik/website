@@ -331,12 +331,18 @@ function dayLabel(month: number, day: number): string {
   return `${MONTHS[month - 1]} ${day}`;
 }
 
-function categorizeEra5(temp: number, w: DailyWindowRow): { category_key: string; percentile: number; color: string } {
-  if (temp >= w.p95) return { category_key: "hell",     percentile: 97.5, color: CAT_COLORS.hell     };
-  if (temp >= w.p80) return { category_key: "hot",      percentile: 87.5, color: CAT_COLORS.hot      };
-  if (temp >= w.p20) return { category_key: "nope",     percentile: 50,   color: CAT_COLORS.nope     };
-  if (temp >= w.p10) return { category_key: "cold",     percentile: 15,   color: CAT_COLORS.cold     };
-  return                    { category_key: "freezing", percentile:  5,   color: CAT_COLORS.freezing };
+// Band + colour ONLY, from the p5..p95 cutoffs. The displayed percentile is the
+// honest empirical CDF (cdfPercentile), computed by every caller from the same
+// distribution_json curve — never a per-band constant. This function used to also
+// return a fixed bucket midpoint (97.5/87.5/50/15/5) as `percentile`; that was the
+// D-6 conflation, and its last reader (the last-7 strip) was cut over to the CDF in
+// T-4.30, so the field is gone (D-6 / T-4.1).
+function categorizeEra5(temp: number, w: DailyWindowRow): { category_key: string; color: string } {
+  if (temp >= w.p95) return { category_key: "hell",     color: CAT_COLORS.hell     };
+  if (temp >= w.p80) return { category_key: "hot",      color: CAT_COLORS.hot      };
+  if (temp >= w.p20) return { category_key: "nope",     color: CAT_COLORS.nope     };
+  if (temp >= w.p10) return { category_key: "cold",     color: CAT_COLORS.cold     };
+  return                    { category_key: "freezing", color: CAT_COLORS.freezing };
 }
 
 async function fetchEra5WindowRow(era5Name: string, month: number, day: number): Promise<DailyWindowRow | null> {
@@ -587,8 +593,15 @@ export async function fetchLast7(date: string, loc: string | null): Promise<Last
     rows.map(async r => {
       const w = await fetchEra5WindowRow(era5Name, r.month, r.day);
       if (!w || r.temperature_max_2m == null) return null;
-      const cat = categorizeEra5(r.temperature_max_2m, w);
-      return { date: r.date, day_label: dayLabel(r.month, r.day), today_temp: r.temperature_max_2m, percentile: cat.percentile, category_key: cat.category_key, color: cat.color };
+      // Percentile = the honest empirical CDF of the served KDE at the day's value —
+      // the SAME cdfPercentile the hero uses (api.ts:519,560) on the SAME distribution_json
+      // curve, so the strip's tooltip and the hero agree for the same station/date. It
+      // previously showed categorizeEra5's per-band midpoint, which repeated across a band
+      // and contradicted the hero (D-6 conflation, T-4.30). categorizeEra5 now supplies
+      // band + colour only.
+      const cat  = categorizeEra5(r.temperature_max_2m, w);
+      const dist = parseJsonColumn<[number, number][]>(w.distribution_json, "daily_window.distribution_json");
+      return { date: r.date, day_label: dayLabel(r.month, r.day), today_temp: r.temperature_max_2m, percentile: cdfPercentile(dist, r.temperature_max_2m), category_key: cat.category_key, color: cat.color };
     })
   );
   // `_sort_desc=date` (line 582) selects the seven MOST RECENT rows (date <= today);

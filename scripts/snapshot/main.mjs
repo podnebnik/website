@@ -492,7 +492,6 @@ const out = {
     "",
     "Known current-behaviour defects deliberately frozen here rather than fixed:",
     "  * Feb 29 returns zero rows everywhere and fetchAnnualTrend throws (T-4.5).",
-    "  * The percentile shown is a bucket midpoint, not an empirical rank (D-6, T-4.1).",
     "",
     "NOT COVERED: the sea-level widget. See tests/snapshot/sections.json `excluded`.",
   ],
