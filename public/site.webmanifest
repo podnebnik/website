@@ -1,0 +1,36 @@
+{
+  "name": "Podnebnik",
+  "short_name": "Podnebnik",
+  "description": "S pomočjo podatkov, analiz in simulacij pomagamo k boljšemu razumevanju podnebnih sprememb in okoljskih tveganj v Sloveniji.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#462a44",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": [
+    "education",
+    "news",
+    "utilities"
+  ],
+  "lang": "sl",
+  "dir": "ltr"
+}

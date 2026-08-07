@@ -33,8 +33,17 @@ The project is build on top of the following fantastic tools:
 
 For editing content or data packages, the simplest way to develop is using docker. For this you will only need to have docker and docker-compose installed. Then run:
 
+    docker-compose -f compose.yaml build base
     docker-compose -f compose.yaml build
     docker-compose -f compose.yaml up
+
+The `base` image must be built on its own first. The `website` service is defined as
+`FROM podnebnik/base:1.0`, and BuildKit resolves that base image's metadata before it
+runs any build in the same invocation — so a single `build` on a clean checkout fails
+with `pull access denied ... podnebnik/base:1.0` (it is a local-only image and is not
+published to a registry). `depends_on` does not help here: it orders service startup,
+not image builds. Once `base` exists locally you only need to rebuild it when
+`deployment/Dockerfile.dev.base` changes.
 
 This will build website and datasette in a similar way as in production. The website will appear on http://127.0.0.1:8003/ and datasette will appear on http://127.0.0.1:8001/ If these ports clash with other things you might have running on your system, you can change the ports in compose.yaml to something else.
 
