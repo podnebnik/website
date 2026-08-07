@@ -39,6 +39,7 @@ export type ReferenceEntry = {
   readonly desc: string; // plain-Slovenian one-liner (a locale VALUE)
   readonly cite: string; // author/issuer, year, title/journal — the linked text
   readonly url: string; // the link a reader can actually follow
+  readonly note?: string; // optional short annotation (access status, period) — a locale VALUE
 };
 
 export const references: Record<string, ReferenceEntry> = {
@@ -51,6 +52,12 @@ export const references: Record<string, ReferenceEntry> = {
     desc: "Znanstveni članek, ki opisuje reanalizo ERA5-Land in njeno izdelavo.",
     cite: "Muñoz-Sabater in sod. (2021), Earth System Science Data 13, 4349–4383",
     url: "https://doi.org/10.5194/essd-13-4349-2021",
+  },
+  hersbach_era5: {
+    desc: "Matična reanaliza ERA5 — opis metode, asimilacije opazovanj in ločljivosti.",
+    cite: "Hersbach et al. (2020), Quarterly Journal of the Royal Meteorological Society",
+    url: "https://rmets.onlinelibrary.wiley.com/doi/10.1002/qj.3803",
+    note: "Odprt dostop.",
   },
   open_meteo: {
     desc: "Arhivski spletni vmesnik, prek katerega stran dostopa do podatkov ERA5-Land.",
@@ -86,6 +93,12 @@ export const references: Record<string, ReferenceEntry> = {
     desc: "Slovar kazalnikov z natančnimi definicijami in pragovi (vroči dnevi, tropske noči).",
     cite: "ECA&D — Indices dictionary",
     url: "https://www.ecad.eu/indicesextremes/indicesdictionary.php",
+  },
+  wmo_c3s_esotc: {
+    desc: "Evropa se segreva približno dvakrat hitreje od svetovnega povprečja.",
+    cite: "WMO & Copernicus, European State of the Climate (2022)",
+    url: "https://climate.copernicus.eu/copernicus-temperatures-europe-increase-more-twice-global-average-europe-presents-live-picture",
+    note: "Obdobje 1991–2021.",
   },
 
   // ── HELD — no marker in the prose yet (T-6.8 finding 2) ──────────────────────

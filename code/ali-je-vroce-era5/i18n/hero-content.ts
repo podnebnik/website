@@ -196,7 +196,7 @@ Stran uporablja **reanalizo ERA5-Land**[[ref:era5_land_dataset]][[ref:era5_land_
 
 Reanaliza ni isto kot meritev postaje. Je rekonstrukcija preteklega vremena, ki nastane tako, da model združi številne vire opazovanj — meritve postaj, satelitske posnetke, podatke z ladij in letal — v enotno, prostorsko in časovno polno mrežo vrednosti.
 
-**ERA5-Land sam ne vključuje nobenih meritev.** Opazovanja združi matična reanaliza **[ERA5](#gloss-era5)** na mreži približno 31 km. ERA5-Land te vrednosti uporabi kot vhod in z njimi na gostejši mreži (~9 km) podrobneje izračuna razmere pri tleh. Gostejša mreža torej ne pomeni več opazovanj, le podrobnejši izračun iz istega vira.
+**ERA5-Land sam ne vključuje nobenih meritev.** Opazovanja združi matična reanaliza **[ERA5](#gloss-era5)** na mreži približno 31 km.[[ref:hersbach_era5]] ERA5-Land te vrednosti uporabi kot vhod in z njimi na gostejši mreži (~9 km) podrobneje izračuna razmere pri tleh. Gostejša mreža torej ne pomeni več opazovanj, le podrobnejši izračun iz istega vira.
 
 **Dejanska ločljivost je slabša od mrežne.** Učinkovita ločljivost ERA5 je približno tri- do štirikrat slabša od nominalne — okoli **100 km**, ne 31 km. Gostejša mreža ERA5-Land tega ne popravi.
 
@@ -253,6 +253,12 @@ Za vsak dan v letu stran prikaže **[porazdelitev](#gloss-distribution)** pretek
 - Percentil je **pravi empirični percentil**, izračunan iz te krivulje (integral gostote do današnje vrednosti), ne približek iz barvnega pasu.
 
 Primerjalni vzorec za vsak koledarski dan je **združeno okno ±7 dni** čez vsa leta — tako ima vsak dan dovolj gost in stabilen vzorec. **Isto okno ±7 dni** uporablja tudi letni trend: vsaka letna točka na grafu trenda je **povprečje** vrednosti v tem oknu za posamezno leto — pri [padavinah](#gloss-precipitation) in [ET₀](#gloss-et0)[[ref:fao56]] pa **vsota**, saj sta to globini v mm in ima smisel le seštevek. **29. februar** se pri tem pridruži oknu 28. februarja (redki prestopni dnevi se ne obravnavajo kot ločen, statistično šumeč dan). Objavljena vrednost povsod uporablja okno ±7 dni; v panelu z analizo trendov lahko bralec izbere tudi ožje ali širše okno, kar velja le za tisti prikaz.
+
+## Besedna ocena trenda (kategorija)
+
+Besedo ob stoletnem trendu vsake postaje (»Izhodiščno«, »Zmerno«, »Slabo«, »Ekstremno«, »Zelo zaskrbljujoče«) določimo iz naklona trenda po mejah **0,05 · 0,10 · 0,20 · 0,30 °C na desetletje**; zgornja kategorija (≥ 0,30 °C/desetletje) je odprta navzgor. **Te meje so uredniška izbira te strani, ne standard, članek ali predhodna odločitev** — služijo le kot groba besedna oznaka relativne hitrosti segrevanja med postajami. Kako dobro so izbrane, je vprašanje za strokovni pregled.
+
+Za primerjavo: Evropa se segreva približno dvakrat hitreje od svetovnega povprečja, kar je najhitreje med celinami[[ref:wmo_c3s_esotc]].
 
 ## Trend in statistična značilnost
 
