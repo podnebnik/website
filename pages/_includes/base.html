@@ -19,10 +19,17 @@
         rel="stylesheet">
     <script type="module" src="/code/main.js"></script>
     <meta name="description" content="{{ summary }}">
-    <meta property="og:title" content="{{ title }}" />
-    <meta property="og:type" content="article" />
-    <meta property="og:description" content="{{ summary }}" />
+    <meta property="og:title" content="{{ title }}">
+    <meta property="og:type" content="{% if tags contains 'post' %}article{% else %}website{% endif %}">
+    <meta property="og:description" content="{{ summary }}">
     <meta property="og:site_name" content="Podnebnik">
+    <meta property="og:url" content="{{ site.url }}{{ page.url }}">
+    <!-- og:image must be an absolute URL: Facebook, LinkedIn and Slack all ignore relative paths. -->
+    <meta property="og:image" content="{{ site.url }}/assets/logo/share-card.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="628">
+    <meta property="og:image:alt" content="Podnebnik">
+    <!-- twitter:card is the card *type*, not the image; X falls back to og:image. -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@podnebnik">
 </head>
