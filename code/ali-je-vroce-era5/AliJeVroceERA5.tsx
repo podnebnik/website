@@ -13,7 +13,8 @@ import { TodayTrendChart } from "./components/TodayTrendChart.tsx";
 // by deleting the reduced line and uncommenting the original.)
 // import { RegressionPanel, RegToolbar, RegScatterCard, RegYearRoundCard, FloatingStationChooser, useReg,
 //          panelHStyle, panelTitleStyle, panelSubStyle } from "./components/RegressionPanel.tsx";
-import { RegressionPanel, RegToolbar, RegScatterCard, RegYearRoundCard, FloatingStationChooser, useReg } from "./components/RegressionPanel.tsx";
+import { RegressionPanel, RegToolbar, RegScatterCard, RegYearRoundCard, FloatingStationChooser, UrlStateSync, useReg } from "./components/RegressionPanel.tsx";
+import { parseUrlState } from "./url-state.ts";
 import { MethodologyPanel } from "./components/MethodologyPanel.tsx";
 import { GlossaryPanel } from "./components/GlossaryPanel.tsx";
 import { ReferencesPanel } from "./components/ReferencesPanel.tsx";
@@ -63,12 +64,23 @@ export function AliJeVroceERA5() {
 
 function Dashboard(props: { meta: SiteMeta }) {
   const today = todayIso();
-  const [date, setDate] = createSignal(today);
 
   const era5Stations = props.meta.stations.filter(s => s.source === "era5");
   const defaultLoc = props.meta.default_location ?? "Ljubljana";
-  // Page opens on the Slovenia national ERA5 average
-  const [loc, setLoc] = createSignal<string | null>(ERA5_NATIONAL);
+
+  // T-5.29 — read the shared-link query state ONCE, imperatively (tracks nothing), and
+  // seed the signals below. Guarded for a missing window (jsdom/SSR — the snapshot
+  // harness never mounts Dashboard, but stay defensive). parseUrlState validates and
+  // strips: an unknown station or an out-of-range/malformed date returns null here and
+  // degrades to the default; the UrlStateSync write effect then scrubs it from the URL.
+  // Nothing throws, so a malformed URL cannot blank the island (T-5.56).
+  const initialUrl = typeof window !== "undefined"
+    ? parseUrlState(window.location.search, era5Stations.map(s => s.name), today)
+    : { station: null, date: null };
+
+  const [date, setDate] = createSignal(initialUrl.date ?? today);
+  // Page opens on the Slovenia national ERA5 average — unless ?postaja names a station.
+  const [loc, setLoc] = createSignal<string | null>(initialUrl.station ?? ERA5_NATIONAL);
   const isNat = createMemo(() => loc() === ERA5_NATIONAL);
 
   const defaultDoy = createMemo(() => dateToDoy(date()));
@@ -207,6 +219,10 @@ function Dashboard(props: { meta: SiteMeta }) {
       <RegressionPanel
         meta={era5Meta()}
         defaultDoy={defaultDoy()}
+        /* T-5.29 — seed the below-hero station from ?postaja (validated era5_name), so a
+           shared link opens the body on the right station without a flash or a wasted
+           fetch. undefined → the meta default, unchanged behaviour. */
+        initialLoc={initialUrl.station ?? undefined}
         /* T-5.46: station map hidden for v1 (D-31). Code retained deliberately — revive
            by uncommenting; StationMap.tsx is untouched. onLocChange fed the hidden map's
            mapLoc mirror only; it is optional (RegressionPanel.tsx:26) and called as
@@ -227,6 +243,19 @@ function Dashboard(props: { meta: SiteMeta }) {
           onHeroLocChange={(v) => setLoc(v === "" ? ERA5_NATIONAL : (v || ERA5_NATIONAL))}
           nationalLoc={ERA5_NATIONAL}
           nationalCount={era5Stations.length}
+        />
+
+        {/* T-5.29 — shareable URL query-state (?postaja=&dan=). Renders nothing; lives
+            inside the provider so it can drive the body station on back/forward. See
+            UrlStateSync for the replaceState/popstate + loop-prevention reasoning. */}
+        <UrlStateSync
+          heroLoc={loc}
+          setHeroLoc={(v) => setLoc(v)}
+          date={date}
+          setDate={(v) => setDate(v)}
+          stations={era5Stations}
+          today={today}
+          nationalLoc={ERA5_NATIONAL}
         />
 
         <h2 class="prose-h2" style={{ "padding-top": "24px" }}>{t("sections.trends_analysis")}</h2>

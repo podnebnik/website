@@ -5,6 +5,7 @@ import type { SiteMeta } from "../types.ts";
 import type { RegressionParams } from "../api.ts";
 import { fetchRegression, fetchCalendar, varLabel as varLabelOf,
          monthDayToDoy, doyToMonthDay, MONTH_LEN } from "../api.ts";
+import { parseUrlState, buildSearch } from "../url-state.ts";
 import { sectionErrorFallback } from "./SectionError.tsx";
 import { t, fmtSigned, fmtInt, fmtDoy, fmtMonthLong } from "../i18n/format.ts";
 import { bandColor, bandKey } from "../i18n/station-bands.ts";
@@ -52,6 +53,14 @@ const WINDOWS = [3, 7, 15, 45] as const;
 interface ProviderProps {
   meta:         SiteMeta;
   defaultDoy:   number;
+  // T-5.29 — seed the below-hero station from a shared link (?postaja=…), ONCE, at
+  // store creation, so a link opens flash-free with no wasted Ljubljana→station fetch.
+  // Deliberately NOT `syncLoc`: that is the snapshot harness's station-injection seam
+  // (harness.tsx), and coupling a production browser feature to the test harness would
+  // make the harness load-bearing. This is a plain initial value, read once.
+  // `| undefined` is explicit so a `?? undefined` call site typechecks under
+  // exactOptionalPropertyTypes (the URL parse yields station: string | null).
+  initialLoc?:  string | undefined;
   syncLoc?:     () => string | null;
   onLocChange?: (loc: string) => void;
   children?:    JSXElement;
@@ -77,7 +86,10 @@ function createStore(props: ProviderProps) {
   // offered below the hero — annual_trend / season_heatmap / tropical / calendar have
   // no national row and fetchEra5Tropical returns null for it (api.ts), so the floating
   // chooser lists the 18 stations only.
-  const [selLocs,  setSelLocs]  = createSignal<string[]>([defaultLoc()]);
+  // T-5.29 — `initialLoc` (a validated era5_name from ?postaja=…) seeds the station on
+  // first render; absent → the meta default, unchanged. It is an INITIAL value only —
+  // the chooser and popstate write through `setLoc` after this, never back through here.
+  const [selLocs,  setSelLocs]  = createSignal<string[]>([props.initialLoc ?? defaultLoc()]);
   const [selVar,   setSelVar]   = createSignal("temperature_max");
   const [doy,      setDoy]      = createSignal(props.defaultDoy);
   // T-4.26b (D-34) — the trend half-window, ±7 default (the published value). Only the
@@ -807,6 +819,72 @@ export function FloatingStationChooser(props: {
       </button>
     </div>
   );
+}
+
+// ── URL query-state sync (T-5.29) ─────────────────────────────────────────────
+//
+// Renders nothing. Placed inside the RegressionPanel provider so it can reach the
+// store's `setLoc` (to reproduce a chooser pick on back/forward); it receives the
+// hero's location and date signals from Dashboard as props. It owns the two halves
+// of the round trip:
+//
+//   WRITE (signals → URL): a createEffect reads the hero location and date and
+//   history.replaceState()s the canonical query string. replaceState is chosen over
+//   pushState because the chooser is a rapid, exploratory control — one history entry
+//   per station click would trap a reader who browsed six stations behind six Back
+//   presses, worse than no URL state at all. It also PRESERVES foreign params and
+//   STRIPS only our two when at default, so an unknown ?postaja=Atlantis is scrubbed
+//   (the page degraded it to national) while a ?utm_source is left untouched.
+//
+//   READ on POPSTATE (URL → signals): replaceState creates no history entries, but a
+//   reader can still land on this document via the browser's back/forward from ANOTHER
+//   page; without this the URL and the view would disagree. Re-applies the validated
+//   state; a station also drives the body via s.setLoc (reproducing a chooser pick),
+//   national leaves the body alone (D-27 asymmetric propagation).
+//
+// LOOP PREVENTION — the failure mode is URL → signal → URL as an unbounded replaceState
+// loop, and no gate would catch it. It cannot occur here because the ONLY URL→signal
+// edges are (a) the one-time imperative read at Dashboard mount and (b) this popstate
+// handler, and per the HTML spec replaceState/pushState do NOT fire popstate. So our
+// own writes never re-enter the read path; the write effect is driven solely by signal
+// changes from real user actions, and each writes the URL at most once (guarded by a
+// string-equality check against the current search, so an identical rebuild is a no-op).
+export function UrlStateSync(props: {
+  heroLoc:     () => string | null;   // Dashboard's hero location (era5_name | national)
+  setHeroLoc:  (v: string) => void;   // write the hero location
+  date:        () => string;          // Dashboard's hero date (ISO)
+  setDate:     (v: string) => void;   // write the hero date
+  stations:    SiteMeta["stations"];  // the 18 era5 stations, for name validation
+  today:       string;                // clock.today() — upper date bound (pinned offline)
+  nationalLoc: string;                // ERA5_NATIONAL sentinel
+}) {
+  const s = useReg();
+  const names = () => props.stations.map(st => st.name);
+
+  createEffect(() => {
+    const loc = props.heroLoc();
+    const date = props.date();
+    if (typeof window === "undefined") return;
+    const next = buildSearch(window.location.search, loc, props.nationalLoc, date, props.today);
+    if (next !== window.location.search) {
+      window.history.replaceState(
+        window.history.state,
+        "",
+        `${window.location.pathname}${next}${window.location.hash}`,
+      );
+    }
+  });
+
+  const applyFromUrl = () => {
+    const parsed = parseUrlState(window.location.search, names(), props.today);
+    props.setDate(parsed.date ?? props.today);
+    props.setHeroLoc(parsed.station ?? props.nationalLoc);
+    if (parsed.station) s.setLoc(parsed.station);   // station → hero + body; national → hero only
+  };
+  onMount(() => window.addEventListener("popstate", applyFromUrl));
+  onCleanup(() => window.removeEventListener("popstate", applyFromUrl));
+
+  return null;
 }
 
 // ── Style objects ─────────────────────────────────────────────────────────────

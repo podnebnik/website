@@ -70,7 +70,8 @@
       "Show",
       "SiteMeta",
       "Suspense",
-      "TropControls"
+      "TropControls",
+      "UrlStateSync"
     ],
     "excluded": []
   },
