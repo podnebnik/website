@@ -38,6 +38,6 @@ Sodelavci in sodelavke projekta:
 - [Štefan Baebler](https://www.linkedin.com/in/stefanbaebler/) - podatki
 - [Tadej Novak](https://tano.si) - podatki, vizualizacije, spletna stran
 - [Tajda Mekinda Majaron](https://www.linkedin.com/in/tajda-mekinda-majaron-a1194552) - podatki
-- [Vladimir Nešković - Kesma](https://bsky.app/profile/kesma.bsky.social) - podatki, tehnično urejanje
+- [Vladimir Nešković - Kesma](https://bsky.app/profile/kesma.wtf) - podatki, tehnično urejanje
 - [Zarja Muršič](https://twitter.com/piskotk) - vsebine
 - [Žiga Zaplotnik](https://twitter.com/ZaplotnikZiga) - pobuda, vsebine, podatki
