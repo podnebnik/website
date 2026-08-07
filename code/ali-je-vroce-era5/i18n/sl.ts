@@ -326,8 +326,8 @@ export const sl = {
 
   // HeroCards
   hero: {
-    verdict_warming: "Sto let segrevanja za <em>{t100} {unit}</em> – pri trenutnem tempu vsaka <em>{yrs} let</em> doda eno stopinjo.",
-    verdict_cooling: "Sto let ohlajanja za <em>{t100} {unit}</em> – pri trenutnem tempu vsaka <em>{yrs} let</em> odšteje eno stopinjo.",
+    verdict_warming: "Sto let segrevanja za <em>{t100} {unit}</em> – pri trenutnem tempu vsakih <em>{yrs} leta</em> doda eno stopinjo.",
+    verdict_cooling: "Sto let ohlajanja za <em>{t100} {unit}</em> – pri trenutnem tempu vsakih <em>{yrs} leta</em> odšteje eno stopinjo.",
     verdict_none: "Na ta dan v letu ni zaznati trenda.",
     method_theilsen: "Theil-Sen + Mann-Kendall",
 
