@@ -29,15 +29,17 @@ Sodelavci in sodelavke projekta:
 - [Dora Rupčić](https://www.linkedin.com/in/dora-rup%C4%8Di%C4%87-2633b520a/) - vizualizacije
 - [Branko Jevtić](https://www.bananica.com/) - grafično oblikovanje, spletna stran
 - [Gašper Žejn](https://zejn.net/) - podatki, vsebine, vizualizacije
+- [Gregor Vertačnik](https://x.com/GVertacnik) - podatki
 - [Joh Dokler](https://github.com/joahim) - spletna stran, vizualizacije, podatki
 - [Luka Renko](https://twitter.com/lukarenko) - pobuda, koordinacija
 - [Marko Brumen](https://twitter.com/multikultivator) - vsebine
 - [Marko Kovač](https://ceu.ijs.si/zaposleni/dr-marko-kovac/) - vsebine
 - [Matic Pikovnik](https://www.fmf.uni-lj.si/sl/imenik/1342/pikovnik-matic/) - vsebine
 - [Matjaž Ličer](https://www.nib.si/mbp/sl/cv/matjaz-licer) - vsebine, podatki, vizualizacije
+- [Nikola Nikolov](https://www.linkedin.com/in/nikolovnikola/) - podatki, vizualizacije
 - [Štefan Baebler](https://www.linkedin.com/in/stefanbaebler/) - podatki
 - [Tadej Novak](https://tano.si) - podatki, vizualizacije, spletna stran
 - [Tajda Mekinda Majaron](https://www.linkedin.com/in/tajda-mekinda-majaron-a1194552) - podatki
-- [Vladimir Nešković - Kesma](https://bsky.app/profile/kesma.wtf) - podatki, tehnično urejanje
+- [Vladimir Nešković - Kesma](https://bsky.app/profile/kesma.wtf) - podatki, vizualizacije
 - [Zarja Muršič](https://twitter.com/piskotk) - vsebine
 - [Žiga Zaplotnik](https://twitter.com/ZaplotnikZiga) - pobuda, vsebine, podatki
