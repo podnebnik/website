@@ -187,6 +187,19 @@
     @apply aria-current-page:opacity-100;
   }
 
+  /* Burger menu (below md). The panel sits at z-50 so it clears the ERA5 floating
+     station chooser (z-40). */
+  .nav-burger-toggle {
+    @apply grid place-items-center w-12 h-12 rounded-md cursor-pointer list-none;
+    @apply text-white opacity-70 hover:opacity-100 focus-visible:opacity-100 transition-opacity duration-300;
+  }
+  .nav-burger-toggle::-webkit-details-marker { display: none; }
+
+  .nav-burger-panel {
+    @apply absolute right-0 top-full mt-2 z-50 min-w-[220px] flex flex-col;
+    @apply list-none m-0 p-2 rounded-md bg-primary shadow-lg;
+  }
+
 
   .input-range {
     @apply h-[4px] w-full cursor-pointer disabled:cursor-auto appearance-none border-transparent bg-neutral-600 disabled:bg-neutral-200 accent-primary
