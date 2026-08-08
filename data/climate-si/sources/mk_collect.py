@@ -16,6 +16,7 @@ import requests_cache
 import pandas as pd
 from retry_requests import retry
 import os
+import sys
 import time
 import urllib3
 import argparse
@@ -88,6 +89,13 @@ if not DAILY_VARIABLES:
     _sys.exit("No variables to collect — all data-requiring features are disabled in config.")
 
 LOCATIONS = CONFIG["stations"]
+
+# T-5.70: names of stations that reached a SUCCESS path this run (a written CSV,
+# or an "already up-to-date" early return). fetch_location adds to this set only
+# on success; its broad `except` never does. The post-loop assert compares this
+# against the intended station list and fails the run if any station is absent,
+# turning a silent skip (429/timeout/malformed response) into a loud failure.
+UPDATED_STATIONS = set()
 
 # ── Setup Open-Meteo client with cache + retry ────────────────────────────────
 
@@ -260,6 +268,7 @@ def fetch_location(loc):
                 print(f"Updating {name} ({lat}, {lon})... {fetch_mode}", flush=True)
             else:
                 print(f"Skipping {name} — already up-to-date (last: {last_date})", flush=True)
+                UPDATED_STATIONS.add(name)  # T-5.70: up-to-date is a success, not a skip
                 return
         else:
             print(f"Fetching {name} ({lat}, {lon})... full (existing file is empty)", flush=True)
@@ -366,6 +375,7 @@ def fetch_location(loc):
 
         df_final.to_csv(filepath, index=False)
         print(f"  Saved {total_rows} total rows ({new_rows} new) -> {filepath}", flush=True)
+        UPDATED_STATIONS.add(name)  # T-5.70: fetched & written — counts even if new_rows == 0
 
     except Exception as e:
         err = str(e).lower()
@@ -383,7 +393,12 @@ def fetch_location(loc):
             fetch_location(loc)
             return
         else:
-            print(f"  Failed for {name}: {e}", flush=True)
+            # T-5.70: widen the log (exception type + station) but keep control
+            # flow unchanged — converting this to a raise is retry-on-429 territory
+            # and is out of scope. The station is simply not added to
+            # UPDATED_STATIONS, so the post-loop assert reports THAT it was skipped;
+            # this line records WHY (429/timeout/malformed/empty response).
+            print(f"  Failed for {name} ({e.__class__.__name__}): {e} — SKIPPED this run", flush=True)
 
     # Politeness gap between stations. NOT zero, and here is why it stays:
     # a refresh makes ~18 sequential Open-Meteo archive requests (one per station).
@@ -408,5 +423,40 @@ print()
 
 for loc in LOCATIONS:
     fetch_location(loc)
+
+# ── Post-loop completeness assert (T-5.70) ───────────────────────────────────
+# fetch_location swallows any non-rate-limit error (a 429 past the HTTP retries, a
+# timeout, a malformed/empty response) in its broad `except` and moves on, so a
+# refresh can finish "successfully" with a station silently not updated. Compare
+# the stations that reached a success path (written CSV, or already-up-to-date)
+# against the INTENDED list — every station the loop attempted — and fail LOUDLY
+# if any is missing, so the workflow goes red, no PR opens with a partial set, and
+# the failure-alert issue fires (data-refresh.yaml). Derived from LOCATIONS, never
+# a hardcoded 18, so it moves automatically if si.yaml gains or loses a station.
+expected_stations = {loc["name"] for loc in LOCATIONS}
+missing_stations = sorted(expected_stations - UPDATED_STATIONS)
+if missing_stations:
+    print("\n" + "=" * 72, flush=True)
+    print(
+        f"REFRESH INCOMPLETE: {len(missing_stations)} of {len(expected_stations)} "
+        f"station(s) did NOT update this run:",
+        flush=True,
+    )
+    for _name in missing_stations:
+        print(f"  - {_name}", flush=True)
+    print(
+        "\nEach was skipped by the broad `except` in fetch_location — a 429 that\n"
+        "survived the HTTP retries, a timeout, or a malformed/empty response. The\n"
+        "per-station cause is on its 'Failed for ...' line above.\n"
+        "\nThis is a FAILED refresh, not a quiet day: a successful fetch that simply\n"
+        "had no new rows still counts as updated and never reaches here. The fix is\n"
+        "to RE-RUN the refresh once the cause clears — do NOT relax or delete this\n"
+        "assert to make the run green, and do NOT open a PR with the partial set: a\n"
+        "skipped station silently stops being updated while every other gate passes\n"
+        "(T-5.70).",
+        flush=True,
+    )
+    print("=" * 72, flush=True)
+    sys.exit(1)
 
 print("\nDone! All files saved to:", os.path.abspath(OUTPUT_DIR))
