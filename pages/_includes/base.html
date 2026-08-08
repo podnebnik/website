@@ -39,18 +39,70 @@
         <nav role="navigation" class="mb-(--3gap) text-white flex items-center min-h-[75px] px-3" aria-label="Main">
             <a href="/"><img class="logo" src="/assets/logo/logo-orange.svg" alt="Podnebnik"></a>
 
-            <div class="hidden sm:mr-16 sm:block w-full">
+            <!-- Inline nav: md (768px) and up. Below md it collapses to the burger below. -->
+            <div class="hidden md:mr-16 md:block w-full">
                 <div class="flex justify-end space-x-3">
                     <a class="nav-link" href="/" {% if page.url=="/" %} aria-current="page" {% endif %}>Domov</a>
                     <a class="nav-link" href="/ali-je-vroce/" {% if page.url=="/ali-je-vroce/" %} aria-current="page" {%
                         endif %}>Ali je vroče?</a>
+                    <a class="nav-link" href="/methodology/" {% if page.url=="/methodology/" %} aria-current="page" {%
+                        endif %}>Metodologija</a>
+                    <a class="nav-link" href="/glossary/" {% if page.url=="/glossary/" %} aria-current="page" {%
+                        endif %}>Slovarček pojmov</a>
                     <a class="nav-link" href="/about/" {% if page.url=="/about/" %} aria-current="page" {% endif %}>O
                         projektu</a>
                 </div>
             </div>
 
+            <!-- Burger: below md (768px). Native <details> toggle works with JavaScript disabled;
+                 the inline script below adds close-on-navigate, close-on-resize-above-md, Escape-to-close
+                 with focus return, and aria-expanded tracking. mr-14 clears the octocat corner. -->
+            <details id="nav-burger" class="md:hidden ml-auto mr-14 relative">
+                <summary class="nav-burger-toggle" aria-label="Meni">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </summary>
+                <ul class="nav-burger-panel">
+                    <li><a class="nav-link block" href="/" {% if page.url=="/" %} aria-current="page" {% endif %}>Domov</a></li>
+                    <li><a class="nav-link block" href="/ali-je-vroce/" {% if page.url=="/ali-je-vroce/" %} aria-current="page" {% endif %}>Ali je vroče?</a></li>
+                    <li><a class="nav-link block" href="/methodology/" {% if page.url=="/methodology/" %} aria-current="page" {% endif %}>Metodologija</a></li>
+                    <li><a class="nav-link block" href="/glossary/" {% if page.url=="/glossary/" %} aria-current="page" {% endif %}>Slovarček pojmov</a></li>
+                    <li><a class="nav-link block" href="/about/" {% if page.url=="/about/" %} aria-current="page" {% endif %}>O projektu</a></li>
+                </ul>
+            </details>
+
             {% include 'octocat.html' %}
         </nav>
+        <script>
+            (function () {
+                var d = document.getElementById('nav-burger');
+                if (!d) return;
+                var s = d.querySelector('summary');
+                // Requirement 4: aria-expanded tracks the open state (absent with JS off; native
+                // <details> semantics convey state to assistive tech in that case).
+                function sync() { s.setAttribute('aria-expanded', d.open ? 'true' : 'false'); }
+                d.addEventListener('toggle', sync);
+                sync();
+                // Close on navigate (a fresh page load renders the menu closed anyway; this covers
+                // the current-page link and keeps state clean before unload).
+                d.addEventListener('click', function (e) { if (e.target.closest('a')) d.open = false; });
+                // Requirement 2: Escape closes and returns focus to the toggle. Native <details> does
+                // NOT close on Escape, so this is required, not decorative.
+                d.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape' && d.open) { d.open = false; s.focus(); }
+                });
+                // Requirement 3: crossing to >= md while open force-closes, so a hidden panel never
+                // strands the page in an open state.
+                var mq = window.matchMedia('(min-width: 768px)');
+                var onChange = function () { if (mq.matches && d.open) d.open = false; };
+                if (mq.addEventListener) mq.addEventListener('change', onChange);
+                else if (mq.addListener) mq.addListener(onChange);
+            })();
+        </script>
     </header>
 
     <main>
