@@ -15,9 +15,10 @@ import { TodayTrendChart } from "./components/TodayTrendChart.tsx";
 //          panelHStyle, panelTitleStyle, panelSubStyle } from "./components/RegressionPanel.tsx";
 import { RegressionPanel, RegToolbar, RegScatterCard, RegYearRoundCard, FloatingStationChooser, UrlStateSync, useReg } from "./components/RegressionPanel.tsx";
 import { parseUrlState } from "./url-state.ts";
+// T-6.22: methodology, glossary and references MOVED to standalone site pages
+// (pages/methodology.md + pages/glossary.md, linked from the footer). What remains on
+// this page is only the closing trust-furniture line, still rendered by MethodologyPanel.
 import { MethodologyPanel } from "./components/MethodologyPanel.tsx";
-import { GlossaryPanel } from "./components/GlossaryPanel.tsx";
-import { ReferencesPanel } from "./components/ReferencesPanel.tsx";
 import type { SiteMeta } from "./types.ts";
 import { t, fmtNum, fmtInt, fmtMonthDay, fmtIsoDate } from "./i18n/format.ts";
 
@@ -309,14 +310,10 @@ function Dashboard(props: { meta: SiteMeta }) {
 
       </RegressionPanel>
 
-      {/* ── Methodology + trust furniture (T-6.1 / T-6.2) — foot of content ── */}
+      {/* ── Trust furniture (T-6.2) — foot of content. The methodology, glossary and
+           references disclosures MOVED to standalone site pages (T-6.22); only this
+           closing station-count + contact line stays on the chart page. ── */}
       <MethodologyPanel stations={era5Stations} />
-
-      {/* ── Glossary of terms (T-6.14) — sibling disclosure below the methodology ── */}
-      <GlossaryPanel />
-
-      {/* ── References (T-6.8) — third sibling disclosure; the [n] markers link here ── */}
-      <ReferencesPanel />
 
     </div>
     </div>

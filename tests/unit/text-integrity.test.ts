@@ -156,13 +156,27 @@ function formatFinding(f: Finding): string {
 }
 
 // --- The guard over the real content seam ----------------------------------
+// Two seams now carry hand-authored Slovenian:
+//   • code/ali-je-vroce-era5/i18n/*.ts(x) — the island's string catalogues.
+//   • pages/*.md — standalone content pages. T-6.22 moved the methodology, glossary
+//     and reference prose OUT of the i18n catalogues (hero-content.ts / glossary.ts /
+//     references.ts, all deleted) and INTO pages/methodology.md + pages/glossary.md.
+//     Without extending the glob here, that prose would have left its ONLY automated
+//     homoglyph protection — the exact regression this guard exists to prevent.
+// Both are GLOBBED (not hardcoded paths) so a file added later is covered automatically.
 const I18N_DIR = fileURLToPath(new URL("../../code/ali-je-vroce-era5/i18n", import.meta.url));
+const PAGES_DIR = fileURLToPath(new URL("../../pages", import.meta.url));
 
 function i18nSourceFiles(): string[] {
-  return readdirSync(I18N_DIR, { recursive: true })
+  const i18n = readdirSync(I18N_DIR, { recursive: true })
     .map((e) => String(e))
     .filter((p) => p.endsWith(".ts") || p.endsWith(".tsx"))
     .map((p) => `${I18N_DIR}/${p}`);
+  const pages = readdirSync(PAGES_DIR, { recursive: true })
+    .map((e) => String(e))
+    .filter((p) => p.endsWith(".md"))
+    .map((p) => `${PAGES_DIR}/${p}`);
+  return [...i18n, ...pages];
 }
 
 describe("text-integrity guard — Slovenian content seam (T-5.12)", () => {

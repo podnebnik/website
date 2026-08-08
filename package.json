@@ -47,6 +47,8 @@
     "express": "^5.2.1",
     "http-proxy-middleware": "^3.0.5",
     "jsdom": "^29.1.1",
+    "markdown-it-attrs": "^5.0.1",
+    "markdown-it-footnote": "^4.0.0",
     "sass": "^1.99.0",
     "sharp": "^0.35.0",
     "typescript": "~6.0.3",

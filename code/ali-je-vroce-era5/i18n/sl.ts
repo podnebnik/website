@@ -559,39 +559,17 @@ export const sl = {
     src_warn: "⚠ Poplavne cone so shematske — zamenjava z LIDAR DEM poligoni sledi.",
   },
 
-  // T-6.1 / T-6.2 — methodology disclosure + trust furniture. The long prose lives
-  // VERBATIM in hero-content.ts `methodologyMarkdown`; these are the short chrome
-  // strings around it. `stations` is plural-selected on the live station count
-  // (derived from meta.stations, never hardcoded); `contact` is the T-6.2 correction
-  // contact. The email address itself is a literal, not translatable prose.
+  // T-6.2 / T-6.22 — the closing trust-furniture line on the ERA5 page. The
+  // methodology / glossary / references DISCLOSURES moved to standalone site pages
+  // (pages/methodology.md + pages/glossary.md), so the `summary` heading, the glossary
+  // and references summaries, and the elevation-band table strings all left with them.
+  // What remains here are the two furniture strings MethodologyPanel still renders:
+  // `stations` (plural-selected on the live station count, derived from meta.stations,
+  // never hardcoded) and `contact_label` (the T-6.2 correction contact). The email
+  // address itself is a literal, not translatable prose.
   methodology: {
-    summary: "Metodologija",
     stations: "{count, plural, one{# postaja} two{# postaji} few{# postaje} other{# postaj}} ERA5-Land",
     contact_label: "Popravki in vprašanja:",
-    // T-5.47 — the four-band legend table inside the methodology disclosure. This is
-    // the first place D-7's "only one station above 1000 m" fact becomes visible (the
-    // per-band counts are computed from meta.stations, never hardcoded). Band + range
-    // cell reuses map.legend_* verbatim; the count cell is plural-selected.
-    bands_title: "Višinski pasovi postaj",
-    bands_count: "{count, plural, one{# postaja} two{# postaji} few{# postaje} other{# postaj}}",
-  },
-
-  // T-6.14 (D-8) — the glossary disclosure. Mirrors the methodology block exactly:
-  // MethodologyPanel renders a SINGLE heading — its <details> <summary> — with no
-  // separate section <h2>; `summary` here is the glossary's equivalent, rendered by
-  // GlossaryPanel with the same `.methodology-summary` treatment. The term/definition
-  // catalogue itself lives in i18n/glossary.ts (structurally parallel to this file),
-  // exactly as the methodology PROSE lives in hero-content.ts.
-  glossary: {
-    summary: "Slovarček pojmov",
-  },
-
-  // T-6.8 (D-8) — the references disclosure. Third sibling below the glossary,
-  // rendered by ReferencesPanel with the same `.methodology-summary` treatment; the
-  // reference catalogue (description + citation + URL) lives in i18n/references.ts.
-  // ⚠ DRAFT label — awaiting operator approval like all Slovenian (D-8).
-  references: {
-    summary: "Viri",
   },
 
   // Site meta (fallbacks)
