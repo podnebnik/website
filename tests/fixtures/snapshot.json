@@ -64,8 +64,6 @@
       "Era5Charts",
       "ErrorBoundary",
       "FloatingStationChooser",
-      "GlossaryPanel",
-      "ReferencesPanel",
       "RegressionPanel",
       "Show",
       "SiteMeta",
@@ -3332,8 +3330,7 @@
       ]
     },
     "methodology": {
-      "_note": "T-6.1/T-6.2 trust furniture (MethodologyPanel.tsx, mounted AliJeVroceERA5.tsx:191). The methodology PROSE is static reviewed content and is not captured; the station count is the only rendered value worth watching and is the same figure as global.meta.station_count / station_map.panel_header.station_count.",
-      "summary": "Metodologija",
+      "_note": "T-6.2/T-6.22 trust furniture (MethodologyPanel.tsx). The methodology, glossary and references disclosures moved to standalone site pages (T-6.22); only this closing furniture line stays on the chart page. The station count is the one rendered value worth watching and is the same figure as global.meta.station_count / station_map.panel_header.station_count. The `summary` field was dropped with the disclosure it labelled.",
       "station_count": "18 postaj ERA5-Land",
       "contact": "Popravki in vprašanja: info@podnebnik.org"
     },

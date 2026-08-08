@@ -4,6 +4,20 @@ import path from "path";
 import SolidPlugin from "vite-plugin-solid";
 import TailwindCSS from "@tailwindcss/vite";
 import EleventyVitePlugin from "@11ty/eleventy-plugin-vite";
+// T-6.22: standalone methodology + glossary pages (plain markdown, moved off the ERA5
+// island). Two additive markdown-it plugins amend Eleventy's own markdown instance:
+//  • markdown-it-footnote — numbers the 13 references [^key] automatically in order of
+//    first appearance (replaces the island's render-time [n] engine, references.ts).
+//  • markdown-it-attrs — pins explicit heading ids, so a glossary term written
+//    `### ERA5-Land {#gloss-era5_land}` keeps the exact ASCII-key anchor the 30
+//    methodology cross-links target (markdown-it-anchor slugifies the Slovenian term
+//    text instead, which would NOT match those keys — verified, T-6.22).
+// Additive-safety (verified T-6.22): no LIVE page uses [^…] or {#…}/{.…} syntax — every
+// page that does (faq, dvig-morja, temperatura, slogovni_vodic) is draft:true and 404
+// in production. markdown-it-anchor was evaluated and dropped: nothing links to a bare
+// heading slug, so it earned no place.
+import mdFootnote from "markdown-it-footnote";
+import mdAttrs from "markdown-it-attrs";
 
 // ⬇️ PATCH: env flag to disable image processing in dev
 const IMG_DISABLED = process.env.ELEVENTY_DISABLE_IMG === "1";
@@ -138,6 +152,9 @@ async function imageShortcode(src, alt, sizes) {
 }
 
 export default function (eleventyConfig) {
+    // T-6.22: amend (not replace) Eleventy's markdown-it with footnotes + explicit ids.
+    eleventyConfig.amendLibrary("md", (mdLib) => mdLib.use(mdFootnote).use(mdAttrs));
+
     eleventyConfig.addPlugin(EleventyVitePlugin, {
         viteOptions: {
             plugins: [

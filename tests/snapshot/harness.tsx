@@ -725,11 +725,11 @@ export async function run(): Promise<RunResult> {
     0,
   );
 
-  // T-6.1 / T-6.2 — the methodology disclosure + trust furniture at the foot of
-  // the page (AliJeVroceERA5.tsx:191). The real component is mounted (not a
-  // mirror), so no assertMirroredCopy is needed. Only the always-visible furniture
-  // — the derived station-count line and the correction contact — plus the summary
-  // label are read; the static methodology prose is deliberately not captured.
+  // T-6.2 / T-6.22 — the trust furniture at the foot of the page. The methodology,
+  // glossary and references DISCLOSURES moved to standalone site pages (T-6.22); what
+  // MethodologyPanel now renders is only the always-visible furniture — the derived
+  // station-count line and the correction contact. The real component is mounted (not a
+  // mirror), so no assertMirroredCopy is needed.
   const methodologyUnit = await mount(
     "global.methodology",
     () => <MethodologyPanel stations={era5Stations} />,
@@ -849,11 +849,12 @@ export async function run(): Promise<RunResult> {
     },
     methodology: {
       _note:
-        "T-6.1/T-6.2 trust furniture (MethodologyPanel.tsx, mounted AliJeVroceERA5.tsx:191). " +
-        "The methodology PROSE is static reviewed content and is not captured; the station " +
-        "count is the only rendered value worth watching and is the same figure as " +
-        "global.meta.station_count / station_map.panel_header.station_count.",
-      summary: read(methodologyUnit).txt(".methodology-summary"),
+        "T-6.2/T-6.22 trust furniture (MethodologyPanel.tsx). The methodology, glossary and " +
+        "references disclosures moved to standalone site pages (T-6.22); only this closing " +
+        "furniture line stays on the chart page. The station count is the one rendered value " +
+        "worth watching and is the same figure as global.meta.station_count / " +
+        "station_map.panel_header.station_count. The `summary` field was dropped with the " +
+        "disclosure it labelled.",
       station_count: read(methodologyUnit).txt(".methodology-furniture-stations"),
       contact: read(methodologyUnit).txt(".methodology-furniture-contact"),
     },
