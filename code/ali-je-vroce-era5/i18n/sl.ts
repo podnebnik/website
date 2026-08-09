@@ -486,7 +486,7 @@ export const sl = {
     nb_fit: "NB fit ({dpd} {unit}/des · {p})",
     plain_desc_days: "Vroč dan — ko dnevna temperatura preseže {th} °C — povečuje toplotni stres in zdravstvena tveganja.",
     plain_desc_nights: "Tropska noč — ko temperatura čez noč ostane nad {th} °C — preprečuje telesu okrevanje po dnevni vročini.",
-    tech: "NB GLM: {rate}%/leto · {dpd} {unit}/desetletje · 95% CI · {sigphrase} · AIC {aic} · α={alpha}.",
+    tech: "NB GLM: {rate}%/leto · {dpd} {unit}/desetletje · 95% CI (trend) · 95% PI (posamezno leto) · {sigphrase} · AIC {aic} · α={alpha}.",
     sig_yes: "statistično značilen ({p})",
     sig_no: "ni značilen ({p})",
     forward_yes: "Če trend nadaljuje, bi bilo do 2050 tipičnih okoli {proj2050} {unit} na leto.",
