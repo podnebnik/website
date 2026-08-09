@@ -49,7 +49,7 @@ Mednarodni strokovni skupini, ki sta poenotili definicije podnebnih kazalnikov (
 
 ## interval zaupanja (95 %) {#gloss-confidence_interval}
 
-Razpon, znotraj katerega je prava vrednost naklona z 95-odstotno zanesljivostjo. Širši razpon pomeni bolj negotovo oceno.
+Razpon, znotraj katerega je prava vrednost naklona z 95-odstotno zanesljivostjo. Širši razpon pomeni bolj negotovo oceno. Nanaša se na trendno črto, ne na posamezno leto — za to glej [napovedni interval](#gloss-prediction_interval).
 
 ## KDE {#gloss-kde}
 
@@ -94,6 +94,10 @@ Količina dežja, snega in druge vode, ki v danem obdobju pade na tla; merjena v
 ## percentil {#gloss-percentile}
 
 Pove, od kolikšnega deleža primerljivih dni v zgodovini je današnji dan toplejši. 90. percentil = topleje kot 90 % primerjalnih dni.
+
+## PI (napovedni interval) {#gloss-prediction_interval}
+
+Razpon, v katerem bi se z 95-odstotno zanesljivostjo znašla posamezna prihodnja vrednost. Je širši od intervala zaupanja, ker poleg negotovosti trenda vključuje tudi naravno nihanje med posameznimi leti.
 
 ## porazdelitev {#gloss-distribution}
 

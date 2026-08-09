@@ -20136,7 +20136,7 @@
           "header": "Vroči dnevi · Ljubljana",
           "coverage": "77 let · 48 z vrednostjo > 0",
           "paragraphs": [
-            "NB GLM: +3,32%/leto · +1,6 dni/desetletje · 95% CI · statistično značilen (p < 0,001) · AIC 387 · α=2.059.",
+            "NB GLM: +3,32%/leto · +1,6 dni/desetletje · 95% CI (trend) · 95% PI (posamezno leto) · statistično značilen (p < 0,001) · AIC 387 · α=2.059.",
             "Vroč dan — ko dnevna temperatura preseže 30 °C — povečuje toplotni stres in zdravstvena tveganja. Postaja Ljubljana kaže statistično značilen trend: grobe 1,6 več dni na desetletje. Če trend nadaljuje, bi bilo do 2050 tipičnih okoli 34 dni na leto."
           ]
         },
@@ -22169,7 +22169,7 @@
           "header": "Tropske noči · Ljubljana",
           "coverage": "77 let · 28 z vrednostjo > 0",
           "paragraphs": [
-            "NB GLM: +3,18%/leto · +0,4 noči/desetletje · 95% CI · statistično značilen (p < 0,01) · AIC 222 · α=3.625.",
+            "NB GLM: +3,18%/leto · +0,4 noči/desetletje · 95% CI (trend) · 95% PI (posamezno leto) · statistično značilen (p < 0,01) · AIC 222 · α=3.625.",
             "Tropska noč — ko temperatura čez noč ostane nad 20 °C — preprečuje telesu okrevanje po dnevni vročini. Postaja Ljubljana kaže statistično značilen trend: grobe 0,4 več noči na desetletje. Če trend nadaljuje, bi bilo do 2050 tipičnih okoli 9 noči na leto."
           ]
         },
