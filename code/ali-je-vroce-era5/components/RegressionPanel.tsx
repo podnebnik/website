@@ -483,7 +483,7 @@ export function RegScatterCard() {
         <div style={{ display: "flex", gap: "12px", "align-items": "center", "flex-wrap": "wrap" }}>
           <span style={swatchStyle}><i style={{ background: "var(--color-accent-cool)", "border-radius": "50%", display: "inline-block", width: "8px", height: "8px" }} />{t("reg.under_mean")}</span>
           <span style={swatchStyle}><i style={{ background: "var(--color-accent)", "border-radius": "50%", display: "inline-block", width: "8px", height: "8px" }} />{t("reg.over_mean")}</span>
-          <span style={swatchStyle}><i style={{ background: "var(--color-ink)", "border-radius": "1px", display: "inline-block", width: "14px", height: "3px" }} />{t("reg.trend_line")}</span>
+          <span style={swatchStyle}><i style={{ background: "#e07b00", "border-radius": "1px", display: "inline-block", width: "14px", height: "3px" }} />{t("reg.trend_line")}</span>
           <span style={swatchStyle}><i style={{ background: "rgba(194,90,44,0.25)", "border-radius": "2px", display: "inline-block", width: "10px", height: "10px" }} />{t("common.ci95")}</span>
         </div>
         <Show when={s.stats0()}>
@@ -1024,5 +1024,5 @@ const panelExplainStyle: Record<string, string> = {
   color:         "var(--color-ink-soft)",
   "line-height": "1.55",
   margin:        "0",
-  padding:       "10px 20px 16px",
+  padding:       "0 20px 16px",
 };

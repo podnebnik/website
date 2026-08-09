@@ -38,6 +38,7 @@ export interface TropStation {
 export interface Config {
   kind:             "days" | "nights";
   unitLabel:        string;
+  unitLabelLong:    string;
   defaultThreshold: number;
   minT:             number;
   maxT:             number;

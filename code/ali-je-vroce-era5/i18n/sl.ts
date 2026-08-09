@@ -90,7 +90,7 @@ export const sl = {
     trends_analysis: "Analiza trendov · ERA5-Land reanaliza",
     location_details: "Podrobnosti lokacije",
     season_overview: "Sezonski pregled",
-    season_overview_sub: "Povprečna najvišja temperatura po sezonah · ERA5-Land · barve glede na referenčno obdobje {baseline}",
+    season_overview_sub: "Povprečna najvišja temperatura po sezonah · ERA5-Land · referenčno obdobje {baseline}",
     spei: "Sezonski sušni indeks (SPEI)",
     spei_trend: "Sušni trend po postaji — SPEI",
     spei_trend_sub: "Sezonski (SPEI-3) in mesečni (SPEI-30) indeks vodne bilance · Theil-Sen · ERA5-Land",
@@ -177,7 +177,7 @@ export const sl = {
 
     chart_title_nat: "Dnevne najvišje temperature v Sloveniji za dva tedna okoli {day} od {year_min}",
     chart_title_station: "Dnevne najvišje temperature na postaji {station} za dva tedna okoli {day} od {year_min}",
-    chart_explain: "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+    chart_explain: "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega pasu v bež barvi do ekstremne rdeče.",
     // {region} = "Slovenija" | "Danes"
     foot2: "{region}: {temp} °C · {pct}. percentil · mediana {median} °C · {count, plural, one{# opazovanje} two{# opazovanji} few{# opazovanja} other{# opazovanj}} · {year_min}–{year_max}",
     foot2_region_nat: "Slovenija",
@@ -227,9 +227,9 @@ export const sl = {
   trend: {
     title_station: "Najvišje temperature na postaji {station} okoli {day} · {yearMin}–{yearMax} · trend s projekcijo do 2050",
     title_nat: "Najvišje temperature v Sloveniji okoli {day} · {yearMin}–{yearMax} · trend s projekcijo do 2050",
-    explain: "Vsaka pika je povprečna vrednost ({source}) v ±7-dnevnem oknu okoli tega datuma za vsako leto od {yearMin}. Trend Theil-Sen je {trend} °C/desetletje ({sig}). Po tem tempu projekcija kaže {proj2050} °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+    explain: "Vsaka pika predstavlja povprečno vrednost ({source}) v ±7-dnevnem oknu okoli tega datuma za vsako leto od {yearMin}. Trend Theil-Sen je {trend} °C/desetletje ({sig}). S tem tempom pričakujemo {proj2050} °C do leta 2050. Zasenčeni pas predstavlja 95% interval zaupanja za nagib.",
     explain_source_station: "dnevne najvišje temperature na postaji {station}, popravljene na nadmorsko višino",
-    explain_source_nat: "nacionalne povprečne dnevne najvišje temperature vseh {count, plural, one{# postaje} two{# postaj} few{# postaj} other{# postaj}}",
+    explain_source_nat: "povprečne dnevne najvišje temperature vseh {count, plural, one{# postaje} two{# postaj} few{# postaj} other{# postaj}}",
     foot: "Theil-Sen + MK: {trend} °C/desetletje · {sig} · τ = {tau} · 95% CI · {count, plural, one{# leto} two{# leti} few{# leta} other{# let}}",
     tooltip_annual: "<b>{x}</b>: {y} °C",
     tooltip_milestone: "<b>{x}</b>: {y} °C <em>(projekcija)</em>",
@@ -258,7 +258,7 @@ export const sl = {
     change_over_record: "sprememba v celotnem obdobju",
     under_mean: "Pod povprečjem",
     over_mean: "Nad povprečjem",
-    trend_line: "Trendna linija",
+    trend_line: "Trendna črta",
     no_data: "Ni podatkov za izbrani dan in lokacijo.",
 
     year_round_title: "Celoletni trend · {station}",
@@ -326,8 +326,8 @@ export const sl = {
 
   // HeroCards
   hero: {
-    verdict_warming: "Sto let segrevanja za <em>{t100} {unit}</em> – pri trenutnem tempu vsakih <em>{yrs} leta</em> doda eno stopinjo.",
-    verdict_cooling: "Sto let ohlajanja za <em>{t100} {unit}</em> – pri trenutnem tempu vsakih <em>{yrs} leta</em> odšteje eno stopinjo.",
+    verdict_warming: "Sto let segrevanja za <em>{t100} {unit}</em> – pri trenutnem tempu vsakih <em>{yrs} let</em> doda eno stopinjo.",
+    verdict_cooling: "Sto let ohlajanja za <em>{t100} {unit}</em> – pri trenutnem tempu vsakih <em>{yrs} let</em> odšteje eno stopinjo.",
     verdict_none: "Na ta dan v letu ni zaznati trenda.",
     method_theilsen: "Theil-Sen + Mann-Kendall",
 
@@ -448,11 +448,11 @@ export const sl = {
     slope_unit: "SPEI / desetletje",
     sig_significant: "statistično značilen (p < 0,05)",
     sig_not: "ni statistično značilen (p = {p})",
-    threshold_crossed_dry: "Trendna linija je že prečkala prag hude suše (SPEI −1,5).",
+    threshold_crossed_dry: "Trendna črta je že prečkala prag hude suše (SPEI −1,5).",
     threshold_reach_dry: "Pri tem trendu doseže hudo sušo (SPEI −1,5) okoli leta {year}.",
-    threshold_crossed_wet: "Trendna linija je že prečkala prag zelo mokrega (SPEI +1,5).",
+    threshold_crossed_wet: "Trendna črta je že prečkala prag zelo mokrega (SPEI +1,5).",
     threshold_reach_wet: "Pri tem trendu doseže zelo mokro (SPEI +1,5) okoli leta {year}.",
-    tech: "Theil-Sen naklon: {slope} SPEI/desetletje · Mann-Kendall: {mk} · {sig}. Negativen trend pomeni, da razmere postajajo sušnejše glede na osnovno obdobje {baseline}.{threshold}",
+    tech: "Naklon Theil-Sen: {slope} SPEI/desetletje · Mann-Kendall: {mk} · {sig}. Negativen trend pomeni, da razmere postajajo sušnejše glede na osnovno obdobje {baseline}.{threshold}",
     too_little: "Premalo podatkov za izračun trenda.",
     a11y: "Razsevni diagram sušnega indeksa SPEI po letih za izbrano postajo in obdobje, z linijo trenda Theil-Sen ter pragovoma hude suše (−1,5) in zelo mokrega (+1,5).",
   },
@@ -460,7 +460,9 @@ export const sl = {
   // Tropical days / nights
   tropical: {
     unit_days: "dni",
+    unit_days_long: "vročih dni",
     unit_nights: "noči",
+    unit_nights_long: "tropskih noči",
     noun_days: "Vroči dnevi",
     noun_nights: "Tropske noči",
     // T-5.19 — `plain_noun_days`/`plain_noun_nights` are the nominative-singular
@@ -489,13 +491,13 @@ export const sl = {
     tech: "NB GLM: {rate}%/leto · {dpd} {unit}/desetletje · 95% CI (trend) · 95% PI (posamezno leto) · {sigphrase} · AIC {aic} · α={alpha}.",
     sig_yes: "statistično značilen ({p})",
     sig_no: "ni značilen ({p})",
-    forward_yes: "Če trend nadaljuje, bi bilo do 2050 tipičnih okoli {proj2050} {unit} na leto.",
+    forward_yes: "Če se trend nadaljuje, bi bilo do 2050 povprečno okoli {proj2050} {unit} na leto.",
     forward_no: "Podatki ne kažejo jasnega signala, a smer spremembe je vredna pozornosti.",
     sig_trend_yes: "statistično značilen trend",
     sig_trend_no: "trend, ki še ni statistično značilen",
     dir_more: "več",
     dir_less: "manj",
-    plain: "{plainDesc} Postaja {station} kaže {sig}: grobe {dpd} {dir} {unit} na desetletje. {forward}",
+    plain: "{plainDesc} Postaja {station} kaže {sig}: okvirno {dpd} {dir} {unit} na desetletje. {forward}",
     no_trend: "Premalo let z {instr} za izračun trenda ({count, plural, one{# leto} two{# leti} few{# leta} other{# let}} z vrednostjo > 0). Potrebnih je vsaj 10.",
     // T-4.24 — a SECOND withhold reason. `no_trend` above is the honest message
     // when there is too little data (<10 non-zero years). But the trend fit is now
