@@ -55,7 +55,8 @@ export function Highchart(props: HighchartProps) {
   return (
     <div
       ref={container}
-      style={{ width: "100%", height: props.height || "400px" }}
+      style={{ width: "100%" }}
+      class="h-80 md:h-120"
     />
   );
 }

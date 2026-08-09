@@ -110,7 +110,7 @@
 .today-chart-title { font-family: var(--font-sans,'Space Grotesk',sans-serif); font-weight: 600; font-size: 15px; color: var(--color-ink); margin-bottom: 4px; line-height: 1.35; }
 
 .today-main-row { display: flex; flex-direction: column; align-items: center; gap: 18px; width: 100%; max-width: 900px; }
-@media (min-width: 701px) {
+@media (min-width: 48rem) {
   .today-main-row { flex-direction: row; justify-content: center; align-items: center; gap: 20px; }
   .today-body { flex: 1 1 auto; min-width: 0; align-items: flex-start !important; text-align: left !important; }
   .today-divider { display: block !important; }
@@ -133,7 +133,7 @@
 
 .today-divider { display: none; width: 1px; align-self: stretch; min-height: 90px; background: var(--color-rule); flex-shrink: 0; }
 
-.today-desc { font-family: var(--font-sans,'Space Grotesk',sans-serif); font-size: 15px; color: var(--color-ink-soft); }
+.today-desc { font-family: var(--font-sans,'Space Grotesk',sans-serif); font-size: 15px; color: var(--color-ink-soft); line-height: 1.55; }
 
 .today-pct-wrap { display: flex; flex-direction: column; align-items: center; gap: 2px; flex-shrink: 0; }
 .today-pct-num { font-family: var(--font-sans,'Space Grotesk',sans-serif); font-weight: 700; font-size: 40px; color: var(--color-accent); line-height: 1; }
@@ -154,14 +154,12 @@
 .today-last7-card { max-width: 560px; width: 100%; padding: 4px 0 2px; }
 .today-last7-card .today-chart-title { font-size: 12px; margin-bottom: 2px; }
 
-@media (max-width: 700px) {
-  .today-status { padding: 14px 14px 0; }
+@media (width < 48rem) {
   .today-heading-title { font-size: 26px; }
   .today-grid { grid-template-columns: 1fr; gap: 12px; }
-  .today-card { padding: 16px 16px 14px; }
-  .today-chart { padding: 14px 14px 16px; }
   .today-chart-title { font-size: 12px; }
   .today-gauge { width: 200px; height: 80px; }
+  .today-cat-row { text-align: center; justify-content: center; }
 }
 
 /* ── Responsive: Main row grid (map left | scatter right) ─────────────────── */
@@ -175,7 +173,6 @@
   /* grid-template-columns: min(460px, 44%) 1fr; */
   grid-template-columns: 1fr;
   gap: 20px;
-  padding: 20px 0;
 }
 
 /* ── Responsive: Year-round cal section ──────────────────────────────────── */
@@ -191,7 +188,7 @@
 .prose-h3 { margin: 0 !important; padding: 2px 0 8px; font-weight: 400; }
 
 /* ── Methodology block + trust furniture (T-6.1 / T-6.2) ──────────────────── */
-.methodology { padding-top: 8px; padding-bottom: 8px; margin-top: 24px; border-top: 1px solid var(--color-rule); }
+.methodology { padding-top: 8px; padding-bottom: 8px; border-top: 1px solid var(--color-rule); }
 .methodology-details { max-width: 760px; }
 /* T-5.20 — the today-card climate-context disclosure reuses this exact summary
    treatment, so the two <details> on the page read as one mechanism. One
@@ -400,14 +397,11 @@
 /* T-5.27 part (3): the season heatmap names the station the off-screen chooser set. */
 .era5-chart-loc { font-family: var(--font-mono); font-size: 16px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-ink-soft); margin-bottom: 8px; }
 
-@media (max-width: 48rem) {
-  .main-row { grid-template-columns: 1fr; padding: 10px 14px 0; }
-  .reg-card--cal { margin: 10px 14px 0; }
-  .sec-h  { padding-inline: 14px; font-size: 26px; }
-  .sec-hs { padding-inline: 14px; font-size: 16px; padding-top: 16px; }
-  .sec-hs2{ padding-inline: 14px; }
-  .sec-p  { padding-inline: 14px; }
-  .reg-toolbar { margin: 10px 14px 0; padding: 8px 10px; }
+@media (width < 48rem) {
+  .main-row { grid-template-columns: 1fr; }
+  /* .reg-card--cal { margin: 10px 14px 0; } */
+  .sec-h  { font-size: 26px; }
+  .sec-hs { font-size: 16px; padding-top: 16px; }
   .reg-doy-ctrl   { order: 10; flex: 1 0 100%; height: auto; padding: 6px 10px; }
   .shm-grid       { grid-template-columns: 20px 1fr; row-gap: 4px; }
   .shm-year-axis  { grid-template-columns: 20px 1fr; }
@@ -494,7 +488,7 @@
 .sl-play-btn:hover { background: var(--sl-fill); color: var(--sl-bg); }
 .sl-widget { overflow: hidden; }
 .sl-stage { display: grid; grid-template-columns: 1fr 220px; gap: 16px; }
-@media (max-width: 680px) { .sl-stage { grid-template-columns: 1fr; } }
+@media (width < 48rem) { .sl-stage { grid-template-columns: 1fr; } }
 .sl-map-wrap { position: relative; min-width: 0; max-width: 100%; aspect-ratio: 860/500; min-height: 260px; background: #051215; border-radius: 8px; overflow: hidden; }
 .sl-map-wrap .leaflet-container { background: #051215; }
 .sl-div-line   { position: absolute; top: 0; bottom: 0; width: 2px; background: rgba(255,255,255,0.85); pointer-events: none; z-index: 420; transform: translateX(-50%); }
@@ -508,13 +502,13 @@
 .sl-rise-unit { font-family: var(--font-mono); font-size: 18px; color: var(--sl-txt-soft); }
 .sl-stats-sub { font-family: var(--font-mono); font-size: 9px; color: var(--sl-txt-soft); letter-spacing: 0.05em; }
 .sl-gauge-wrap { display: flex; justify-content: center; }
-@media (max-width: 680px) { .sl-gauge-wrap { display: none; } }
+@media (width < 48rem) { .sl-gauge-wrap { display: none; } }
 .sl-gauge-h { display: none; position: relative; height: 8px; background: #0e3340; border-radius: 4px; overflow: hidden; }
 .sl-gauge-h-fill { height: 100%; background: var(--sl-fill); border-radius: 4px; transition: width 0.3s; }
 .sl-gauge-h-band { position: absolute; top: 0; height: 100%; background: var(--sl-fill); opacity: 0.28; border-radius: 4px; transition: left 0.3s, width 0.3s; }
 .sl-gauge-h-labels { display: none; justify-content: space-between; font-family: var(--font-mono); font-size: 9px; color: var(--sl-txt-soft); margin-top: 2px; }
 .sl-gauge-h-val { color: var(--sl-fill); font-weight: 600; }
-@media (max-width: 680px) { .sl-gauge-h { display: block; } .sl-gauge-h-labels { display: flex; } }
+@media (width < 48rem) { .sl-gauge-h { display: block; } .sl-gauge-h-labels { display: flex; } }
 .sl-impacts { display: flex; flex-direction: column; gap: 6px; }
 .sl-impact-row { display: flex; flex-direction: column; }
 .sl-impact-val { font-family: var(--font-sans); font-size: 22px; font-weight: 600; color: var(--sl-txt); line-height: 1; }

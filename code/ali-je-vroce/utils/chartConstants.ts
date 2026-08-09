@@ -32,11 +32,7 @@ export const COLORS = {
 } as const;
 
 // Chart dimensions and spacing
-export const DIMENSIONS = {
-  // Default chart height
-  DEFAULT_HEIGHT: "480px",
-  SCATTER_HEIGHT: "480px",
-  
+export const DIMENSIONS = {  
   // Chart spacing
   SPACING_TOP: 52,
   SPACING_RIGHT: 80,

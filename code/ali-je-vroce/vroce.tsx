@@ -80,7 +80,7 @@ export function AliJeVroce() {
 
   return (
     <div class="text-center">
-      <h1 class="not-prose font-normal text-5xl font-sans text-balance">
+      <h1 class="not-prose font-normal md:text-5xl text-4xl font-sans text-balance">
         Ali je danes vroče{" "}
         <StationSelector
           stations={stations()}
