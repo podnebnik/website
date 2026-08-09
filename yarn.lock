@@ -4453,7 +4453,7 @@ __metadata:
     tailwind-merge: "npm:^3.6.0"
     tailwindcss: "npm:~4.3.3"
     typescript: "npm:~6.0.3"
-    vite: "npm:~8.2.1"
+    vite: "npm:~8.2.0"
     vite-plugin-solid: "npm:^2.11.14"
     vitest: "npm:^4.1.10"
   languageName: unknown
