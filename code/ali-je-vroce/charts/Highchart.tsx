@@ -1,6 +1,7 @@
 // code/ali-je-vroce/charts/Highchart.tsx
 import { onCleanup, onMount, createEffect, createSignal } from "solid-js";
 import Highcharts from "highcharts";
+import "highcharts/modules/annotations";
 import { HighchartProps } from "../../types/components.ts";
 
 /**

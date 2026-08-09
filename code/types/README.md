@@ -28,7 +28,7 @@ Migration guidance
 - Import raw API responses from: `/code/types/api-raw.js`
   - e.g. `import type { DatasetteResponse, TemperatureStationRow } from '/code/types/api-raw.js'`
 - Import processed/UI types from: `/code/types/models.js`
-  - e.g. `import type { ProcessedStation, ProcessedTemperatureData } from '/code/types/models.js'`
+  - e.g. `import type { StationModel, ProcessedTemperatureData } from '/code/types/models.js'`
 - Prefer explicit imports rather than `import { ... } from '/code/types'` when the semantic layer matters.
 
 Validation

@@ -67,7 +67,7 @@ Our data fetching layer is fully typed with TypeScript, providing compile-time s
 // Type-safe API responses based on actual API analysis
 import {
   VremenarStationDetailsResponse,
-  ProcessedStation,
+  StationModel,
   ProcessedTemperatureData,
   HistoricalTemperatureData,
 } from "/code/types/index.js";
@@ -75,7 +75,7 @@ import {
 // Runtime validation with type guards
 import { validateStationsResponse } from "/code/types/guards.js";
 
-const fetchStations = async (): Promise<ProcessedStation[]> => {
+const fetchStations = async (): Promise<StationModel[]> => {
   const response = await fetch("/api/stations");
   const data = await response.json();
 
@@ -118,7 +118,7 @@ Custom hooks encapsulate specific data fetching logic while providing a consiste
 import { useQuery, UseQueryResult } from "@tanstack/solid-query";
 import type {
   ProcessedTemperatureData,
-  ProcessedStation,
+  StationModel,
 } from "../../types/models.js";
 
 export function useWeatherQuery(

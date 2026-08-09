@@ -57,21 +57,24 @@ export const StationSelector: Component<StationSelectorProps> = (props) => {
                     value: station.station_id,
                     label: station.name_locative,
                     prefix: station.prefix,
+                    station: station.name_station,
                 }))}
                 optionValue={(option: any) => option.value}
                 optionTextValue={(option: any) => option.label}
                 value={props.selectedStation ? {
                     value: props.selectedStation.station_id,
                     label: props.selectedStation.name_locative,
-                    prefix: props.selectedStation.prefix
+                    prefix: props.selectedStation.prefix,
+                    station: props.selectedStation.name_station,
                 } : null}
                 onChange={(value) => {
                     if (value) {
-                        // Convert back to ProcessedStation format for the callback
+                        // Convert back to StationModel format for the callback
                         props.onStationChange({
                             station_id: value.value,
                             name_locative: value.label,
-                            prefix: value.prefix
+                            prefix: value.prefix,
+                            name_station: value.station,
                         });
                     }
                 }}
@@ -97,7 +100,7 @@ export const StationSelector: Component<StationSelectorProps> = (props) => {
                         item={itemProps.item}
                         class="flex items-center justify-between py-2 relative select-none outline-none 
                               hover:bg-gray-100 hover:text-black focus-visible:outline-2 focus-visible:outline-blue-600 focus-visible:outline-offset-2
-                              data-[highlighted]:bg-blue-50 data-[highlighted]:text-gray-900 data-[selected]:bg-blue-100 data-[selected]:text-blue-900 forced-colors:hc-interactive"
+                              data-highlighted:bg-blue-50 data-highlighted:text-gray-900 data-selected:bg-blue-100 data-selected:text-blue-900 forced-colors:hc-interactive"
                         aria-label={`Izberi lokacijo ${itemProps.item.rawValue.label}`}
                         tabIndex="0"
                         onFocus={() => {
@@ -124,7 +127,7 @@ export const StationSelector: Component<StationSelectorProps> = (props) => {
                 <Select.HiddenSelect />
                 <Select.Trigger
                     class="select font-bold appearance-none inline-block bg-transparent rounded-none 
-                           leading-[64px] hover:cursor-pointer transition-all duration-300
+                           leading-16 hover:cursor-pointer transition-all duration-300
                            focus-visible:outline-2 focus-visible:outline-blue-600 focus-visible:outline-offset-2"
                     aria-live="polite"
                     onKeyDown={handleKeyDown}

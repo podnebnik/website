@@ -9,7 +9,7 @@ import {
   VremenarStationDetailsResponse,
   DatasetteResponse,
 } from './api-raw.js';
-import { ProcessedTemperatureData, ProcessedStation } from './models.js';
+import { ProcessedTemperatureData, StationModel } from './models.js';
 import { AppError, ErrorCategory } from './common.js';
 
 // =============================================================================
@@ -158,7 +158,7 @@ export function isVremenarStationDetailsResponse(value: unknown): value is Vreme
 /**
  * Validate processed station data
  */
-export function isProcessedStation(value: unknown): value is ProcessedStation {
+export function isStationModel(value: unknown): value is StationModel {
   if (!isObject(value)) return false;
   
   const station = value as any;
@@ -166,6 +166,7 @@ export function isProcessedStation(value: unknown): value is ProcessedStation {
   return (
     isNumber(station.station_id) &&
     isString(station.name_locative) &&
+    isString(station.name_station) &&
     isString(station.prefix)
   );
 }

@@ -56,7 +56,7 @@ export const TemperatureDisplay: Component<TemperatureDisplayProps> = (props) =>
                            aria-label={`Rezultat: ${props.values[props.result]}`}>
                             <IsItHotDot
                                 color={props.result as "p00" | "p05" | "p20" | "p40" | "p60" | "p80" | "p95"}
-                                class="size-[72px] inline-block"
+                                class="size-18 inline-block"
                             />
                             {" "}
                             <span>{props.values[props.result]}</span>
@@ -129,6 +129,11 @@ export const TemperatureDisplay: Component<TemperatureDisplayProps> = (props) =>
                     zabeleženih dni od leta 1950 v 15-dnevnem obdobju okoli današnjega dneva je bila povprečna dnevna temperatura nižja kot{" "}
                     <span class="font-semibold high-contrast-text">{props.resultTemperature}</span>.
                 </p>
+
+                <p class="font-sans mt-4">
+                    Nekaj hitrih informacij o temperaturnih trendih za trenutno izbrani kraj je na voljo v nadaljevanju strani,
+                    za več informacij pa obiščite podstran <a class="btn not-prose" href="/ali-je-vroce/">Ali je vroče?</a>.
+                </p>
             </Show>
 
             <Show
@@ -146,7 +151,8 @@ export const TemperatureDisplay: Component<TemperatureDisplayProps> = (props) =>
                     aria-label="Čas zadnje posodobitve"
                     aria-live="polite"
                 >
-                    Zadnja posodobitev: <time dateTime={props.timeUpdated}>{props.timeUpdated}</time>
+                    <span>vir: ARSO, postaja: {props.selectedStation?.name_station}</span>
+                    <span>zadnja posodobitev:</span><time dateTime={props.timeUpdated}>{props.timeUpdated}</time>
                     <StalenessIndicator isStale={props.isStale} />
                 </p>
             </Show>

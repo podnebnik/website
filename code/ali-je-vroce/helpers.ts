@@ -2,7 +2,7 @@
 
 import { STAGE_DATA_BASE_URL, STAGING_VREMENAR_API_URL } from "./constants";
 import { RequestStationData, StationsResponse } from '../types/api-raw.js';
-import type { ProcessedStation, ProcessedTemperatureData } from '../types/models.js';
+import type { StationModel, ProcessedTemperatureData } from '../types/models.js';
 
 /**
  * Returns a string representation of a number, prefixing it with a zero if it is less than 10.
@@ -61,28 +61,29 @@ async function fetchWithTimeout(url: string, { timeoutMs = 10000 } = {}) {
  *
  * @async
  * @function loadStations
- * @returns {Promise<{ success: true, stations: Array<Types.ProcessedStation> } | { success: false, error: Error | string }>}
+ * @returns {Promise<{ success: true, stations: Array<Types.StationModel> } | { success: false, error: Error | string }>}
  *   Resolves to an array of station objects, or an empty array if the fetch fails.
  *
  */
 export async function loadStations(): Promise<
-  | { success: true; stations: Array<ProcessedStation> }
+  | { success: true; stations: Array<StationModel> }
   | { success: false; error: Error | string }
 > {
   // Fetch stations from Datasette (CORS-friendly)
   const resultStations = await fetch(
-    `${STAGE_DATA_BASE_URL}/temperature/temperature~2Eslovenia_stations.json?&_col=station_id&_col=name&_col=name_locative&_sort=name`
+    `${STAGE_DATA_BASE_URL}/temperature/temperature~2Eslovenia_stations.json?&_col=station_id&_col=name&_col=name_locative&_col=official_name&_sort=name`
   );
 
   if (resultStations.ok) {
     try {
-      let stationsList: ProcessedStation[] = [];
+      let stationsList: StationModel[] = [];
       const dataStations = (await resultStations.json()) as StationsResponse;
       for (let row of dataStations["rows"]) {
         let name_list = row[3].split(" ");
         stationsList.push({
           station_id: row[1],
           name_locative: name_list.slice(1).join(" "),
+          name_station: row[4],
           prefix: name_list[0] ?? "",
         });
       }

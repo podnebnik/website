@@ -189,7 +189,7 @@ export function categorizeError(
 
 // components.ts
 import type { Component } from "solid-js";
-import type { ProcessedStation as Station } from "../types/models.js"; // Use canonical processed/UI types
+import type { StationModel as Station } from "../types/models.js"; // Use canonical processed/UI types
 
 interface StationSelectorProps {
   defaultStation?: Station;
@@ -210,7 +210,7 @@ export const StationSelector: Component<StationSelectorProps> = (props) => {
 
 ```typescript
 import type { DatassetteResponse } from "../types/api.js";
-import type { ProcessedStation as WeatherStation } from "../types/models.js";
+import type { StationModel as WeatherStation } from "../types/models.js";
 import type { Result } from "../types/common.js";
 
 async function fetchStations(): Promise<Result<WeatherStation[], string>> {
@@ -395,7 +395,7 @@ The project provides comprehensive type definitions in `code/types/`:
 
 ### Weather Types (migrated to `models.ts`)
 
-- `ProcessedStation` (formerly WeatherStation) - Weather station metadata for UI
+- `StationModel` (formerly WeatherStation) - Weather station metadata for UI
 - `ProcessedTemperatureData` (formerly WeatherData) - Temperature and measurement data
 - `TemperatureAnalysis` - Statistical analysis types
 

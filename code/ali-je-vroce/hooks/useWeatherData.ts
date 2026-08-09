@@ -7,7 +7,7 @@ import { requestData, loadStations } from '../helpers';
 import { generateOptimisticWeatherData } from '../utils/optimistic';
 import { retryWithBackoff, createNetworkMonitor } from '../utils/errorRecovery.js';
 import { prefetchHistoricalData } from '../utils/prefetching';
-import type { ProcessedStation } from '../../types/models.js';
+import type { StationModel } from '../../types/models.js';
 
 /**
  * Simplified localStorage helper for user preferences
@@ -34,7 +34,7 @@ function setPreference(key: string, value: unknown) {
  * @param defaultValue - Default value if preference doesn't exist
  * @returns  The preference value or defaultValue if not found
  */
-function getPreference(key: string, defaultValue: {value: number,label: string, prefix: string} | null = null) {
+function getPreference(key: string, defaultValue: {value: number,label: string, prefix: string, station: string} | null = null) {
     try {
         // First try with the new prefixed key
         const prefixedKey = `${CACHE_KEY_PREFIX}-${key}`;
@@ -118,7 +118,7 @@ export function useWeatherData() {
     const [stationId, setStationId] = createSignal(String(cachedStation.value));
 
     const [state, setState] = createStore<{
-        selectedStation: { value: number; label: string; prefix: string } | null;
+        selectedStation: { value: number; label: string; prefix: string, station: string } | null;
         stationPrefix: string;
         result: string;
         resultTemperature: string;
@@ -186,19 +186,17 @@ export function useWeatherData() {
      * - Fetches fresh weather data using the query client, ensuring consistency with hook-based data fetching.
      * - Handles loading state and error reporting, including aborting requests on station change.
      * 
-     * @param station - The newly selected station object in ProcessedStation format.
-     * @param station.station_id - The unique identifier for the station.
-     * @param station.name_locative - The display name of the station.
-     * @param station.prefix - The prefix or code for the station.
+     * @param station - The newly selected station object in StationModel format.
      */
-    function onStationChange(station: ProcessedStation) {
+    function onStationChange(station: StationModel) {
         if (String(station.station_id) === stationId()) return;
 
-        // Transform ProcessedStation format to cached format for internal use
+        // Transform StationModel format to cached format for internal use
         const cachedFormat = {
             value: station.station_id,
             label: station.name_locative,
-            prefix: station.prefix
+            prefix: station.prefix,
+            station: station.name_station,
         };
 
         if (currentController) {
@@ -369,16 +367,17 @@ export function useWeatherData() {
         networkMonitor.cleanup();
     });
 
-    // Transform cached station format to ProcessedStation format for components
+    // Transform cached station format to StationModel format for components
     const transformedSelectedStation = () => {
         const cachedStation = state.selectedStation;
         if (!cachedStation) return null;
         
-        // Convert from cached format {value, label, prefix} to ProcessedStation format
+        // Convert from cached format {value, label, prefix} to StationModel format
         return {
             station_id: cachedStation.value,
             name_locative: cachedStation.label,
-            prefix: cachedStation.prefix
+            name_station: cachedStation.station,
+            prefix: cachedStation.prefix,
         };
     };
 

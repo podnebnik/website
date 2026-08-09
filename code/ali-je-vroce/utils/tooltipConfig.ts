@@ -70,7 +70,7 @@ export function createTrendAnnotation(
             xAxis: 0,
             yAxis: 0,
           },
-          text: `Trend: ${trendPerCentury >= 0 ? "+" : ""}${trendPerCentury.toFixed(1)}°C / century`,
+          text: `trend: ${trendPerCentury >= 0 ? "+" : ""}${trendPerCentury.toFixed(1)}°C / stoletje`,
           backgroundColor: "rgba(255,255,255,0.7)",
           borderColor: "#333",
           style: { fontSize: "12px" },

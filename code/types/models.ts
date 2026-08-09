@@ -12,11 +12,9 @@ export type PercentileKey = 'p00' | 'p05' | 'p20' | 'p40' | 'p50' | 'p60' | 'p80
 export interface StationModel {
   station_id: number;
   name_locative: string;
+  name_station: string;
   prefix: string;
 }
-
-// Keep old name for compatibility
-export type ProcessedStation = StationModel;
 
 // Processed percentile structure
 export interface TemperaturePercentiles {

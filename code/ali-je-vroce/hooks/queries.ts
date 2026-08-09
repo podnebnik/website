@@ -1,7 +1,7 @@
 import { useQuery, UseQueryResult } from '@tanstack/solid-query';
 import { requestData, loadStations, requestHistoricalWindow } from '../helpers';
 import { createLocalStoragePersistor } from '../utils/persistence';
-import type { ProcessedTemperatureData, ProcessedStation, HistoricalTemperatureData } from '../../types/models.js';
+import type { ProcessedTemperatureData, StationModel, HistoricalTemperatureData } from '../../types/models.js';
 import type { CategorizedError } from '../../types/queries.js';
 
 /**
@@ -53,7 +53,7 @@ function categorizeError(error: unknown, context: string = ''): CategorizedError
  * 
  * @returns TanStack Query result for stations data
  */
-export function useStationsQuery(): UseQueryResult<ProcessedStation[], CategorizedError> {
+export function useStationsQuery(): UseQueryResult<StationModel[], CategorizedError> {
     // Create a persistor to check for cached data
     const persistor = createLocalStoragePersistor();
 

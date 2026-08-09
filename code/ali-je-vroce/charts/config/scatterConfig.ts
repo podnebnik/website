@@ -147,7 +147,7 @@ export function createScatterChartConfig({
               xAxis: 0,
               yAxis: 0,
             },
-            text: `Trend: ${trendPerCentury >= 0 ? "+" : ""}${trendPerCentury.toFixed(1)}°C / century`,
+            text: `trend: ${trendPerCentury >= 0 ? "+" : ""}${trendPerCentury.toFixed(1)}°C / stoletje`,
             backgroundColor: COLORS.ANNOTATION_BACKGROUND,
             borderColor: COLORS.DARK_GRAY,
             style: { fontSize: CHART_STYLES.FONT_SIZE_SMALL },
@@ -191,6 +191,7 @@ export function createTrendSeries(trendLine: Array<{ x: number; y: number }>): H
     data: trendLine,
     color: COLORS.TREND_LINE,
     enableMouseTracking: false,
+    marker: { enabled: false },
   };
 }
 
