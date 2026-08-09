@@ -21,7 +21,7 @@ import type {
 // The category palette lives with the percentile helpers salvaged from the
 // deleted ARSO path (T-2.2 / D-2); see percentile.ts for why they were kept.
 // `cdfPercentile` is the T-4.1 / D-6 honest percentile (CDF of the served KDE).
-import { CAT_COLORS, cdfPercentile } from "./percentile.ts";
+import { CAT_COLORS, cdfPercentile, curveQuantile } from "./percentile.ts";
 // T-4.5 (D-4): dateToDoy reads the calendar day in Europe/Ljubljana, the same day
 // boundary clock.ts uses. This is a PURE date-parts read, not a system-clock read.
 import { calendarDateIn, LJUBLJANA_TZ } from "./clock.ts";
@@ -352,34 +352,38 @@ async function fetchEra5WindowRow(era5Name: string, month: number, day: number):
   return rows[0] ?? null;
 }
 
-// Slovenia national ±window climatology = mean of the 18 stations' daily_window
-// rows for this month/day. Percentiles are the unweighted mean of the per-station
-// p5..p95; the distribution curve is the unweighted mean of the per-station
-// empirical KDE curves (averageDistributions, D-15 / T-4.7) — the fitted-Gaussian
-// synthesis was removed. Percentiles are unchanged from before, so cutoffs and the
-// today-card category do not move; only the curve shape does.
+// Slovenia national ±window climatology. The distribution curve is the unweighted
+// mean of the 18 stations' empirical KDE curves (averageDistributions, D-15 / T-4.7)
+// — the equally-weighted MIXTURE density, unchanged here. The band cutoffs p5..p95 are
+// read OFF that same curve (curveQuantile), NOT the unweighted mean of the per-station
+// quantiles as before (T-4.31 b2). The mixture is fat-tailed, so mean-of-quantiles sat
+// ~0.75 °C below the mixture's own p80 (measured); the category then read one band above
+// the percentile — which integrates the mixture — at the margins. Deriving both the band
+// edges and the percentile from ONE curve makes them agree by construction, so the label
+// and the number cannot drift apart. National-only: fetchEra5WindowRow (per station)
+// returns the served row verbatim and is untouched. Consequence (T-4.31): the national
+// category moves on ~12–13 % of days (cutoffs shift OUTWARD — warmer at p80/p95, cooler
+// at p10); the printed percentile does NOT move (same curve, same temp).
 export async function fetchEra5NationalWindowRow(month: number, day: number): Promise<DailyWindowRow | null> {
   const rows = await dsGet<DailyWindowRow[]>(
     `daily_window.json?_shape=array&${dwCol("month")}__exact=${month}&${dwCol("day")}__exact=${day}&_size=50`
   );
   assertNationalStationRows(rows, "daily_window");
   if (rows.length === 0) return null;
-  const avg = (f: (r: DailyWindowRow) => number) =>
-    rows.reduce((s, r) => s + (f(r) ?? 0), 0) / rows.length;
-  const p5  = avg(r => r.p5),  p10 = avg(r => r.p10), p20 = avg(r => r.p20);
-  const p50 = avg(r => r.p50), p80 = avg(r => r.p80), p95 = avg(r => r.p95);
   const curves = rows
     .filter(r => r.distribution_json)
     .map(r => parseJsonColumn<[number, number][]>(r.distribution_json, "daily_window.distribution_json"));
+  const dist = averageDistributions(curves);
   return {
     station: ERA5_NATIONAL,
     month, day,
-    p5, p10, p20, p50, p80, p95,
+    p5:  curveQuantile(dist, 5),  p10: curveQuantile(dist, 10), p20: curveQuantile(dist, 20),
+    p50: curveQuantile(dist, 50), p80: curveQuantile(dist, 80), p95: curveQuantile(dist, 95),
     n_samples: rows.reduce((s, r) => s + (r.n_samples ?? 0), 0),
     station_count: rows.length,
     year_min:  Math.min(...rows.map(r => r.year_min)),
     year_max:  Math.max(...rows.map(r => r.year_max)),
-    distribution_json: JSON.stringify(averageDistributions(curves)),
+    distribution_json: JSON.stringify(dist),
   } as DailyWindowRow;
 }
 

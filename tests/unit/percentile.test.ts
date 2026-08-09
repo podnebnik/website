@@ -4,6 +4,7 @@ import {
   rankPercentile,
   categorizeArso,
   cdfPercentile,
+  curveQuantile,
   CAT_COLORS,
   type ComputedPercentiles,
 } from "../../code/ali-je-vroce-era5/percentile.ts";
@@ -142,5 +143,35 @@ describe("cdfPercentile — CDF of the served KDE density (T-4.1 / D-6, Option B
     expect(cdfPercentile([], 5)).toBe(0);
     expect(cdfPercentile([[5, 1]], 5)).toBe(0);          // < 2 points
     expect(cdfPercentile([[0, 0], [10, 0]], 5)).toBe(0); // zero total mass
+  });
+});
+
+describe("curveQuantile — inverse of cdfPercentile (T-4.31 b2)", () => {
+  // Uniform density on [0, 10]: the CDF is linear (mass = x/10), so the p-th
+  // quantile is exactly p/10. Every expected value is hand-computed.
+  const uniform: [number, number][] = [[0, 1], [10, 1]];
+
+  it("inverts a uniform CDF to the exact quantile", () => {
+    expect(curveQuantile(uniform, 50)).toBeCloseTo(5, 6);
+    expect(curveQuantile(uniform, 25)).toBeCloseTo(2.5, 6);
+    expect(curveQuantile(uniform, 90)).toBeCloseTo(9, 6);
+  });
+
+  it("finds the median at the peak of a symmetric triangle", () => {
+    // Symmetric triangle over [0,20], peak at 10 — median is the peak by symmetry.
+    const tri: [number, number][] = [[0, 0], [10, 1], [20, 0]];
+    expect(curveQuantile(tri, 50)).toBeCloseTo(10, 6);
+  });
+
+  it("round-trips with cdfPercentile: cdf(curve, quantile(curve, p)) === p", () => {
+    // The defining property b2 relies on — band edge and displayed percentile agree.
+    for (const p of [5, 10, 20, 50, 80, 95]) {
+      expect(cdfPercentile(uniform, curveQuantile(uniform, p))).toBeCloseTo(p, 6);
+    }
+  });
+
+  it("returns NaN for a degenerate curve (< 2 points), matching cdfPercentile", () => {
+    expect(curveQuantile([], 50)).toBeNaN();
+    expect(curveQuantile([[5, 1]], 50)).toBeNaN();
   });
 });

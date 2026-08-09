@@ -111,6 +111,36 @@ export function cdfPercentile(curve: [number, number][], value: number): number 
 }
 
 /**
+ * Inverse of `cdfPercentile`: the temperature whose CDF over `curve` equals `pct`
+ * (0–100). Bisection on the SAME `cdfPercentile`, so `cdfPercentile(curve,
+ * curveQuantile(curve, p)) === p` to bisection tolerance — the band edge and the
+ * displayed percentile agree BY CONSTRUCTION.
+ *
+ * T-4.31 (b2): the Slovenija-national band cutoffs are read off the averaged KDE
+ * curve the today-card already serves (fetchEra5NationalWindowRow, api.ts), instead
+ * of the unweighted mean of the 18 per-station empirical quantiles. Mean-of-quantiles
+ * sat ~0.75 °C below the mixture's own p80 (fat-tailed mixture; measured), so the
+ * category read "Vroče" while the percentile — integrated from the mixture — read 78.
+ * Deriving both from one curve removes that gap and makes it unrepresentable. Only the
+ * national path uses this; a single station has one distribution, so its served cutoffs
+ * and its percentile already agree to rounding (measured 0.51 pt).
+ *
+ * `cdfPercentile` is monotone non-decreasing in `value`, 0 at the low edge and 100 at
+ * the high edge, so bisection over `[curve[0].x, curve[last].x]` converges for any
+ * pct in (0, 100). Degenerate curve (< 2 points) → NaN, matching cdfPercentile's guard.
+ */
+export function curveQuantile(curve: [number, number][], pct: number): number {
+  const n = curve.length;
+  if (n < 2) return NaN;
+  let lo = curve[0]![0], hi = curve[n - 1]![0];
+  for (let i = 0; i < 60; i++) {
+    const mid = (lo + hi) / 2;
+    if (cdfPercentile(curve, mid) < pct) lo = mid; else hi = mid;
+  }
+  return hi;
+}
+
+/**
  * Category + REAL empirical percentile for `temp` against the reference `p`.
  * Contrast `categorizeEra5` (api.ts), which returns a bucket midpoint.
  */
