@@ -1,6 +1,7 @@
 import { onMount, onCleanup, createEffect } from "solid-js";
 import type { Last7 } from "../types.ts";
 import { enableChartA11y } from "../charts/highcharts-a11y.ts";
+import { reduceChartMotion } from "../reduced-motion.ts";
 import { t, fmtNum, fmtInt } from "../i18n/format.ts";
 
 const CAT_ORDER  = ["freezing", "cold", "nope", "hot", "hell"];
@@ -37,7 +38,7 @@ export function TodayLast7Chart(props: Props) {
       };
     });
 
-    chart = Highcharts.chart(container, {
+    chart = Highcharts.chart(container, reduceChartMotion({
       chart: {
         type:            "line",
         height:          190,
@@ -109,7 +110,7 @@ export function TodayLast7Chart(props: Props) {
           lineColor: INK,
         },
       }],
-    } as Highcharts.Options);
+    } as Highcharts.Options));
   });
 
   createEffect(() => {

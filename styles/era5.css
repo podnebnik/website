@@ -42,6 +42,33 @@
   transform-origin: center;
 }
 
+/* ── T-5.15: prefers-reduced-motion ────────────────────────────────────────────
+   A reader who sets this preference has asked for a page that does not move. This
+   blanket reset makes every CSS transition and keyframe animation on the page
+   effectively instant, so it also covers any transition a future change adds — an
+   enforceable rule beats re-auditing "is this one small enough?" each time (T-5.15
+   decision (a): B2 loading fade, B3 disclosure marker, B4/B5 heatmap hover, B1 snow
+   sparkle are all swept up here). It does NOT re-touch the two already-gated controls
+   — `.fsc` fade (:333) and `.fsc-trigger--cue::after` ripple (:359) only animate under
+   `no-preference`, so `reduce` never applies them (added by T-5.35 / T-5.27 while
+   T-5.15 sat open). Highcharts motion (the gauge sweep, the chart draw-ins) and the
+   TodayFlag SMIL are JS/SMIL, invisible to CSS — they are gated in TypeScript
+   (reduced-motion.ts, TodayFlag.tsx). 0.01ms (not `none`) preserves any animationend a
+   script might await. */
+@media (prefers-reduced-motion: reduce) {
+  #ali-je-vroce-era5 *,
+  #ali-je-vroce-era5 *::before,
+  #ali-je-vroce-era5 *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  /* B6 — the extremes-mode heatmap highlight IS the pulse; with the animation frozen,
+     keep a static brightened highlight so extreme cells stay visibly marked. */
+  #ali-je-vroce-era5 .shm-cell--pulse { filter: brightness(1.35); }
+}
+
 /* ── CSS custom properties gap helpers ──────────────────────────────────── */
 #ali-je-vroce-era5 {
   --gap:   16px;

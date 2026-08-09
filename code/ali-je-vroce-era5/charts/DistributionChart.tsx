@@ -1,6 +1,7 @@
 import { onMount, onCleanup, createEffect } from "solid-js";
 import type { TodayStatus } from "../types.ts";
 import { enableChartA11y } from "./highcharts-a11y.ts";
+import { reduceChartMotion } from "../reduced-motion.ts";
 import { t, fmtNum } from "../i18n/format.ts";
 import { assertFrequencySane, distributionTooltipHtml } from "./distribution-frequency.ts";
 
@@ -155,7 +156,7 @@ export function DistributionChart(props: Props) {
     if (!r.available || !r.distribution?.length || !r.cutoffs) return;
     // The tooltip formatter reads `() => props.data` live, so it survives later data
     // changes (createEffect refreshes only the geometry, not the formatter). T-5.22 B.
-    chart = Highcharts.chart(container, buildOptions(r, () => props.data));
+    chart = Highcharts.chart(container, reduceChartMotion(buildOptions(r, () => props.data)));
   });
 
   createEffect(() => {

@@ -1,6 +1,7 @@
 import { onMount, onCleanup, createEffect } from "solid-js";
 import type { TodayStatus } from "../types.ts";
 import { enableChartA11y } from "./highcharts-a11y.ts";
+import { prefersReducedMotion } from "../reduced-motion.ts";
 import { t, fmtNum } from "../i18n/format.ts";
 
 interface Props {
@@ -40,13 +41,17 @@ export function TodayGauge(props: Props) {
     const catKey = r.category_key ?? "nope";
     const pct    = r.percentile ?? 0;
     const target = dialPosition(catKey, pct);
+    // T-5.15 — the needle POSITION is information; the sweep is decoration. Under
+    // prefers-reduced-motion the needle jumps to the correct value instantly (duration
+    // 0) rather than sweeping. It must still update — never withhold the position.
+    const reduced = prefersReducedMotion();
 
     chart = Highcharts.chart(container, {
       chart: {
         type:            "gauge",
         backgroundColor: "transparent",
         margin:          [0, 0, 0, 0],
-        animation:       { duration: 900, easing: "easeOutQuint" },
+        animation:       reduced ? false : { duration: 900, easing: "easeOutQuint" },
       },
       title:         { text: "" },
       credits:       { enabled: false },
@@ -92,15 +97,17 @@ export function TodayGauge(props: Props) {
       }],
     } as Highcharts.Options);
 
-    // Animate needle from 0 → actual value on first render
-    chart.series[0]?.setData([target], true, { duration: 900 });
+    // Animate needle from 0 → actual value on first render (instant under reduced motion)
+    chart.series[0]?.setData([target], true, reduced ? false : { duration: 900 });
   });
 
   createEffect(() => {
     const catKey = props.data.category_key ?? "nope";
     const pct    = props.data.percentile    ?? 0;
     if (!chart) return;
-    chart.series[0]?.setData([dialPosition(catKey, pct)], true, { duration: 500 }, false);
+    // Read the preference fresh so a rebuild after a mid-session OS toggle honours it.
+    const reduced = prefersReducedMotion();
+    chart.series[0]?.setData([dialPosition(catKey, pct)], true, reduced ? false : { duration: 500 }, false);
   });
 
   onCleanup(() => { chart?.destroy(); chart = null; });

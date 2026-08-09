@@ -1,5 +1,7 @@
 // Slovenian flag with per-category weather overlay — direct port from static/js/app.js
 
+import { prefersReducedMotion } from "../reduced-motion.ts";
+
 function snowFlakePath(r: number): string {
   const f = (n: number) => n.toFixed(2);
   let d = "";
@@ -91,9 +93,23 @@ const FLAG_CONFIGS: Record<string, FlagConfig> = {
 
 const _flagCache = new Map<string, string>();
 
-function buildFlagSVG(catKey: string): string {
-  if (_flagCache.has(catKey)) return _flagCache.get(catKey)!;
+// T-5.15 — the flag's motion is SMIL (`<animate>` / `<animateTransform>`) plus the
+// CSS-driven snow. CSS `@media (prefers-reduced-motion: reduce)` freezes the snow
+// (era5.css), but it CANNOT reach SMIL, so under `reduced` this builder omits the SMIL
+// elements and renders a static scene instead:
+//   • clouds — the `<animateTransform>` drives them across the flag; dropping it alone
+//     would leave every cloud at translate(0,0), overlapping. Instead give each a fixed
+//     spread position so a static, non-overlapping cloudscape remains.
+//   • hell flame/sun — stripping their `<animate>` leaves sane static values (seed 0,
+//     r 10, opacity 0.9), so a plain `<animate …/>` removal is enough.
+// The cache key carries `reduced` so a motion SVG is never served to a reduced reader
+// (or vice-versa).
+function buildFlagSVG(catKey: string, reduced: boolean): string {
+  const cacheKey = `${catKey}:${reduced}`;
+  if (_flagCache.has(cacheKey)) return _flagCache.get(cacheKey)!;
 
+  // Snow keeps its `.tf-snowflake` class in both modes — the CSS media query stops the
+  // sparkle animation under reduced motion, leaving the flakes visible but static.
   const snow = catKey === "freezing"
     ? SNOW_POS.map(([x, y, r, dur, del]) =>
         `<g transform="translate(${x},${y})"><path class="tf-snowflake" d="${snowFlakePath(r)}" fill="none" stroke="rgba(210,235,255,0.95)" stroke-width="0.9" stroke-linecap="round" style="--dur:${dur}s;--delay:${del}s"/></g>`
@@ -101,14 +117,20 @@ function buildFlagSVG(catKey: string): string {
     : "";
 
   const clouds = catKey === "cold"
-    ? COLD_CLOUDS.map(([y, sc, op, dur, del, sh]) =>
-        `<g opacity="${op}" fill="rgba(255,248,248,0.82)"><g transform="scale(${sc})">${CLOUD_DEF[sh]}</g><animateTransform attributeName="transform" type="translate" from="-220 ${y}" to="220 ${y}" dur="${dur}s" begin="${del}s" repeatCount="indefinite"/></g>`
+    ? COLD_CLOUDS.map(([y, sc, op, dur, del, sh], i) =>
+        reduced
+          // Static: fixed, spread positions across the flag — no drift.
+          ? `<g opacity="${op}" transform="translate(${-90 + i * 34} ${y})" fill="rgba(255,248,248,0.82)"><g transform="scale(${sc})">${CLOUD_DEF[sh]}</g></g>`
+          : `<g opacity="${op}" fill="rgba(255,248,248,0.82)"><g transform="scale(${sc})">${CLOUD_DEF[sh]}</g><animateTransform attributeName="transform" type="translate" from="-220 ${y}" to="220 ${y}" dur="${dur}s" begin="${del}s" repeatCount="indefinite"/></g>`
       ).join("")
     : "";
 
   const cfg = FLAG_CONFIGS[catKey] ?? NOPE_FLAG;
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-140 -70 280 140"><defs>${cfg.defs}</defs><rect x="-140" y="-70" width="280" height="140" fill="${cfg.bg}"/>${cfg.body}${clouds}${snow}</svg>`;
-  _flagCache.set(catKey, svg);
+  let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-140 -70 280 140"><defs>${cfg.defs}</defs><rect x="-140" y="-70" width="280" height="140" fill="${cfg.bg}"/>${cfg.body}${clouds}${snow}</svg>`;
+  // Strip the remaining SMIL <animate …/> (hell flame seed + sun pulse). The `\b`
+  // spares <animateTransform> — but the reduced cloud branch above emits none anyway.
+  if (reduced) svg = svg.replace(/<animate\b[^>]*\/>/g, "");
+  _flagCache.set(cacheKey, svg);
   return svg;
 }
 
@@ -117,7 +139,7 @@ export function TodayFlag(props: { catKey: string }) {
     <div
       class="w-16 h-8 rounded-[3px] overflow-hidden flex-shrink-0"
       style={{ "box-shadow": "0 2px 6px rgba(14,14,12,0.15)" }}
-      innerHTML={buildFlagSVG(props.catKey)}
+      innerHTML={buildFlagSVG(props.catKey, prefersReducedMotion())}
     />
   );
 }
