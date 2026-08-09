@@ -127,6 +127,12 @@ function buildOptions(r: TodayStatus, getData: () => TodayStatus): Highcharts.Op
       tickWidth:     0,
     },
     plotOptions: {
+      // T-5.71 — the decorative ~1 s series draw-in is disabled outright (not just
+      // under reduced motion). On first load six charts + the gauge sweep animate at
+      // once; the mount storm was a 1.5–2.0 s main-thread block that janks the gauge
+      // needle on a phone. This matches YearRoundChart's long-standing plotOptions
+      // disable. `chart.animation:false` above governs redraws only.
+      series: { animation: false },
       areaspline: {
         marker:      { enabled: false },
         lineWidth:   0,

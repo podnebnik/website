@@ -190,6 +190,10 @@ export function TropHighchart(props: ChartProps) {
         gridLineColor: "rgba(14,14,12,0.06)",
         labels: { style: { fontSize: "10px", color: INK_SOFT, ...MONO } },
       },
+      // T-5.71 — disable the decorative ~1 s series draw-in outright (see
+      // DistributionChart for the mount-storm rationale). chart.animation:false is
+      // redraw-only; this governs the initial reveal.
+      plotOptions: { series: { animation: false } },
       series: buildSeries(),
     } as any));
   });

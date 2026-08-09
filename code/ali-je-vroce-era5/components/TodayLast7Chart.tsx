@@ -88,6 +88,10 @@ export function TodayLast7Chart(props: Props) {
           color: color + "33",
         })),
       },
+      // T-5.71 — disable the decorative ~1 s series draw-in outright (see
+      // DistributionChart for the mount-storm rationale). chart.animation:false is
+      // redraw-only; this governs the initial reveal.
+      plotOptions: { series: { animation: false } },
       series: [{
         name: "Category",
         type: "line",
