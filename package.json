@@ -21,39 +21,39 @@
   },
   "dependencies": {
     "@highcharts/map-collection": "^2.3.3",
-    "@kobalte/core": "^0.13.10",
+    "@kobalte/core": "^0.13.12",
     "@tailwindcss/typography": "^0.5.20",
-    "@tailwindcss/vite": "~4.2.2",
-    "@tanstack/solid-query": "^5.99.2",
-    "@tanstack/solid-query-devtools": "^5.99.2",
-    "@types/leaflet": "^1.9.16",
+    "@tailwindcss/vite": "~4.3.3",
+    "@tanstack/solid-query": "^5.101.4",
+    "@tanstack/solid-query-devtools": "^5.101.4",
+    "@types/leaflet": "^1.9.22",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "compression": "^1.8.1",
     "highcharts": "~12.6.0",
     "leaflet": "^1.9.4",
-    "morgan": "^1.10.1",
+    "morgan": "^1.11.0",
     "node-fetch": "^3.3.2",
-    "solid-js": "^1.9.12",
-    "tailwind-merge": "^3.5.0",
-    "tailwindcss": "~4.2.2"
+    "solid-js": "^1.9.14",
+    "tailwind-merge": "^3.6.0",
+    "tailwindcss": "~4.3.3"
   },
   "devDependencies": {
     "@11ty/eleventy": "^3.1.6",
-    "@11ty/eleventy-img": "^6.0.4",
+    "@11ty/eleventy-img": "^7.0.0",
     "@11ty/eleventy-plugin-vite": "^8.0.0",
-    "@types/node": "^25.6.0",
+    "@types/node": "^26.2.0",
     "cors": "^2.8.6",
     "express": "^5.2.1",
-    "http-proxy-middleware": "^3.0.5",
-    "jsdom": "^29.1.1",
+    "http-proxy-middleware": "^4.2.0",
+    "jsdom": "^30.0.1",
     "markdown-it-attrs": "^5.0.1",
     "markdown-it-footnote": "^4.0.0",
-    "sass": "^1.99.0",
-    "sharp": "^0.35.0",
+    "sass": "^1.102.0",
+    "sharp": "^0.35.3",
     "typescript": "~6.0.3",
-    "vite": "~8.0.16",
-    "vite-plugin-solid": "^2.11.12",
+    "vite": "~8.2.1",
+    "vite-plugin-solid": "^2.11.14",
     "vitest": "^4.1.10"
   },
   "resolutions": {
@@ -62,5 +62,5 @@
     "sharp": "^0.35.0",
     "seroval": "1.5.3"
   },
-  "packageManager": "yarn@4.9.4+sha512.7b1cb0b62abba6a537b3a2ce00811a843bea02bcf53138581a6ae5b1bf563f734872bd47de49ce32a9ca9dcaff995aa789577ffb16811da7c603dcf69e73750b"
+  "packageManager": "yarn@4.18.0+sha512.fcb8716fe7cd0eece141ffc18b92193a9df9204c1ba83189c288835223fc0bbe64af473bab0d5e9927a7daeb5caf2bb07eb2787cc9338ca040ea125f2a1f2f7e"
 }
