@@ -112,10 +112,6 @@ export function RegressionChart(props: Props) {
         title: { text: d.ylabel, style: { fontFamily: "'JetBrains Mono', monospace", fontSize: "10px" } },
         gridLineColor: "rgba(0,0,0,0.06)",
       },
-      // T-5.71 — disable the decorative ~1 s series draw-in outright (see
-      // DistributionChart for the mount-storm rationale). chart.animation:false is
-      // redraw-only; this governs the initial reveal.
-      plotOptions: { series: { animation: false } },
       series: buildSeries(d.results),
     } as Highcharts.Options));
 

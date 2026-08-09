@@ -104,10 +104,6 @@ function TrendHighchart(props: ChartProps) {
         labels:        { format: "{value}°C", style: { color: INK_SOFT, ...MONO } },
         gridLineColor: "rgba(14,14,12,0.06)",
       },
-      // T-5.71 — disable the decorative ~1 s series draw-in outright (see
-      // DistributionChart for the mount-storm rationale). chart.animation:false is
-      // redraw-only; this governs the initial reveal.
-      plotOptions: { series: { animation: false } },
       series: [
         { name: "CI hist",       type: "arearange", data: histBand,
           fillOpacity: 0.09, lineWidth: 0, color: COL, enableMouseTracking: false, marker: { enabled: false }, zIndex: 2 },
