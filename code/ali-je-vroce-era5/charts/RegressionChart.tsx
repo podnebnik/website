@@ -1,6 +1,7 @@
 import { onMount, onCleanup, createEffect } from "solid-js";
 import type { RegressionResponse } from "../types.ts";
 import { enableChartA11y } from "./highcharts-a11y.ts";
+import { reduceChartMotion } from "../reduced-motion.ts";
 import { regressionTooltipHtml } from "./regression-tooltip.ts";
 import { t, fmtNum } from "../i18n/format.ts";
 
@@ -75,7 +76,7 @@ export function RegressionChart(props: Props) {
     await enableChartA11y(HC);
 
     const d = props.data;
-    chart = HC.chart(container, {
+    chart = HC.chart(container, reduceChartMotion({
       chart: {
         backgroundColor: "transparent",
         margin: [10, 20, 40, 60],
@@ -112,7 +113,7 @@ export function RegressionChart(props: Props) {
         gridLineColor: "rgba(0,0,0,0.06)",
       },
       series: buildSeries(d.results),
-    } as Highcharts.Options);
+    } as Highcharts.Options));
 
     // Baseline plotlines
     if (chart && d.results.length) {

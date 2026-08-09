@@ -9,6 +9,7 @@
 import { createEffect, onMount, onCleanup } from "solid-js";
 import { todayYear } from "../clock";
 import { enableChartA11y } from "./highcharts-a11y.ts";
+import { reduceChartMotion } from "../reduced-motion.ts";
 import { t, fmtNum, fmtSigned } from "../i18n/format.ts";
 
 export interface TropTrend {
@@ -157,7 +158,7 @@ export function TropHighchart(props: ChartProps) {
     await import("highcharts/highcharts-more");
     await enableChartA11y(Highcharts);
 
-    chart = Highcharts.chart(container, {
+    chart = Highcharts.chart(container, reduceChartMotion({
       chart: { type: "column", height: 300, backgroundColor: "transparent", animation: false, style: { fontFamily: "Space Grotesk, sans-serif" } },
       title:   { text: undefined },
       credits: { enabled: false },
@@ -190,7 +191,7 @@ export function TropHighchart(props: ChartProps) {
         labels: { style: { fontSize: "10px", color: INK_SOFT, ...MONO } },
       },
       series: buildSeries(),
-    } as any);
+    } as any));
   });
 
   // ── KEY FIX: read reactive props BEFORE early return so deps are always tracked ──

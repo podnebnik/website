@@ -1,5 +1,6 @@
 import { createSignal, createMemo, For, Show, onMount, onCleanup } from "solid-js";
 import { enableChartA11y } from "./highcharts-a11y.ts";
+import { reduceChartMotion } from "../reduced-motion.ts";
 import { t, fmtNum, fmtSigned, fmtMonthShort } from "../i18n/format.ts";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -135,7 +136,7 @@ function SpeiScatterChart(props: ChartProps) {
   onMount(async () => {
     const Highcharts = (await import("highcharts")).default;
     await enableChartA11y(Highcharts);
-    chart = Highcharts.chart(container, buildOpts() as any);
+    chart = Highcharts.chart(container, reduceChartMotion(buildOpts() as any));
   });
 
   // <Show keyed> in the parent remounts this component on station/period change,

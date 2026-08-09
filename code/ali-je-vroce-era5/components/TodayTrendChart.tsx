@@ -3,6 +3,7 @@ import { fetchAnnualTrend, ERA5_NATIONAL } from "../api.ts";
 import { todayYear } from "../clock.ts";
 import { sectionErrorFallback } from "./SectionError.tsx";
 import { enableChartA11y } from "../charts/highcharts-a11y.ts";
+import { reduceChartMotion } from "../reduced-motion.ts";
 import { t, fmtNum, fmtSigned, fmtMonthDay } from "../i18n/format.ts";
 import type { AnnualTrend } from "../types.ts";
 
@@ -54,7 +55,7 @@ function TrendHighchart(props: ChartProps) {
     const currentYear = todayYear();
     const { histLine, histBand, fcLine, fcBand, fcMilestones } = buildTrendSeries(d);
 
-    chart = Highcharts.chart(container, {
+    chart = Highcharts.chart(container, reduceChartMotion({
       chart: {
         type:            "line",
         height:          240,
@@ -120,7 +121,7 @@ function TrendHighchart(props: ChartProps) {
                     fillColor: "#F5F2EC", lineColor: COL, lineWidth: 1.5 },
           zIndex: 7 },
       ],
-    } as Highcharts.Options);
+    } as Highcharts.Options));
   });
 
   createEffect(() => {
