@@ -5,7 +5,7 @@
 // ============================================================================= */
 
 import { QueryKey } from '@tanstack/solid-query';
-import { ProcessedTemperatureData, ProcessedStation, HistoricalTemperatureData } from './models.js';
+import { ProcessedTemperatureData, StationModel, HistoricalTemperatureData } from './models.js';
 
 // =============================================================================
 // APPLICATION QUERY KEY FACTORY
@@ -42,7 +42,7 @@ export type AppQueryKey = ReturnType<typeof queryKeys[keyof typeof queryKeys]>;
 /**
  * Stations query data type (what our stations query returns)
  */
-export type StationsQueryData = ProcessedStation[];
+export type StationsQueryData = StationModel[];
 
 /**
  * Weather data query result type (what our weather query returns)

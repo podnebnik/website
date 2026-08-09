@@ -163,7 +163,7 @@ def create_databases(c, no_validate=False, no_validate_arch=None):
                 log(f'    Skipping resource {resource.name}, {resource.format} @ {resource.path}')
 
             # this only creates tables
-            c.run(f'sqlite-utils insert {database} {resource.name} {DATASETS_DIR / package_path.parent / resource.path} --csv --detect-types --silent --stop-after 10')
+            c.run(f'sqlite-utils insert {database} {resource.name} {DATASETS_DIR / package_path.parent / resource.path} --csv --silent --stop-after 10')
 
             # this loads the data
             fake_stdin = io.StringIO()

@@ -69,7 +69,7 @@ export type TemperaturePercentileRow = [
   number
 ];
 
-export type StationRow = [number, number, string, string];
+export type StationRow = [number, number, string, string, string];
 
 export interface StationsResponse {
   database: string;

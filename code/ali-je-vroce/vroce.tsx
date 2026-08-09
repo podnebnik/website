@@ -104,6 +104,7 @@ export function AliJeVroce() {
         isStale={false}
         labels={percentile_labels}
         values={vrednosti}
+        selectedStation={selectedStation()}
         descriptions={getDescriptionsForTemperature()}
       />
 
@@ -136,15 +137,17 @@ export function AliJeVroce() {
           />
           <div class="mt-4 text-left max-w-2xl mx-auto font-sans text-base space-y-3">
             <p>
-              To je razporeditev temperatur, ki je značilna za ta letni čas, ki
+              Zgornji graf prikazuje razporeditev temperatur, ki je značilna za ta letni čas, ki
               smo ga opredelili kot 15-dnevno obdobje okoli današnjega dne.
-              Podobno kot pri porazdelitveni krivulji je krivulja višja pri bolj
+              Predstavlja <strong>porazdelitveno krivuljo</strong>, ki je višja pri bolj
               pogostih temperaturah in nižja pri nepogostih ali neznačilnih
               temperaturah.
             </p>
             <p>
-              Ekstremne temperature, ki so sicer redke (manj kot 5 % dni), so
-              označene s črtkano navpično črto. Sredina teh črt (50-ti percentil)
+              <strong>Ekstremne temperature</strong> definiramo kot
+              5 % najbolj vročih ali 5 % najbolj hladnih dni v izbranem obdobju.
+              Nahajajo se levo in desno od dveh navpičnih črtkanih črt,
+              ki označujeta 5. in 95. percentil. Sredina krivulje (50. percentil)
               označuje temperaturo, ki razdeli porazdelitev na dva enaka dela, tj.
               polovica dni je toplejših od te temperature, druga polovica pa
               hladnejših.
@@ -152,8 +155,8 @@ export function AliJeVroce() {
             <p>
               Če želimo ugotoviti, ali je bil današnji dan ekstremno hladen ali
               topel, lahko preverimo, ali je današnja povprečna temperatura pod ali
-              nad črtkano črto, ki označujeta najhladnejših oziroma najtoplejših 5
-              % dni v tem letnem času.
+              nad črtkano črto, ki označujeta najhladnejših oziroma najtoplejših 5 %
+              dni v tem letnem času.
             </p>
           </div>
         </div>
@@ -171,11 +174,24 @@ export function AliJeVroce() {
           />
           <div class="mt-4 text-left max-w-2xl mx-auto font-sans text-base">
             <p>
-              Današnja točka v primerjavi z vsemi dnevi iz preteklosti vse do
-              zadnjega leta s podobnim časom iz preteklih let. Rdeče označeni dnevi
-              so toplejši glede na pretekle podatke, modro označeni pa hladnejši.
+              Današnji dan v primerjavi z vsemi dnevi iz preteklih let v enakem
+              15-dnevnem obdobju, vse do leta 1950. Rdeče označeni dnevi
+              so toplejši, modro označeni pa hladnejši od povprečne temperature celotnega zgodovinskega obdobja.
+            </p>
+            <p>
+              Ko skozi podatke potegnemo premico, ki se najbolje prilagaja vsem
+              točkam, lahko opazimo, da se je povprečna temperatura v tem
+              obdobju skozi desetletja dvignila.
             </p>
           </div>
+        </div>
+        <div class="mt-6 text-left max-w-2xl mx-auto font-sans text-base italic">
+          <p>
+            <strong>Opombe:</strong> Okolica vremenske postaje se je s časom lahko spreminjala.
+            V mestih trendi v manjši meri odražajo tudi vpliv mestnega toplotnega otoka.
+            V prehodnih letnih časih (pomlad in jesen) je prisoten večji časovni temperaturni gradient,
+            ki lahko potisne dnevno temperaturo proti ekstremnim vrednostim.
+          </p>
         </div>
       </Show>
     </div>

@@ -1,7 +1,7 @@
 import { queryKeys } from "../hooks/queries.ts";
 import { requestData, requestHistoricalWindow } from "../helpers.ts";
 import { QueryClient } from "@tanstack/solid-query";
-import type { ProcessedStation, ProcessedTemperatureData, HistoricalTemperatureData } from '../../types/models.js';
+import type { StationModel, ProcessedTemperatureData, HistoricalTemperatureData } from '../../types/models.js';
 
 /**
  * Popular weather stations in Slovenia that are frequently accessed by users
@@ -77,10 +77,10 @@ export function prefetchStationData(
  * Prefetches all stations list data
  * This is useful to call during initialization to ensure stations are available quickly
  */
-export function prefetchStationsData(queryClient: QueryClient): Promise<ProcessedStation[] | void> {
+export function prefetchStationsData(queryClient: QueryClient): Promise<StationModel[] | void> {
     return queryClient.prefetchQuery({
         queryKey: queryKeys.stations(),
-        queryFn: async (): Promise<ProcessedStation[]> => {
+        queryFn: async (): Promise<StationModel[]> => {
             const { loadStations } = await import('../helpers.ts');
             const result = await loadStations();
             if (!result.success) {

@@ -3,7 +3,7 @@
  */
 
 import { JSX } from 'solid-js';
-import { ProcessedStation } from './models.js';
+import { StationModel } from './models.js';
 import * as Highcharts from 'highcharts';
 
 // Base component props
@@ -16,9 +16,9 @@ export interface BaseComponentProps {
 
 // Weather App Component Props
 export interface StationSelectorProps extends BaseComponentProps {
-  stations: ProcessedStation[];
-  selectedStation: ProcessedStation | null;
-  onStationChange: (station: ProcessedStation) => void;
+  stations: StationModel[];
+  selectedStation: StationModel | null;
+  onStationChange: (station: StationModel) => void;
   isLoading: boolean;
   stationPrefix?: string;
 }
@@ -36,6 +36,7 @@ export interface TemperatureDisplayProps extends BaseComponentProps {
   isStale: boolean; // Whether data is stale and being refreshed
   labels: Record<string, string>; // Textual labels for percentiles
   values: Record<string, string>; // Main temperature result values
+  selectedStation: StationModel | null; // Currently selected weather station
   descriptions: Record<string, string>; // Descriptions for percentiles
 }
 

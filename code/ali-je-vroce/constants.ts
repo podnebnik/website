@@ -24,8 +24,9 @@ export const CACHE_KEY_PREFIX = 'ali-je-vroce-cache' as const
  */
 export const DEFAULT_STATION = {
     value: 1495,
-    label: 'Ljubljana',
-    prefix: 'v'
+    label: 'Ljubljani',
+    prefix: 'v',
+    station: 'Ljubljana Bežigrad'
 } as const
 
 /**

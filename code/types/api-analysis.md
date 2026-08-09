@@ -272,9 +272,10 @@ for (let row of dataStations.rows) {
 
 ```javascript
 /**
- * @typedef {Object} ProcessedStation
+ * @typedef {Object} StationModel
  * @property {number} station_id
  * @property {string} name_locative
+ * @property {string} name_station
  * @property {string} prefix
  */
 ```
@@ -283,7 +284,7 @@ for (let row of dataStations.rows) {
 
 ```typescript
 import {
-  ProcessedStation,
+  StationModel,
   TemperatureStationsResponse,
 } from "/code/types/index.js";
 ```
