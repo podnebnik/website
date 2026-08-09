@@ -52,14 +52,14 @@ export const TemperatureDisplay: Component<TemperatureDisplayProps> = (props) =>
                         </div>
                     }
                     >
-                        <p id={resultId} class="font-black text-6xl flex items-center justify-center gap-8 max-md:mt-[0.5em] max-md:mb-[0.5em]"
+                        <p id={resultId} class="font-black md:text-6xl text-5xl flex items-center justify-center md:gap-8 gap-4 max-md:mt-[0.5em] max-md:mb-[0.5em]"
                            aria-label={`Rezultat: ${props.values[props.result]}`}>
                             <IsItHotDot
                                 color={props.result as "p00" | "p05" | "p20" | "p40" | "p60" | "p80" | "p95"}
-                                class="size-18 inline-block"
+                                class="md:size-18 size-18 inline-block"
                             />
                             {" "}
-                            <span>{props.values[props.result]}</span>
+                            <span class={props.result == "p00" || props.result == "p95" ? "max-md:basis-[min-content] max-md:w-min max-md:min-w-50" : ""}>{props.values[props.result]}</span>
                         </p>
                     </Show>
 
