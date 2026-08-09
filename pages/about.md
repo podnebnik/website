@@ -19,7 +19,7 @@ Z uporabo, analiziranje in vizualizacijo podatkov in na konkretnih primerih poja
 
 ## Kaj spremljamo in objavljamo?
 
-Na tej spletni strani lahko za začetek spremljate **orodje** **_Ali je danes vroče?_** ali **digitalni termometer**, ki namesto trenutnega stanja ponuja zgodovinski kontekst in je nastal po zgledu avstralske platforme https://isithotrightnow.com. Trenutno je na voljo 14 postaj s podatki agencije ARSO. 
+Na tej spletni strani lahko za začetek spremljate **orodje** **_Ali je danes vroče?_** ali **digitalni termometer**, ki namesto trenutnega stanja ponuja zgodovinski kontekst in je nastal po zgledu avstralske platforme [Is it Hot Right Now?](https://isithotrightnow.com). Trenutno je na voljo 14 postaj s podatki agencije ARSO. 
 
 **Ta podstrani Ali je vroče?** pa je na voljo bolj podroben prikaz vremenskih podatkov reanalize ERA5-Land v primerjavi z zgodovinskimi trendi, kjer pa je na voljo 18 postaj za Slovenijo. **Metodologijo**, s katero pridemo do prikazanih številk, razlagamo na koncu strani. Vsemu smo dodali še **slovar pojmov** za lažje razumevanje in spremljanje objavljenih podatkov.
 
