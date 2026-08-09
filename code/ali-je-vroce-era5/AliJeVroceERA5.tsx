@@ -19,6 +19,11 @@ import { parseUrlState } from "./url-state.ts";
 // (pages/methodology.md + pages/glossary.md, linked from the footer). What remains on
 // this page is only the closing trust-furniture line, still rendered by MethodologyPanel.
 import { MethodologyPanel } from "./components/MethodologyPanel.tsx";
+// T-5.71 — defer + idle-prefetch every chart below the gauge card so first paint on
+// a phone is the gauge alone, not an eight-instance mount storm. IntersectionObserver
+// mounts on scroll (desktop-visible charts mount immediately), an idle queue mounts
+// the rest one at a time. See components/DeferMount.tsx.
+import { DeferMount } from "./components/DeferMount.tsx";
 import type { SiteMeta } from "./types.ts";
 import { t, fmtNum, fmtInt, fmtMonthDay, fmtIsoDate } from "./i18n/format.ts";
 
@@ -184,6 +189,7 @@ function Dashboard(props: { meta: SiteMeta }) {
         <div class="today-grid wide-item">
           <ErrorBoundary fallback={sectionErrorFallback(refetchPageData, "480px")}>
           <Show when={todayData()?.available}>
+            <DeferMount minHeight="480px">
             <div class="today-chart">
               <div class="today-chart-title">
                 {isNat()
@@ -206,11 +212,14 @@ function Dashboard(props: { meta: SiteMeta }) {
                 })}
               </div>
             </div>
+            </DeferMount>
           </Show>
 
           {/* National (pooled) or per-station annual trend with projection */}
           <Show when={todayData()?.available}>
-            <TodayTrendChart date={date()} loc={loc()} stationCount={era5Stations.length} />
+            <DeferMount minHeight="240px">
+              <TodayTrendChart date={date()} loc={loc()} stationCount={era5Stations.length} />
+            </DeferMount>
           </Show>
           </ErrorBoundary>
         </div>
@@ -298,12 +307,16 @@ function Dashboard(props: { meta: SiteMeta }) {
           </div>
           */}
 
-          <RegScatterCard />
+          <DeferMount minHeight="360px">
+            <RegScatterCard />
+          </DeferMount>
 
         </div>
 
         <div class="cal-section">
-          <RegYearRoundCard />
+          <DeferMount minHeight="300px">
+            <RegYearRoundCard />
+          </DeferMount>
         </div>
 
         <Era5Charts />
@@ -367,9 +380,11 @@ function Era5Charts() {
         <h2 class="prose-h2" style={{ "padding-inline": "0", "padding-top": "0", "padding-bottom": "10px" }}>
           {t("sections.location_details")}
         </h2>
-        <Suspense fallback={<div style={{ height: "180px" }} class="animate-pulse rounded-xl bg-[var(--color-paper-2)]" />}>
-          <HeroCardsPanel loc={loc()} label={st()?.label} doy={s.doy()} />
-        </Suspense>
+        <DeferMount minHeight="180px">
+          <Suspense fallback={<div style={{ height: "180px" }} class="animate-pulse rounded-xl bg-[var(--color-paper-2)]" />}>
+            <HeroCardsPanel loc={loc()} label={st()?.label} doy={s.doy()} />
+          </Suspense>
+        </DeferMount>
       </section>
 
       <section class="sec-p" style={{ "padding-bottom": "40px" }}>
@@ -379,9 +394,11 @@ function Era5Charts() {
         <h3 class="prose-h3">
           {t("sections.season_overview_sub", { baseline: BASELINE_LABEL })}
         </h3>
-        <Suspense fallback={<div class="h-40 animate-pulse bg-[var(--color-paper-2)] rounded-xl" />}>
-          <Era5SeasonHeatmapChart loc={loc()} label={st()?.label} />
-        </Suspense>
+        <DeferMount minHeight="160px">
+          <Suspense fallback={<div class="h-40 animate-pulse bg-[var(--color-paper-2)] rounded-xl" />}>
+            <Era5SeasonHeatmapChart loc={loc()} label={st()?.label} />
+          </Suspense>
+        </DeferMount>
       </section>
 
       {/* SPEI drought heatmap (national) */}
@@ -390,6 +407,7 @@ function Era5Charts() {
           {t("sections.spei")}
         </h2>
         <ErrorBoundary fallback={sectionErrorFallback(refetchSpei, "160px")}>
+          <DeferMount minHeight="160px">
           <Suspense fallback={<div class="h-40 animate-pulse bg-[var(--color-paper-2)] rounded-xl" />}>
             <Show when={speiData()?.available} fallback={<EmptyState minHeight="160px" />}>
               {/* T-5.38 — this section reads the `spei` table and is GENUINELY national
@@ -401,6 +419,7 @@ function Era5Charts() {
               <SpeiHeatmapChart data={speiData()!} label={t("today.loc_national", { count: s.meta.stations.length })} />
             </Show>
           </Suspense>
+          </DeferMount>
         </ErrorBoundary>
       </section>
 
@@ -413,11 +432,13 @@ function Era5Charts() {
           {t("sections.spei_trend_sub")}
         </h3>
         <ErrorBoundary fallback={sectionErrorFallback(refetchSpeiStation, "400px")}>
+          <DeferMount minHeight="400px">
           <Suspense fallback={<div class="animate-pulse rounded-xl bg-[var(--color-paper-2)]" style={{ height: "400px" }} />}>
             <Show when={speiStationData()?.available} fallback={<EmptyState minHeight="400px" />}>
               <SpeiTrendChartLazy data={speiStationData()!} loc={loc()} label={st()?.label} />
             </Show>
           </Suspense>
+          </DeferMount>
         </ErrorBoundary>
       </section>
 
@@ -428,9 +449,11 @@ function Era5Charts() {
           {t("sections.tropical_days_sub")}
         </h3>
         <TropControls threshold={daysThr()} setThreshold={setDaysThr} min={25} max={35} streak={streak()} setStreak={setStreak} unit="dni" />
-        <Suspense fallback={<div class="h-56 animate-pulse bg-[var(--color-paper-2)] rounded-xl" />}>
-          <Era5TropicalChart loc={loc()} label={st()?.label} kind="days" threshold={daysThr()} streak={streak()} />
-        </Suspense>
+        <DeferMount minHeight="224px">
+          <Suspense fallback={<div class="h-56 animate-pulse bg-[var(--color-paper-2)] rounded-xl" />}>
+            <Era5TropicalChart loc={loc()} label={st()?.label} kind="days" threshold={daysThr()} streak={streak()} />
+          </Suspense>
+        </DeferMount>
       </section>
 
       {/* Tropical nights */}
@@ -440,9 +463,11 @@ function Era5Charts() {
           {t("sections.tropical_nights_sub")}
         </h3>
         <TropControls threshold={nightsThr()} setThreshold={setNightsThr} min={15} max={25} streak={streak()} setStreak={setStreak} unit="noči" />
-        <Suspense fallback={<div class="h-56 animate-pulse bg-[var(--color-paper-2)] rounded-xl" />}>
-          <Era5TropicalChart loc={loc()} label={st()?.label} kind="nights" threshold={nightsThr()} streak={streak()} />
-        </Suspense>
+        <DeferMount minHeight="224px">
+          <Suspense fallback={<div class="h-56 animate-pulse bg-[var(--color-paper-2)] rounded-xl" />}>
+            <Era5TropicalChart loc={loc()} label={st()?.label} kind="nights" threshold={nightsThr()} streak={streak()} />
+          </Suspense>
+        </DeferMount>
       </section>
 
       {/* T-4.21 / D-10 — Sea level rise — Koper section GATED OUT of v1. The whole

@@ -60,6 +60,7 @@
     ],
     "structural": [
       "Dashboard",
+      "DeferMount",
       "EmptyState",
       "Era5Charts",
       "ErrorBoundary",

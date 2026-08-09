@@ -123,6 +123,10 @@ function SpeiScatterChart(props: ChartProps) {
             label: { text: t("speitrend.threshold_wet"), style: { fontSize: "9px", color: "#1e4d78", ...MONO }, align: "right" as const } },
         ],
       },
+      // T-5.71 — disable the decorative ~1 s series draw-in outright (see
+      // DistributionChart for the mount-storm rationale). chart.animation:false is
+      // redraw-only; this governs the initial reveal.
+      plotOptions: { series: { animation: false } },
       series: [
         { type: "scatter", data: scatter, zIndex: 4 },
         ...(trendLine.length ? [{
