@@ -1,5 +1,6 @@
 ---
 title: Slovarček pojmov
+summary: Razlaga kratic, pojmov in drugih strokovnih izrazov
 layout: page.html
 ---
 

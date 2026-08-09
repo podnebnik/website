@@ -3,7 +3,7 @@ title: "O projektu"
 layout: page.html
 summary: S pomočjo podatkov, analiz in simulacij pomagamo k boljšemu razumevanju podnebnih sprememb in okoljskih tveganj v Sloveniji
 ---
-# KDO ALI KAJ JE PODNEBNIK?
+## Kdo ali kaj je Podnebnik?
 
 Podnebnik je rezultat dela skupnosti Sledilnik, ki s tem nadaljuje in nadgrajuje spoznanja in izkušnje projektov Sledilnik Covid-19 in Sledilnik Zdravniki, tokrat na področju podnebnih sprememb.
 

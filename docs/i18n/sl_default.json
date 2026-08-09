@@ -34,8 +34,8 @@
     "climate_context": "Slovenija leži na stičišču štirih podnebnih con — alpske, sredozemske, celinsko in panonske — stisnjenih v eno izmed podnebno najbolj raznolikih držav v Evropi. Srednja Evropa se segreva približno 1,5-krat hitreje od svetovnega povprečja [ref:copernicus_esotc_2025]. Temperature so v zadnjih 70 letih narasle za skoraj 2 °C. Pomlad v Alpah prihaja vse prej, sredozemske suše segajo vse globlje v notranjost, severovzhodni panonski del pa se sooča z vedno hujšimi vročinskimi vali. Kar je bilo leta 1980 tipično poletje, danes sodi med hladnejšo polovico nedavnih desetletij.",
     "chart_title": "Dnevne najvišje temperature v Sloveniji za dve tedni okoli {day_label} od {year_min}",
     "trend_title": "Najvišje temperature v Sloveniji okoli {day_label} · {year_min}–{year_max} · trend s projekcijo do 2050",
-    "explain2": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče — tako da na prvi pogled vidite, kje se uvršča današnja temperatura.",
-    "explain3": "Vsaka pika je 90. percentil nacionalne povprečne dnevne najvišje temperature vseh postaj v ±30-dnevnem oknu okoli tega datuma za vsako leto od {year_min}. Trend Theil-Sen je {trend} °C/desetletje ({sig}). Po tem tempu projekcija kaže {proj2050} °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib. Opomba: ta grafikon uporablja nacionalno povprečje vseh postaj; kartica 'Ali je vroče?' zgoraj pa uporablja nacionalni vrh (posamezna najtoplejša postaja) — obe sta veljavni, a merita različne stvari.",
+    "explain2": "Krivulja prikazuje, kako pogosto se je pojavila vsaka vrhunska temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega pasu v bež barvi do ekstremne rdeče — tako da na prvi pogled vidite, kje se uvršča današnja temperatura.",
+    "explain3": "Vsaka pika je 90. percentil povprečne dnevne najvišje temperature vseh postaj v ±30-dnevnem oknu okoli tega datuma za vsako leto od {year_min}. Trend Theil-Sen je {trend} °C/desetletje ({sig}). S tem tempom pričakujemo {proj2050} °C do leta 2050. Zasenčeni pas predstavlja 95% interval zaupanja za nagib. Opomba: ta grafikon uporablja povprečje vseh postaj; kartica 'Ali je vroče?' zgoraj pa uporablja skupni vrh (posamezna najtoplejša postaja) — obe sta veljavni, a merita različne stvari.",
     "foot": "{temp} °C · {pct}. percentil · {samples} vzorcev ({year_min}–{year_max})",
     "foot2": "Danes: {temp} °C · {pct}. percentil · mediana {median} °C · {samples} opazovanj · {year_min}–{year_max}",
     "today_label": "DANES",
@@ -71,7 +71,7 @@
   "charts": {
     "under_mean": "Pod povprečjem",
     "over_mean": "Nad povprečjem",
-    "trend_line": "Trendna linija",
+    "trend_line": "Trendna črta",
     "ci95": "95% CI",
     "change_record": "sprememba v celotnem obdobju",
     "cal_cooling": "Ohlajanje",
@@ -100,7 +100,7 @@
     "verdict_none": "Na ta dan v letu ni zaznati trenda.",
     "method_theilsen": "Theil-Sen + TFPW Mann-Kendall",
     "method_ols": "Metoda navadnih najmanjših kvadratov (OLS)",
-    "explain_reg": "Vsaka pika je vrednost za eno leto; naraščajoča linija je Theil-Senov trend — odporen na odmike. Zasenčeni pas je 95% interval zaupanja. Opazite, kako se gruča pik skozi desetletja premika navzgor: kar velja za normalno leto za to lokacijo, se nenehno na novo definira. Trend, ki se zdi skromen v °C na desetletje, se do sredine stoletja prevede v temeljito drugačno izhodišče — toplejše pomladi, vročejša poletja in krajše hladne sezone, kot jih opisuje kateri koli zgodovinski zapis.",
+    "explain_reg": "Vsaka pika je vrednost za eno leto; naraščajoča linija je Theil-Senov trend — odporen na odmike. Zasenčeni pas predstavlja 95% interval zaupanja. Opazite, kako se gruča pik skozi desetletja premika navzgor: kar velja za normalno leto za to lokacijo, se nenehno na novo definira. Trend, ki se zdi skromen v °C na desetletje, se do sredine stoletja prevede v temeljito drugačno izhodišče — toplejše pomladi, vročejša poletja in krajše hladne sezone, kot jih opisuje kateri koli zgodovinski zapis.",
     "explain_cal": "Vsaka palica prikazuje trend segrevanja ali ohlajanja za tisti teden v letu, v °C na desetletje. Oranžna pomeni segrevanje, modra ohlajanje. Vzorec čez vse leto pokaže, katere sezone se spreminjajo najhitreje — v Sloveniji so poletne palice tipično najvišje na celinskem severovzhodu, medtem ko je pomladansko segrevanje najbolj izrazito na alpskih postajah. Kalendar, ki ga v vseh sezonah prevladuje oranžna, kaže celoletno segrevanje: krajše zime, zgodnejše pomladi in daljše suše."
   },
   "hero_category": {
@@ -256,7 +256,7 @@
     },
     {
       "author": "Dr. Lučka Kajfež Bogataj (Podnebna znanstvenica, Univerza v Ljubljani)",
-      "quote": "V Sloveniji se je povprečna temperatura v zadnjem stoletju dvignila za skoraj 2 stopinji Celzija. To niso samo številke."
+      "quote": "V Sloveniji se predstavlja povprečno temperatura v zadnjem stoletju dvignila za skoraj 2 stopinji Celzija. To niso samo številke."
     },
     {
       "author": "Anonimni alpski vodnik (Triglavski narodni park)",

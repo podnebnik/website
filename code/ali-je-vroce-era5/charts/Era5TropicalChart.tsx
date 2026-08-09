@@ -14,6 +14,7 @@ const ERA5_CONFIGS: Record<string, Config> = {
   days: {
     kind:             "days",
     unitLabel:        t("tropical.unit_days"),
+    unitLabelLong:    t("tropical.unit_days_long"),
     defaultThreshold: 30,
     minT: 25, maxT: 35,
     tooltipNoun:      t("tropical.noun_days"),
@@ -23,6 +24,7 @@ const ERA5_CONFIGS: Record<string, Config> = {
   nights: {
     kind:             "nights",
     unitLabel:        t("tropical.unit_nights"),
+    unitLabelLong:    t("tropical.unit_nights_long"),
     defaultThreshold: 20,
     minT: 15, maxT: 25,
     tooltipNoun:      t("tropical.noun_nights"),
@@ -76,7 +78,7 @@ export function Era5TropicalChart(props: Props) {
     const dir        = dpd > 0 ? t("tropical.dir_more") : t("tropical.dir_less");
     const sig        = p < 0.05 ? t("tropical.sig_trend_yes") : t("tropical.sig_trend_no");
     const forward    = p < 0.05 && proj2050 > 0
-      ? t("tropical.forward_yes", { proj2050: fmtInt(proj2050), unit: cfg().unitLabel })
+      ? t("tropical.forward_yes", { proj2050: fmtInt(proj2050), unit: cfg().unitLabelLong })
       : t("tropical.forward_no");
 
     const plainLine = t("tropical.plain", {

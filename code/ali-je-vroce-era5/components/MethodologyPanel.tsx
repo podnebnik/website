@@ -21,7 +21,7 @@ const CONTACT_EMAIL = "info@podnebnik.org";
 
 export function MethodologyPanel(props: { stations: SiteMeta["stations"] }) {
   return (
-    <section class="methodology sec-p">
+    <section class="methodology sec-p py-(--2gap) -mb-(--3gap)">
       {/* Always-visible trust furniture: station count (derived) + correction contact. */}
       <p class="methodology-furniture">
         <span class="methodology-furniture-stations">

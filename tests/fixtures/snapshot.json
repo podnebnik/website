@@ -3346,7 +3346,7 @@
         "station": "Ljubljana",
         "period": "Summer",
         "rendered": [
-          "Theil-Sen naklon: −0,055 SPEI/desetletje · Mann-Kendall: decreasing · statistično značilen (p < 0,05). Negativen trend pomeni, da razmere postajajo sušnejše glede na osnovno obdobje 1950–1980."
+          "Naklon Theil-Sen: −0,055 SPEI/desetletje · Mann-Kendall: decreasing · statistično značilen (p < 0,05). Negativen trend pomeni, da razmere postajajo sušnejše glede na osnovno obdobje 1950–1980."
         ]
       },
       "trends": {
@@ -20138,7 +20138,7 @@
           "coverage": "77 let · 48 z vrednostjo > 0",
           "paragraphs": [
             "NB GLM: +3,32%/leto · +1,6 dni/desetletje · 95% CI (trend) · 95% PI (posamezno leto) · statistično značilen (p < 0,001) · AIC 387 · α=2.059.",
-            "Vroč dan — ko dnevna temperatura preseže 30 °C — povečuje toplotni stres in zdravstvena tveganja. Postaja Ljubljana kaže statistično značilen trend: grobe 1,6 več dni na desetletje. Če trend nadaljuje, bi bilo do 2050 tipičnih okoli 34 dni na leto."
+            "Vroč dan — ko dnevna temperatura preseže 30 °C — povečuje toplotni stres in zdravstvena tveganja. Postaja Ljubljana kaže statistično značilen trend: okvirno 1,6 več dni na desetletje. Če se trend nadaljuje, bi bilo do 2050 povprečno okoli 34 vročih dni na leto."
           ]
         },
         "current_year_bar": {
@@ -22171,7 +22171,7 @@
           "coverage": "77 let · 28 z vrednostjo > 0",
           "paragraphs": [
             "NB GLM: +3,18%/leto · +0,4 noči/desetletje · 95% CI (trend) · 95% PI (posamezno leto) · statistično značilen (p < 0,01) · AIC 222 · α=3.625.",
-            "Tropska noč — ko temperatura čez noč ostane nad 20 °C — preprečuje telesu okrevanje po dnevni vročini. Postaja Ljubljana kaže statistično značilen trend: grobe 0,4 več noči na desetletje. Če trend nadaljuje, bi bilo do 2050 tipičnih okoli 9 noči na leto."
+            "Tropska noč — ko temperatura čez noč ostane nad 20 °C — preprečuje telesu okrevanje po dnevni vročini. Postaja Ljubljana kaže statistično značilen trend: okvirno 0,4 več noči na desetletje. Če se trend nadaljuje, bi bilo do 2050 povprečno okoli 9 tropskih noči na leto."
           ]
         },
         "current_year_bar": {
@@ -32880,7 +32880,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature v Sloveniji za dva tedna okoli 21. jul. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega pasu v bež barvi do ekstremne rdeče.",
         "footer": "Slovenija: 23,8 °C · 38. percentil · mediana 25,0 °C · 20.682 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -33244,7 +33244,7 @@
         },
         "rendered": {
           "title": "Najvišje temperature v Sloveniji okoli 21. jul. · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je povprečna vrednost (nacionalne povprečne dnevne najvišje temperature vseh 18 postaj) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,45 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 27,2 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "explain": "Vsaka pika predstavlja povprečno vrednost (povprečne dnevne najvišje temperature vseh 18 postaj) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,45 °C/desetletje (p < 0,001). S tem tempom pričakujemo 27,2 °C do leta 2050. Zasenčeni pas predstavlja 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + MK: +0,45 °C/desetletje · p < 0,001 · τ = 0,295 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
@@ -34404,7 +34404,7 @@
           "category": "Zelo zaskrbljujoče",
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
-            "Sto let segrevanja za +5,65 °C – pri trenutnem tempu vsakih 17,7 leta doda eno stopinjo.",
+            "Sto let segrevanja za +5,65 °C – pri trenutnem tempu vsakih 17,7 let doda eno stopinjo.",
             "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
@@ -36406,7 +36406,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 21. jul. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega pasu v bež barvi do ekstremne rdeče.",
         "footer": "Danes: 24,9 °C · 49. percentil · mediana 24,9 °C · 1149 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -36770,7 +36770,7 @@
         },
         "rendered": {
           "title": "Najvišje temperature na postaji Ljubljana okoli 21. jul. · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je povprečna vrednost (dnevne najvišje temperature na postaji Ljubljana, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,56 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 28,4 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "explain": "Vsaka pika predstavlja povprečno vrednost (dnevne najvišje temperature na postaji Ljubljana, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,56 °C/desetletje (p < 0,001). S tem tempom pričakujemo 28,4 °C do leta 2050. Zasenčeni pas predstavlja 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + MK: +0,56 °C/desetletje · p < 0,001 · τ = 0,335 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
@@ -37930,7 +37930,7 @@
           "category": "Zelo zaskrbljujoče",
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
-            "Sto let segrevanja za +5,65 °C – pri trenutnem tempu vsakih 17,7 leta doda eno stopinjo.",
+            "Sto let segrevanja za +5,65 °C – pri trenutnem tempu vsakih 17,7 let doda eno stopinjo.",
             "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
@@ -39932,7 +39932,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Kredarica za dva tedna okoli 21. jul. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega pasu v bež barvi do ekstremne rdeče.",
         "footer": "Danes: 9,0 °C · 28. percentil · mediana 11,2 °C · 1149 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -40296,7 +40296,7 @@
         },
         "rendered": {
           "title": "Najvišje temperature na postaji Kredarica okoli 21. jul. · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je povprečna vrednost (dnevne najvišje temperature na postaji Kredarica, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,36 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 13,4 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "explain": "Vsaka pika predstavlja povprečno vrednost (dnevne najvišje temperature na postaji Kredarica, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,36 °C/desetletje (p < 0,001). S tem tempom pričakujemo 13,4 °C do leta 2050. Zasenčeni pas predstavlja 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + MK: +0,36 °C/desetletje · p < 0,001 · τ = 0,254 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
@@ -41456,7 +41456,7 @@
           "category": "Zelo zaskrbljujoče",
           "paragraphs": [
             "Popolna izguba Triglavskega ledenika — narodni simbol in vir savinjskih rek. Propad alpskega ekosistema sproži kaskadne učinke.",
-            "Sto let segrevanja za +3,56 °C – pri trenutnem tempu vsakih 28,1 leta doda eno stopinjo.",
+            "Sto let segrevanja za +3,56 °C – pri trenutnem tempu vsakih 28,1 let doda eno stopinjo.",
             "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
@@ -43267,7 +43267,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature v Sloveniji za dva tedna okoli 29. jul. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega pasu v bež barvi do ekstremne rdeče.",
         "footer": "Slovenija: 32,5 °C · 97. percentil · mediana 25,2 °C · 20.538 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -43631,7 +43631,7 @@
         },
         "rendered": {
           "title": "Najvišje temperature v Sloveniji okoli 29. jul. · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je povprečna vrednost (nacionalne povprečne dnevne najvišje temperature vseh 18 postaj) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,40 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 27,2 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "explain": "Vsaka pika predstavlja povprečno vrednost (povprečne dnevne najvišje temperature vseh 18 postaj) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,40 °C/desetletje (p < 0,001). S tem tempom pričakujemo 27,2 °C do leta 2050. Zasenčeni pas predstavlja 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + MK: +0,40 °C/desetletje · p < 0,001 · τ = 0,279 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
@@ -44791,7 +44791,7 @@
           "category": "Zelo zaskrbljujoče",
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
-            "Sto let segrevanja za +4,88 °C – pri trenutnem tempu vsakih 20,5 leta doda eno stopinjo.",
+            "Sto let segrevanja za +4,88 °C – pri trenutnem tempu vsakih 20,5 let doda eno stopinjo.",
             "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
@@ -46793,7 +46793,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 29. jul. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega pasu v bež barvi do ekstremne rdeče.",
         "footer": "Danes: 34,8 °C · 99. percentil · mediana 25,0 °C · 1141 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -47157,7 +47157,7 @@
         },
         "rendered": {
           "title": "Najvišje temperature na postaji Ljubljana okoli 29. jul. · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je povprečna vrednost (dnevne najvišje temperature na postaji Ljubljana, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,49 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 28,0 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "explain": "Vsaka pika predstavlja povprečno vrednost (dnevne najvišje temperature na postaji Ljubljana, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,49 °C/desetletje (p < 0,001). S tem tempom pričakujemo 28,0 °C do leta 2050. Zasenčeni pas predstavlja 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + MK: +0,49 °C/desetletje · p < 0,001 · τ = 0,327 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
@@ -48317,7 +48317,7 @@
           "category": "Zelo zaskrbljujoče",
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
-            "Sto let segrevanja za +4,88 °C – pri trenutnem tempu vsakih 20,5 leta doda eno stopinjo.",
+            "Sto let segrevanja za +4,88 °C – pri trenutnem tempu vsakih 20,5 let doda eno stopinjo.",
             "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
@@ -50319,7 +50319,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Kredarica za dva tedna okoli 29. jul. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega pasu v bež barvi do ekstremne rdeče.",
         "footer": "Danes: 16,8 °C · 95. percentil · mediana 11,3 °C · 1141 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -50683,7 +50683,7 @@
         },
         "rendered": {
           "title": "Najvišje temperature na postaji Kredarica okoli 29. jul. · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je povprečna vrednost (dnevne najvišje temperature na postaji Kredarica, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,31 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 13,3 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "explain": "Vsaka pika predstavlja povprečno vrednost (dnevne najvišje temperature na postaji Kredarica, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,31 °C/desetletje (p < 0,001). S tem tempom pričakujemo 13,3 °C do leta 2050. Zasenčeni pas predstavlja 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + MK: +0,31 °C/desetletje · p < 0,001 · τ = 0,258 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
@@ -51843,7 +51843,7 @@
           "category": "Zelo zaskrbljujoče",
           "paragraphs": [
             "Popolna izguba Triglavskega ledenika — narodni simbol in vir savinjskih rek. Propad alpskega ekosistema sproži kaskadne učinke.",
-            "Sto let segrevanja za +3,12 °C – pri trenutnem tempu vsakih 32,1 leta doda eno stopinjo.",
+            "Sto let segrevanja za +3,12 °C – pri trenutnem tempu vsakih 32,1 let doda eno stopinjo.",
             "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
@@ -53654,7 +53654,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature v Sloveniji za dva tedna okoli 15. jul. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega pasu v bež barvi do ekstremne rdeče.",
         "footer": "Slovenija: 28,0 °C · 78. percentil · mediana 24,8 °C · 20.790 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -54018,7 +54018,7 @@
         },
         "rendered": {
           "title": "Najvišje temperature v Sloveniji okoli 15. jul. · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je povprečna vrednost (nacionalne povprečne dnevne najvišje temperature vseh 18 postaj) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,34 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 26,1 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "explain": "Vsaka pika predstavlja povprečno vrednost (povprečne dnevne najvišje temperature vseh 18 postaj) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,34 °C/desetletje (p < 0,001). S tem tempom pričakujemo 26,1 °C do leta 2050. Zasenčeni pas predstavlja 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + MK: +0,34 °C/desetletje · p < 0,001 · τ = 0,257 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
@@ -55178,7 +55178,7 @@
           "category": "Zelo zaskrbljujoče",
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
-            "Sto let segrevanja za +4,60 °C – pri trenutnem tempu vsakih 21,7 leta doda eno stopinjo.",
+            "Sto let segrevanja za +4,60 °C – pri trenutnem tempu vsakih 21,7 let doda eno stopinjo.",
             "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
@@ -57180,7 +57180,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 15. jul. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega pasu v bež barvi do ekstremne rdeče.",
         "footer": "Danes: 29,7 °C · 90. percentil · mediana 24,7 °C · 1155 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -57544,7 +57544,7 @@
         },
         "rendered": {
           "title": "Najvišje temperature na postaji Ljubljana okoli 15. jul. · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je povprečna vrednost (dnevne najvišje temperature na postaji Ljubljana, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,46 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 27,2 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "explain": "Vsaka pika predstavlja povprečno vrednost (dnevne najvišje temperature na postaji Ljubljana, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,46 °C/desetletje (p < 0,001). S tem tempom pričakujemo 27,2 °C do leta 2050. Zasenčeni pas predstavlja 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + MK: +0,46 °C/desetletje · p < 0,001 · τ = 0,305 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
@@ -58704,7 +58704,7 @@
           "category": "Zelo zaskrbljujoče",
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
-            "Sto let segrevanja za +4,60 °C – pri trenutnem tempu vsakih 21,7 leta doda eno stopinjo.",
+            "Sto let segrevanja za +4,60 °C – pri trenutnem tempu vsakih 21,7 let doda eno stopinjo.",
             "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
@@ -60706,7 +60706,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Kredarica za dva tedna okoli 15. jul. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega pasu v bež barvi do ekstremne rdeče.",
         "footer": "Danes: 13,9 °C · 80. percentil · mediana 10,9 °C · 1155 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -61070,7 +61070,7 @@
         },
         "rendered": {
           "title": "Najvišje temperature na postaji Kredarica okoli 15. jul. · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je povprečna vrednost (dnevne najvišje temperature na postaji Kredarica, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,22 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 12,1 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "explain": "Vsaka pika predstavlja povprečno vrednost (dnevne najvišje temperature na postaji Kredarica, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,22 °C/desetletje (p < 0,001). S tem tempom pričakujemo 12,1 °C do leta 2050. Zasenčeni pas predstavlja 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + MK: +0,22 °C/desetletje · p < 0,001 · τ = 0,189 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
@@ -62230,7 +62230,7 @@
           "category": "Ekstremno",
           "paragraphs": [
             "Triglavski ledenik popolnoma izgine. Visokogorski ekosistem nad gozdno mejo propade.",
-            "Sto let segrevanja za +2,23 °C – pri trenutnem tempu vsakih 44,8 leta doda eno stopinjo.",
+            "Sto let segrevanja za +2,23 °C – pri trenutnem tempu vsakih 44,8 let doda eno stopinjo.",
             "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
@@ -63075,7 +63075,7 @@
           "category": "Zelo zaskrbljujoče",
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
-            "Sto let segrevanja za +5,71 °C – pri trenutnem tempu vsakih 17,5 leta doda eno stopinjo.",
+            "Sto let segrevanja za +5,71 °C – pri trenutnem tempu vsakih 17,5 let doda eno stopinjo.",
             "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
@@ -63920,7 +63920,7 @@
           "category": "Zelo zaskrbljujoče",
           "paragraphs": [
             "Popolna izguba Triglavskega ledenika — narodni simbol in vir savinjskih rek. Propad alpskega ekosistema sproži kaskadne učinke.",
-            "Sto let segrevanja za +3,76 °C – pri trenutnem tempu vsakih 26,6 leta doda eno stopinjo.",
+            "Sto let segrevanja za +3,76 °C – pri trenutnem tempu vsakih 26,6 let doda eno stopinjo.",
             "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
@@ -64716,7 +64716,7 @@
           "category": "Zelo zaskrbljujoče",
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
-            "Sto let segrevanja za +5,71 °C – pri trenutnem tempu vsakih 17,5 leta doda eno stopinjo.",
+            "Sto let segrevanja za +5,71 °C – pri trenutnem tempu vsakih 17,5 let doda eno stopinjo.",
             "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
@@ -66700,7 +66700,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 1. mar. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega pasu v bež barvi do ekstremne rdeče.",
         "footer": "Danes: 10,9 °C · 78. percentil · mediana 7,2 °C · 1174 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -67064,7 +67064,7 @@
         },
         "rendered": {
           "title": "Najvišje temperature na postaji Ljubljana okoli 1. mar. · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je povprečna vrednost (dnevne najvišje temperature na postaji Ljubljana, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,56 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 10,5 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "explain": "Vsaka pika predstavlja povprečno vrednost (dnevne najvišje temperature na postaji Ljubljana, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,56 °C/desetletje (p < 0,001). S tem tempom pričakujemo 10,5 °C do leta 2050. Zasenčeni pas predstavlja 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + MK: +0,56 °C/desetletje · p < 0,001 · τ = 0,214 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
@@ -68224,7 +68224,7 @@
           "category": "Zelo zaskrbljujoče",
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
-            "Sto let segrevanja za +5,57 °C – pri trenutnem tempu vsakih 18,0 leta doda eno stopinjo.",
+            "Sto let segrevanja za +5,57 °C – pri trenutnem tempu vsakih 18,0 let doda eno stopinjo.",
             "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
@@ -70226,7 +70226,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 28. feb. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega pasu v bež barvi do ekstremne rdeče.",
         "footer": "Danes: 9,4 °C · 69. percentil · mediana 7,1 °C · 1174 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -70590,7 +70590,7 @@
         },
         "rendered": {
           "title": "Najvišje temperature na postaji Ljubljana okoli 28. feb. · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je povprečna vrednost (dnevne najvišje temperature na postaji Ljubljana, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,57 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 10,2 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "explain": "Vsaka pika predstavlja povprečno vrednost (dnevne najvišje temperature na postaji Ljubljana, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,57 °C/desetletje (p < 0,001). S tem tempom pričakujemo 10,2 °C do leta 2050. Zasenčeni pas predstavlja 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + MK: +0,57 °C/desetletje · p < 0,001 · τ = 0,214 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
@@ -71750,7 +71750,7 @@
           "category": "Zelo zaskrbljujoče",
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
-            "Sto let segrevanja za +5,71 °C – pri trenutnem tempu vsakih 17,5 leta doda eno stopinjo.",
+            "Sto let segrevanja za +5,71 °C – pri trenutnem tempu vsakih 17,5 let doda eno stopinjo.",
             "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
@@ -73752,7 +73752,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 1. mar. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega pasu v bež barvi do ekstremne rdeče.",
         "footer": "Danes: 9,4 °C · 68. percentil · mediana 7,2 °C · 1174 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -74116,7 +74116,7 @@
         },
         "rendered": {
           "title": "Najvišje temperature na postaji Ljubljana okoli 1. mar. · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je povprečna vrednost (dnevne najvišje temperature na postaji Ljubljana, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,56 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 10,5 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "explain": "Vsaka pika predstavlja povprečno vrednost (dnevne najvišje temperature na postaji Ljubljana, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,56 °C/desetletje (p < 0,001). S tem tempom pričakujemo 10,5 °C do leta 2050. Zasenčeni pas predstavlja 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + MK: +0,56 °C/desetletje · p < 0,001 · τ = 0,214 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
@@ -75276,7 +75276,7 @@
           "category": "Zelo zaskrbljujoče",
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
-            "Sto let segrevanja za +5,57 °C – pri trenutnem tempu vsakih 18,0 leta doda eno stopinjo.",
+            "Sto let segrevanja za +5,57 °C – pri trenutnem tempu vsakih 18,0 let doda eno stopinjo.",
             "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
@@ -77278,7 +77278,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 1. jan. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega pasu v bež barvi do ekstremne rdeče.",
         "footer": "Danes: 8,4 °C · 91. percentil · mediana 3,3 °C · 1148 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -77642,7 +77642,7 @@
         },
         "rendered": {
           "title": "Najvišje temperature na postaji Ljubljana okoli 1. jan. · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je povprečna vrednost (dnevne najvišje temperature na postaji Ljubljana, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,48 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 6,3 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "explain": "Vsaka pika predstavlja povprečno vrednost (dnevne najvišje temperature na postaji Ljubljana, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,48 °C/desetletje (p < 0,001). S tem tempom pričakujemo 6,3 °C do leta 2050. Zasenčeni pas predstavlja 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + MK: +0,48 °C/desetletje · p < 0,001 · τ = 0,239 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
@@ -78802,7 +78802,7 @@
           "category": "Zelo zaskrbljujoče",
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
-            "Sto let segrevanja za +4,84 °C – pri trenutnem tempu vsakih 20,7 leta doda eno stopinjo.",
+            "Sto let segrevanja za +4,84 °C – pri trenutnem tempu vsakih 20,7 let doda eno stopinjo.",
             "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
@@ -80804,7 +80804,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 31. dec. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega pasu v bež barvi do ekstremne rdeče.",
         "footer": "Danes: 1,5 °C · 34. percentil · mediana 3,3 °C · 1147 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -81164,7 +81164,7 @@
         },
         "rendered": {
           "title": "Najvišje temperature na postaji Ljubljana okoli 31. dec. · 1950–2025 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je povprečna vrednost (dnevne najvišje temperature na postaji Ljubljana, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,51 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 6,4 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "explain": "Vsaka pika predstavlja povprečno vrednost (dnevne najvišje temperature na postaji Ljubljana, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,51 °C/desetletje (p < 0,001). S tem tempom pričakujemo 6,4 °C do leta 2050. Zasenčeni pas predstavlja 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + MK: +0,51 °C/desetletje · p < 0,001 · τ = 0,270 · 95% CI · 76 let",
           "current_year_plotline": {
             "value": 2026,
@@ -82312,7 +82312,7 @@
           "category": "Zelo zaskrbljujoče",
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
-            "Sto let segrevanja za +5,13 °C – pri trenutnem tempu vsakih 19,5 leta doda eno stopinjo.",
+            "Sto let segrevanja za +5,13 °C – pri trenutnem tempu vsakih 19,5 let doda eno stopinjo.",
             "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
@@ -84322,7 +84322,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 3. avg. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega pasu v bež barvi do ekstremne rdeče.",
         "footer": "Danes: 35,6 °C · 99. percentil · mediana 25,1 °C · 1140 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -84682,7 +84682,7 @@
         },
         "rendered": {
           "title": "Najvišje temperature na postaji Ljubljana okoli 3. avg. · 1950–2025 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je povprečna vrednost (dnevne najvišje temperature na postaji Ljubljana, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,41 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 27,4 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "explain": "Vsaka pika predstavlja povprečno vrednost (dnevne najvišje temperature na postaji Ljubljana, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,41 °C/desetletje (p < 0,001). S tem tempom pričakujemo 27,4 °C do leta 2050. Zasenčeni pas predstavlja 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + MK: +0,41 °C/desetletje · p < 0,001 · τ = 0,284 · 95% CI · 76 let",
           "current_year_plotline": {
             "value": 2026,
@@ -85830,7 +85830,7 @@
           "category": "Zelo zaskrbljujoče",
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
-            "Sto let segrevanja za +4,12 °C – pri trenutnem tempu vsakih 24,3 leta doda eno stopinjo.",
+            "Sto let segrevanja za +4,12 °C – pri trenutnem tempu vsakih 24,3 let doda eno stopinjo.",
             "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
@@ -87840,7 +87840,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Kredarica za dva tedna okoli 3. avg. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega pasu v bež barvi do ekstremne rdeče.",
         "footer": "Danes: 21,7 °C · 100. percentil · mediana 11,4 °C · 1140 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -88200,7 +88200,7 @@
         },
         "rendered": {
           "title": "Najvišje temperature na postaji Kredarica okoli 3. avg. · 1950–2025 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je povprečna vrednost (dnevne najvišje temperature na postaji Kredarica, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,27 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 13,0 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "explain": "Vsaka pika predstavlja povprečno vrednost (dnevne najvišje temperature na postaji Kredarica, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,27 °C/desetletje (p < 0,001). S tem tempom pričakujemo 13,0 °C do leta 2050. Zasenčeni pas predstavlja 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + MK: +0,27 °C/desetletje · p < 0,001 · τ = 0,223 · 95% CI · 76 let",
           "current_year_plotline": {
             "value": 2026,
@@ -89348,7 +89348,7 @@
           "category": "Ekstremno",
           "paragraphs": [
             "Triglavski ledenik popolnoma izgine. Visokogorski ekosistem nad gozdno mejo propade.",
-            "Sto let segrevanja za +2,69 °C – pri trenutnem tempu vsakih 37,2 leta doda eno stopinjo.",
+            "Sto let segrevanja za +2,69 °C – pri trenutnem tempu vsakih 37,2 let doda eno stopinjo.",
             "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
@@ -91358,7 +91358,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Ljubljana za dva tedna okoli 7. feb. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega pasu v bež barvi do ekstremne rdeče.",
         "footer": "Danes: −5,8 °C · 3. percentil · mediana 4,8 °C · 1155 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -91722,7 +91722,7 @@
         },
         "rendered": {
           "title": "Najvišje temperature na postaji Ljubljana okoli 7. feb. · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je povprečna vrednost (dnevne najvišje temperature na postaji Ljubljana, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,57 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže 8,3 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "explain": "Vsaka pika predstavlja povprečno vrednost (dnevne najvišje temperature na postaji Ljubljana, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,57 °C/desetletje (p < 0,001). S tem tempom pričakujemo 8,3 °C do leta 2050. Zasenčeni pas predstavlja 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + MK: +0,57 °C/desetletje · p < 0,001 · τ = 0,247 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
@@ -92882,7 +92882,7 @@
           "category": "Zelo zaskrbljujoče",
           "paragraphs": [
             "Podaljšani poletni vročinski valovi presegajo hladilne zmogljivosti mesta. Hudourniške poplave iz okrepljenih alpskih padavin večkrat ogrozijo nizko ležečo kotlino.",
-            "Sto let segrevanja za +5,69 °C – pri trenutnem tempu vsakih 17,6 leta doda eno stopinjo.",
+            "Sto let segrevanja za +5,69 °C – pri trenutnem tempu vsakih 17,6 let doda eno stopinjo.",
             "Theil-Sen + Mann-Kendall"
           ],
           "stats": [
@@ -94897,7 +94897,7 @@
       "today_chart_copy": {
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature na postaji Kredarica za dva tedna okoli 7. jan. od 1950",
-        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
+        "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega pasu v bež barvi do ekstremne rdeče.",
         "footer": "Danes: −23,7 °C · 0. percentil · mediana −8,8 °C · 1154 opazovanj · 1950–2026"
       },
       "today_trend": {
@@ -95261,7 +95261,7 @@
         },
         "rendered": {
           "title": "Najvišje temperature na postaji Kredarica okoli 7. jan. · 1950–2026 · trend s projekcijo do 2050",
-          "explain": "Vsaka pika je povprečna vrednost (dnevne najvišje temperature na postaji Kredarica, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,54 °C/desetletje (p < 0,001). Po tem tempu projekcija kaže −5,9 °C do leta 2050. Zasenčeni pas je 95% interval zaupanja za nagib.",
+          "explain": "Vsaka pika predstavlja povprečno vrednost (dnevne najvišje temperature na postaji Kredarica, popravljene na nadmorsko višino) v ±7-dnevnem oknu okoli tega datuma za vsako leto od 1950. Trend Theil-Sen je +0,54 °C/desetletje (p < 0,001). S tem tempom pričakujemo −5,9 °C do leta 2050. Zasenčeni pas predstavlja 95% interval zaupanja za nagib.",
           "footer": "Theil-Sen + MK: +0,54 °C/desetletje · p < 0,001 · τ = 0,282 · 95% CI · 77 let",
           "current_year_plotline": {
             "value": 2026,
@@ -96421,7 +96421,7 @@
           "category": "Zelo zaskrbljujoče",
           "paragraphs": [
             "Popolna izguba Triglavskega ledenika — narodni simbol in vir savinjskih rek. Propad alpskega ekosistema sproži kaskadne učinke.",
-            "Sto let segrevanja za +5,40 °C – pri trenutnem tempu vsakih 18,5 leta doda eno stopinjo.",
+            "Sto let segrevanja za +5,40 °C – pri trenutnem tempu vsakih 18,5 let doda eno stopinjo.",
             "Theil-Sen + Mann-Kendall"
           ],
           "stats": [

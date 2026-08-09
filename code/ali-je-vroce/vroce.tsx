@@ -139,7 +139,7 @@ export function AliJeVroce() {
               To je razporeditev temperatur, ki je značilna za ta letni čas, ki
               smo ga opredelili kot 15-dnevno obdobje okoli današnjega dne.
               Podobno kot pri porazdelitveni krivulji je krivulja višja pri bolj
-              pogostih temperaturah in nižja pri nepogostih ali netipičnih
+              pogostih temperaturah in nižja pri nepogostih ali neznačilnih
               temperaturah.
             </p>
             <p>
