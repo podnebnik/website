@@ -31104,12 +31104,12 @@
           "month_num": 7,
           "day_num": 21,
           "cutoffs": {
-            "p5": 18.737777777777776,
-            "p10": 19.90166666666666,
-            "p20": 21.439444444444447,
-            "p50": 24.517222222222223,
-            "p80": 27.59333333333334,
-            "p95": 30.224444444444448
+            "p5": 14.887880283247389,
+            "p10": 18.892887644232644,
+            "p20": 21.320947203475807,
+            "p50": 25.04218513266772,
+            "p80": 28.447093892261766,
+            "p95": 31.412200146460304
           },
           "distribution": {
             "n_points": 200,
@@ -32019,28 +32019,28 @@
               "plot_bands": [
                 {
                   "from": -2.80558,
-                  "to": 19.90166666666666,
-                  "label": "< 19,9°C"
+                  "to": 18.892887644232644,
+                  "label": "< 18,9°C"
                 },
                 {
-                  "from": 19.90166666666666,
-                  "to": 21.439444444444447,
-                  "label": "19,9–21,4°C"
+                  "from": 18.892887644232644,
+                  "to": 21.320947203475807,
+                  "label": "18,9–21,3°C"
                 },
                 {
-                  "from": 21.439444444444447,
-                  "to": 27.59333333333334,
-                  "label": "21,4–27,6°C"
+                  "from": 21.320947203475807,
+                  "to": 28.447093892261766,
+                  "label": "21,3–28,4°C"
                 },
                 {
-                  "from": 27.59333333333334,
-                  "to": 30.224444444444448,
-                  "label": "27,6–30,2°C"
+                  "from": 28.447093892261766,
+                  "to": 31.412200146460304,
+                  "label": "28,4–31,4°C"
                 },
                 {
-                  "from": 30.224444444444448,
+                  "from": 31.412200146460304,
                   "to": 41.87458,
-                  "label": "> 30,2°C"
+                  "label": "> 31,4°C"
                 }
               ]
             },
@@ -32056,10 +32056,10 @@
               {
                 "series_type": "areaspline",
                 "zones": [
-                  19.90166666666666,
-                  21.439444444444447,
-                  27.59333333333334,
-                  30.224444444444448,
+                  18.892887644232644,
+                  21.320947203475807,
+                  28.447093892261766,
+                  31.412200146460304,
                   null
                 ]
               }
@@ -32880,7 +32880,7 @@
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature v Sloveniji za dva tedna okoli 21. jul. od 1950",
         "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
-        "footer": "Slovenija: 23,8 °C · 38. percentil · mediana 24,5 °C · 20.682 opazovanj · 1950–2026"
+        "footer": "Slovenija: 23,8 °C · 38. percentil · mediana 25,0 °C · 20.682 opazovanj · 1950–2026"
       },
       "today_trend": {
         "api": {
@@ -41491,12 +41491,12 @@
           "month_num": 7,
           "day_num": 29,
           "cutoffs": {
-            "p5": 18.842777777777773,
-            "p10": 20.096111111111107,
-            "p20": 21.63888888888889,
-            "p50": 24.708333333333336,
-            "p80": 27.843333333333337,
-            "p95": 30.448333333333338
+            "p5": 15.162049600981966,
+            "p10": 19.099483515053667,
+            "p20": 21.514459686252486,
+            "p50": 25.23945303212323,
+            "p80": 28.7024982112549,
+            "p95": 31.631801570525734
           },
           "distribution": {
             "n_points": 200,
@@ -42406,28 +42406,28 @@
               "plot_bands": [
                 {
                   "from": -1.07588,
-                  "to": 20.096111111111107,
-                  "label": "< 20,1°C"
+                  "to": 19.099483515053667,
+                  "label": "< 19,1°C"
                 },
                 {
-                  "from": 20.096111111111107,
-                  "to": 21.63888888888889,
-                  "label": "20,1–21,6°C"
+                  "from": 19.099483515053667,
+                  "to": 21.514459686252486,
+                  "label": "19,1–21,5°C"
                 },
                 {
-                  "from": 21.63888888888889,
-                  "to": 27.843333333333337,
-                  "label": "21,6–27,8°C"
+                  "from": 21.514459686252486,
+                  "to": 28.7024982112549,
+                  "label": "21,5–28,7°C"
                 },
                 {
-                  "from": 27.843333333333337,
-                  "to": 30.448333333333338,
-                  "label": "27,8–30,4°C"
+                  "from": 28.7024982112549,
+                  "to": 31.631801570525734,
+                  "label": "28,7–31,6°C"
                 },
                 {
-                  "from": 30.448333333333338,
+                  "from": 31.631801570525734,
                   "to": 41.70588,
-                  "label": "> 30,4°C"
+                  "label": "> 31,6°C"
                 }
               ]
             },
@@ -42443,10 +42443,10 @@
               {
                 "series_type": "areaspline",
                 "zones": [
-                  20.096111111111107,
-                  21.63888888888889,
-                  27.843333333333337,
-                  30.448333333333338,
+                  19.099483515053667,
+                  21.514459686252486,
+                  28.7024982112549,
+                  31.631801570525734,
                   null
                 ]
               }
@@ -43267,7 +43267,7 @@
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature v Sloveniji za dva tedna okoli 29. jul. od 1950",
         "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
-        "footer": "Slovenija: 32,5 °C · 97. percentil · mediana 24,7 °C · 20.538 opazovanj · 1950–2026"
+        "footer": "Slovenija: 32,5 °C · 97. percentil · mediana 25,2 °C · 20.538 opazovanj · 1950–2026"
       },
       "today_trend": {
         "api": {
@@ -51868,8 +51868,8 @@
           "loc": "era5:national",
           "today_temp": 28,
           "percentile": 78.44918517173866,
-          "category_key": "hot",
-          "color": "#c25a2c",
+          "category_key": "nope",
+          "color": "#e7d9b8",
           "is_preliminary": false,
           "n_samples": 20790,
           "year_min": 1950,
@@ -51878,12 +51878,12 @@
           "month_num": 7,
           "day_num": 15,
           "cutoffs": {
-            "p5": 18.447222222222223,
-            "p10": 19.672222222222224,
-            "p20": 21.21444444444445,
-            "p50": 24.275000000000002,
-            "p80": 27.284444444444443,
-            "p95": 29.96111111111111
+            "p5": 14.426521623170153,
+            "p10": 18.620934410771156,
+            "p20": 21.094550860299087,
+            "p50": 24.811242693296748,
+            "p80": 28.157290530945094,
+            "p95": 31.09624034028793
           },
           "distribution": {
             "n_points": 200,
@@ -52693,9 +52693,9 @@
         },
         "rendered": {
           "date_badge": "15. jul. 2025",
-          "category_label": "Vroče",
-          "category_color": "rgb(194, 90, 44)",
-          "description": "Med najtoplejšimi 15. jul. v naših zapisih.",
+          "category_label": "Normalno",
+          "category_color": "rgb(231, 217, 184)",
+          "description": "Točno takšno, kot 15. jul. v Sloveniji ponavadi je.",
           "percentile": "78",
           "percentile_label": "percentil",
           "samples": "20.790 vzorcev",
@@ -52761,7 +52761,7 @@
                 "name": null,
                 "type": "gauge",
                 "data": [
-                  3
+                  2.9741530861956442
                 ]
               }
             ],
@@ -52793,28 +52793,28 @@
               "plot_bands": [
                 {
                   "from": -3.23102,
-                  "to": 19.672222222222224,
-                  "label": "< 19,7°C"
+                  "to": 18.620934410771156,
+                  "label": "< 18,6°C"
                 },
                 {
-                  "from": 19.672222222222224,
-                  "to": 21.21444444444445,
-                  "label": "19,7–21,2°C"
+                  "from": 18.620934410771156,
+                  "to": 21.094550860299087,
+                  "label": "18,6–21,1°C"
                 },
                 {
-                  "from": 21.21444444444445,
-                  "to": 27.284444444444443,
-                  "label": "21,2–27,3°C"
+                  "from": 21.094550860299087,
+                  "to": 28.157290530945094,
+                  "label": "21,1–28,2°C"
                 },
                 {
-                  "from": 27.284444444444443,
-                  "to": 29.96111111111111,
-                  "label": "27,3–30,0°C"
+                  "from": 28.157290530945094,
+                  "to": 31.09624034028793,
+                  "label": "28,2–31,1°C"
                 },
                 {
-                  "from": 29.96111111111111,
+                  "from": 31.09624034028793,
                   "to": 40.46802,
-                  "label": "> 30,0°C"
+                  "label": "> 31,1°C"
                 }
               ]
             },
@@ -52830,10 +52830,10 @@
               {
                 "series_type": "areaspline",
                 "zones": [
-                  19.672222222222224,
-                  21.21444444444445,
-                  27.284444444444443,
-                  29.96111111111111,
+                  18.620934410771156,
+                  21.094550860299087,
+                  28.157290530945094,
+                  31.09624034028793,
                   null
                 ]
               }
@@ -53654,7 +53654,7 @@
         "_note": "Raw JSX in AliJeVroceERA5.tsx:99-112, mirrored by TodayChartCopy in harness.tsx and checked against the source by main.mjs assertMirroredCopy.",
         "title": "Dnevne najvišje temperature v Sloveniji za dva tedna okoli 15. jul. od 1950",
         "explain": "Krivulja prikazuje, kako pogosto se je pojavila vsaka najvišja temperatura na dneve, kot je danes, v vseh letih. Barve označujejo klimatološke cone — od hladne modre prek tipičnega bežastega pasu do ekstremne rdeče.",
-        "footer": "Slovenija: 28,0 °C · 78. percentil · mediana 24,3 °C · 20.790 opazovanj · 1950–2026"
+        "footer": "Slovenija: 28,0 °C · 78. percentil · mediana 24,8 °C · 20.790 opazovanj · 1950–2026"
       },
       "today_trend": {
         "api": {

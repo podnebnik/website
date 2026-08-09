@@ -1,28 +1,26 @@
 import { afterEach, beforeAll, describe, expect, it } from "vitest";
 
 import { fetchEra5NationalWindowRow, fetchMeta } from "../../code/ali-je-vroce-era5/api.ts";
+import { cdfPercentile } from "../../code/ali-je-vroce-era5/percentile.ts";
 
-// T-3.4 — the Slovenia national ±window climatology (api.ts fetchEra5NationalWindowRow)
-// is the UNWEIGHTED MEAN of the per-station daily_window rows for a month/day.
-// TODAY it averages all 18 stations INCLUDING Kredarica; D-7/T-4.6 will drop
-// Kredarica to 17 ("povprečje 17 postaj"). This pins the current 18-station mean
-// against the recorded fixture so T-4.6 fails loudly rather than silently moving
-// the headline number.
+// T-3.4 / T-4.31 — the Slovenia national ±window climatology (api.ts
+// fetchEra5NationalWindowRow). The distribution curve is the unweighted MEAN of the 18
+// per-station KDE curves (the equally-weighted mixture, D-15); the band cutoffs p5..p95
+// are read OFF that curve (curveQuantile), NOT the mean of the per-station quantiles
+// (T-4.31 b2). The station pool is still all 18 INCLUDING Kredarica; D-7/T-4.6 will drop
+// it to 17 ("povprečje 17 postaj"). n_samples is the clean station-count tripwire so
+// T-4.6 fails loudly rather than silently moving the headline.
 //
 // Fixture (served offline by setup.fixtures.ts):
 //   tests/fixtures/http/climate-si/daily_window__national-all__month-7__day-21.json
 //   18 rows, each with n_samples = 1149.
 //
-// Values re-derived from the 18 fixture p50 values after the T-4.3b (D-4) meteo
-// pass — local-day aggregation and the 2026-07-22 record extension moved the
-// per-station window samples (1140 → 1149) and nudged most p50s:
-//   Σ p50 = 25.70 + 25.02 + 25.26 + 24.70 + 26.67 + 24.49 + 11.19 + 24.94 + 25.42
-//         + 26.07 + 26.93 + 26.09 + 24.05 + 25.81 + 22.19 + 26.38 + 25.66 + 24.74
-//         = 441.31
-//   mean p50 over 18 = 441.31 / 18 = 24.5172 °C   ← Kredarica's 11.19 drags it down
-//   mean p50 over 17 = (441.31 − 11.19) / 17 = 25.3012 °C   ← what T-4.6 will produce
+// p50 is now the MEDIAN of the averaged curve, computed from the 18 fixture curves via
+// averageDistributions + curveQuantile: 25.0422 °C (the old mean-of-p50 was 24.5172 —
+// T-4.31 moved it). Dropping Kredarica (T-4.6) removes its low-temp component from the
+// mixture and raises this, so it still moves loudly under T-4.6.
 
-describe("fetchEra5NationalWindowRow — unweighted mean of the 18 stations", () => {
+describe("fetchEra5NationalWindowRow — cutoffs read off the averaged curve (T-4.31 b2)", () => {
   // T-5.2: the national aggregate now asserts its row count against the station
   // registry, so fetchMeta must populate era5Coords first (it always does in the
   // real page — meta loads before any national card). Served offline from
@@ -37,9 +35,17 @@ describe("fetchEra5NationalWindowRow — unweighted mean of the 18 stations", ()
     // the station count: dropping Kredarica (T-4.6) makes this 17 × 1149 = 19533.
     expect(row!.n_samples).toBe(20682);
 
-    // Mean p50 with Kredarica in the pool (24.5172); the 17-station mean would be
-    // 25.3012, so this assertion moves the moment Kredarica leaves the average.
-    expect(row!.p50).toBeCloseTo(24.5172, 3);
+    // Median of the averaged curve, Kredarica in the pool (T-4.31 b2). Moves the
+    // moment Kredarica leaves the mixture (T-4.6).
+    expect(row!.p50).toBeCloseTo(25.0422, 3);
+
+    // T-4.31 b2 invariant — the band edge and the displayed percentile derive from ONE
+    // curve, so the CDF of the served curve AT each cutoff is exactly that percentile.
+    // This is the property that makes the "Vroče + 78" contradiction unrepresentable.
+    const curve = JSON.parse(row!.distribution_json) as [number, number][];
+    expect(cdfPercentile(curve, row!.p80)).toBeCloseTo(80, 4);
+    expect(cdfPercentile(curve, row!.p95)).toBeCloseTo(95, 4);
+    expect(cdfPercentile(curve, row!.p10)).toBeCloseTo(10, 4);
 
     expect(row!.station).toBe("era5:national");
     expect(row!.year_min).toBe(1950);
