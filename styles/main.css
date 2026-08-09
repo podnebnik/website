@@ -181,10 +181,11 @@
   }
 
   .nav-link {
-    @apply text-base opacity-70 hover:opacity-100 focus:opacity-100 font-sans px-3 py-2 font-medium transition-all duration-300;
+    @apply text-base opacity-70 hover:opacity-100 focus:opacity-100 font-sans px-3 py-3 font-medium transition-all duration-300;
     @apply hover:[box-shadow:inset_0px_-10px_0_var(--color-secondary)];
     @apply aria-current-page:[box-shadow:inset_0px_-10px_0_var(--color-secondary)];
     @apply aria-current-page:opacity-100;
+    @apply flex items-end leading-none;
   }
 
   /* Burger menu (below md). The panel sits at z-50 so it clears the ERA5 floating

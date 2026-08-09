@@ -12,7 +12,7 @@ import {
 } from "./config/scatterConfig.ts";
 import { useHistoricalDataQuery } from "../hooks/queries.ts";
 import { LOADING_MESSAGES } from "../utils/uiConstants.ts";
-import { CHART_DATA, DIMENSIONS } from "../utils/chartConstants.ts";
+import { CHART_DATA } from "../utils/chartConstants.ts";
 import * as Highcharts from "highcharts";
 
 /**
@@ -133,7 +133,7 @@ export default function SeasonalScatter(props: SeasonalScatterProps) {
       chartType="scatter"
       loadingMessage={LOADING_MESSAGES.CHART}
     >
-      <Highchart options={chartOptions()!} height={DIMENSIONS.SCATTER_HEIGHT} />
+      <Highchart options={chartOptions()!} />
     </ChartContainer>
   );
 }

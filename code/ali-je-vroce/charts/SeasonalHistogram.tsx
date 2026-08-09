@@ -8,7 +8,7 @@ import { clamp } from "../utils/mathHelpers.ts";
 import { createHistogramChartConfig } from "./config/histogramConfig.ts";
 import { useHistoricalDataQuery } from "../hooks/queries.ts";
 import { LOADING_MESSAGES } from "../utils/uiConstants.ts";
-import { CHART_DATA, DIMENSIONS } from "../utils/chartConstants.ts";
+import { CHART_DATA } from "../utils/chartConstants.ts";
 import * as Highcharts from "highcharts";
 
 /**
@@ -135,7 +135,7 @@ export default function SeasonalHistogram(props: SeasonalHistogramProps) {
       chartType="histogram"
       loadingMessage={LOADING_MESSAGES.HISTOGRAM}
     >
-      <Highchart options={chartOptions()!} height={DIMENSIONS.DEFAULT_HEIGHT} />
+      <Highchart options={chartOptions()!} />
     </ChartContainer>
   );
 }

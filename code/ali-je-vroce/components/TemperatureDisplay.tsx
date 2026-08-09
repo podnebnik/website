@@ -52,7 +52,8 @@ export const TemperatureDisplay: Component<TemperatureDisplayProps> = (props) =>
                         </div>
                     }
                     >
-                        <p id={resultId} class="font-black text-6xl flex items-center justify-center gap-8" aria-label={`Rezultat: ${props.values[props.result]}`}>
+                        <p id={resultId} class="font-black text-6xl flex items-center justify-center gap-8 max-md:mt-[0.5em] max-md:mb-[0.5em]"
+                           aria-label={`Rezultat: ${props.values[props.result]}`}>
                             <IsItHotDot
                                 color={props.result as "p00" | "p05" | "p20" | "p40" | "p60" | "p80" | "p95"}
                                 class="size-[72px] inline-block"
@@ -67,7 +68,7 @@ export const TemperatureDisplay: Component<TemperatureDisplayProps> = (props) =>
                             <LoadingSkeleton type="description" />
                         </div>
                     } >
-                        <p id={descriptionId} class="text-4xl font-semibold" aria-live="polite">
+                        <p id={descriptionId} class="md:text-4xl text-3xl font-semibold max-md:mt-[0.5em] max-md:mb-[0.5em]" aria-live="polite">
                             {props.descriptions[props.result]}
                         </p>
                     </Show>

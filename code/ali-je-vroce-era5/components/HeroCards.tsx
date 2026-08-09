@@ -121,7 +121,7 @@ function HeroCard(props: { res: RegressionResult; unit: string; dateLabel: strin
       <div style={{ display: "flex", "flex-wrap": "wrap", gap: "0", "border-bottom": "1px solid var(--color-rule)" }}>
 
         {/* Left column: eyebrow + stat */}
-        <div style={{ flex: "0 0 240px", padding: "18px 20px 16px", "border-right": "1px solid var(--color-rule)" }}>
+        <div class="md:flex-[0_0_240px]" style={{ padding: "18px 20px 16px", "border-right": "1px solid var(--color-rule)" }}>
           {/* Eyebrow */}
           <div style={{ display: "flex", "align-items": "center", gap: "6px", "margin-bottom": "12px", "flex-wrap": "wrap" }}>
             <span style={{ ...SANS, "font-size": "15px", "font-weight": "600", color: "var(--color-ink)" }}>
