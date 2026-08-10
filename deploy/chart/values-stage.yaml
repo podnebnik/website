@@ -2,5 +2,5 @@
 # (newest main-<sha>-<timestamp> build) — do not pin by hand.
 host: stage.podnebnik.org
 image:
-  tag: main-dc3a8d2-1786314030
+  tag: main-afda3ab-1786339994
   repository: ghcr.io/podnebnik/website
