@@ -4,10 +4,11 @@ import { sectionErrorFallback } from "./SectionError.tsx";
 import { EmptyState } from "./EmptyState.tsx";
 import type { RegressionResult } from "../types.ts";
 import { t, fmtNum, fmtSigned } from "../i18n/format.ts";
-// T-5.5 — per-location content is centralised in the catalogue; read the raw
-// objects here for the `?.[cat] ?? baseline` fallback and the risk <Show> guard,
-// which a key-returning t() cannot express.
-import { climateRisks, heroContext } from "../i18n/hero-content.ts";
+// T-6.32 — per-location content is centralised in the catalogue; read the raw
+// objects here for the `<Show>` guards, which a key-returning t() cannot express.
+// The card shows ONE station description (by era5_name) plus ONE category text
+// (by trend band), replacing the former single per-band narrative + risk line.
+import { stationDescriptions, categoryTexts } from "../i18n/hero-content.ts";
 
 const CATEGORIES: Record<string, string> = {
   catastrophic: t("hero.cat_catastrophic"),
@@ -93,7 +94,7 @@ export function HeroCards(props: Props) {
 function HeroCard(props: { res: RegressionResult; unit: string; dateLabel: string; label?: string | undefined }) {
   const res = () => props.res;
   // Display name (label) for what the reader sees; res().loc stays the ASCII key for
-  // the heroContext / climateRisks lookups below.
+  // the stationDescriptions lookup below.
   const displayName = () => props.label ?? res().loc.replace(/_/g, " ");
   const st  = () => res().stats;
   const cat = () => trendCategory(st().trend10);
@@ -102,8 +103,10 @@ function HeroCard(props: { res: RegressionResult; unit: string; dateLabel: strin
 
   const nValues = () => (st() as any).n_values as number | undefined;
 
-  const ctx = () => heroContext[res().loc]?.[cat()] ?? heroContext[res().loc]?.["baseline"];
-  const risk = () => climateRisks[res().loc];
+  // Station description is band-independent (keyed by era5_name); the category
+  // text is keyed by the trend band. Both render in the right column.
+  const desc = () => stationDescriptions[res().loc];
+  const catText = () => categoryTexts[cat()];
 
   return (
     <div
@@ -142,18 +145,6 @@ function HeroCard(props: { res: RegressionResult; unit: string; dateLabel: strin
               {t("hero.unit_decade")}
             </span>
           </div>
-
-          {/* Climate risk label */}
-          <Show when={risk()}>
-            <div style={{ "margin-top": "8px" }}>
-              <div style={{ ...MONO, "font-size": "9px", "letter-spacing": "0.08em", "text-transform": "uppercase", color: "var(--color-ink-soft)", "margin-bottom": "3px" }}>
-                {t("hero.risk_label")}
-              </div>
-              <div style={{ ...SANS, "font-size": "11px", color: "var(--color-ink-soft)", "line-height": "1.45" }}>
-                {risk()}
-              </div>
-            </div>
-          </Show>
         </div>
 
         {/* Right column: verdict + category */}
@@ -175,10 +166,17 @@ function HeroCard(props: { res: RegressionResult; unit: string; dateLabel: strin
             </span>
           </div>
 
-          {/* Context text */}
-          <Show when={ctx()}>
+          {/* Station description (band-independent) */}
+          <Show when={desc()}>
             <p style={{ ...SANS, margin: "0", "font-size": "13px", color: "var(--color-ink-soft)", "line-height": "1.55" }}>
-              {ctx()}
+              {desc()}
+            </p>
+          </Show>
+
+          {/* Category text (per trend band) */}
+          <Show when={catText()}>
+            <p style={{ ...SANS, margin: "0", "font-size": "13px", color: "var(--color-ink-soft)", "line-height": "1.55" }}>
+              {catText()}
             </p>
           </Show>
 

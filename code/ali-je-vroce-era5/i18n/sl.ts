@@ -1,4 +1,4 @@
-import { climateRisks, heroContext } from "./hero-content.ts";
+import { stationDescriptions, categoryTexts } from "./hero-content.ts";
 
 // T-5.5 (D-8) — Slovenian message catalogue for the "Ali je vroče" ERA5 island.
 //
@@ -339,7 +339,6 @@ export const sl = {
 
     eyebrow_var: "najvišja temperatura",
     unit_decade: "°C / desetletje",
-    risk_label: "Tveganje vpliva:",
     stat_significance: "Značilnost",
     stat_sample: "Vzorec",
     stat_autocorrelation: "Avtokorelacija",
@@ -352,11 +351,12 @@ export const sl = {
     group_a11y: "Podrobnosti lokacije {station}: stoletni temperaturni trend, kategorija tveganja in vpliv podnebne spremembe.",
   },
 
-  // Per-location content tables, moved VERBATIM from HeroCards.tsx (T-5.5) so the
-  // rendered prose stays byte-identical. Looked up as climate_risks.<Loc> and
-  // hero_context.<Loc>.<category>. Wording is content-provider territory (FLAGGED).
-  climate_risks: climateRisks,
-  hero_context: heroContext,
+  // Per-location content tables (T-6.32), surfaced through the locale catalogue.
+  // station_descriptions.<era5_name> (one per station, shown at every band) and
+  // category_texts.<band> (baseline|moderate|bad|extreme|catastrophic). A second
+  // locale swaps VALUES only. Wording is content-provider territory (D-8).
+  station_descriptions: stationDescriptions,
+  category_texts: categoryTexts,
 
   // Season heatmap
   season: {
