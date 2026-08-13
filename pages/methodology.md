@@ -8,9 +8,9 @@ summary: Kako nastanejo številke na strani »Ali je vroče?«
 
 Ta stran prikazuje, kako topel je današnji dan v Sloveniji v primerjavi z zgodovino od leta 1950. Nekaj stvari, ki jih je dobro vedeti pri branju:
 
-- **Podatki niso meritve slovenskih vremenskih postaj ([ARSO](/glossary/#gloss-arso)).** Prihajajo iz **[reanalize](/glossary/#gloss-reanalysis) [ERA5-Land](/glossary/#gloss-era5_land)** (evropski podatkovni model, dostopen prek arhiva [Open-Meteo](/glossary/#gloss-open_meteo)). Reanaliza združi meritve, satelite in fizikalni model v enotno mrežo vrednosti. Zato **številke niso neposredno primerljive** z uradnimi objavami ARSO, ki temeljijo na meritvah postaj.
+- **Podatki niso meritve slovenskih vremenskih postaj ([ARSO](/glossary/#gloss-arso)).** Prihajajo iz **[reanalize](/glossary/#gloss-reanalysis) [ERA5-Land](/glossary/#gloss-era5_land)** (evropski podatkovni model, dostopen prek arhiva [Open-Meteo](/glossary/#gloss-open_meteo)). Reanaliza združi meritve, satelite in fizikalni model v enotno mrežo vrednosti. Zato **vrednosti niso neposredno primerljive** z uradnimi objavami ARSO, ki temeljijo na meritvah postaj.
 - **Stran privzeto prikazuje najvišjo dnevno temperaturo ([Tmax](/glossary/#gloss-temp_stats))** — »kako vroč je bil dan«. Povprečno in najnižjo temperaturo lahko izberete ročno, a nista privzeti (razlog je spodaj).
-- **Vsaka postaja je popravljena na nadmorsko višino.** Ker mreža modela ne leži točno na višini postaje, vrednosti prilagodimo za razliko v nadmorski višini. **Za Kredarico je ta popravek −7,85 °C** — daleč največji na strani. Podrobnosti so spodaj; navajamo jih odkrito, ker gre za velik poseg v prikazano vrednost.
+- **Vsaka postaja je popravljena na nadmorsko višino.** Ker mrežna točka modela ni točno na višini postaje, vrednosti prilagodimo za razliko v nadmorski višini. **Za Kredarico je ta popravek −7,85 °C** — daleč največji na strani. Podrobnosti so spodaj; navajamo jih odkrito, ker gre za velik poseg v prikazano vrednost.
 - **»Slovenija« pomeni povprečje 18 postaj**, ne ene same meritve na specifični postaji. Postaje segajo od morske gladine (10 m) do Kredarice (2514 m).
 - **Referenčno obdobje za [odklone](/glossary/#gloss-anomaly) je 1991–2020** (veljavna [klimatološka norma](/glossary/#gloss-climatological_normal) [WMO](/glossary/#gloss-wmo)). Ker je to razmeroma toplo obdobje, se velik del zapisov 1950–2026 prikaže kot negativni odklon.
 
@@ -26,7 +26,7 @@ Reanaliza ni enaka meritevam posameznih postaj. Je rekonstrukcija preteklega vre
 
 **ERA5-Land sam ne vključuje nobenih meritev.** Opazovanja združi matična reanaliza **[ERA5](/glossary/#gloss-era5)** na mreži približno 31 km.[^hersbach_era5] ERA5-Land te vrednosti uporabi kot vhod in z njimi na gostejši mreži (~9 km) podrobneje izračuna razmere pri tleh. Gostejša mreža torej ne pomeni več opazovanj, le podrobnejši izračun iz istega vira.
 
-**Dejanska ločljivost je slabša od mrežne.** Učinkovita ločljivost ERA5 je približno tri- do štirikrat slabša od nominalne — okoli **100 km**, ne 31 km. Gostejša mreža ERA5-Land tega ne popravi.
+**Dejanska ločljivost je slabša od mrežne.** Dejanska uporabna ločljivost ERA5 je približno tri- do štirikrat slabša od nazivne — okoli **100 km**, ne 31 km.
 
 Zadnjih ~6 dni prihaja iz predhodne različice reanalize ([ERA5T](/glossary/#gloss-era5t)), zato se te vrednosti lahko še spremenijo.
 
@@ -50,15 +50,15 @@ Odkrito navajamo njegove omejitve:
 
 ## Katera temperatura je privzeta
 
-Stran privzeto vodi z **najvišjo dnevno temperaturo (Tmax)** — na prvih karticah, ob nalaganju in v trendu, ki ga stran postavi v ospredje. Povprečna (Tmean) in najnižja (Tmin) dnevna temperatura sta na voljo za ročno izbiro, a nista privzeti.
+Stran privzeto prikazuje **najvišjo dnevno temperaturo (Tmax)** — na prvih karticah, ob nalaganju in v trendu, ki ga stran postavi v ospredje. Povprečna (Tmean) in najnižja (Tmin) dnevna temperatura sta na voljo za ročno izbiro, a nista privzeti.
 
-Razlog je kakovost podatkov. Reanaliza ERA5-Land sistematično slabše oceni **najnižjo** temperaturo v pozidanih območjih, ker mreža ne razreši mestnega toplotnega otoka. Ker se **povprečna** temperatura izračuna tudi iz najnižje, to pristranskost podeduje — ravno v naseljenih krajih, ki bralce najbolj zanimajo. Najvišja dnevna temperatura te pristranskosti ne nosi in se ujema z vprašanjem strani (»ali je vroče« — občutena dnevna vročina). Zato stran vodi s Tmax, izbira Tmean/Tmin pa ostaja bralcu, ki omejitev razume.
+Razlog je kakovost podatkov. Reanaliza ERA5-Land sistematično slabše oceni **najnižjo** temperaturo v pozidanih območjih, saj tudi matična reanaliza ERA5 v modelu eksplicitno ne upošteva učinkov mestnega toplotnega otoka. Ker se **povprečna** temperatura izračuna tudi iz najnižje, to pristranskost podeduje — ravno v naseljenih krajih, ki bralce najbolj zanimajo. Najvišja dnevna temperatura te pristranskosti ne nosi in se ujema z vprašanjem strani (»ali je vroče« — občutena dnevna vročina). Zato stran vodi s Tmax, izbira Tmean/Tmin pa ostaja bralcu, ki omejitev razume.
 
 ## Kaj pomeni »Slovenija«
 
 Vrednost predstavlja **neuteženo povprečje vseh 18 postaj**, vključno s Kredarico, popravljeno na nadmorsko višino — na strani poimenovano »povprečje 18 postaj«, s prikazanim naborom postaj in razponom višin.
 
-Uteževanje po površini ali višinskih pasovih smo pretehtali in **zavrnili**: ker je nad 1000 m le ena postaja (Kredarica), bi ta sama nosila cel višinski pas. To bi bilo videti natančno, a bi slonelo na eni sami točki. Neuteženo povprečje nad vidnim, poimenovanim naborom postaj je poštenejša konstrukcija.
+Uteževanje po površini ali višinskih pasovih smo pretehtali in **zavrnili**: ker je nad 1000 m le ena postaja (Kredarica), bi ta sama nosila cel višinski pas. To bi bilo videti natančno, a bi slonelo na eni sami točki. Neuteženo povprečje nad vidnim, poimenovanim naborom postaj je bolj poštena izbira.
 
 ## Časovni pas in dnevna meja
 
@@ -74,7 +74,7 @@ Ena posledica je pomembna za branje: ker je obdobje 1991–2020 razmeroma toplo,
 
 ## Porazdelitev in percentil
 
-Za vsak dan v letu stran prikaže **[porazdelitev](/glossary/#gloss-distribution)** preteklih vrednosti (kako pogosti so bili posamezni odkloni) in **[percentil](/glossary/#gloss-percentile)** današnje vrednosti (topleje od kolikšnega deleža primerjalnih dni).
+Za vsak dan v letu stran prikaže **[porazdelitev](/glossary/#gloss-distribution)** preteklih vrednosti (kako pogosti so bili posamezni odkloni) in v kateri **[percentil](/glossary/#gloss-percentile)** porazdelitve se uvršča današnja vrednost (topleje od kolikšnega deleža primerjalnih dni).
 
 - Porazdelitev je **empirična ocena gostote ([KDE](/glossary/#gloss-kde))** — sledi dejanski obliki podatkov — ne simetrična zvonasta (Gaussova) krivulja. Temperaturne porazdelitve so pogosto nesimetrične, zato bi Gaussova krivulja napačno prikazala repe, ravno tam, kjer se presoja »kako izjemen je današnji dan«.
 - Percentil je **pravi empirični percentil**, izračunan iz te krivulje (integral gostote do današnje vrednosti), ne približek iz barvnega pasu.
@@ -99,13 +99,13 @@ Trendno črto skozi leta ocenimo z metodo **[Theil-Sen](/glossary/#gloss-theil_s
 
 ## Trend vročih dni in tropskih noči
 
-Letni trend na grafih vročih dni in tropskih noči je **model negativne binomske regresije ([NB GLM](/glossary/#gloss-nb_glm))** čez letno število — primeren za štetne podatke z večjo razpršenostjo od Poissonove. Gre za **približek**, ne za dokončno napoved: prikazana stopnja rasti in [projekcija do leta 2050](/glossary/#gloss-projection_2050) sta odvisni od izbranega praga in dolžine zaporedja.
+Letni trend na grafih vročih dni in tropskih noči je **model negativne binomske regresije ([NB GLM](/glossary/#gloss-nb_glm))** čez letno število — primeren za številske podatke z večjo razpršenostjo od Poissonove. Gre za **približek**, ne za dokončno napoved: prikazana stopnja rasti in [projekcija do leta 2050](/glossary/#gloss-projection_2050) sta odvisni od izbranega praga in dolžine zaporedja.
 
-**Trenda ne prikažemo, kadar mu ne moremo zaupati.** Za nekatere kombinacije (redki dogodki, skoraj ravna letna vrsta) statistični model ne da zanesljivega rezultata — ne skonvergira ali pa ocena njegove negotovosti ni veljavna. V takih primerih trenda **ne objavimo** (letno štetje ostane prikazano), namesto da bi navedli navidezno natančno, a nezanesljivo številko. Enako velja, kadar je premalo let s podatki (potrebnih je vsaj 10). To je isto načelo kot pri indeksu suše SPEI: raje odklonimo objavo kot da objavimo negotovo vrednost.
+**Trenda ne prikažemo, kadar mu ne moremo zaupati.** Za nekatere kombinacije (redki dogodki, skoraj ravna časovna vrsta) statistični model ne da zanesljivega rezultata — ne skonvergira ali pa ocena njegove negotovosti ni veljavna. V takih primerih trenda **ne objavimo** (letno štetje ostane prikazano), namesto da bi navedli navidezno natančno, a nezanesljivo številko. Enako velja, kadar je premalo let s podatki (potrebnih je vsaj 10). To je isto načelo kot pri indeksu suše SPEI: raje odklonimo objavo, kot da objavimo negotovo vrednost.
 
 ## Povzetek omejitev
 
-- **Ne bazira direktno na meritvah ARSO.** Vrednosti so reanaliza ERA5-Land, ne meritve postaj, in **niso neposredno primerljive** z objavami ARSO.
+- **Ne bazira direktno na meritvah ARSO.** Vrednosti so iz reanalize ERA5-Land, ne meritev postaj, in **niso neposredno primerljive** z objavami ARSO.
 - **Korekcija na nadmorsko višino Kredarice** (−7,85 °C) je velika, preverjena, a ne validirana po mesecih, in lahko odstopa pozimi (glej zgoraj).
 - **ERA5-Land Tmin** je v mestih nezanesljiva (toplotni otok); zato stran privzeto ne prikazuje Tmean/Tmin.
 - **Ločljivost.** Mreža ERA5-Land je ~9 km, a vremenska informacija prihaja iz ERA5, katere učinkovita ločljivost je okoli 100 km. Lokalnih posebnosti pod to velikostjo vrednosti ne upoštevajo.
