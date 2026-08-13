@@ -2,5 +2,5 @@
 # proven itself on stage (see values-stage.yaml for the current one).
 host: podnebnik.org
 image:
-  tag: main-afda3ab-1786339994
+  tag: main-a6ece7d-1786618112
   repository: ghcr.io/podnebnik/website
