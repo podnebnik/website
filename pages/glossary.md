@@ -74,7 +74,7 @@ Srednja vrednost: polovica vrednosti je manjših, polovica večjih. Za razliko o
 
 ## mrežna celica / mrežna ločljivost {#gloss-grid_cell}
 
-Model ozemlje razdeli na kvadrate ~9 km; vrednost velja za cel kvadrat, zato ne ujame posebnosti, manjših od tega.
+Model ozemlje razdeli na kvadrate ~9 km; vrednost velja za cel kvadrat.
 
 ## NB GLM (negativna binomska regresija) {#gloss-nb_glm}
 
