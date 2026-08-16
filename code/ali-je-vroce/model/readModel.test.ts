@@ -131,10 +131,10 @@ test("read model creates initial state from persisted selected station", () => {
 });
 
 test("station conversion keeps preference and processed station shapes local", () => {
-  const processed = { station_id: 1447, name_locative: "Novem mestu", prefix: "v" };
+  const processed = { station_id: 1447, name_locative: "Novem mestu", name_station: "Novo mesto", prefix: "v" };
   const preference = toStationPreference(processed);
 
-  assert.deepEqual(preference, { value: 1447, label: "Novem mestu", prefix: "v" });
+  assert.deepEqual(preference, { value: 1447, label: "Novem mestu", prefix: "v", station: "Novo mesto" });
   assert.deepEqual(toProcessedStation(preference), processed);
 });
 
@@ -206,13 +206,13 @@ test("station rows become processed stations with locative prefix separated", ()
   assert.deepEqual(
     toProcessedStations({
       rows: [
-        [0, 1495, "Ljubljana", "v Ljubljani"],
-        [1, 1447, "Novo mesto", "v Novem mestu"],
+        [0, 1495, "Ljubljana", "v Ljubljani", "Ljubljana Bežigrad"],
+        [1, 1447, "Novo mesto", "v Novem mestu", "Novo mesto"],
       ],
     }),
     [
-      { station_id: 1495, name_locative: "Ljubljani", prefix: "v" },
-      { station_id: 1447, name_locative: "Novem mestu", prefix: "v" },
+      { station_id: 1495, name_locative: "Ljubljani", name_station: "Ljubljana Bežigrad", prefix: "v" },
+      { station_id: 1447, name_locative: "Novem mestu", name_station: "Novo mesto", prefix: "v" },
     ],
   );
 });
@@ -233,7 +233,7 @@ test("current hotness transform chooses the matching percentile bucket", () => {
     },
   } as RequestStationData;
 
-  assert.equal(dateForCurrentHotnessPercentiles(stationData), "2026-06-21");
+  assert.equal(dateForCurrentHotnessPercentiles(stationData), "06-21");
   assert.deepEqual(
     toProcessedCurrentHotness(stationData, {
       columns: ["rowid", "p05", "p20", "p40", "p60", "p80", "p95"],

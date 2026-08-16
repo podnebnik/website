@@ -30,12 +30,12 @@ async function fetchWithTimeout(url: string, { timeoutMs = 10000 } = {}) {
  *
  * @async
  * @function loadStations
- * @returns {Promise<{ success: true, stations: Array<Types.StationModel> } | { success: false, error: Error | string }>}
+ * @returns {Promise<{ success: true, stations: Array<Types.ProcessedStation> } | { success: false, error: Error | string }>}
  *   Resolves to an array of station objects, or an empty array if the fetch fails.
  *
  */
 export async function loadStations(): Promise<
-  | { success: true; stations: Array<StationModel> }
+  | { success: true; stations: Array<ProcessedStation> }
   | { success: false; error: Error | string }
 > {
   // Fetch stations from Datasette (CORS-friendly)

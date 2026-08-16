@@ -12,6 +12,7 @@ export interface StationPreference {
   readonly value: number;
   readonly label: string;
   readonly prefix: string;
+  readonly station?: string;
 }
 
 export interface CurrentHotnessDisplayFields {
@@ -232,6 +233,7 @@ export function toProcessedStations(
     return {
       station_id: row[1],
       name_locative: nameParts.slice(1).join(" "),
+      name_station: row[4],
       prefix: nameParts[0] ?? "",
     };
   });
@@ -245,6 +247,7 @@ export function toStationPreference(station: ProcessedStation): StationPreferenc
     value: station.station_id,
     label: station.name_locative,
     prefix: station.prefix,
+    station: station.name_station,
   };
 }
 
@@ -261,6 +264,7 @@ export function toProcessedStation(
     station_id: preference.value,
     name_locative: preference.label,
     prefix: preference.prefix,
+    name_station: preference.station ?? "",
   };
 }
 
