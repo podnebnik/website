@@ -74,6 +74,24 @@ The frontend computes no climate statistics. Every displayed number follows
 datasette URL directly to decide which half is at fault. `docs/ops-runbook.md` is the
 authoritative guide for this — read it before debugging a suspicious number.
 
+### How the website reaches the datasette
+
+**There is no server-side connection.** The website image is static nginx (no proxy_pass, no
+upstream); all datasette access happens in the visitor's browser as cross-origin fetches,
+allowed by datasette's `--cors` flag. The base URL is baked into the JS bundle at build time:
+
+- ERA5 island: `VITE_DATASETTE_URL ?? "https://stage-data.podnebnik.org"` (`api.ts`) — the
+  env var is a build-time Vite substitution, so changing it requires a rebuild/restart.
+- Legacy and temperatura islands: `https://stage-data.podnebnik.org` **hardcoded**
+  (`code/ali-je-vroce/constants.ts`, `code/temperatura/heatmaps.jsx`) — they ignore the env var.
+
+The production build sets no `VITE_DATASETTE_URL`, so **prod (podnebnik.org) also queries the
+stage datasette**; no prod-data URL exists in this repo. The compose setup does *not* wire the
+two containers together — both just publish host ports (website :8003, datasette :8001), and
+the browser still hits stage-data unless you rebuild with `VITE_DATASETTE_URL` pointed at the
+local datasette. This repo builds and pushes the datasette image, but the manifests serving
+`stage-data.podnebnik.org` live in the infrastructure repo.
+
 ### Static site
 
 11ty (input `pages/`, output `dist/`) with `@11ty/eleventy-plugin-vite`, so Vite handles the
