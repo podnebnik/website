@@ -166,6 +166,26 @@ the reasoning; never replace the gate with a bare `yarn typecheck`.
 `docker-data.yaml` generates the SQLite once on amd64 and hands it to the multi-arch image build
 as an artifact — never reintroduce per-platform generation (it ran for hours under QEMU).
 
+## PR labels
+
+Three labels are **functional** — they drive automation, not just triage:
+
+- `preview-deploy` — labeling a PR triggers `.github/workflows/docker-preview.yaml`, which
+  builds and pushes **every** preview image (no paths filter) as
+  `ghcr.io/podnebnik/<image>:pr-<number>`; the infrastructure repo's preview ApplicationSet
+  deploys labeled PRs from those tags. Fork PRs are excluded (no `packages: write` token).
+- `data-refresh` — applied by `data-refresh.yaml` to its automated raw ERA5-Land refresh PRs.
+  Marks automation output; don't apply it by hand.
+- `refresh-failure` — dedupe key for the automated "data refresh failed" alert *issues*
+  (created on demand by `.github/actions/ensure-label`); one open issue collects repeat
+  failures instead of a new issue per failure.
+
+Ecosystem labels (`dependencies`, `javascript`, `python`, `python:uv`, `github_actions`,
+`docker`, `.NET`, `devcontainers_package_manager`) are applied by Dependabot to its own PRs.
+The rest are manual triage: project topics `content`, `data`, `design`, `typescript`
+(TypeScript migration) plus the GitHub defaults (`bug`, `documentation`, `enhancement`,
+`duplicate`, `good first issue`, `help wanted`, `invalid`, `question`, `wontfix`).
+
 ## Deployment
 
 Helm chart in `deploy/chart/`. Stage is bumped automatically by argocd-image-updater writing into
