@@ -4,7 +4,7 @@ import { STAGE_DATA_BASE_URL, STAGING_VREMENAR_API_URL } from "./constants";
 import { RequestStationData, StationsResponse } from '../types/api-raw.js';
 import type { ProcessedStation, ProcessedTemperatureData } from '../types/models.js';
 import {
-  dateForCurrentHotnessPercentiles,
+  monthDayForCurrentHotnessPercentiles,
   toProcessedCurrentHotness,
   toProcessedStations,
   type CurrentHotnessPercentileResponse,
@@ -84,7 +84,7 @@ export async function requestData(
     );
     if (resultAverage.ok) {
       const dataAverage = (await resultAverage.json()) as RequestStationData;
-      const date = dateForCurrentHotnessPercentiles(dataAverage);
+      const date = monthDayForCurrentHotnessPercentiles(dataAverage);
 
       const resultPercentile = await fetch(
         `${STAGE_DATA_BASE_URL}/temperature/temperature~2Eslovenia_historical~2Edaily~2Eaverage_percentiles.json?date__endswith=-${date}&station_id__exact=${stationID}&_col=p05&_col=p20&_col=p40&_col=p60&_col=p80&_col=p95`,

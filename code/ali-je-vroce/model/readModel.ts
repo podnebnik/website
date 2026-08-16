@@ -292,7 +292,7 @@ export function toDisplayFields(
  * month-day with an arbitrary label year, so callers must match on month-day
  * (e.g. via `date__endswith`) rather than the full date.
  */
-export function dateForCurrentHotnessPercentiles(
+export function monthDayForCurrentHotnessPercentiles(
   stationData: RequestStationData,
 ): string {
   const rawTimestamp = Number(stationData.statistics.timestamp);

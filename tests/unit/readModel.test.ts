@@ -1,11 +1,11 @@
 /// <reference types="node" />
 
 import assert from "node:assert/strict";
-import test from "node:test";
+import { test } from "vitest";
 import {
   createInitialReadModelState,
   createOptimisticDisplayFields,
-  dateForCurrentHotnessPercentiles,
+  monthDayForCurrentHotnessPercentiles,
   readSelectedStationPreference,
   stationPreferenceStorageKey,
   toDisplayFields,
@@ -15,10 +15,10 @@ import {
   toStationPreference,
   writeSelectedStationPreference,
   type PreferenceStorage,
-} from "./readModel.ts";
-import { DEFAULT_STATION } from "../constants.ts";
-import type { ProcessedTemperatureData } from "../../types/models.ts";
-import type { RequestStationData } from "../../types/api-raw.ts";
+} from "../../code/ali-je-vroce/model/readModel.ts";
+import { DEFAULT_STATION } from "../../code/ali-je-vroce/constants.ts";
+import type { ProcessedTemperatureData } from "../../code/types/models.ts";
+import type { RequestStationData } from "../../code/types/api-raw.ts";
 
 function createMemoryStorage(entries: Record<string, string> = {}): PreferenceStorage {
   return {
@@ -233,7 +233,7 @@ test("current hotness transform chooses the matching percentile bucket", () => {
     },
   } as RequestStationData;
 
-  assert.equal(dateForCurrentHotnessPercentiles(stationData), "06-21");
+  assert.equal(monthDayForCurrentHotnessPercentiles(stationData), "06-21");
   assert.deepEqual(
     toProcessedCurrentHotness(stationData, {
       columns: ["rowid", "p05", "p20", "p40", "p60", "p80", "p95"],
