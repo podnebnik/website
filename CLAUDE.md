@@ -169,20 +169,47 @@ podnebnik.vremenar.app) for pointing the legacy island at a remote API during de
 - Code comments reference `PROGRESS.md` and `DECISIONS.md` and carry `T-x.y` / `D-n` ticket
   IDs. Those files are not in this repository; treat the IDs as provenance markers only.
 
-## CI gates (`.github/workflows/build.yaml`)
+## GitHub workflows
 
-Four independent jobs, each failing for a different reason: `build` (11ty/Fable bundle),
-`snapshot` (a published number moved), `checks` (`yarn typecheck:gate` + `yarn test`),
-`data-checks` (`uv run pytest` in `data/climate-si/sources`).
+**`build.yaml`** — the PR gate. Four independent jobs, each failing for a different reason:
+`build` (11ty/Fable bundle), `snapshot` (a published number moved), `checks`
+(`yarn typecheck:gate` + `yarn test`), `data-checks` (`uv run pytest` in
+`data/climate-si/sources`). The typecheck gate (`scripts/typecheck-gate.mjs`) asserts the live
+`tsc` error set is *exactly* `tests/typecheck-allowlist.txt`, keyed by file/line/column/code.
+The allowlist is currently empty, so any TypeScript error fails the build — and an entry
+disappearing would fail too. If a dependency bump reintroduces an unfixable typings mismatch,
+add it there in the same commit with the reasoning; never replace the gate with a bare
+`yarn typecheck`.
 
-**Typecheck gate**: `scripts/typecheck-gate.mjs` asserts the live `tsc` error set is *exactly*
-`tests/typecheck-allowlist.txt`, keyed by file/line/column/code. The allowlist is currently
-empty, so any TypeScript error fails the build — and an entry disappearing would fail too. If a
-dependency bump reintroduces an unfixable typings mismatch, add it there in the same commit with
-the reasoning; never replace the gate with a bare `yarn typecheck`.
+**`docker-web.yaml`** — builds/pushes the multi-arch website image to `ghcr.io/podnebnik/website`
+on pushes to `main` and version tags (PRs build without pushing). The deployable tag format is
+`main-<short-sha>-<timestamp>`. Both docker workflows `paths-ignore: deploy/**` — argocd-image-updater
+commits tags back into `deploy/`, and without the ignore that write-back would retrigger builds
+forever.
 
-`docker-data.yaml` generates the SQLite once on amd64 and hands it to the multi-arch image build
-as an artifact — never reintroduce per-platform generation (it ran for hours under QEMU).
+**`docker-data.yaml`** — the datasette image, in two jobs: `generate-db` builds only the
+`db-export` Dockerfile target on amd64, exporting the generated SQLite as an artifact; the
+multi-arch image build then COPYs it in. Never reintroduce per-platform generation — the
+numpy pipeline under QEMU arm64 ran for hours.
+
+**`docker-preview.yaml`** — fires only for PRs labeled `preview-deploy` (see PR labels);
+pushes every image as `pr-<number>` for the infrastructure repo's preview environments.
+
+**`validate-data.yaml`** — frictionless-validates data packages on `data/**` changes.
+climate-si's *derived* tables are skipped (not committed; validated at image build), but its
+committed *raw* CSVs are checked via `.github/actions/validate-raw-data`.
+
+**`data-refresh.yaml`** — daily cron (01:17 UTC) that differentially fetches raw ERA5-Land
+CSVs from Open-Meteo, validates end-to-end **in-job**, and opens a `data-refresh`-labeled PR;
+it never pushes to `main`. In-job validation is load-bearing: PRs opened with `GITHUB_TOKEN`
+do **not** trigger `on: pull_request` workflows, so the refresh PR carries no automated checks
+by design. Manual dispatch requires typing `spend-quota`; failures open/comment a
+`refresh-failure` issue. Note: `docs/ops-runbook.md` §5/§7 still describe this schedule as
+disabled — that is stale; the workflow header documents when and why it was enabled.
+
+**`workflows-lint.yaml`** — zizmor security analysis of the workflow files themselves, on
+workflow changes and a monthly cron. All workflows pin actions by commit SHA and set
+least-privilege `permissions:` — keep both properties when editing.
 
 ## PR labels
 
