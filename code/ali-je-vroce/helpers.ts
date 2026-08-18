@@ -1,6 +1,6 @@
 /** @import * as Types "./types" */
 
-import { STAGE_DATA_BASE_URL, STAGING_VREMENAR_API_URL } from "./constants";
+import { DATASETTE_BASE_URL, STAGING_VREMENAR_API_URL } from "./constants";
 import { RequestStationData, StationsResponse } from '../types/api-raw.js';
 import type { StationModel, ProcessedTemperatureData } from '../types/models.js';
 
@@ -71,7 +71,7 @@ export async function loadStations(): Promise<
 > {
   // Fetch stations from Datasette (CORS-friendly)
   const resultStations = await fetch(
-    `${STAGE_DATA_BASE_URL}/temperature/temperature~2Eslovenia_stations.json?&_col=station_id&_col=name&_col=name_locative&_col=official_name&_sort=name`
+    `${DATASETTE_BASE_URL}/temperature/temperature~2Eslovenia_stations.json?&_col=station_id&_col=name&_col=name_locative&_col=official_name&_sort=name`
   );
 
   if (resultStations.ok) {
@@ -148,7 +148,7 @@ export async function requestData(
       );
 
       const resultPercentile = await fetch(
-        `${STAGE_DATA_BASE_URL}/temperature/temperature~2Eslovenia_historical~2Edaily~2Eaverage_percentiles.json?date__endswith=-${monthDay}&station_id__exact=${stationID}&_col=p05&_col=p20&_col=p40&_col=p60&_col=p80&_col=p95`,
+        `${DATASETTE_BASE_URL}/temperature/temperature~2Eslovenia_historical~2Edaily~2Eaverage_percentiles.json?date__endswith=-${monthDay}&station_id__exact=${stationID}&_col=p05&_col=p20&_col=p40&_col=p60&_col=p80&_col=p95`,
          options.signal ? { signal: options?.signal } : undefined
       );
         const dataPercentile = await resultPercentile.json();
@@ -346,7 +346,7 @@ function buildDatasetteUrl({ sid, inList, withCols = true }: {
   inList: string;
   withCols?: boolean;
 }): string {
-  const BASE_URL = STAGE_DATA_BASE_URL;
+  const BASE_URL = DATASETTE_BASE_URL;
   const baseUrl = `${BASE_URL}/${DATASETTE_TABLE_PATH}`;
   const common =
     `${baseUrl}` +
