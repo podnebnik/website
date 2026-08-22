@@ -29,10 +29,13 @@ import { calendarDateIn, LJUBLJANA_TZ } from "./clock.ts";
 import { t, fmtNum, fmtMonthDay } from "./i18n/format.ts";
 // T-5.27 — nominative diacritic station display names (no datasette column has them).
 import { displayNameFor } from "./i18n/station-names.ts";
+// Environment-aware datasette base URL (shared with the legacy + temperatura islands).
+import { DATASETTE_BASE_URL } from "../datasette-base.ts";
 
-// podnebnik.org datasette serves each DB at the root (no /datasette prefix),
-// e.g. https://stage-data.podnebnik.org/climate-si — override with VITE_DATASETTE_URL for dev.
-export const DS_BASE = (import.meta.env.VITE_DATASETTE_URL as string | undefined) ?? "https://stage-data.podnebnik.org";
+// Environment-aware base: VITE_DATASETTE_URL override > fixture base > same-origin
+// /data on deployed hosts > stage default. See code/datasette-base.ts for the full
+// resolution contract (incl. the snapshot-bundle define constraint).
+export const DS_BASE = DATASETTE_BASE_URL;
 // ERA5 historical + precomputed stats
 const DS = `${DS_BASE}/climate-si`;
 
