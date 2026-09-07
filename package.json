@@ -51,7 +51,7 @@
     "markdown-it-footnote": "^4.0.0",
     "sass": "^1.102.0",
     "sharp": "^0.35.3",
-    "typescript": "~6.0.3",
+    "typescript": "~7.0.2",
     "vite": "~8.2.1",
     "vite-plugin-solid": "^2.11.14",
     "vitest": "^4.1.10"
