@@ -16,6 +16,9 @@ export interface StationModel {
   prefix: string;
 }
 
+// Read-model naming for the same shape
+export type ProcessedStation = StationModel;
+
 // Processed percentile structure
 export interface TemperaturePercentiles {
   stationId: number;
