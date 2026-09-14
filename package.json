@@ -30,7 +30,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "compression": "^1.8.1",
-    "highcharts": "~12.6.0",
+    "highcharts": "~13.0.0",
     "leaflet": "^1.9.4",
     "morgan": "^1.11.0",
     "node-fetch": "^3.3.2",
