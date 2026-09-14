@@ -54,7 +54,7 @@
     "typescript": "~6.0.3",
     "vite": "~8.2.1",
     "vite-plugin-solid": "^2.11.14",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.11"
   },
   "resolutions": {
     "brace-expansion": "5.0.9"
