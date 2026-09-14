@@ -50,7 +50,7 @@
     "markdown-it-attrs": "^5.0.1",
     "markdown-it-footnote": "^4.0.0",
     "sass": "^1.102.0",
-    "sharp": "^0.35.3",
+    "sharp": "^0.35.4",
     "typescript": "~6.0.3",
     "vite": "~8.2.1",
     "vite-plugin-solid": "^2.11.14",
