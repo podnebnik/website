@@ -21,6 +21,9 @@ dist
 # fixtures baked in. Deliberately not dist/, so it can never be deployed.
 dist-fixtures
 
+# Generated copy of .agents/skills/ for Claude Code (run `yarn sync-skills`)
+.claude/skills
+
 ~$*
 
 *.asc
