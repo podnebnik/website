@@ -23,7 +23,7 @@ Ask for the behavior to verify and the acceptance criteria if not provided.
 ## Procedure
 
 1. Identify the affected layer: frontend, Eleventy content, data package, Python import task, Fable module, Docker, or GitHub Actions.
-2. Look for existing tests or validation scripts near that layer.
+2. Look for existing tests or validation scripts near that layer. Frontend unit tests are Vitest files under `tests/unit/`, run with `yarn test`.
 3. For bugs, reproduce the old failure before adding coverage.
 4. Add the smallest useful check at the appropriate level.
 5. Validate the changed layer with the repository commands from `.github/instructions/testing.instructions.md`.

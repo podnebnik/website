@@ -26,7 +26,7 @@ Podnebnik is the source repository for podnebnik.org, a statically generated cli
 ## Workflow
 
 - Install dependencies with `yarn install`; it also restores .NET tools through the existing postinstall script.
-- Use `yarn typecheck` for TypeScript checks and `yarn build` for the static site build.
+- Use `yarn typecheck` for TypeScript checks, `yarn test` for Vitest unit tests in `tests/unit/`, and `yarn build` for the static site build.
 - Use `yarn start` for local Eleventy/Fable watch mode. For production-like behavior, use `ELEVENTY_EMULATE_PRODUCTION=1` when needed.
 - Use `uv run --group=build invoke validate` or the repository's existing Frictionless validation workflow when changing data packages.
 - Use Docker Compose from `compose.yaml` when validating the website plus Datasette stack together.

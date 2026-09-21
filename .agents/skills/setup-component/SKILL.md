@@ -24,7 +24,7 @@ Ask for the component purpose, target page or route, data source, and expected i
 ## Procedure
 
 1. Inspect nearby examples in `code/`, `code/components/`, `code/examples/`, and the target `pages/` entry.
-2. Choose the owner folder: feature visualization under `code/<feature>/`, reusable UI under `code/components/`, shared helpers under `code/utils` or the relevant feature folder.
+2. Choose the owner folder: feature visualization under `code/<feature>/`, reusable UI under `code/components/`, shared helpers next to the feature that owns them.
 3. Decide whether data should come from local `data/` files, generated page data, or the Datasette API.
 4. Implement the smallest complete component/module that matches the existing style.
 5. Use the lazy-render wrapper for below-fold visualizations unless immediate rendering is required.

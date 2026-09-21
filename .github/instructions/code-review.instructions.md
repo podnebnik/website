@@ -1,4 +1,5 @@
 ---
+applyTo: "**"
 description: "Use when reviewing pull requests, changed files, Copilot output, workflow changes, data package updates, visualizations, or refactors in Podnebnik."
 ---
 

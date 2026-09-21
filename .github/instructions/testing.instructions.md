@@ -15,11 +15,11 @@ Apply the repository-wide guidance from `../copilot-instructions.md` to all test
 - Prefer meaningful coverage over line-count targets. Cover critical data transformations, visualization state, accessibility-sensitive UI behavior, and previously failing cases.
 - Keep tests deterministic. Avoid real network dependencies, time-sensitive waits, shared mutable state, and production data.
 - Test behavior and contracts rather than implementation details. UI tests should use user-visible roles, labels, text, and stable test identifiers when needed.
-- When no test runner exists for a changed area, use the existing validation commands and discuss the smallest appropriate test harness before adding one.
+- Frontend unit tests use Vitest: files live in `tests/unit/**/*.test.ts` and run with `yarn test`. For other areas with no runner, use the existing validation commands and discuss the smallest appropriate harness before adding one.
 
 ## Repository Verification
 
-- For TypeScript and frontend changes, run `yarn typecheck` and the narrowest build command that exercises the affected area.
+- For TypeScript and frontend changes, run `yarn typecheck`, `yarn test`, and the narrowest build command that exercises the affected area.
 - For static site changes, run `yarn build` when the change affects pages, templates, styles, visualizations, assets, or build configuration.
 - For data package changes, validate Frictionless descriptors and schemas before considering the change complete.
 - For Docker or deployment changes, prefer targeted build or lint checks that match the changed file rather than broad unrelated workflow changes.

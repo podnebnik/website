@@ -92,6 +92,7 @@ Reusable instructions for AI coding agents (code review, debugging, docs, etc.) 
 
 - Edit skills **only** in `.agents/skills/`.
 - No sync step is needed. All three tools see the same files.
+- Skills and instructions are prompts. The only real test is using them on a real task. If one misleads an agent, fix its Markdown in the same PR.
 
 ### Windows
 
