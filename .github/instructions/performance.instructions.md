@@ -1,10 +1,5 @@
 ---
-applyTo:
-  - "code/**/*.{ts,tsx,js,jsx,mjs,fs}"
-  - "styles/**/*.css"
-  - "pages/**/*.{md,html}"
-  - "eleventy.config.mjs"
-  - "assets/**"
+applyTo: "code/**/*.{ts,tsx,js,jsx,mjs,fs},styles/**/*.css,pages/**/*.{md,html},eleventy.config.mjs,assets/**"
 description: "Use when optimizing Core Web Vitals, chart rendering, images, CSS, Solid components, Eleventy output, or asset loading for Podnebnik."
 ---
 

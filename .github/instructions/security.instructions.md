@@ -1,12 +1,5 @@
 ---
-applyTo:
-  - "code/**/*.{ts,tsx,js,jsx,mjs,fs}"
-  - "**/*.py"
-  - ".github/workflows/*.{yml,yaml}"
-  - "deployment/**"
-  - "compose.yaml"
-  - "pages/**/*.{md,html}"
-  - "data/**/*.yaml"
+applyTo: "code/**/*.{ts,tsx,js,jsx,mjs,fs},**/*.py,.github/workflows/*.{yml,yaml},deployment/**,compose.yaml,pages/**/*.{md,html},data/**/*.yaml"
 description: "Use when changing code, data pipelines, workflows, Docker files, public content, or configuration with security, secrets, input validation, or supply-chain implications."
 ---
 

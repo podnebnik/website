@@ -88,10 +88,7 @@ Also, in case of major changes to the JavaScript dependencies, you may need to r
 
 ## Agent skills
 
-Reusable instructions for AI coding agents (code review, debugging, docs, etc.) live in `.agents/skills/` — this is the canonical, tool-neutral location. Claude Code only auto-discovers skills from `.claude/skills/`, so a copy is kept there. That copy is generated and git-ignored.
-
-- Edit skills **only** in `.agents/skills/`.
-- Re-sync the Claude Code copy with `yarn sync-skills` (this also runs automatically during `yarn install` via `postinstall`).
+Reusable instructions for AI coding agents (code review, debugging, docs, etc.) live in `.claude/skills/`. Both Claude Code and GitHub Copilot read skills from that directory, so edit them there.
 
 ## Developing data
 
