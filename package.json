@@ -33,7 +33,7 @@
     "compression": "^1.8.1",
     "highcharts": "~12.6.0",
     "leaflet": "^1.9.4",
-    "morgan": "^1.11.0",
+    "morgan": "^1.12.0",
     "node-fetch": "^3.3.2",
     "solid-js": "^1.9.14",
     "tailwind-merge": "^3.6.0",
@@ -51,11 +51,11 @@
     "markdown-it-attrs": "^5.0.1",
     "markdown-it-footnote": "^4.0.0",
     "sass": "^1.102.0",
-    "sharp": "^0.35.3",
-    "typescript": "~6.0.3",
+    "sharp": "^0.35.4",
+    "typescript": "~7.0.2",
     "vite": "~8.2.1",
     "vite-plugin-solid": "^2.11.14",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.11"
   },
   "resolutions": {
     "brace-expansion": "5.0.9"
