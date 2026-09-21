@@ -9,13 +9,13 @@ Podnebnik is the source repository for podnebnik.org, a statically generated cli
 - Static site: Eleventy 3, Liquid templates, Vite, Tailwind CSS, and global CSS in `styles/`.
 - Frontend visualizations: TypeScript, JavaScript, Solid JS, Highcharts, and shared types under `code/types/`.
 - Fable visualizations: F# compiled to JavaScript with .NET 10 and Fable.
-- Data pipeline: Frictionless Data packages under `data/`, Python 3.12 managed by `uv`, SQLite databases under `var/sqlite/`, and Datasette for data browsing/API access.
+- Data pipeline: Frictionless Data packages under `data/`, Python managed by `uv` (3.13 pinned in `.python-version`; `pyproject.toml` allows 3.12+), SQLite databases under `var/sqlite/`, and Datasette for data browsing/API access.
 - Package/runtime tooling: Yarn 4 via Corepack, Node 24 in CI, .NET 10, Docker/Compose for production-like local development, and GitHub Actions for build, data validation, Docker images, workflow linting, and Copilot setup.
 
 ## Conventions
 
 - Naming: use descriptive names. Prefer camelCase for JavaScript/TypeScript variables and functions, PascalCase for Solid components, kebab-case for route/content folders, and existing dataset/resource names for data package artifacts.
-- Structure: keep public content in `pages/`, reusable visualization code in `code/`, shared UI in `code/components/`, shared types in `code/types/`, data packages in `data/<package>/`, static assets in `assets/`, CSS in `styles/`, and deployment files in `deployment/`.
+- Structure: keep public content in `pages/`, reusable visualization code in `code/`, shared UI in `code/components/`, shared types in `code/types/`, data packages in `data/<package>/`, static assets in `assets/`, CSS in `styles/`, and container build files in `deployment/`, and the Helm chart and manifests in `deploy/chart/`.
 - TypeScript: use strict types for new `.ts` and `.tsx` work. Keep existing JavaScript working during gradual migration unless the task calls for conversion.
 - Solid and visualization code: prefer small, focused components, explicit props, accessible markup, and the existing lazy-rendering pattern for below-fold visualizations.
 - Content: preserve the page language and tone already used nearby. Public pages are usually Slovenian; developer documentation is usually English.
