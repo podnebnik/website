@@ -88,7 +88,23 @@ Also, in case of major changes to the JavaScript dependencies, you may need to r
 
 ## Agent skills
 
-Reusable instructions for AI coding agents (code review, debugging, docs, etc.) live in `.claude/skills/`. Both Claude Code and GitHub Copilot read skills from that directory, so edit them there.
+Reusable instructions for AI coding agents (code review, debugging, docs, etc.) live in `.agents/skills/`. This is the canonical, tool-neutral location: GitHub Copilot and Codex read it directly. Claude Code only discovers skills from `.claude/skills/`, so that path is a committed symlink to `.agents/skills/`.
+
+- Edit skills **only** in `.agents/skills/`.
+- No sync step is needed. All three tools see the same files.
+
+### Windows
+
+Git for Windows checks out symlinks as plain text files unless `core.symlinks` is `true`. That setting needs Windows Developer Mode (Settings → Privacy & security → For developers) or an elevated shell. Without it, `.claude/skills` is a small text file and Claude Code finds no project skills. Copilot and Codex are unaffected.
+
+To fix an existing clone:
+
+```sh
+git config core.symlinks true
+git checkout -- .claude/skills
+```
+
+Or clone with `git clone -c core.symlinks=true <url>`.
 
 ## Developing data
 
