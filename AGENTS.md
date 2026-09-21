@@ -2,7 +2,7 @@
 
 # Repository Agent Instructions
 
-The imported `.github/copilot-instructions.md` file is the canonical repository guidance for all agents working in this workspace.
+The imported `.github/copilot-instructions.md` file is the canonical repository guidance for all agents working in this workspace. Tools that do not expand `@` imports (for example Codex) should open `.github/copilot-instructions.md` directly.
 
 Reusable project skills live in `.agents/skills/` — the canonical, tool-neutral location read by GitHub Copilot and Codex. `.claude/skills` is a committed symlink to it, because Claude Code only discovers skills from `.claude/skills/`. Edit skills in `.agents/skills/` only.
 

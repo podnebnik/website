@@ -1,5 +1,5 @@
 ---
-applyTo: "code/**/*.{ts,tsx,js,jsx,mjs},*.config.{mjs,ts},dev-proxy.mjs"
+applyTo: "code/**/*.{ts,tsx,js,jsx,mjs,fs},*.config.{mjs,ts},**/*.config.{mjs,ts},dev-proxy.mjs"
 description: "Use when writing TypeScript, JavaScript, Solid components, Eleventy configuration, Vite setup, or visualization code for Podnebnik."
 ---
 

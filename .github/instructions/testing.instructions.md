@@ -1,5 +1,5 @@
 ---
-applyTo: "**/*.{test,spec}.{ts,tsx,js,jsx,py,fs}"
+applyTo: "**/*.{test,spec}.{ts,tsx,js,jsx,py,fs},**/tests/**/*.py"
 description: "Use when adding tests, validation checks, regression coverage, or verification commands for Podnebnik code, data, content, or workflows."
 ---
 
