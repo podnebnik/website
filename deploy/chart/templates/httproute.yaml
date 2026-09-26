@@ -16,6 +16,25 @@ spec:
   hostnames:
     - {{ .Values.host | quote }}
   rules:
+    {{- if .Values.previewDatasette.enabled }}
+    # Preview-only: same-origin /data → the pr-<N> datasette in this namespace,
+    # mirroring the stage/prod /data routes the infrastructure repo serves
+    # (PathPrefix /data rewritten to /). The website bundle for such a preview
+    # is built with VITE_DATASETTE_URL=/data (see docker-preview.yaml).
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /data
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
+      backendRefs:
+        - name: datasette
+          port: 8001
+    {{- end }}
     - backendRefs:
         - name: website
           port: 80
