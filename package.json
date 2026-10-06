@@ -29,7 +29,7 @@
     "@types/leaflet": "^1.9.22",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "compression": "^1.8.1",
+    "compression": "^1.8.2",
     "highcharts": "~12.6.0",
     "leaflet": "^1.9.4",
     "morgan": "^1.12.1",
