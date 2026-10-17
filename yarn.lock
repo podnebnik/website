@@ -3353,9 +3353,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"highcharts@npm:~12.6.0":
-  version: 12.6.0
-  resolution: "highcharts@npm:12.6.0"
+"highcharts@npm:~13.1.1":
+  version: 13.1.1
+  resolution: "highcharts@npm:13.1.1"
   peerDependencies:
     jspdf: ^4.1.0
     svg2pdf.js: ^2.7.0
@@ -3364,7 +3364,7 @@ __metadata:
       optional: true
     svg2pdf.js:
       optional: true
-  checksum: 10c0/563862b15e935dbe93fba9a89f9c03e8f0ee2344151361d5fd97564f72b4bbb5f483cfb7e5c38fd49be7c95850b2ba72e278b9b39292aef4b4f1dbe2f5602b82
+  checksum: 10c0/c2ce45fa2bf2112572b82ff2c0f26196f42ccd5858a14de9296457d4f7a840a624f0d018601004019f857179781d939627d1015aa182d0e45e5ecb831e663cb5
   languageName: node
   linkType: hard
 
@@ -4913,7 +4913,7 @@ __metadata:
     compression: "npm:^1.8.2"
     cors: "npm:^2.8.6"
     express: "npm:^5.2.1"
-    highcharts: "npm:~12.6.0"
+    highcharts: "npm:~13.1.1"
     http-proxy-middleware: "npm:^4.2.0"
     jsdom: "npm:^30.0.1"
     leaflet: "npm:^1.9.4"
