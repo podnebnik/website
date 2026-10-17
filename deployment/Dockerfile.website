@@ -12,6 +12,14 @@ RUN apt-get update && apt-get install nodejs libvips-dev -y && corepack enable
 
 COPY . /build
 
+# Datasette base override baked into the JS bundle at build time. Deliberately
+# UNSET for the stage/prod image (docker-web.yaml passes nothing): the shared
+# resolver (code/datasette-base.ts) then picks same-origin /data per host, so one
+# image serves both environments. docker-preview.yaml passes it per-PR: `/data`
+# when the PR ships its own preview datasette, the stage base otherwise.
+ARG VITE_DATASETTE_URL=
+ENV VITE_DATASETTE_URL=$VITE_DATASETTE_URL
+
 RUN dotnet tool restore && yarn install && yarn run build
 
 # -----------------------------------------------------------------------------

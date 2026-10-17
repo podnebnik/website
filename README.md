@@ -215,9 +215,12 @@ yarn start
 
 Open http://localhost:8080/ali-je-vroce-era5/.
 
-The page reads `https://stage-data.podnebnik.org` by default. Point it elsewhere — a
-locally built Datasette, for instance — with `VITE_DATASETTE_URL`. **If neither is
-reachable the page renders empty**, which looks like a build failure but is not.
+The datasette base URL is environment-aware (`code/datasette-base.ts`): deployed hosts
+use same-origin `/data`, everything else defaults to `https://stage-data.podnebnik.org`.
+Point it elsewhere — a locally built Datasette, for instance — with `VITE_DATASETTE_URL`
+(`http://127.0.0.1:8010` for `uv run invoke datasette`; the docker-compose setup wires
+`http://127.0.0.1:8001` automatically). **If the target is unreachable the page renders
+empty**, which looks like a build failure but is not.
 
 ### Charts
 

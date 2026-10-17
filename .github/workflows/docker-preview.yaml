@@ -3,9 +3,30 @@ name: "Docker: preview images"
 # Preview environments (sledilnik/infrastructure, podnebnik-website-preview
 # ApplicationSet) deploy PRs labeled `preview-deploy` and expect
 # ghcr.io/podnebnik/<image>:pr-<number> to exist. This workflow builds and
-# pushes every preview image for a labeled PR — deliberately no `paths` filter,
-# so the preview never misses an image the PR didn't touch.
+# pushes the preview image(s) for a labeled PR — deliberately no `paths`
+# filter, so the preview never misses an image the PR didn't touch.
 # Fork PRs are excluded: they run without a packages:write token.
+#
+# Datasette wiring: the website preview bundle bakes its datasette base at build
+# time (deployment/Dockerfile.website ARG VITE_DATASETTE_URL; resolution contract
+# in code/datasette-base.ts). The `changes` job decides which base a preview gets:
+#
+#   * PR touches the datasette path set (same set that triggers docker-data.yaml)
+#     → build ghcr.io/podnebnik/data:pr-<N> too, bake `/data` (same-origin: the
+#       chart's previewDatasette component routes /data to the pr-<N> datasette in
+#       the preview namespace), and apply the `preview-data` label — the infra
+#       ApplicationSet keys `previewDatasette.enabled` on that label. The label is
+#       applied only AFTER the image push, so the component is never enabled
+#       before its image exists. GITHUB_TOKEN-created label events do not
+#       retrigger workflows (GitHub's recursion guard), so no loop — do not swap
+#       in a PAT here.
+#   * otherwise → bake the shared stage datasette and remove a stale
+#     `preview-data` label if an earlier push had applied one.
+#
+# Accepted duplication: a datasette-touching labeled PR runs the generation
+# pipeline twice per push (docker-data.yaml's PR check with push:false, and the
+# datasette-preview job here with push:true). Coupling the two workflows to share
+# one run is not worth the complexity for preview-labeled PRs.
 
 on:
   pull_request:
@@ -13,16 +34,162 @@ on:
       - "main"
     types: [opened, synchronize, reopened, labeled]
 
-permissions:
-  contents: read
-  packages: write
+permissions: {}
 
 jobs:
-  docker:
+  # Decide whether this PR needs its own preview datasette: does it touch the
+  # path set that (re)builds the datasette image? Mirrors docker-data.yaml's
+  # `paths:` list. Uses the PR files API (merge-base diff, same semantics as the
+  # `paths:` filter) — no checkout, no third-party action. FAIL CLOSED: an API
+  # error or a listing at the 3000-file API cap counts as "data changed".
+  changes:
     if: >-
       contains(github.event.pull_request.labels.*.name, 'preview-deploy') &&
       github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      data: ${{ steps.detect.outputs.data }}
+    steps:
+      -
+        name: Detect datasette-affecting changes
+        id: detect
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          data=false
+          if files=$(gh api "repos/$REPO/pulls/$PR/files" --paginate --jq '.[].filename'); then
+            # The files endpoint silently caps at 3000 entries; at the cap we
+            # cannot know what was omitted, so fail closed.
+            if [ "$(printf '%s\n' "$files" | wc -l)" -ge 3000 ]; then
+              echo "::warning::PR file listing at the 3000-file API cap; assuming datasette-affecting."
+              data=true
+            else
+              # Keep in sync with docker-data.yaml `on.pull_request.paths`.
+              # bash `case` patterns match the whole string and `*` crosses
+              # slashes, so `*.py` ≡ Actions `**.py` and `data/*` ≡ `data/**`.
+              while IFS= read -r f; do
+                case "$f" in
+                  .github/workflows/docker-data.yaml|.dockerignore|deployment/Dockerfile.datasette|pyproject.toml|uv.lock|*.py|data/*)
+                    data=true
+                    break
+                    ;;
+                esac
+              done <<< "$files"
+            fi
+          else
+            echo "::warning::Could not list PR files; assuming datasette-affecting (fail closed)."
+            data=true
+          fi
+          echo "Detected data=$data"
+          echo "data=$data" >> "$GITHUB_OUTPUT"
+
+  # Build + push the per-PR datasette image, then label the PR so the infra
+  # ApplicationSet enables the chart's previewDatasette component. Generation and
+  # image build happen in ONE job on one runner (unlike docker-data.yaml's
+  # two-job artifact handoff): the db-export output lands exactly where the
+  # runtime target's `COPY deployment/generated-sqlite` expects it.
+  datasette-preview:
+    needs: changes
+    if: needs.changes.outputs.data == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      issues: write # ensure-label creates the repo label via the issues API
+      pull-requests: write # gh pr edit --add-label
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8 # v4.2.0
+
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
+        with:
+          platforms: linux/amd64,linux/arm64
+
+      -
+        # Runs the numpy precompute pipeline natively (amd64) and exports the
+        # generated SQLite + datasette metadata to the build context, mirroring
+        # docker-data.yaml's generate-db job.
+        name: Generate datasette SQLite (db-export target)
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        with:
+          context: .
+          file: ./deployment/Dockerfile.datasette
+          target: db-export
+          platforms: linux/amd64
+          push: false
+          outputs: type=local,dest=deployment/generated-sqlite
+
+      -
+        name: Docker meta
+        id: meta
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
+        with:
+          images: |
+            ghcr.io/${{ github.repository_owner }}/data
+          tags: |
+            type=ref,event=pr
+
+      -
+        name: Login to GitHub Container Registry
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      -
+        name: Build and push datasette preview image
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        with:
+          context: .
+          file: ./deployment/Dockerfile.datasette
+          target: runtime
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          # the cluster is arm64; amd64 included for local testing of pr images
+          platforms: linux/amd64,linux/arm64
+
+      -
+        name: Ensure preview-data label exists
+        uses: ./.github/actions/ensure-label
+        with:
+          name: preview-data
+          color: 738FDD
+          description: "Automated: this preview deploys its own pr-<N> datasette"
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      -
+        # AFTER the push above: the infra ApplicationSet flips
+        # previewDatasette.enabled on this label, so it must never precede the
+        # image existing in ghcr.
+        name: Label PR for the preview ApplicationSet
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.pull_request.number }}
+        run: gh pr edit "$PR" --add-label preview-data
+
+  docker:
+    needs: changes
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      pull-requests: write # stale preview-data label removal below
     strategy:
       matrix:
         include:
@@ -74,3 +241,21 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           # the cluster is arm64; amd64 included for local testing of pr images
           platforms: linux/amd64,linux/arm64
+          # Same-origin /data when this PR ships its own preview datasette
+          # (routed by the chart's previewDatasette component); the shared stage
+          # datasette otherwise. See code/datasette-base.ts.
+          build-args: |
+            VITE_DATASETTE_URL=${{ needs.changes.outputs.data == 'true' && '/data' || 'https://stage-data.podnebnik.org' }}
+
+      -
+        # Flip-back: a push that REMOVES the datasette-affecting changes must also
+        # retract the preview-data label, or the ApplicationSet keeps a stale
+        # pr-<N> datasette running while the website (rebuilt above) points at
+        # stage-data. `|| true`: the label is usually absent — removal failing is
+        # the common, healthy case, and cosmetic cleanup must not fail the build.
+        name: Remove stale preview-data label
+        if: needs.changes.outputs.data == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.pull_request.number }}
+        run: gh pr edit "$PR" --remove-label preview-data || true
