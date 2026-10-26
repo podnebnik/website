@@ -34,7 +34,7 @@
     "leaflet": "^1.9.4",
     "morgan": "^1.12.1",
     "node-fetch": "^3.3.2",
-    "solid-js": "^1.9.15",
+    "solid-js": "^1.9.17",
     "tailwind-merge": "^3.7.0",
     "tailwindcss": "~4.3.3"
   },
