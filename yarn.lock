@@ -426,7 +426,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@corvu/utils@npm:~0.4.0, @corvu/utils@npm:~0.4.1, @corvu/utils@npm:~0.4.2":
+"@corvu/utils@npm:~0.4.2":
   version: 0.4.2
   resolution: "@corvu/utils@npm:0.4.2"
   dependencies:
@@ -1153,23 +1153,6 @@ __metadata:
     "@jridgewell/resolve-uri": "npm:^3.1.0"
     "@jridgewell/sourcemap-codec": "npm:^1.4.14"
   checksum: 10c0/3a1516c10f44613b9ba27c37a02ff8f410893776b2b3dad20a391b51b884dd60f97bbb56936d65d2ff8fe978510a0000266654ab8426bdb9ceb5fb4585b19e23
-  languageName: node
-  linkType: hard
-
-"@kobalte/core@npm:^0.13.12":
-  version: 0.13.12
-  resolution: "@kobalte/core@npm:0.13.12"
-  dependencies:
-    "@floating-ui/dom": "npm:^1.5.1"
-    "@internationalized/number": "npm:^3.2.1"
-    "@kobalte/utils": "npm:^0.9.2"
-    "@solid-primitives/props": "npm:^3.1.8"
-    "@solid-primitives/resize-observer": "npm:^2.0.26"
-    solid-presence: "npm:^0.1.8"
-    solid-prevent-scroll: "npm:^0.1.4"
-  peerDependencies:
-    solid-js: ^1.8.15
-  checksum: 10c0/4e202f9082e33cc4938c429df4d203762c4286c18dec7dc412f975fff935617a3061e2319ed52f2f20adccc5f90c3d18c6f69781d101ba2d33ef453a7b67d92b
   languageName: node
   linkType: hard
 
@@ -5176,7 +5159,7 @@ __metadata:
     "@11ty/eleventy-img": "npm:^7.0.0"
     "@11ty/eleventy-plugin-vite": "npm:^8.0.0"
     "@highcharts/map-collection": "npm:^2.3.3"
-    "@kobalte/core": "npm:^0.13.12"
+    "@kobalte/core": "npm:^0.13.14"
     "@tailwindcss/typography": "npm:^0.5.20"
     "@tailwindcss/vite": "npm:~4.3.3"
     "@tanstack/solid-query": "npm:^5.101.4"
@@ -5697,17 +5680,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"solid-presence@npm:^0.1.8":
-  version: 0.1.8
-  resolution: "solid-presence@npm:0.1.8"
-  dependencies:
-    "@corvu/utils": "npm:~0.4.0"
-  peerDependencies:
-    solid-js: ^1.8
-  checksum: 10c0/61c88306dd4c025188111fa2889927d084f2e63c8b17e75866d2a0be8021154cf214393cdd10bc5f89c15ec4f6d27e65442a36f17b67b08d19c48e9abe6c21a2
-  languageName: node
-  linkType: hard
-
 "solid-presence@npm:^0.2.0":
   version: 0.2.0
   resolution: "solid-presence@npm:0.2.0"
@@ -5727,17 +5699,6 @@ __metadata:
   peerDependencies:
     solid-js: ^1.8
   checksum: 10c0/d7ac041960589b501762a22c77e85c58024b6e78055904f1eddcd9d772f785aa4b019f9ec282001fa72aa5ccd4892c282e1c2b8a39898f439ab5a863d4c3b26e
-  languageName: node
-  linkType: hard
-
-"solid-prevent-scroll@npm:^0.1.4":
-  version: 0.1.10
-  resolution: "solid-prevent-scroll@npm:0.1.10"
-  dependencies:
-    "@corvu/utils": "npm:~0.4.1"
-  peerDependencies:
-    solid-js: ^1.8
-  checksum: 10c0/ec5915193eff30a23120765c4c020fe5176bece9ab9d097923cc50e54d1acdab70e87cf450f8fb8bbb87ad196df94151fa910afc40fda98aeefafe97775dd7e6
   languageName: node
   linkType: hard
 
