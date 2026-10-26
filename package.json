@@ -24,7 +24,7 @@
     "@kobalte/core": "^0.13.12",
     "@tailwindcss/typography": "^0.5.20",
     "@tailwindcss/vite": "~4.3.3",
-    "@tanstack/solid-query": "^5.101.4",
+    "@tanstack/solid-query": "^5.104.4",
     "@tanstack/solid-query-devtools": "^5.104.4",
     "@types/leaflet": "^1.9.22",
     "class-variance-authority": "^0.7.1",
