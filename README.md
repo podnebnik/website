@@ -86,6 +86,27 @@ Also, in case of major changes to the JavaScript dependencies, you may need to r
 
 > NOTE: The development server is configured to watch for changes in the `code`, `pages` and `styles` folders. If you make changes to any of these folders, the server will automatically rebuild the site and reload the browser. However, there may be cases where the server does not detect the changes. In that case, you can force the server to rebuild the site by pressing `Ctrl + C` and then run `yarn start` again. In some cases it may help to run `yarn clean` before running `yarn start` again. If you want to emulate production setup locally, export `ELEVENTY_EMULATE_PRODUCTION=1`.
 
+## Agent skills
+
+Reusable instructions for AI coding agents (code review, debugging, docs, etc.) live in `.agents/skills/`. This is the canonical, tool-neutral location: GitHub Copilot and Codex read it directly. Claude Code only discovers skills from `.claude/skills/`, so that path is a committed symlink to `.agents/skills/`.
+
+- Edit skills **only** in `.agents/skills/`.
+- No sync step is needed. All three tools see the same files.
+- Skills and instructions are prompts. The only real test is using them on a real task. If one misleads an agent, fix its Markdown in the same PR.
+
+### Windows
+
+Git for Windows checks out symlinks as plain text files unless `core.symlinks` is `true`. That setting needs Windows Developer Mode (Settings → Privacy & security → For developers) or an elevated shell. Without it, `.claude/skills` is a small text file and Claude Code finds no project skills. Copilot and Codex are unaffected.
+
+To fix an existing clone:
+
+```sh
+git config core.symlinks true
+git checkout -- .claude/skills
+```
+
+Or clone with `git clone -c core.symlinks=true <url>`.
+
 ## Developing data
 
 ### Importing data into datasette and running it
