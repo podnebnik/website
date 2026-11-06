@@ -39,3 +39,25 @@ httproute:
 previewDatabase:
   enabled: false
   database: podnebnik
+
+# Preview environments only (set by the website-preview ApplicationSet when the
+# PR carries the `preview-data` label, which docker-preview.yaml applies after
+# pushing ghcr.io/podnebnik/data:pr-<N>): a per-PR datasette plus a same-origin
+# /data route on the preview host. Never enabled for stage/prod — their
+# datasettes are deployed from the infrastructure repo.
+previewDatasette:
+  enabled: false
+  image:
+    repository: ghcr.io/podnebnik/data
+    tag: latest
+  # The ApplicationSet passes the PR head SHA so each push re-renders the
+  # Deployment and forces a re-pull of the mutable pr-<N> tag.
+  revision: "1"
+  resources:
+    requests:
+      cpu: 25m
+      # python + datasette with max_returned_rows 150000 needs more headroom
+      # than the static-nginx website.
+      memory: 128Mi
+    limits:
+      memory: 512Mi
