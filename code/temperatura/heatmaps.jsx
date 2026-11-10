@@ -13,9 +13,10 @@ import topology from '@highcharts/map-collection/custom/world-highres.topo.json'
 
 import { createEffect, createSignal } from "solid-js";
 
-// URL
-const baseUrl = 'https://stage-data.podnebnik.org'
-// const baseUrl = 'http://localhost:8010'
+// Environment-aware datasette base (shared resolver; VITE_DATASETTE_URL overrides
+// for local dev, deployed hosts use same-origin /data — see code/datasette-base.ts).
+import { DATASETTE_BASE_URL } from '../datasette-base.ts'
+const baseUrl = DATASETTE_BASE_URL
 
 // colors
 const colors = [
