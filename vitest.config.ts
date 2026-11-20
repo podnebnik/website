@@ -32,6 +32,11 @@ export default defineConfig({
     env: {
       VITE_FIXTURES: "1",
       VITE_PINNED_DATE: "2026-07-29",
+      // Pin the datasette override OFF: a VITE_DATASETTE_URL exported in the
+      // developer's shell would otherwise reach the resolver (datasette-base.ts
+      // rule 1) and fail the fixture base guard in install.ts before any test
+      // runs. Empty string = "not set" under the resolver's truthiness check.
+      VITE_DATASETTE_URL: "",
     },
   },
 });
