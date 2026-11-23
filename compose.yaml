@@ -21,6 +21,11 @@ services:
       dockerfile: deployment/Dockerfile.dev.website
     volumes:
       - .:/build
+    environment:
+      # Point the dev bundle at the datasette container's published port. The
+      # connection is browser-side (the page fetches it from the HOST browser),
+      # so this is the host-published 8001, not a docker-network address.
+      VITE_DATASETTE_URL: "http://127.0.0.1:8001"
     command:
       bash -c "yarn install && yarn run start"
     ports:

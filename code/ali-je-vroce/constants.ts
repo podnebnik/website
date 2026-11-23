@@ -2,6 +2,8 @@
 // PERCENTILE TYPES
 // =============================================================================
 
+import { resolveDatasetteBase } from '../datasette-base.ts'
+
 type ValidPercentile = 'p00' | 'p05' | 'p20' | 'p40' | 'p60' | 'p80' | 'p95';
 type PercentileKey = ValidPercentile | ''
 type PercentileLabels = Record<PercentileKey, string>
@@ -30,12 +32,12 @@ export const DEFAULT_STATION = {
 } as const
 
 /**
-The base URL for the API.
+The datasette base URL for this environment.
 
-I believe this URL is like local dataset server.
+Resolved by the shared resolver (code/datasette-base.ts): VITE_DATASETTE_URL
+override > fixture base > same-origin /data on deployed hosts > stage default.
  */
-export const STAGE_DATA_BASE_URL = 'https://stage-data.podnebnik.org' as const
-// const baseUrl = 'http://localhost:8010'
+export const DATASETTE_BASE_URL = resolveDatasetteBase()
 
 /**
  * The base URL for the Vremenar API.
